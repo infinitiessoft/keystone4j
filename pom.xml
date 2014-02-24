@@ -1,0 +1,175 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.infinities</groupId>
+	<artifactId>keystone4j</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>keystone4j</name>
+	<description>java version of openstack keystone component</description>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Skyport Dependencies -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>14.0.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-hibernate4</artifactId>
+				<version>${jacksonVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jacksonVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jacksonVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.2.4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>3.0.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<!-- if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core" -->
+				<artifactId>jersey-container-servlet</artifactId>
+				<version>2.5.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jersey.media</groupId>
+				<artifactId>jersey-media-json-jackson</artifactId>
+				<version>2.5.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jersey.ext</groupId>
+				<artifactId>jersey-bean-validation</artifactId>
+				<version>2.5.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-core</artifactId>
+				<version>${shiroVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-web</artifactId>
+				<version>${shiroVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-aspectj</artifactId>
+				<version>${shiroVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-ehcache</artifactId>
+				<version>${shiroVersion}</version>
+			</dependency>
+
+			<!-- Logging (slf4j with log4j as an implementation -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4jVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>1.0.9</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>4.1.9.Final</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>2.2.9</version>
+			</dependency>
+
+			<!-- JUnit and JMock for unit testing -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>3.2.2.RELEASE</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jmock</groupId>
+				<artifactId>jmock-junit4</artifactId>
+				<version>2.6.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jmock</groupId>
+				<artifactId>jmock-legacy</artifactId>
+				<version>2.6.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.0</version>
+					<configuration>
+						<target>${javaCompilerVersion}</target>
+						<source>${javaCompilerVersion}</source>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<javaCompilerVersion>1.6</javaCompilerVersion>
+		<shiroVersion>1.2.1</shiroVersion>
+		<slf4jVersion>1.6.6</slf4jVersion>
+		<tomcatVersion>7.0.34</tomcatVersion>
+		<jacksonVersion>2.2.1</jacksonVersion>
+	</properties>
+	<modules>
+		<module>keystone4j-core</module>
+	</modules>
+</project>

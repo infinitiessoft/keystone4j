@@ -1,0 +1,24 @@
+package com.infinities.keystone4j.credential.command;
+
+import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.credential.CredentialDriver;
+import com.infinities.keystone4j.credential.model.Credential;
+
+public class DeleteCredentialsForProjectCommand extends AbstractCredentialCommand<Credential> {
+
+	private final String projectid;
+
+
+	public DeleteCredentialsForProjectCommand(CredentialApi credentialApi, CredentialDriver credentialDriver,
+			String projectid) {
+		super(credentialApi, credentialDriver);
+		this.projectid = projectid;
+	}
+
+	@Override
+	public Credential execute() {
+		this.getCredentialDriver().deleteCredentialsForProject(projectid);
+		return null;
+	}
+
+}

@@ -1,0 +1,23 @@
+package com.infinities.keystone4j.assignment.action.role.v3;
+
+import com.infinities.keystone4j.KeystonePreconditions;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.assignment.model.Role;
+
+public class UpdateRoleAction extends AbstractRoleAction<Role> {
+
+	private String roleid;
+	private Role role;
+
+
+	public UpdateRoleAction(AssignmentApi assignmentApi, String roleid, Role role) {
+		super(assignmentApi);
+	}
+
+	@Override
+	public Role execute() {
+		KeystonePreconditions.requireMatchingId(roleid, role);
+		return this.getAssignmentApi().updateRole(roleid, role);
+	}
+
+}

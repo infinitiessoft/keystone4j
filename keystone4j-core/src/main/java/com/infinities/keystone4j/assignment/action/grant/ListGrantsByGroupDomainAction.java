@@ -1,0 +1,31 @@
+package com.infinities.keystone4j.assignment.action.grant;
+
+import java.util.List;
+
+import com.infinities.keystone4j.KeystonePreconditions;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.assignment.model.Role;
+import com.infinities.keystone4j.identity.IdentityApi;
+
+public class ListGrantsByGroupDomainAction extends AbstractGrantAction<List<Role>> {
+
+	private String groupid;
+	private String domainid;
+	private boolean inherited;
+
+
+	public ListGrantsByGroupDomainAction(AssignmentApi assignmentApi, IdentityApi identityApi, String groupid,
+			String domainid, boolean inherited) {
+		super(assignmentApi, identityApi);
+		this.groupid = groupid;
+		this.domainid = domainid;
+		this.inherited = inherited;
+	}
+
+	@Override
+	public List<Role> execute() {
+		KeystonePreconditions.requireGroup(groupid);
+		KeystonePreconditions.requireDomain(domainid);
+		return assignmentApi.listGrantsByGroupDomain(groupid, domainid, inherited);
+	}
+}
