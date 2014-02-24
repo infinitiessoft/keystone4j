@@ -31,6 +31,12 @@ import com.infinities.keystone4j.credential.api.CredentialApiFactory;
 import com.infinities.keystone4j.credential.controller.CredentialV3Controller;
 import com.infinities.keystone4j.credential.controller.impl.CredentialV3ControllerFactory;
 import com.infinities.keystone4j.credential.driver.CredentialDriverFactory;
+import com.infinities.keystone4j.endpointfilter.EndpointFilterApi;
+import com.infinities.keystone4j.endpointfilter.EndpointFilterDriver;
+import com.infinities.keystone4j.endpointfilter.api.EndpointFilterApiFactory;
+import com.infinities.keystone4j.endpointfilter.controller.EndpointFilterController;
+import com.infinities.keystone4j.endpointfilter.controller.impl.EndpointFilterControllerFactory;
+import com.infinities.keystone4j.endpointfilter.driver.EndpointFilterDriverFactory;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
 import com.infinities.keystone4j.identity.api.IdentityApiFactory;
@@ -107,6 +113,11 @@ public class KeystoneApplication extends ResourceConfig {
 				bindFactory(TrustApiFactory.class).to(TrustApi.class);
 				bindFactory(TrustV3ControllerFactory.class).to(TrustV3Controller.class);
 				bindFactory(TrustDriverFactory.class).to(TrustDriver.class);
+
+				// endpoint_pointer
+				bindFactory(EndpointFilterApiFactory.class).to(EndpointFilterApi.class);
+				bindFactory(EndpointFilterControllerFactory.class).to(EndpointFilterController.class);
+				bindFactory(EndpointFilterDriverFactory.class).to(EndpointFilterDriver.class);
 			}
 
 		});

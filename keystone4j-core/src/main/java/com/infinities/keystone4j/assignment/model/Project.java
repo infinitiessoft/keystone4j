@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.credential.model.Credential;
+import com.infinities.keystone4j.endpointfilter.model.ProjectEndpoint;
 
 @Entity
 @Table(name = "PROJECT", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
@@ -35,6 +36,7 @@ public class Project extends BaseEntity implements java.io.Serializable {
 	private Set<UserProjectGrant> userProjectGrants = new HashSet<UserProjectGrant>(0);
 	private Set<GroupProjectGrant> groupProjectGrants = new HashSet<GroupProjectGrant>(0);
 	private Set<Credential> credentials = new HashSet<Credential>(0);
+	private Set<ProjectEndpoint> projectEndpoints = new HashSet<ProjectEndpoint>(0);
 	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
 	private boolean nameUpdated = false;
 	private boolean domainUpdated = false;
@@ -151,6 +153,15 @@ public class Project extends BaseEntity implements java.io.Serializable {
 
 	public void setDomainUpdated(boolean domainUpdated) {
 		this.domainUpdated = domainUpdated;
+	}
+
+	public Set<ProjectEndpoint> getProjectEndpoints() {
+		return projectEndpoints;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "endpoint", cascade = CascadeType.ALL)
+	public void setProjectEndpoints(Set<ProjectEndpoint> projectEndpoints) {
+		this.projectEndpoints = projectEndpoints;
 	}
 
 }

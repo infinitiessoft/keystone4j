@@ -1,11 +1,16 @@
 package com.infinities.keystone4j.catalog.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -13,6 +18,7 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 
 import com.infinities.keystone4j.BaseEntity;
+import com.infinities.keystone4j.endpointfilter.model.ProjectEndpoint;
 
 @Entity
 @Table(name = "ENDPOINT", schema = "PUBLIC", catalog = "PUBLIC")
@@ -38,6 +44,7 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 	private boolean serviceUpdated = false;
 	private boolean urlUpdated = false;
 	private boolean extraUpdated = false;
+	private Set<ProjectEndpoint> projectEndpoints = new HashSet<ProjectEndpoint>(0);
 
 
 	@Column(name = "LEGACY_ENDPOINT", length = 64)
@@ -154,6 +161,15 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
+	}
+
+	public Set<ProjectEndpoint> getProjectEndpoints() {
+		return projectEndpoints;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "endpoint", cascade = CascadeType.ALL)
+	public void setProjectEndpoints(Set<ProjectEndpoint> projectEndpoints) {
+		this.projectEndpoints = projectEndpoints;
 	}
 
 }

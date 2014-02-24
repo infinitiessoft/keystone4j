@@ -16,7 +16,7 @@ import com.infinities.keystone4j.common.model.ExtensionsWrapper;
 public class ExtensionResource {
 
 	// module in keystone will register for extension
-	private ExtensionApi extensionApi;
+	private final ExtensionApi extensionApi;
 
 
 	public ExtensionResource() {
