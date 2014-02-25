@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response.StatusType;
 
 public enum CustomResponseStatus implements StatusType {
 	MULTIPLE_CHOICES(300, "Multiple Choices"), NO_CONTENT(204, "No Content"), CREATE_TOKEN(201, "Created"), VALIDATE_TOKEN(
-			200, "OK");
+			200, "OK"), REQUEST_TOO_LARGE(413, "Request is too large.");
 
 	private final int code;
 	private final String reason;
@@ -42,6 +42,7 @@ public enum CustomResponseStatus implements StatusType {
 	 * 
 	 * @return the class of status code
 	 */
+	@Override
 	public Family getFamily() {
 		return family;
 	}
@@ -51,6 +52,7 @@ public enum CustomResponseStatus implements StatusType {
 	 * 
 	 * @return the status code
 	 */
+	@Override
 	public int getStatusCode() {
 		return code;
 	}
@@ -60,6 +62,7 @@ public enum CustomResponseStatus implements StatusType {
 	 * 
 	 * @return the reason phrase
 	 */
+	@Override
 	public String getReasonPhrase() {
 		return toString();
 	}

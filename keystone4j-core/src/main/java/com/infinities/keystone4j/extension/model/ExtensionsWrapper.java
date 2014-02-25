@@ -1,4 +1,4 @@
-package com.infinities.keystone4j.common.model;
+package com.infinities.keystone4j.extension.model;
 
 import java.util.Set;
 

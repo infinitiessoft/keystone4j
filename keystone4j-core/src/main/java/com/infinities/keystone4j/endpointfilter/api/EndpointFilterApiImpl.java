@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.common.model.Extension;
-import com.infinities.keystone4j.common.model.ExtensionApi;
 import com.infinities.keystone4j.common.model.Link;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterApi;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterDriver;
@@ -16,6 +14,8 @@ import com.infinities.keystone4j.endpointfilter.command.CheckEndpointInProjectCo
 import com.infinities.keystone4j.endpointfilter.command.ListEndpointsForProjectCommand;
 import com.infinities.keystone4j.endpointfilter.command.ListProjectsForEndpointCommand;
 import com.infinities.keystone4j.endpointfilter.command.RemoveEndpointFromProjectCommand;
+import com.infinities.keystone4j.extension.ExtensionApi;
+import com.infinities.keystone4j.extension.model.Extension;
 
 public class EndpointFilterApiImpl implements EndpointFilterApi {
 

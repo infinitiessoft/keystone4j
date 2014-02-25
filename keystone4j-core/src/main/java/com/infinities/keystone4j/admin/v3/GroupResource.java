@@ -22,9 +22,14 @@ import com.infinities.keystone4j.identity.model.UsersWrapper;
 
 public class GroupResource {
 
-	private UserV3Controller userController;
-	private GroupV3Controller groupController;
+	private final UserV3Controller userController;
+	private final GroupV3Controller groupController;
 
+
+	public GroupResource(UserV3Controller userController, GroupV3Controller groupController) {
+		this.userController = userController;
+		this.groupController = groupController;
+	}
 
 	@POST
 	public GroupWrapper createGroup(Group group) {

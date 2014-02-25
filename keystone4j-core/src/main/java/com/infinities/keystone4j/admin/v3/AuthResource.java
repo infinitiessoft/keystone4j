@@ -16,11 +16,11 @@ import com.infinities.keystone4j.trust.model.SignedWrapper;
 public class AuthResource {
 
 	private final static String SUBJECT_TOKEN_HEADER = "X-Subject-Token";
-	private AuthController authController;
+	private final AuthController authController;
 
 
-	public AuthResource() {
-
+	public AuthResource(AuthController authController) {
+		this.authController = authController;
 	}
 
 	@POST

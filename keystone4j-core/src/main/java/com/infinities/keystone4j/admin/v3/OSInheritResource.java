@@ -16,8 +16,12 @@ import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
 public class OSInheritResource {
 
-	private RoleV3Controller roleController;
+	private final RoleV3Controller roleController;
 
+
+	public OSInheritResource(RoleV3Controller roleController) {
+		this.roleController = roleController;
+	}
 
 	@PUT
 	@Path("/domains/{domainid}/users/{userid}/roles/{roleid}/inherited_to_projects")

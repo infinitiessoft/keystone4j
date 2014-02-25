@@ -18,8 +18,12 @@ import com.infinities.keystone4j.credential.model.CredentialsWrapper;
 
 public class CredentialResource {
 
-	private CredentialV3Controller credentialController;
+	private final CredentialV3Controller credentialController;
 
+
+	public CredentialResource(CredentialV3Controller credentialController) {
+		this.credentialController = credentialController;
+	}
 
 	@POST
 	public CredentialWrapper createCredential(Credential credential) {

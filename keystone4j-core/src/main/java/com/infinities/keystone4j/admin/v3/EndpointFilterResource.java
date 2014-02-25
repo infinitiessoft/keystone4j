@@ -17,8 +17,12 @@ import com.infinities.keystone4j.endpointfilter.controller.EndpointFilterControl
 
 public class EndpointFilterResource {
 
-	private EndpointFilterController endpointFilterController;
+	private final EndpointFilterController endpointFilterController;
 
+
+	public EndpointFilterResource(EndpointFilterController endpointFilterController) {
+		this.endpointFilterController = endpointFilterController;
+	}
 
 	@GET
 	@Path("/endpoints/{endpointid}/projects")

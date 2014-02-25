@@ -18,8 +18,12 @@ import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
 public class RoleV3Resource {
 
-	private RoleV3Controller roleController;
+	private final RoleV3Controller roleController;
 
+
+	public RoleV3Resource(RoleV3Controller roleController) {
+		this.roleController = roleController;
+	}
 
 	@POST
 	public RoleWrapper createRole(Role role) {

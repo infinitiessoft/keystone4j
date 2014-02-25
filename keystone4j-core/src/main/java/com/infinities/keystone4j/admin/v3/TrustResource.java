@@ -20,8 +20,12 @@ import com.infinities.keystone4j.trust.model.TrustsWrapper;
 
 public class TrustResource {
 
-	private TrustV3Controller trustController;
+	private final TrustV3Controller trustController;
 
+
+	public TrustResource(TrustV3Controller trustController) {
+		this.trustController = trustController;
+	}
 
 	@POST
 	public TrustWrapper createTrust(Trust trust) {

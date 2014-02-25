@@ -26,7 +26,7 @@ public class ValidateTokenAction extends AbstractTokenAction<TokenMetadata> {
 	public TokenMetadata execute() {
 		boolean includeCatalog = !request.getQueryString().contains(AuthController.NOCATALOG);
 		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
-		String tokenid = context.getTokenid();
+		String tokenid = context.getSubjectTokenid();
 		TokenDataWrapper tokenData = this.tokenProviderApi.validateV3Token(tokenid);
 
 		if (!includeCatalog && tokenData.getToken().getCatalog() != null) {

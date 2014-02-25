@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.main;
 
 import java.net.MalformedURLException;
-import java.util.Properties;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -15,11 +14,11 @@ import com.infinities.keystone4j.common.model.VersionApi;
 @Produces(MediaType.APPLICATION_JSON)
 public class PublicVersionApiResource {
 
-	private VersionApi versionApi;
+	private final VersionApi versionApi;
 
 
-	public PublicVersionApiResource(Properties properties) {
-		versionApi = new VersionApi(properties, "public");
+	public PublicVersionApiResource() {
+		versionApi = new VersionApi("public");
 	}
 
 	@GET

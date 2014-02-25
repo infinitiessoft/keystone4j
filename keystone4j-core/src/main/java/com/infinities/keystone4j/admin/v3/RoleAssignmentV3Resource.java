@@ -15,8 +15,12 @@ import com.infinities.keystone4j.exception.NotImplementedException;
 
 public class RoleAssignmentV3Resource {
 
-	private RoleAssignmentV3Controller roleAssignmentController;
+	private final RoleAssignmentV3Controller roleAssignmentController;
 
+
+	public RoleAssignmentV3Resource(RoleAssignmentV3Controller roleAssignmentController) {
+		this.roleAssignmentController = roleAssignmentController;
+	}
 
 	@POST
 	public Response createRoleAssignment() {

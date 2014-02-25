@@ -18,8 +18,12 @@ import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
 public class ServiceResource {
 
-	private ServiceV3Controller serviceController;
+	private final ServiceV3Controller serviceController;
 
+
+	public ServiceResource(ServiceV3Controller serviceController) {
+		this.serviceController = serviceController;
+	}
 
 	@POST
 	public ServiceWrapper createService(Service service) {

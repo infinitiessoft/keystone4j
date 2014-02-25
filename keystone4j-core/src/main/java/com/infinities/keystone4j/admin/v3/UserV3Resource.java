@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.admin.v3;
 
+import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -23,13 +24,17 @@ import com.infinities.keystone4j.identity.model.UsersWrapper;
 
 public class UserV3Resource {
 
-	private ProjectV3Controller projectController;
-	private UserV3Controller userController;
-	private GroupV3Controller groupController;
+	private final ProjectV3Controller projectController;
+	private final UserV3Controller userController;
+	private final GroupV3Controller groupController;
 
 
-	public UserV3Resource() {
-		// this.identityApi = new IdentityApi();
+	@Inject
+	public UserV3Resource(ProjectV3Controller projectController, UserV3Controller userController,
+			GroupV3Controller groupController) {
+		this.projectController = projectController;
+		this.userController = userController;
+		this.groupController = groupController;
 	}
 
 	@GET

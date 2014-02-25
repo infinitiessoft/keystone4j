@@ -7,8 +7,9 @@ public class KeystoneContext {
 	public final static String CONTEXT_NAME = "openstack.context";
 
 	private boolean isAdmin = false;
-	@XmlElement(name = "subject_token_id")
 	private String tokenid;
+	@XmlElement(name = "subject_token_id")
+	private String subjectTokenid;
 	private Environment environment;
 
 
@@ -26,6 +27,14 @@ public class KeystoneContext {
 
 	public void setTokenid(String tokenid) {
 		this.tokenid = tokenid;
+	}
+
+	public String getSubjectTokenid() {
+		return subjectTokenid;
+	}
+
+	public void setSubjectTokenid(String subjectTokenid) {
+		this.subjectTokenid = subjectTokenid;
 	}
 
 	public Environment getEnvironment() {

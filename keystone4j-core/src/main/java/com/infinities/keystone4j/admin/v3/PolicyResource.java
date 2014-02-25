@@ -18,8 +18,12 @@ import com.infinities.keystone4j.policy.model.PolicyWrapper;
 
 public class PolicyResource {
 
-	private PolicyV3Controller policyController;
+	private final PolicyV3Controller policyController;
 
+
+	public PolicyResource(PolicyV3Controller policyController) {
+		this.policyController = policyController;
+	}
 
 	@POST
 	public PolicyWrapper createPolicy(Policy policy) {

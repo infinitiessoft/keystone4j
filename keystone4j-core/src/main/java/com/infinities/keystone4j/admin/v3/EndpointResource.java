@@ -18,8 +18,12 @@ import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
 public class EndpointResource {
 
-	private EndpointV3Controller endpointController;
+	private final EndpointV3Controller endpointController;
 
+
+	public EndpointResource(EndpointV3Controller endpointController) {
+		this.endpointController = endpointController;
+	}
 
 	@POST
 	public EndpointWrapper createEndpoint(Endpoint endpoint) {

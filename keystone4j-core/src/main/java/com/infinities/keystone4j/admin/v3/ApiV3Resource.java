@@ -11,8 +11,12 @@ import com.infinities.keystone4j.common.model.VersionWrapper;
 
 public class ApiV3Resource {
 
-	private VersionApi versionApi;
+	private final VersionApi versionApi;
 
+
+	public ApiV3Resource() {
+		versionApi = new VersionApi();
+	}
 
 	@Path("/users")
 	// assignment
@@ -96,6 +100,12 @@ public class ApiV3Resource {
 	// endpoint-filter
 	public Class<EndpointFilterResource> getEndpointFilterResource() {
 		return EndpointFilterResource.class;
+	}
+
+	@Path("/OS-SIMPLE-CERT")
+	// trusts
+	public Class<SimpleCertResource> getSimpleCertResource() {
+		return SimpleCertResource.class;
 	}
 
 	@GET

@@ -22,12 +22,13 @@ import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
 public class DomainResource {
 
-	private RoleV3Controller roleController;
-	private DomainV3Controller domainController;
+	private final RoleV3Controller roleController;
+	private final DomainV3Controller domainController;
 
 
-	public DomainResource() {
-		// this.identityApi = new IdentityApi();
+	public DomainResource(RoleV3Controller roleController, DomainV3Controller domainController) {
+		this.roleController = roleController;
+		this.domainController = domainController;
 	}
 
 	@POST

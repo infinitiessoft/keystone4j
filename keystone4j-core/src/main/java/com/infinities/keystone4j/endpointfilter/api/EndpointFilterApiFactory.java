@@ -4,9 +4,9 @@ import javax.inject.Inject;
 
 import org.glassfish.hk2.api.Factory;
 
-import com.infinities.keystone4j.common.model.ExtensionApi;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterApi;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterDriver;
+import com.infinities.keystone4j.extension.ExtensionApi;
 
 public class EndpointFilterApiFactory implements Factory<EndpointFilterApi> {
 

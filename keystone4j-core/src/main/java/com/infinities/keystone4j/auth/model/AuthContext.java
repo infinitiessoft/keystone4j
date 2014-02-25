@@ -1,11 +1,15 @@
 package com.infinities.keystone4j.auth.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.Environment;
+import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.token.model.Bind;
 
 public class AuthContext {
@@ -23,8 +27,29 @@ public class AuthContext {
 	@XmlElement(name = "extra")
 	private String extra;
 
-	private Bind bind;
+	// private boolean isAdmin = false;
 
+	private Bind bind;
+	private String domainid;
+	private Set<Role> roles = new HashSet<Role>(0);
+	private Environment environment;
+
+
+	public String getDomainid() {
+		return domainid;
+	}
+
+	public void setDomainid(String domainid) {
+		this.domainid = domainid;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
 
 	public String getAccessTokenid() {
 		return accessTokenid;
@@ -84,6 +109,22 @@ public class AuthContext {
 
 	public void setExtra(String extra) {
 		this.extra = extra;
+	}
+
+	// public boolean isAdmin() {
+	// return isAdmin;
+	// }
+	//
+	// public void setAdmin(boolean isAdmin) {
+	// this.isAdmin = isAdmin;
+	// }
+
+	public Environment getEnvironment() {
+		return environment;
+	}
+
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
 	}
 
 }

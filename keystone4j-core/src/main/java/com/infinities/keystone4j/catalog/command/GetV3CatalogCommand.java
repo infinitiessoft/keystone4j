@@ -9,14 +9,13 @@ import com.infinities.keystone4j.catalog.model.Service;
 
 public class GetV3CatalogCommand extends AbstractCatalogCommand<Catalog> {
 
-	private final String userid;
-	private final String projectid;
-
+	// private final String userid;
+	// private final String projectid;
 
 	public GetV3CatalogCommand(CatalogApi catalogApi, CatalogDriver catalogDriver, String userid, String projectid) {
 		super(catalogApi, catalogDriver);
-		this.userid = userid;
-		this.projectid = projectid;
+		// this.userid = userid;
+		// this.projectid = projectid;
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class CheckTokenAction extends AbstractTokenAction<TokenMetadata> {
 	@Override
 	public TokenMetadata execute() {
 		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
-		String tokenid = context.getTokenid();
+		String tokenid = context.getSubjectTokenid();
 		this.tokenProviderApi.checkV3Token(tokenid);
 		return null;
 	}

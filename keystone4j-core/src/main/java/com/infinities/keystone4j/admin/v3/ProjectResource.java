@@ -23,12 +23,13 @@ import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
 public class ProjectResource {
 
-	private RoleV3Controller roleController;
-	private ProjectV3Controller projectController;
+	private final RoleV3Controller roleController;
+	private final ProjectV3Controller projectController;
 
 
-	public ProjectResource() {
-		// this.identityApi = new IdentityApi();
+	public ProjectResource(RoleV3Controller roleController, ProjectV3Controller projectController) {
+		this.roleController = roleController;
+		this.projectController = projectController;
 	}
 
 	@POST

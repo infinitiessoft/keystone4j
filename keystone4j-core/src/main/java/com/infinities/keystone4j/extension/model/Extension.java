@@ -1,8 +1,10 @@
-package com.infinities.keystone4j.common.model;
+package com.infinities.keystone4j.extension.model;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.infinities.keystone4j.common.model.Link;
 
 public class Extension {
 
