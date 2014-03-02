@@ -32,6 +32,7 @@ public class AuthContextMiddleware implements Middleware {
 		this.tokenApi = tokenApi;
 	}
 
+	// auth_token_head only use in token-related action
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		if (!requestContext.getHeaders().containsKey(AUTH_TOKEN_HEADER)) {
@@ -67,7 +68,7 @@ public class AuthContextMiddleware implements Middleware {
 			Token token = tokenApi.getToken(tokenid);
 			validateTokenBind(context, token);
 
-			return Authorization.tokenToAuthContext(token);
+			return Authorization.tokenToAuthContext(token.getTokenData());
 
 		} catch (TokenNotFoundException e) {
 			logger.warn("RBAC: Invalid token");

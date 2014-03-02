@@ -5,7 +5,7 @@ import com.infinities.keystone4j.assignment.model.Role;
 
 public class GetRoleAction extends AbstractRoleAction<Role> {
 
-	private String roleid;
+	private final String roleid;
 
 
 	public GetRoleAction(AssignmentApi assignmentApi, String roleid) {
@@ -16,5 +16,10 @@ public class GetRoleAction extends AbstractRoleAction<Role> {
 	@Override
 	public Role execute() {
 		return this.getAssignmentApi().getRole(roleid);
+	}
+
+	@Override
+	public String getName() {
+		return "get_role";
 	}
 }

@@ -7,6 +7,7 @@ public class KeystoneContext {
 	public final static String CONTEXT_NAME = "openstack.context";
 
 	private boolean isAdmin = false;
+	@XmlElement(name = "token_id")
 	private String tokenid;
 	@XmlElement(name = "subject_token_id")
 	private String subjectTokenid;

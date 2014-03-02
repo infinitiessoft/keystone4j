@@ -12,9 +12,9 @@ import com.infinities.keystone4j.assignment.model.Project;
 
 public class ListProjectsAction extends AbstractProjectAction<List<Project>> {
 
-	private String domainid;
-	private String name;
-	private Boolean enabled;
+	private final String domainid;
+	private final String name;
+	private final Boolean enabled;
 
 
 	public ListProjectsAction(AssignmentApi assignmentApi, String domainid, String name, Boolean enabled) {
@@ -70,5 +70,10 @@ public class ListProjectsAction extends AbstractProjectAction<List<Project>> {
 		}
 
 		return Lists.newArrayList(projects);
+	}
+
+	@Override
+	public String getName() {
+		return "list_projects";
 	}
 }

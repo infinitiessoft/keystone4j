@@ -4,4 +4,6 @@ public interface Action<T> {
 
 	T execute();
 
+	String getName();
+
 }

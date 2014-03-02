@@ -7,10 +7,10 @@ import com.infinities.keystone4j.identity.IdentityApi;
 
 public class DeleteGrantByUserProjectAction extends AbstractGrantAction<Role> {
 
-	private String roleid;
-	private String userid;
-	private String projectid;
-	private boolean inherited;
+	private final String roleid;
+	private final String userid;
+	private final String projectid;
+	private final boolean inherited;
 
 
 	public DeleteGrantByUserProjectAction(AssignmentApi assignmentApi, IdentityApi identityApi, String roleid,
@@ -28,5 +28,10 @@ public class DeleteGrantByUserProjectAction extends AbstractGrantAction<Role> {
 		KeystonePreconditions.requireProject(projectid);
 		assignmentApi.deleteGrantByUserProject(roleid, userid, projectid, inherited);
 		return null;
+	}
+
+	@Override
+	public String getName() {
+		return "revoke_grant";
 	}
 }

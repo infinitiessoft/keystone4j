@@ -57,4 +57,9 @@ public class ChangePasswordAction extends AbstractUserAction<User> {
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
+
+	@Override
+	public String getName() {
+		return "change_password";
+	}
 }

@@ -5,7 +5,7 @@ import com.infinities.keystone4j.catalog.model.Endpoint;
 
 public class DeleteEndpointAction extends AbstractEndpointAction<Endpoint> {
 
-	private String endpointid;
+	private final String endpointid;
 
 
 	public DeleteEndpointAction(CatalogApi catalogApi, String endpointid) {
@@ -18,4 +18,8 @@ public class DeleteEndpointAction extends AbstractEndpointAction<Endpoint> {
 		return this.getCatalogApi().deleteEndpoint(endpointid);
 	}
 
+	@Override
+	public String getName() {
+		return "delete_endpoint";
+	}
 }

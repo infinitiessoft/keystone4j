@@ -6,8 +6,8 @@ import com.infinities.keystone4j.assignment.model.Project;
 
 public class UpdateProjectAction extends AbstractProjectAction<Project> {
 
-	private String projectid;
-	private Project project;
+	private final String projectid;
+	private final Project project;
 
 
 	public UpdateProjectAction(AssignmentApi assignmentApi, String projectid, Project project) {
@@ -22,4 +22,8 @@ public class UpdateProjectAction extends AbstractProjectAction<Project> {
 		return this.getAssignmentApi().updateProject(projectid, project);
 	}
 
+	@Override
+	public String getName() {
+		return "update_project";
+	}
 }

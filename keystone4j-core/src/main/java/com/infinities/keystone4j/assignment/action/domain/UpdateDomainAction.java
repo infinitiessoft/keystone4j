@@ -20,4 +20,9 @@ public class UpdateDomainAction extends AbstractDomainAction<Domain> {
 		return this.getAssignmentApi().updateDomain(domainid, domain);
 	}
 
+	@Override
+	public String getName() {
+		return "update_domain";
+	}
+
 }

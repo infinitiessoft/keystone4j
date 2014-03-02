@@ -25,4 +25,9 @@ public class CheckEndpointToProjectAction extends AbstractEndpointFilterAction<E
 		this.getEndpointFilterApi().checkEndpointInProject(endpointid, projectid);
 		return null;
 	}
+
+	@Override
+	public String getName() {
+		return "check_endpoint_in_project";
+	}
 }

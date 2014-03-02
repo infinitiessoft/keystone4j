@@ -5,7 +5,7 @@ import com.infinities.keystone4j.catalog.model.Endpoint;
 
 public class GetEndpointAction extends AbstractEndpointAction<Endpoint> {
 
-	private String endpointid;
+	private final String endpointid;
 
 
 	public GetEndpointAction(CatalogApi catalogApi, String endpointid) {
@@ -16,5 +16,10 @@ public class GetEndpointAction extends AbstractEndpointAction<Endpoint> {
 	@Override
 	public Endpoint execute() {
 		return this.getCatalogApi().getEndpoint(endpointid);
+	}
+
+	@Override
+	public String getName() {
+		return "get_endpoint";
 	}
 }

@@ -42,4 +42,9 @@ public class GetRevocationListAction extends AbstractTokenAction<SignedWrapper> 
 		return new SignedWrapper(signedText);
 	}
 
+	@Override
+	public String getName() {
+		return "revocation_list";
+	}
+
 }

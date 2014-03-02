@@ -4,7 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.token.model.TokenData;
+import com.infinities.keystone4j.token.model.TokenDataWrapper;
 import com.infinities.keystone4j.trust.model.TrustRole;
 
 public class Authorization {
@@ -13,24 +14,25 @@ public class Authorization {
 	private final static Logger logger = LoggerFactory.getLogger(Authorization.class);
 
 
-	public static AuthContext tokenToAuthContext(Token token) {
+	public static AuthContext tokenToAuthContext(TokenDataWrapper token) {
 		return v3TokenToAuthContext(token);
 	}
 
-	private static AuthContext v3TokenToAuthContext(Token token) {
+	private static AuthContext v3TokenToAuthContext(TokenDataWrapper token) {
+		TokenData tokenData = token.getToken();
 		AuthContext context = new AuthContext();
-		context.setUserid(token.getUser().getId());
-		if (token.getTrust().getProject() != null) {
-			context.setProjectid(token.getTrust().getProject().getId());
+		context.setUserid(tokenData.getUser().getId());
+		if (tokenData.getProject() != null) {
+			context.setProjectid(tokenData.getProject().getId());
 		} else {
 			logger.debug("RBAC: Procedding without project");
 		}
 
-		if (token.getUser().getDomain() != null) {
-			context.setDomainid(token.getUser().getDomain().getId());
+		if (tokenData.getDomain() != null) {
+			context.setDomainid(tokenData.getUser().getDomain().getId());
 		}
-		if (!token.getTrust().getTrustRoles().isEmpty()) {
-			for (TrustRole trustRole : token.getTrust().getTrustRoles()) {
+		if (!tokenData.getTrust().getTrustRoles().isEmpty()) {
+			for (TrustRole trustRole : tokenData.getTrust().getTrustRoles()) {
 				context.getRoles().add(trustRole.getRole());
 			}
 		}

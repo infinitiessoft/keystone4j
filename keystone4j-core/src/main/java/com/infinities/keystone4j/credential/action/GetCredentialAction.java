@@ -5,7 +5,7 @@ import com.infinities.keystone4j.credential.model.Credential;
 
 public class GetCredentialAction extends AbstractCredentialAction<Credential> {
 
-	private String credentialid;
+	private final String credentialid;
 
 
 	public GetCredentialAction(CredentialApi credentialApi, String credentialid) {
@@ -16,5 +16,10 @@ public class GetCredentialAction extends AbstractCredentialAction<Credential> {
 	@Override
 	public Credential execute() {
 		return this.getCredentialApi().getCredential(credentialid);
+	}
+
+	@Override
+	public String getName() {
+		return "get_credential";
 	}
 }

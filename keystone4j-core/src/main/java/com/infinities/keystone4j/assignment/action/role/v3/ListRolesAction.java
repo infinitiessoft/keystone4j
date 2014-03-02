@@ -12,7 +12,7 @@ import com.infinities.keystone4j.assignment.model.Role;
 
 public class ListRolesAction extends AbstractRoleAction<List<Role>> {
 
-	private String name;
+	private final String name;
 
 
 	public ListRolesAction(AssignmentApi assignmentApi, String name) {
@@ -44,5 +44,10 @@ public class ListRolesAction extends AbstractRoleAction<List<Role>> {
 		}
 
 		return Lists.newArrayList(roles);
+	}
+
+	@Override
+	public String getName() {
+		return "list_roles";
 	}
 }

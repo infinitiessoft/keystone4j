@@ -20,4 +20,9 @@ public class UpdateCredentialAction extends AbstractCredentialAction<Credential>
 		return this.getCredentialApi().updateCredential(credentialid, credential);
 	}
 
+	@Override
+	public String getName() {
+		return "update_credential";
+	}
+
 }

@@ -5,7 +5,7 @@ import com.infinities.keystone4j.assignment.model.Project;
 
 public class GetProjectAction extends AbstractProjectAction<Project> {
 
-	private String projectid;
+	private final String projectid;
 
 
 	public GetProjectAction(AssignmentApi assignmentApi, String projectid) {
@@ -16,5 +16,10 @@ public class GetProjectAction extends AbstractProjectAction<Project> {
 	@Override
 	public Project execute() {
 		return this.getAssignmentApi().getProject(projectid);
+	}
+
+	@Override
+	public String getName() {
+		return "get_project";
 	}
 }

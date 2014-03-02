@@ -11,7 +11,7 @@ import com.infinities.keystone4j.identity.model.User;
 
 public class GetUserAction extends AbstractUserAction<User> {
 
-	private String userid;
+	private final String userid;
 	private HttpServletRequest request;
 
 
@@ -30,5 +30,10 @@ public class GetUserAction extends AbstractUserAction<User> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "get_user";
 	}
 }

@@ -23,4 +23,9 @@ public class RemoveEndpointToProjectAction extends AbstractEndpointFilterAction<
 		this.getEndpointFilterApi().removeEndpointFromProject(endpointid, projectid);
 		return null;
 	}
+
+	@Override
+	public String getName() {
+		return "remove_endpoint_from_project";
+	}
 }

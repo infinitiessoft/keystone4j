@@ -32,4 +32,9 @@ public class CreateGrantByUserProjectAction extends AbstractGrantAction<Role> {
 
 		return null;
 	}
+
+	@Override
+	public String getName() {
+		return "create_grant";
+	}
 }

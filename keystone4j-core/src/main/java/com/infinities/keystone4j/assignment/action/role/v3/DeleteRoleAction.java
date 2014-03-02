@@ -5,7 +5,7 @@ import com.infinities.keystone4j.assignment.model.Role;
 
 public class DeleteRoleAction extends AbstractRoleAction<Role> {
 
-	private String roleid;
+	private final String roleid;
 
 
 	public DeleteRoleAction(AssignmentApi assignmentApi, String roleid) {
@@ -18,4 +18,8 @@ public class DeleteRoleAction extends AbstractRoleAction<Role> {
 		return this.getAssignmentApi().deleteRole(roleid);
 	}
 
+	@Override
+	public String getName() {
+		return "delete_role";
+	}
 }

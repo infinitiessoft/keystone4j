@@ -5,7 +5,7 @@ import com.infinities.keystone4j.policy.model.Policy;
 
 public class DeletePolicyAction extends AbstractPolicyAction<Policy> {
 
-	private String policyid;
+	private final String policyid;
 
 
 	public DeletePolicyAction(PolicyApi policyApi, String policyid) {
@@ -16,6 +16,11 @@ public class DeletePolicyAction extends AbstractPolicyAction<Policy> {
 	@Override
 	public Policy execute() {
 		return this.getPolicyApi().deletePolicy(policyid);
+	}
+
+	@Override
+	public String getName() {
+		return "delete_polic";
 	}
 
 }

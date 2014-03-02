@@ -23,4 +23,9 @@ public class ListEndpointsForProjectAction extends AbstractEndpointFilterAction<
 		this.getAssignmentApi().getProject(projectid);
 		return this.getEndpointFilterApi().listEndpointsForProject(projectid);
 	}
+
+	@Override
+	public String getName() {
+		return "list_endpoints_for_project";
+	}
 }

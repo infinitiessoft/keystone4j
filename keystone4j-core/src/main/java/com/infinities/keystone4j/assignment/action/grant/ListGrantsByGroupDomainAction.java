@@ -9,9 +9,9 @@ import com.infinities.keystone4j.identity.IdentityApi;
 
 public class ListGrantsByGroupDomainAction extends AbstractGrantAction<List<Role>> {
 
-	private String groupid;
-	private String domainid;
-	private boolean inherited;
+	private final String groupid;
+	private final String domainid;
+	private final boolean inherited;
 
 
 	public ListGrantsByGroupDomainAction(AssignmentApi assignmentApi, IdentityApi identityApi, String groupid,
@@ -27,5 +27,10 @@ public class ListGrantsByGroupDomainAction extends AbstractGrantAction<List<Role
 		KeystonePreconditions.requireGroup(groupid);
 		KeystonePreconditions.requireDomain(domainid);
 		return assignmentApi.listGrantsByGroupDomain(groupid, domainid, inherited);
+	}
+
+	@Override
+	public String getName() {
+		return "list_grants";
 	}
 }

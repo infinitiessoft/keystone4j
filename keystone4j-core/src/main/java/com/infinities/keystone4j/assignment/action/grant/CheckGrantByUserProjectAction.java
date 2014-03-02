@@ -7,10 +7,10 @@ import com.infinities.keystone4j.identity.IdentityApi;
 
 public class CheckGrantByUserProjectAction extends AbstractGrantAction<Role> {
 
-	private String roleid;
-	private String userid;
-	private String projectid;
-	private boolean inherited;
+	private final String roleid;
+	private final String userid;
+	private final String projectid;
+	private final boolean inherited;
 
 
 	public CheckGrantByUserProjectAction(AssignmentApi assignmentApi, IdentityApi identityApi, String roleid, String userid,
@@ -33,5 +33,10 @@ public class CheckGrantByUserProjectAction extends AbstractGrantAction<Role> {
 		assignmentApi.getGrantByUserProject(roleid, userid, projectid, inherited);
 
 		return null;
+	}
+
+	@Override
+	public String getName() {
+		return "check_grant";
 	}
 }

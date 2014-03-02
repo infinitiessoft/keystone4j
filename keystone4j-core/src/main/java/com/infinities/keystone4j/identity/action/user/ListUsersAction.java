@@ -18,10 +18,10 @@ import com.infinities.keystone4j.identity.model.User;
 
 public class ListUsersAction extends AbstractUserAction<List<User>> {
 
-	private String domainid;
-	private String email;
-	private Boolean enabled;
-	private String name;
+	private final String domainid;
+	private final String email;
+	private final Boolean enabled;
+	private final String name;
 	private HttpServletRequest request;
 
 
@@ -97,5 +97,10 @@ public class ListUsersAction extends AbstractUserAction<List<User>> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "list_users";
 	}
 }

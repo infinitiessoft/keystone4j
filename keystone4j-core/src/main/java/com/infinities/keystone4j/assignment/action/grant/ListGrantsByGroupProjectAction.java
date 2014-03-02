@@ -9,9 +9,9 @@ import com.infinities.keystone4j.identity.IdentityApi;
 
 public class ListGrantsByGroupProjectAction extends AbstractGrantAction<List<Role>> {
 
-	private String groupid;
-	private String projectid;
-	private boolean inherited;
+	private final String groupid;
+	private final String projectid;
+	private final boolean inherited;
 
 
 	public ListGrantsByGroupProjectAction(AssignmentApi assignmentApi, IdentityApi identityApi, String groupid,
@@ -27,5 +27,10 @@ public class ListGrantsByGroupProjectAction extends AbstractGrantAction<List<Rol
 		KeystonePreconditions.requireGroup(groupid);
 		KeystonePreconditions.requireProject(projectid);
 		return assignmentApi.listGrantsByGroupProject(groupid, projectid, inherited);
+	}
+
+	@Override
+	public String getName() {
+		return "list_grants";
 	}
 }

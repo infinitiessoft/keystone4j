@@ -20,4 +20,8 @@ public class UpdateServiceAction extends AbstractServiceAction<Service> {
 		return this.getCatalogApi().updateService(serviceid, service);
 	}
 
+	@Override
+	public String getName() {
+		return "update_service";
+	}
 }

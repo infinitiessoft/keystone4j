@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.Environment;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.token.model.Bind;
 
@@ -27,13 +26,12 @@ public class AuthContext {
 	@XmlElement(name = "extra")
 	private String extra;
 
-	// private boolean isAdmin = false;
-
 	private Bind bind;
 	private String domainid;
 	private Set<Role> roles = new HashSet<Role>(0);
-	private Environment environment;
 
+
+	// private Environment environment;
 
 	public String getDomainid() {
 		return domainid;
@@ -111,20 +109,12 @@ public class AuthContext {
 		this.extra = extra;
 	}
 
-	// public boolean isAdmin() {
-	// return isAdmin;
+	// public Environment getEnvironment() {
+	// return environment;
 	// }
 	//
-	// public void setAdmin(boolean isAdmin) {
-	// this.isAdmin = isAdmin;
+	// public void setEnvironment(Environment environment) {
+	// this.environment = environment;
 	// }
-
-	public Environment getEnvironment() {
-		return environment;
-	}
-
-	public void setEnvironment(Environment environment) {
-		this.environment = environment;
-	}
 
 }

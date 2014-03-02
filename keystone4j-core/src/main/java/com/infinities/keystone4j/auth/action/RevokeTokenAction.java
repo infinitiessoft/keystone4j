@@ -35,4 +35,9 @@ public class RevokeTokenAction extends AbstractTokenAction<TokenMetadata> {
 		this.request = request;
 	}
 
+	@Override
+	public String getName() {
+		return "revoke_token";
+	}
+
 }

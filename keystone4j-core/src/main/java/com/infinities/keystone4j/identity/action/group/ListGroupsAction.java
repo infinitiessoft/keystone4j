@@ -18,8 +18,8 @@ import com.infinities.keystone4j.identity.model.Group;
 
 public class ListGroupsAction extends AbstractGroupAction<List<Group>> {
 
-	private String domainid;
-	private String name;
+	private final String domainid;
+	private final String name;
 	private HttpServletRequest request;
 
 
@@ -71,5 +71,10 @@ public class ListGroupsAction extends AbstractGroupAction<List<Group>> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "list_groups";
 	}
 }

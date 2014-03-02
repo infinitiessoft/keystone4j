@@ -5,7 +5,7 @@ import com.infinities.keystone4j.assignment.model.Project;
 
 public class DeleteProjectAction extends AbstractProjectAction<Project> {
 
-	private String projectid;
+	private final String projectid;
 
 
 	public DeleteProjectAction(AssignmentApi assignmentApi, String projectid) {
@@ -16,6 +16,11 @@ public class DeleteProjectAction extends AbstractProjectAction<Project> {
 	@Override
 	public Project execute() {
 		return this.getAssignmentApi().deleteProject(projectid);
+	}
+
+	@Override
+	public String getName() {
+		return "delete_project";
 	}
 
 }

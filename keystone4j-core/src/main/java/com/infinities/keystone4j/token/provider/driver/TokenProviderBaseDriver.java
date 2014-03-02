@@ -16,7 +16,6 @@ import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.token.model.TokenDataWrapper;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 import com.infinities.keystone4j.trust.model.Trust;
-import com.infinities.keystone4j.trust.model.TrustRole;
 
 public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 
@@ -51,14 +50,13 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 		List<Role> roles = Lists.newArrayList();
 		if (tokenData.getToken().getProject() != null) {
 			roles.addAll(tokenData.getToken().getRoles());
-			for (Role role : roles) {
-				token.getTrust().getTrustRoles().add(new TrustRole(token.getTrust(), role));
-			}
 		}
 		if (trust != null) {
 			token.setTrust(trust);
 		}
 		token.setUser(tokenData.getToken().getUser());
+		token.setTokenData(tokenData);
+
 		token = this.tokenApi.createToken(token);
 
 		return new TokenMetadata(tokenid, tokenData);

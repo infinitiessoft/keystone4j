@@ -60,4 +60,9 @@ public class ListUserProjectsAction extends AbstractProjectAction<List<Project>>
 
 		return Lists.newArrayList(projects);
 	}
+
+	@Override
+	public String getName() {
+		return "list_user_projects";
+	}
 }

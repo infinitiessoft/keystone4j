@@ -41,4 +41,9 @@ public class ValidateTokenAction extends AbstractTokenAction<TokenMetadata> {
 		this.request = request;
 	}
 
+	@Override
+	public String getName() {
+		return "validate_token";
+	}
+
 }

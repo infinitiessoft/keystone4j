@@ -25,4 +25,9 @@ public class AddEndpointToProjectAction extends AbstractEndpointFilterAction<End
 		this.getEndpointFilterApi().addEndpointToProject(endpointid, projectid);
 		return null;
 	}
+
+	@Override
+	public String getName() {
+		return "add_endpoint_to_project";
+	}
 }

@@ -5,7 +5,7 @@ import com.infinities.keystone4j.catalog.model.Service;
 
 public class GetServiceAction extends AbstractServiceAction<Service> {
 
-	private String serviceid;
+	private final String serviceid;
 
 
 	public GetServiceAction(CatalogApi catalogApi, String serviceid) {
@@ -16,5 +16,10 @@ public class GetServiceAction extends AbstractServiceAction<Service> {
 	@Override
 	public Service execute() {
 		return this.getCatalogApi().getService(serviceid);
+	}
+
+	@Override
+	public String getName() {
+		return "get_service";
 	}
 }

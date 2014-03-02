@@ -33,4 +33,9 @@ public class CheckTokenAction extends AbstractTokenAction<TokenMetadata> {
 		this.request = request;
 	}
 
+	@Override
+	public String getName() {
+		return "check_token";
+	}
+
 }

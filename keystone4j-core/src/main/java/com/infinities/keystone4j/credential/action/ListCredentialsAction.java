@@ -15,4 +15,9 @@ public class ListCredentialsAction extends AbstractCredentialAction<List<Credent
 	public List<Credential> execute() {
 		return getCredentialApi().listCredentials();
 	}
+
+	@Override
+	public String getName() {
+		return "list_credentials";
+	}
 }

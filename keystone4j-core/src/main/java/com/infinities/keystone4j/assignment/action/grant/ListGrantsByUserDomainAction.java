@@ -9,9 +9,9 @@ import com.infinities.keystone4j.identity.IdentityApi;
 
 public class ListGrantsByUserDomainAction extends AbstractGrantAction<List<Role>> {
 
-	private String userid;
-	private String domainid;
-	private boolean inherited;
+	private final String userid;
+	private final String domainid;
+	private final boolean inherited;
 
 
 	public ListGrantsByUserDomainAction(AssignmentApi assignmentApi, IdentityApi identityApi, String userid,
@@ -27,5 +27,10 @@ public class ListGrantsByUserDomainAction extends AbstractGrantAction<List<Role>
 		KeystonePreconditions.requireUser(userid);
 		KeystonePreconditions.requireDomain(domainid);
 		return assignmentApi.listGrantsByUserDomain(userid, domainid, inherited);
+	}
+
+	@Override
+	public String getName() {
+		return "list_grants";
 	}
 }

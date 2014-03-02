@@ -11,8 +11,8 @@ import com.infinities.keystone4j.identity.model.User;
 
 public class AddUserToGroupAction extends AbstractUserAction<User> {
 
-	private String userid;
-	private String groupid;
+	private final String userid;
+	private final String groupid;
 	private HttpServletRequest request;
 
 
@@ -32,6 +32,11 @@ public class AddUserToGroupAction extends AbstractUserAction<User> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "add_user_to_group";
 	}
 
 }

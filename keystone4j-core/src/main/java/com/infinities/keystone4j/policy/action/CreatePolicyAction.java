@@ -5,7 +5,7 @@ import com.infinities.keystone4j.policy.model.Policy;
 
 public class CreatePolicyAction extends AbstractPolicyAction<Policy> {
 
-	private Policy policy;
+	private final Policy policy;
 
 
 	public CreatePolicyAction(PolicyApi policyApi, Policy policy) {
@@ -17,5 +17,10 @@ public class CreatePolicyAction extends AbstractPolicyAction<Policy> {
 	public Policy execute() {
 		Policy ret = policyApi.createPolicy(policy);
 		return ret;
+	}
+
+	@Override
+	public String getName() {
+		return "create_policy";
 	}
 }

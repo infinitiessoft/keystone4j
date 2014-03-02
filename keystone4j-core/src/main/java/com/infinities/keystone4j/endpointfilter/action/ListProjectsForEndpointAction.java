@@ -22,4 +22,9 @@ public class ListProjectsForEndpointAction extends AbstractEndpointFilterAction<
 	public List<Project> execute() {
 		return this.getEndpointFilterApi().listProjectsForEndpoint(endpointid);
 	}
+
+	@Override
+	public String getName() {
+		return "list_projects_for_endpoint";
+	}
 }

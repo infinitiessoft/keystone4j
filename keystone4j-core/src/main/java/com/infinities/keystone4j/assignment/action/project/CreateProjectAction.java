@@ -11,7 +11,7 @@ import com.infinities.keystone4j.assignment.model.Project;
 
 public class CreateProjectAction extends AbstractProjectAction<Project> {
 
-	private Project project;
+	private final Project project;
 	private HttpServletRequest request;
 
 
@@ -32,5 +32,10 @@ public class CreateProjectAction extends AbstractProjectAction<Project> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "create_project";
 	}
 }

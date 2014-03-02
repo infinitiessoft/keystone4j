@@ -12,7 +12,7 @@ import com.infinities.keystone4j.policy.model.Policy;
 
 public class ListPoliciesAction extends AbstractPolicyAction<List<Policy>> {
 
-	private String type;
+	private final String type;
 
 
 	public ListPoliciesAction(PolicyApi policyApi, String type) {
@@ -44,5 +44,10 @@ public class ListPoliciesAction extends AbstractPolicyAction<List<Policy>> {
 		}
 
 		return Lists.newArrayList(policies);
+	}
+
+	@Override
+	public String getName() {
+		return "list_policies";
 	}
 }

@@ -5,7 +5,7 @@ import com.infinities.keystone4j.assignment.model.Domain;
 
 public class DeleteDomainAction extends AbstractDomainAction<Domain> {
 
-	private String domainid;
+	private final String domainid;
 
 
 	public DeleteDomainAction(AssignmentApi assignmentApi, String domainid) {
@@ -16,6 +16,11 @@ public class DeleteDomainAction extends AbstractDomainAction<Domain> {
 	@Override
 	public Domain execute() {
 		return this.getAssignmentApi().deleteDomain(domainid);
+	}
+
+	@Override
+	public String getName() {
+		return "delete_domain";
 	}
 
 }

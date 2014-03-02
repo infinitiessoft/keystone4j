@@ -12,8 +12,8 @@ import com.infinities.keystone4j.assignment.model.Domain;
 
 public class ListDomainsAction extends AbstractDomainAction<List<Domain>> {
 
-	private String name;
-	private Boolean enabled;
+	private final String name;
+	private final Boolean enabled;
 
 
 	public ListDomainsAction(AssignmentApi assignmentApi, String name, Boolean enabled) {
@@ -57,5 +57,10 @@ public class ListDomainsAction extends AbstractDomainAction<List<Domain>> {
 		}
 
 		return Lists.newArrayList(domains);
+	}
+
+	@Override
+	public String getName() {
+		return "list_domains";
 	}
 }

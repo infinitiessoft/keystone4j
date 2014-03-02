@@ -11,8 +11,8 @@ import com.infinities.keystone4j.identity.model.User;
 
 public class RemoveUserFromGroupAction extends AbstractUserAction<User> {
 
-	private String userid;
-	private String groupid;
+	private final String userid;
+	private final String groupid;
 	private HttpServletRequest request;
 
 
@@ -34,4 +34,8 @@ public class RemoveUserFromGroupAction extends AbstractUserAction<User> {
 		this.request = request;
 	}
 
+	@Override
+	public String getName() {
+		return "remove_user_from_group";
+	}
 }

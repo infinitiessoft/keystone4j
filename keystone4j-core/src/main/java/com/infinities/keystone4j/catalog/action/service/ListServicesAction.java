@@ -12,7 +12,7 @@ import com.infinities.keystone4j.catalog.model.Service;
 
 public class ListServicesAction extends AbstractServiceAction<List<Service>> {
 
-	private String type;
+	private final String type;
 
 
 	public ListServicesAction(CatalogApi catalogApi, String type) {
@@ -43,5 +43,10 @@ public class ListServicesAction extends AbstractServiceAction<List<Service>> {
 		}
 
 		return Lists.newArrayList(services);
+	}
+
+	@Override
+	public String getName() {
+		return "list_services";
 	}
 }

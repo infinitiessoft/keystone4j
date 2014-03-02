@@ -34,4 +34,9 @@ public class UpdateGroupAction extends AbstractGroupAction<Group> {
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
+
+	@Override
+	public String getName() {
+		return "update_group";
+	}
 }

@@ -11,7 +11,7 @@ import com.infinities.keystone4j.identity.model.User;
 
 public class DeleteUserAction extends AbstractUserAction<User> {
 
-	private String userid;
+	private final String userid;
 	private HttpServletRequest request;
 
 
@@ -30,6 +30,11 @@ public class DeleteUserAction extends AbstractUserAction<User> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "delete_user";
 	}
 
 }

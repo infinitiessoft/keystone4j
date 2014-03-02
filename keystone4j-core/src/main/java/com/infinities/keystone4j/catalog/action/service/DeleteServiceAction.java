@@ -5,7 +5,7 @@ import com.infinities.keystone4j.catalog.model.Service;
 
 public class DeleteServiceAction extends AbstractServiceAction<Service> {
 
-	private String serviceid;
+	private final String serviceid;
 
 
 	public DeleteServiceAction(CatalogApi catalogApi, String serviceid) {
@@ -18,4 +18,8 @@ public class DeleteServiceAction extends AbstractServiceAction<Service> {
 		return this.getCatalogApi().deleteService(serviceid);
 	}
 
+	@Override
+	public String getName() {
+		return "delete_service";
+	}
 }

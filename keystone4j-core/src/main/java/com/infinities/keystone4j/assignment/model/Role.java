@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.infinities.keystone4j.BaseEntity;
+import com.infinities.keystone4j.token.model.TokenRole;
 import com.infinities.keystone4j.trust.model.TrustRole;
 
 @Entity
@@ -27,6 +28,7 @@ public class Role extends BaseEntity implements java.io.Serializable {
 	private String name;
 	private String extra;
 	private Set<TrustRole> trustRoles = new HashSet<TrustRole>(0);
+	private Set<TokenRole> tokenRoles = new HashSet<TokenRole>(0);
 	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
 	private Set<GroupProjectGrantMetadata> groupProjectMetadatas = new HashSet<GroupProjectGrantMetadata>(0);
 	private Set<GroupDomainGrantMetadata> groupDomainMetadatas = new HashSet<GroupDomainGrantMetadata>(0);
@@ -138,6 +140,15 @@ public class Role extends BaseEntity implements java.io.Serializable {
 
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
+	public Set<TokenRole> getTokenRoles() {
+		return tokenRoles;
+	}
+
+	public void setTokenRoles(Set<TokenRole> tokenRoles) {
+		this.tokenRoles = tokenRoles;
 	}
 
 }

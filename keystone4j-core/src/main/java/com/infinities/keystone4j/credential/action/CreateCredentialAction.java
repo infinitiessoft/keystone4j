@@ -24,4 +24,9 @@ public class CreateCredentialAction extends AbstractCredentialAction<Credential>
 		// TODO not implemented yet
 		return ref;
 	}
+
+	@Override
+	public String getName() {
+		return "create_credential";
+	}
 }

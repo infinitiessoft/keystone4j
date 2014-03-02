@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.token.model.Token;
 
 @Entity
 @Table(name = "DOMAIN", schema = "PUBLIC", catalog = "PUBLIC")
@@ -32,6 +33,7 @@ public class Domain extends BaseEntity implements java.io.Serializable {
 	private Set<Project> projects = new HashSet<Project>(0);
 	private Set<Group> groups = new HashSet<Group>(0);
 	private Set<User> users = new HashSet<User>(0);
+	private Set<Token> tokens = new HashSet<Token>(0);
 	private Set<UserDomainGrant> userDomainGrants = new HashSet<UserDomainGrant>(0);
 	private Set<GroupDomainGrant> groupDomainGrants = new HashSet<GroupDomainGrant>(0);
 	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
@@ -114,6 +116,15 @@ public class Domain extends BaseEntity implements java.io.Serializable {
 
 	public void setUsers(Set<User> users) {
 		this.users = users;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "domain", cascade = CascadeType.ALL)
+	public Set<Token> getTokens() {
+		return tokens;
+	}
+
+	public void setTokens(Set<Token> tokens) {
+		this.tokens = tokens;
 	}
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "domain", cascade =

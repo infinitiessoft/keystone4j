@@ -11,7 +11,7 @@ import com.infinities.keystone4j.identity.model.User;
 
 public class CreateUserAction extends AbstractUserAction<User> {
 
-	private User user;
+	private final User user;
 	private HttpServletRequest request;
 
 
@@ -32,5 +32,10 @@ public class CreateUserAction extends AbstractUserAction<User> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "create_user";
 	}
 }

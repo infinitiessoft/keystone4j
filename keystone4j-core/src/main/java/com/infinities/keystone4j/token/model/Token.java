@@ -1,7 +1,10 @@
 package com.infinities.keystone4j.token.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,11 +12,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
+import javax.xml.bind.annotation.XmlTransient;
 
+import com.infinities.keystone4j.assignment.model.Domain;
+import com.infinities.keystone4j.assignment.model.Project;
+import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.trust.model.Trust;
 
@@ -26,13 +34,17 @@ public class Token implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 899631282574098673L;
 	private Date expires = new Date();
+	private Date issueAt = new Date();
 	private String extra;
 	private Boolean valid = true;
 	private User user;
+	private Project project;
+	private Domain domain;
 	private Trust trust;
 	private Bind bind;
 	private String id;
 	private int version;
+	private Set<TokenRole> tokenRoles = new HashSet<TokenRole>(0);
 
 
 	@Version
@@ -67,6 +79,16 @@ public class Token implements java.io.Serializable {
 		this.expires = expires;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "ISSUEAT")
+	public Date getIssueAt() {
+		return issueAt;
+	}
+
+	public void setIssueAt(Date issueAt) {
+		this.issueAt = issueAt;
+	}
+
 	@Lob
 	@Column(name = "EXTRA", nullable = false)
 	public String getExtra() {
@@ -97,6 +119,26 @@ public class Token implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PROJECTID", nullable = true)
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "DOMAINID", nullable = true)
+	public Domain getDomain() {
+		return domain;
+	}
+
+	public void setDomain(Domain domain) {
+		this.domain = domain;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TRUSTID", nullable = false)
 	public Trust getTrust() {
 		return trust;
@@ -112,5 +154,46 @@ public class Token implements java.io.Serializable {
 
 	public void setBind(Bind bind) {
 		this.bind = bind;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "token", cascade = CascadeType.ALL)
+	public Set<TokenRole> getTokenRoles() {
+		return tokenRoles;
+	}
+
+	public void setTokenRoles(Set<TokenRole> tokenRoles) {
+		this.tokenRoles = tokenRoles;
+	}
+
+	@XmlTransient
+	public TokenDataWrapper getTokenData() {
+		TokenData tokenData = new TokenData();
+		tokenData.setBind(getBind());
+		tokenData.setUser(getUser());
+		tokenData.setProject(getProject());
+		tokenData.setTrust(getTrust());
+		tokenData.setExpireAt(getExpires());
+		tokenData.setIssuedAt(getIssueAt());
+		tokenData.setDomain(getDomain());
+
+		for (TokenRole tokenRole : getTokenRoles()) {
+			tokenData.getRoles().add(tokenRole.getRole());
+		}
+
+		return new TokenDataWrapper(tokenData);
+	}
+
+	public void setTokenData(TokenDataWrapper tokenData) {
+		setBind(tokenData.getToken().getBind());
+		setUser(tokenData.getToken().getUser());
+		setProject(tokenData.getToken().getProject());
+		setTrust(tokenData.getToken().getTrust());
+		setExpires(tokenData.getToken().getExpireAt());
+		setIssueAt(tokenData.getToken().getIssuedAt());
+		setDomain(tokenData.getToken().getDomain());
+
+		for (Role role : tokenData.getToken().getRoles()) {
+			this.getTokenRoles().add(new TokenRole(this, role));
+		}
 	}
 }

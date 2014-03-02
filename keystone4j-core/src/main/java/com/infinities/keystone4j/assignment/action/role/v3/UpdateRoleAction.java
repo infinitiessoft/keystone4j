@@ -20,4 +20,8 @@ public class UpdateRoleAction extends AbstractRoleAction<Role> {
 		return this.getAssignmentApi().updateRole(roleid, role);
 	}
 
+	@Override
+	public String getName() {
+		return "update_role";
+	}
 }

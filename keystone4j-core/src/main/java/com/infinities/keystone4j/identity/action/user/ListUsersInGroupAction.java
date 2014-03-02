@@ -18,11 +18,11 @@ import com.infinities.keystone4j.identity.model.User;
 
 public class ListUsersInGroupAction extends AbstractUserAction<List<User>> {
 
-	private String groupid;
-	private String domainid;
-	private String email;
-	private Boolean enabled;
-	private String name;
+	private final String groupid;
+	private final String domainid;
+	private final String email;
+	private final Boolean enabled;
+	private final String name;
 	private HttpServletRequest request;
 
 
@@ -99,5 +99,10 @@ public class ListUsersInGroupAction extends AbstractUserAction<List<User>> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "list_users_in_group";
 	}
 }

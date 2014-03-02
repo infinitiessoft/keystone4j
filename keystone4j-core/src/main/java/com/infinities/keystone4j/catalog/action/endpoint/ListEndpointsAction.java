@@ -12,8 +12,8 @@ import com.infinities.keystone4j.catalog.model.Endpoint;
 
 public class ListEndpointsAction extends AbstractEndpointAction<List<Endpoint>> {
 
-	private String interfaceType;
-	private String serviceid;
+	private final String interfaceType;
+	private final String serviceid;
 
 
 	public ListEndpointsAction(CatalogApi catalogApi, String interfaceType, String serviceid) {
@@ -57,5 +57,10 @@ public class ListEndpointsAction extends AbstractEndpointAction<List<Endpoint>> 
 		}
 
 		return Lists.newArrayList(endpoints);
+	}
+
+	@Override
+	public String getName() {
+		return "list_endpoints";
 	}
 }

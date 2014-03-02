@@ -7,10 +7,10 @@ import com.infinities.keystone4j.identity.IdentityApi;
 
 public class CheckGrantByGroupDomainAction extends AbstractGrantAction<Role> {
 
-	private String roleid;
-	private String groupid;
-	private String domainid;
-	private boolean inherited;
+	private final String roleid;
+	private final String groupid;
+	private final String domainid;
+	private final boolean inherited;
 
 
 	public CheckGrantByGroupDomainAction(AssignmentApi assignmentApi, IdentityApi identityApi, String roleid,
@@ -33,5 +33,10 @@ public class CheckGrantByGroupDomainAction extends AbstractGrantAction<Role> {
 		assignmentApi.getGrantByGroupDomain(roleid, groupid, domainid, inherited);
 
 		return null;
+	}
+
+	@Override
+	public String getName() {
+		return "check_grant";
 	}
 }

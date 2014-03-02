@@ -5,7 +5,7 @@ import com.infinities.keystone4j.assignment.model.Role;
 
 public class CreateRoleAction extends AbstractRoleAction<Role> {
 
-	private Role role;
+	private final Role role;
 
 
 	public CreateRoleAction(AssignmentApi assignmentApi, Role role) {
@@ -17,5 +17,10 @@ public class CreateRoleAction extends AbstractRoleAction<Role> {
 	public Role execute() {
 		Role ret = assignmentApi.createRole(role);
 		return ret;
+	}
+
+	@Override
+	public String getName() {
+		return "create_role";
 	}
 }

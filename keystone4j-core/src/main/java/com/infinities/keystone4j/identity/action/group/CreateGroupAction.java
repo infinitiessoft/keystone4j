@@ -11,7 +11,7 @@ import com.infinities.keystone4j.identity.model.Group;
 
 public class CreateGroupAction extends AbstractGroupAction<Group> {
 
-	private Group group;
+	private final Group group;
 	private HttpServletRequest request;
 
 
@@ -32,5 +32,10 @@ public class CreateGroupAction extends AbstractGroupAction<Group> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "create_group";
 	}
 }

@@ -20,4 +20,8 @@ public class UpdateEndpointAction extends AbstractEndpointAction<Endpoint> {
 		return this.getCatalogApi().updateEndpoint(endpointid, endpoint);
 	}
 
+	@Override
+	public String getName() {
+		return "update_endpoint";
+	}
 }

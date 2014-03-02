@@ -5,7 +5,7 @@ import com.infinities.keystone4j.assignment.model.Domain;
 
 public class CreateDomainAction extends AbstractDomainAction<Domain> {
 
-	private Domain domain;
+	private final Domain domain;
 
 
 	public CreateDomainAction(AssignmentApi assignmentApi, Domain domain) {
@@ -17,5 +17,10 @@ public class CreateDomainAction extends AbstractDomainAction<Domain> {
 	public Domain execute() {
 		Domain ret = assignmentApi.createDomain(domain);
 		return ret;
+	}
+
+	@Override
+	public String getName() {
+		return "create_domain";
 	}
 }

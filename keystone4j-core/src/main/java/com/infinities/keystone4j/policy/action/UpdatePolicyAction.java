@@ -17,4 +17,9 @@ public class UpdatePolicyAction extends AbstractPolicyAction<Policy> {
 	public Policy execute() {
 		return this.getPolicyApi().updatePolicy(policyid, policy);
 	}
+
+	@Override
+	public String getName() {
+		return "update_policy";
+	}
 }
