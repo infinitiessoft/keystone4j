@@ -33,22 +33,30 @@ import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class RoleV3ControllerImpl implements RoleV3Controller {
 
 	private final AssignmentApi assignmentApi;
 	private final IdentityApi identityApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 	private static final boolean INHERITED = false;
 
 
-	public RoleV3ControllerImpl(AssignmentApi assignmentApi, IdentityApi identityApi) {
+	public RoleV3ControllerImpl(AssignmentApi assignmentApi, IdentityApi identityApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
 		this.identityApi = identityApi;
+		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
+
 	}
 
 	@Override
 	public RoleWrapper createRole(Role role) {
-		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateRoleAction(assignmentApi, role));
+		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateRoleAction(assignmentApi, role), null, tokenApi,
+				policyApi);
 		Role ret = command.execute();
 		return new RoleWrapper(ret);
 	}
@@ -64,35 +72,38 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 
 	@Override
 	public RoleWrapper getRole(String roleid) {
-		Action<Role> command = new PolicyCheckDecorator<Role>(new GetRoleAction(assignmentApi, roleid));
+		Action<Role> command = new PolicyCheckDecorator<Role>(new GetRoleAction(assignmentApi, roleid), null, tokenApi,
+				policyApi);
 		Role ret = command.execute();
 		return new RoleWrapper(ret);
 	}
 
 	@Override
 	public RoleWrapper updateRole(String roleid, Role role) {
-		Action<Role> command = new PolicyCheckDecorator<Role>(new UpdateRoleAction(assignmentApi, roleid, role));
+		Action<Role> command = new PolicyCheckDecorator<Role>(new UpdateRoleAction(assignmentApi, roleid, role), null,
+				tokenApi, policyApi);
 		Role ret = command.execute();
 		return new RoleWrapper(ret);
 	}
 
 	@Override
 	public void deleteRole(String roleid) {
-		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteRoleAction(assignmentApi, roleid));
+		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteRoleAction(assignmentApi, roleid), null, tokenApi,
+				policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void createGrantByUserDomain(String roleid, String userid, String domainid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByUserDomainAction(assignmentApi, identityApi,
-				roleid, userid, domainid, INHERITED));
+				roleid, userid, domainid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void createGrantByGroupDomain(String roleid, String groupid, String domainid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByGroupDomainAction(assignmentApi, identityApi,
-				roleid, groupid, domainid, INHERITED));
+				roleid, groupid, domainid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 
@@ -117,42 +128,42 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 	@Override
 	public void checkGrantByUserDomain(String roleid, String userid, String domainid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByUserDomainAction(assignmentApi, identityApi,
-				roleid, userid, domainid, INHERITED));
+				roleid, userid, domainid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void checkGrantByGroupDomain(String roleid, String groupid, String domainid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByGroupDomainAction(assignmentApi, identityApi,
-				roleid, groupid, domainid, INHERITED));
+				roleid, groupid, domainid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void revokeGrantByUserDomain(String roleid, String userid, String domainid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByUserDomainAction(assignmentApi, identityApi,
-				roleid, userid, domainid, INHERITED));
+				roleid, userid, domainid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void revokeGrantByGroupDomain(String roleid, String groupid, String domainid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByGroupDomainAction(assignmentApi, identityApi,
-				roleid, groupid, domainid, INHERITED));
+				roleid, groupid, domainid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void createGrantByUserProject(String roleid, String userid, String projectid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByUserProjectAction(assignmentApi, identityApi,
-				roleid, userid, projectid));
+				roleid, userid, projectid), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void createGrantByGroupProject(String roleid, String groupid, String projectid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByGroupProjectAction(assignmentApi,
-				identityApi, roleid, groupid, projectid));
+				identityApi, roleid, groupid, projectid), null, tokenApi, policyApi);
 		command.execute();
 	}
 
@@ -178,28 +189,28 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 	@Override
 	public void checkGrantByUserProject(String roleid, String userid, String projectid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByUserProjectAction(assignmentApi, identityApi,
-				roleid, userid, projectid, INHERITED));
+				roleid, userid, projectid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void checkGrantByGroupProject(String roleid, String groupid, String projectid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByGroupProjectAction(assignmentApi, identityApi,
-				roleid, groupid, projectid, INHERITED));
+				roleid, groupid, projectid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void revokeGrantByUserProject(String roleid, String userid, String projectid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByUserProjectAction(assignmentApi, identityApi,
-				roleid, userid, projectid, INHERITED));
+				roleid, userid, projectid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void revokeGrantByGroupProject(String roleid, String groupid, String projectid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByGroupProjectAction(assignmentApi,
-				identityApi, roleid, groupid, projectid, INHERITED));
+				identityApi, roleid, groupid, projectid, INHERITED), null, tokenApi, policyApi);
 		command.execute();
 	}
 

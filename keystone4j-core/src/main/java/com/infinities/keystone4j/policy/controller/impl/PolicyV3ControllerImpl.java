@@ -16,19 +16,23 @@ import com.infinities.keystone4j.policy.controller.PolicyV3Controller;
 import com.infinities.keystone4j.policy.model.PoliciesWrapper;
 import com.infinities.keystone4j.policy.model.Policy;
 import com.infinities.keystone4j.policy.model.PolicyWrapper;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class PolicyV3ControllerImpl implements PolicyV3Controller {
 
-	private PolicyApi policyApi;
+	private final PolicyApi policyApi;
+	private final TokenApi tokenApi;
 
 
-	public PolicyV3ControllerImpl(PolicyApi policyApi) {
+	public PolicyV3ControllerImpl(PolicyApi policyApi, TokenApi tokenApi) {
 		this.policyApi = policyApi;
+		this.tokenApi = tokenApi;
 	}
 
 	@Override
 	public PolicyWrapper createPolicy(Policy policy) {
-		Action<Policy> command = new PolicyCheckDecorator<Policy>(new CreatePolicyAction(policyApi, policy));
+		Action<Policy> command = new PolicyCheckDecorator<Policy>(new CreatePolicyAction(policyApi, policy), null, tokenApi,
+				policyApi);
 		Policy ret = command.execute();
 		return new PolicyWrapper(ret);
 	}
@@ -44,21 +48,24 @@ public class PolicyV3ControllerImpl implements PolicyV3Controller {
 
 	@Override
 	public PolicyWrapper getPolicy(String policyid) {
-		Action<Policy> command = new PolicyCheckDecorator<Policy>(new GetPolicyAction(policyApi, policyid));
+		Action<Policy> command = new PolicyCheckDecorator<Policy>(new GetPolicyAction(policyApi, policyid), null, tokenApi,
+				policyApi);
 		Policy ret = command.execute();
 		return new PolicyWrapper(ret);
 	}
 
 	@Override
 	public PolicyWrapper updatePolicy(String policyid, Policy policy) {
-		Action<Policy> command = new PolicyCheckDecorator<Policy>(new UpdatePolicyAction(policyApi, policyid, policy));
+		Action<Policy> command = new PolicyCheckDecorator<Policy>(new UpdatePolicyAction(policyApi, policyid, policy), null,
+				tokenApi, policyApi);
 		Policy ret = command.execute();
 		return new PolicyWrapper(ret);
 	}
 
 	@Override
 	public void deletePolicy(String policyid) {
-		Action<Policy> command = new PolicyCheckDecorator<Policy>(new DeletePolicyAction(policyApi, policyid));
+		Action<Policy> command = new PolicyCheckDecorator<Policy>(new DeletePolicyAction(policyApi, policyid), null,
+				tokenApi, policyApi);
 		command.execute();
 	}
 

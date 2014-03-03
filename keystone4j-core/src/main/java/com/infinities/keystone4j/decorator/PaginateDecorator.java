@@ -6,8 +6,8 @@ import com.infinities.keystone4j.Action;
 
 public class PaginateDecorator<V> extends AbstractActionDecorator<List<V>> {
 
-	private int page;
-	private int perPage;
+	private final int page;
+	private final int perPage;
 
 
 	public PaginateDecorator(Action<List<V>> command, int page, int perPage) {
@@ -22,5 +22,10 @@ public class PaginateDecorator<V> extends AbstractActionDecorator<List<V>> {
 		int fromIndex = perPage * (page - 1);
 		int toIndex = perPage * page;
 		return list.subList(fromIndex, toIndex);
+	}
+
+	@Override
+	public String getName() {
+		return "paginate";
 	}
 }

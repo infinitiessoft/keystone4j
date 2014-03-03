@@ -4,14 +4,14 @@ import javax.xml.bind.annotation.XmlElement;
 
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.trust.model.Token;
+import com.infinities.keystone4j.trust.model.Trust;
 
 public class Scope {
 
 	private Project project;
 	private Domain domain;
 	@XmlElement(name = "OS-TRUST:trust")
-	private Token trust;
+	private Trust trust;
 
 
 	public Project getProject() {
@@ -30,11 +30,11 @@ public class Scope {
 		this.domain = domain;
 	}
 
-	public Token getTrust() {
+	public Trust getTrust() {
 		return trust;
 	}
 
-	public void setTrust(Token trust) {
+	public void setTrust(Trust trust) {
 		this.trust = trust;
 	}
 

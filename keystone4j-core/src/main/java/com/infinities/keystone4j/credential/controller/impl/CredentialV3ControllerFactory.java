@@ -6,15 +6,21 @@ import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.credential.controller.CredentialV3Controller;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class CredentialV3ControllerFactory implements Factory<CredentialV3Controller> {
 
 	private final CredentialApi credentialApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
 	@Inject
-	public CredentialV3ControllerFactory(CredentialApi credentialApi) {
+	public CredentialV3ControllerFactory(CredentialApi credentialApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.credentialApi = credentialApi;
+		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
@@ -24,7 +30,7 @@ public class CredentialV3ControllerFactory implements Factory<CredentialV3Contro
 
 	@Override
 	public CredentialV3Controller provide() {
-		return new CredentialV3ControllerImpl(credentialApi);
+		return new CredentialV3ControllerImpl(credentialApi, tokenApi, policyApi);
 	}
 
 }

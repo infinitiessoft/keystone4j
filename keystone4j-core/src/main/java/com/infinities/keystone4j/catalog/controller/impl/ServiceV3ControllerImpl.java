@@ -16,19 +16,26 @@ import com.infinities.keystone4j.catalog.model.ServicesWrapper;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class ServiceV3ControllerImpl implements ServiceV3Controller {
 
-	private CatalogApi catalogApi;
+	private final CatalogApi catalogApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
-	public ServiceV3ControllerImpl(CatalogApi catalogApi) {
+	public ServiceV3ControllerImpl(CatalogApi catalogApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.catalogApi = catalogApi;
+		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
 	public ServiceWrapper createService(Service service) {
-		Action<Service> command = new PolicyCheckDecorator<Service>(new CreateServiceAction(catalogApi, service));
+		Action<Service> command = new PolicyCheckDecorator<Service>(new CreateServiceAction(catalogApi, service), null,
+				tokenApi, policyApi);
 		Service ret = command.execute();
 		return new ServiceWrapper(ret);
 	}
@@ -44,22 +51,24 @@ public class ServiceV3ControllerImpl implements ServiceV3Controller {
 
 	@Override
 	public ServiceWrapper getService(String serviceid) {
-		Action<Service> command = new PolicyCheckDecorator<Service>(new GetServiceAction(catalogApi, serviceid));
+		Action<Service> command = new PolicyCheckDecorator<Service>(new GetServiceAction(catalogApi, serviceid), null,
+				tokenApi, policyApi);
 		Service ret = command.execute();
 		return new ServiceWrapper(ret);
 	}
 
 	@Override
 	public ServiceWrapper updateService(String serviceid, Service service) {
-		Action<Service> command = new PolicyCheckDecorator<Service>(
-				new UpdateServiceAction(catalogApi, serviceid, service));
+		Action<Service> command = new PolicyCheckDecorator<Service>(new UpdateServiceAction(catalogApi, serviceid, service),
+				null, tokenApi, policyApi);
 		Service ret = command.execute();
 		return new ServiceWrapper(ret);
 	}
 
 	@Override
 	public void deleteService(String serviceid) {
-		Action<Service> command = new PolicyCheckDecorator<Service>(new DeleteServiceAction(catalogApi, serviceid));
+		Action<Service> command = new PolicyCheckDecorator<Service>(new DeleteServiceAction(catalogApi, serviceid), null,
+				tokenApi, policyApi);
 		command.execute();
 	}
 

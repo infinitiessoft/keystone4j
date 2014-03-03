@@ -11,6 +11,7 @@ import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.trust.action.CheckRoleForTrustAction;
@@ -27,23 +28,26 @@ import com.infinities.keystone4j.trust.model.TrustsWrapper;
 
 public class TrustV3ControllerImpl implements TrustV3Controller {
 
-	private AssignmentApi assignmentApi;
-	private IdentityApi identityApi;
-	private TrustApi trustApi;
-	private TokenApi tokenApi;
+	private final AssignmentApi assignmentApi;
+	private final IdentityApi identityApi;
+	private final TrustApi trustApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
-	public TrustV3ControllerImpl(AssignmentApi assignmentApi, IdentityApi identityApi, TrustApi trustApi, TokenApi tokenApi) {
+	public TrustV3ControllerImpl(AssignmentApi assignmentApi, IdentityApi identityApi, TrustApi trustApi, TokenApi tokenApi,
+			PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
 		this.identityApi = identityApi;
 		this.trustApi = trustApi;
 		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
 	public TrustWrapper createTrust(Trust trust) {
-		Action<Trust> command = new PolicyCheckDecorator<Trust>(new CreateTrustAction(assignmentApi, identityApi,
-				trustApi, tokenApi, trust));
+		Action<Trust> command = new PolicyCheckDecorator<Trust>(new CreateTrustAction(assignmentApi, identityApi, trustApi,
+				tokenApi, trust), null, tokenApi, policyApi);
 		Trust ret = command.execute();
 		return new TrustWrapper(ret);
 	}
@@ -60,15 +64,15 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 	@Override
 	public TrustWrapper getTrust(String trustid) {
 		Action<Trust> command = new PolicyCheckDecorator<Trust>(new GetTrustAction(assignmentApi, identityApi, trustApi,
-				tokenApi, trustid));
+				tokenApi, trustid), null, tokenApi, policyApi);
 		Trust ret = command.execute();
 		return new TrustWrapper(ret);
 	}
 
 	@Override
 	public void deleteTrust(String trustid) {
-		Action<Trust> command = new PolicyCheckDecorator<Trust>(new DeleteTrustAction(assignmentApi, identityApi,
-				trustApi, tokenApi, trustid));
+		Action<Trust> command = new PolicyCheckDecorator<Trust>(new DeleteTrustAction(assignmentApi, identityApi, trustApi,
+				tokenApi, trustid), null, tokenApi, policyApi);
 		command.execute();
 	}
 
@@ -84,7 +88,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 	@Override
 	public void checkRoleForTrust(String trustid, String roleid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckRoleForTrustAction(assignmentApi, identityApi,
-				trustApi, tokenApi, trustid, roleid));
+				trustApi, tokenApi, trustid, roleid), null, tokenApi, policyApi);
 
 		command.execute();
 	}
@@ -92,7 +96,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 	@Override
 	public RoleWrapper getRoleForTrust(String trustid, String roleid) {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new GetRoleForTrustAction(assignmentApi, identityApi,
-				trustApi, tokenApi, trustid, roleid));
+				trustApi, tokenApi, trustid, roleid), null, tokenApi, policyApi);
 		Role ret = command.execute();
 		return new RoleWrapper(ret);
 	}

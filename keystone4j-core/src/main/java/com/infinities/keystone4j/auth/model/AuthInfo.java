@@ -19,7 +19,7 @@ import com.infinities.keystone4j.exception.TrustNotFoundException;
 import com.infinities.keystone4j.exception.UnauthorizedException;
 import com.infinities.keystone4j.exception.ValidationException;
 import com.infinities.keystone4j.trust.TrustApi;
-import com.infinities.keystone4j.trust.model.Token;
+import com.infinities.keystone4j.trust.model.Trust;
 
 public class AuthInfo {
 
@@ -28,7 +28,7 @@ public class AuthInfo {
 	private AuthV3 auth;
 	private String domainid;
 	private String projectid;
-	private Token trust;
+	private Trust trust;
 	private final Map<String, AuthDriver> AUTH_METHODS;
 	private final TrustApi trustApi;
 	private final AssignmentApi assignmentApi;
@@ -68,11 +68,11 @@ public class AuthInfo {
 		this.projectid = projectid;
 	}
 
-	public Token getTrust() {
+	public Trust getTrust() {
 		return trust;
 	}
 
-	public void setTrust(Token trust) {
+	public void setTrust(Trust trust) {
 		this.trust = trust;
 	}
 
@@ -135,7 +135,7 @@ public class AuthInfo {
 			if (!enabled) {
 				throw new ForbiddenException("Trusts are disabled.");
 			}
-			Token trust = lookupTrust(auth.getScope().getTrust());
+			Trust trust = lookupTrust(auth.getScope().getTrust());
 			if (trust.getProject() != null) {
 				Project project = lookupProject(trust.getProject());
 				this.setProjectid(project.getId());
@@ -146,12 +146,12 @@ public class AuthInfo {
 		}
 	}
 
-	private Token lookupTrust(Token trust) {
+	private Trust lookupTrust(Trust trust) {
 		String trustid = trust.getId();
 		if (Strings.isNullOrEmpty(trustid)) {
 			throw new ValidationException(null, "trust_id", "trust");
 		}
-		Token ret = trustApi.getTrust(trustid);
+		Trust ret = trustApi.getTrust(trustid);
 		if (ret == null) {
 			throw new TrustNotFoundException(null, trustid);
 		}

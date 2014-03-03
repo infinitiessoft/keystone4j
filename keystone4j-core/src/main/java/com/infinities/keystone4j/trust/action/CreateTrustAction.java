@@ -33,7 +33,7 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 	private final static String ROLES = "roles";
 	private final static String ID_OR_NAME = "id or name";
 	private final static String ROLE_NOT_FOUND = "role {0} is not defined";
-	private Trust trust;
+	private final Trust trust;
 	private HttpServletRequest request;
 
 
@@ -134,5 +134,10 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "create_trust";
 	}
 }

@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.Environment;
 import com.infinities.keystone4j.KeystoneContext;
-import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.TokenNotFoundException;
@@ -43,17 +42,17 @@ public class AuthContextMiddleware implements Middleware {
 		if (requestContext.getProperty(Authorization.AUTH_CONTEXT_ENV) != null) {
 			logger.warn("Auth context already exists in the request environment");
 		}
-		AuthContext context = buildAuthContext(requestContext);
+		Token context = buildAuthContext(requestContext);
 		logger.debug("RBAC: auth_context: {}", context);
 		requestContext.setProperty(Authorization.AUTH_CONTEXT_ENV, context);
 
 	}
 
-	private AuthContext buildAuthContext(ContainerRequestContext requestContext) {
+	private Token buildAuthContext(ContainerRequestContext requestContext) {
 		String tokenid = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER);
 		String adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").getText();
 		if (tokenid.equals(adminToken)) {
-			return new AuthContext();
+			return new Token();
 		}
 
 		KeystoneContext context = new KeystoneContext();
@@ -68,7 +67,7 @@ public class AuthContextMiddleware implements Middleware {
 			Token token = tokenApi.getToken(tokenid);
 			validateTokenBind(context, token);
 
-			return Authorization.tokenToAuthContext(token.getTokenData());
+			return token;
 
 		} catch (TokenNotFoundException e) {
 			logger.warn("RBAC: Invalid token");

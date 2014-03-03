@@ -16,19 +16,26 @@ import com.infinities.keystone4j.assignment.model.DomainsWrapper;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class DomainV3ControllerImpl implements DomainV3Controller {
 
-	private AssignmentApi assignmentApi;
+	private final AssignmentApi assignmentApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
-	public DomainV3ControllerImpl(AssignmentApi assignmentApi) {
+	public DomainV3ControllerImpl(AssignmentApi assignmentApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
+		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
 	public DomainWrapper createDomain(Domain domain) {
-		Action<Domain> command = new PolicyCheckDecorator<Domain>(new CreateDomainAction(assignmentApi, domain));
+		Action<Domain> command = new PolicyCheckDecorator<Domain>(new CreateDomainAction(assignmentApi, domain), null,
+				tokenApi, policyApi);
 		Domain ret = command.execute();
 		return new DomainWrapper(ret);
 	}
@@ -44,21 +51,24 @@ public class DomainV3ControllerImpl implements DomainV3Controller {
 
 	@Override
 	public DomainWrapper getDomain(String domainid) {
-		Action<Domain> command = new PolicyCheckDecorator<Domain>(new GetDomainAction(assignmentApi, domainid));
+		Action<Domain> command = new PolicyCheckDecorator<Domain>(new GetDomainAction(assignmentApi, domainid), null,
+				tokenApi, policyApi);
 		Domain ret = command.execute();
 		return new DomainWrapper(ret);
 	}
 
 	@Override
 	public DomainWrapper updateDomain(String domainid, Domain domain) {
-		Action<Domain> command = new PolicyCheckDecorator<Domain>(new UpdateDomainAction(assignmentApi, domainid, domain));
+		Action<Domain> command = new PolicyCheckDecorator<Domain>(new UpdateDomainAction(assignmentApi, domainid, domain),
+				null, tokenApi, policyApi);
 		Domain ret = command.execute();
 		return new DomainWrapper(ret);
 	}
 
 	@Override
 	public void deleteDomain(String domainid) {
-		Action<Domain> command = new PolicyCheckDecorator<Domain>(new DeleteDomainAction(assignmentApi, domainid));
+		Action<Domain> command = new PolicyCheckDecorator<Domain>(new DeleteDomainAction(assignmentApi, domainid), null,
+				tokenApi, policyApi);
 		command.execute();
 	}
 

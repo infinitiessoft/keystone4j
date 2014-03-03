@@ -13,4 +13,8 @@ public class FilterCheckDecorator<T> extends AbstractActionDecorator<T> {
 		return null;
 	}
 
+	@Override
+	public String getName() {
+		return "filter_check";
+	}
 }

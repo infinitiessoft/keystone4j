@@ -22,13 +22,13 @@ import com.infinities.keystone4j.trust.model.TrustRole;
 
 public class GetRoleForTrustAction extends AbstractTrustAction<Role> {
 
-	private String trustid;
-	private String roleid;
+	private final String trustid;
+	private final String roleid;
 	private HttpServletRequest request;
 
 
-	public GetRoleForTrustAction(AssignmentApi assignmentApi, IdentityApi identityApi, TrustApi trustApi,
-			TokenApi tokenApi, String trustid, String roleid) {
+	public GetRoleForTrustAction(AssignmentApi assignmentApi, IdentityApi identityApi, TrustApi trustApi, TokenApi tokenApi,
+			String trustid, String roleid) {
 		super(assignmentApi, identityApi, trustApi, tokenApi);
 		this.trustid = trustid;
 		this.roleid = roleid;
@@ -77,5 +77,10 @@ public class GetRoleForTrustAction extends AbstractTrustAction<Role> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "get_role_for_trust";
 	}
 }

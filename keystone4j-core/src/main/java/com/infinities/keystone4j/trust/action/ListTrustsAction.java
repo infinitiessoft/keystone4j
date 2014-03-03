@@ -19,8 +19,8 @@ import com.infinities.keystone4j.trust.model.Trust;
 
 public class ListTrustsAction extends AbstractTrustAction<List<Trust>> {
 
-	private String trustorid;
-	private String trusteeid;
+	private final String trustorid;
+	private final String trusteeid;
 	private HttpServletRequest request;
 
 
@@ -62,5 +62,10 @@ public class ListTrustsAction extends AbstractTrustAction<List<Trust>> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "list_trust";
 	}
 }

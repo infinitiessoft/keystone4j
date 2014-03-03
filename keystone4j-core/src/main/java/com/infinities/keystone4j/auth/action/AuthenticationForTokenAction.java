@@ -39,7 +39,7 @@ import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
-import com.infinities.keystone4j.trust.model.Token;
+import com.infinities.keystone4j.trust.model.Trust;
 
 public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetadata> {
 
@@ -131,7 +131,7 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 			checkAndSetDefaultScoping(authInfo, authContext);
 			String domainid = authInfo.getDomainid();
 			String projectid = authInfo.getProjectid();
-			Token trust = authInfo.getTrust();
+			Trust trust = authInfo.getTrust();
 
 			List<String> methodNames = authInfo.getMethodNames();
 			methodNames.addAll(authContext.getMethodNames());
@@ -158,7 +158,7 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 	private void checkAndSetDefaultScoping(AuthInfo authInfo, AuthContext authContext) throws Throwable {
 		String domainid = authInfo.getDomainid();
 		String projectid = authInfo.getProjectid();
-		Token trust = authInfo.getTrust();
+		Trust trust = authInfo.getTrust();
 
 		// TODO wired
 		if (trust != null) {

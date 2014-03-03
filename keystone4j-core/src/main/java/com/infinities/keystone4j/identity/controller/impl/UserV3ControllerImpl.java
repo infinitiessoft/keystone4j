@@ -22,19 +22,26 @@ import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.identity.model.UserParam;
 import com.infinities.keystone4j.identity.model.UserWrapper;
 import com.infinities.keystone4j.identity.model.UsersWrapper;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class UserV3ControllerImpl implements UserV3Controller {
 
-	private IdentityApi identityApi;
+	private final IdentityApi identityApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
-	public UserV3ControllerImpl(IdentityApi identityApi) {
+	public UserV3ControllerImpl(IdentityApi identityApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.identityApi = identityApi;
+		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
 	public UserWrapper createUser(User user) {
-		Action<User> command = new PolicyCheckDecorator<User>(new CreateUserAction(identityApi, user));
+		Action<User> command = new PolicyCheckDecorator<User>(new CreateUserAction(identityApi, user), null, tokenApi,
+				policyApi);
 		User ret = command.execute();
 		return new UserWrapper(ret);
 	}
@@ -50,21 +57,24 @@ public class UserV3ControllerImpl implements UserV3Controller {
 
 	@Override
 	public UserWrapper getUser(String userid) {
-		Action<User> command = new PolicyCheckDecorator<User>(new GetUserAction(identityApi, userid));
+		Action<User> command = new PolicyCheckDecorator<User>(new GetUserAction(identityApi, userid), null, tokenApi,
+				policyApi);
 		User ret = command.execute();
 		return new UserWrapper(ret);
 	}
 
 	@Override
 	public UserWrapper updateUser(String userid, User user) {
-		Action<User> command = new PolicyCheckDecorator<User>(new UpdateUserAction(identityApi, userid, user));
+		Action<User> command = new PolicyCheckDecorator<User>(new UpdateUserAction(identityApi, userid, user), null,
+				tokenApi, policyApi);
 		User ret = command.execute();
 		return new UserWrapper(ret);
 	}
 
 	@Override
 	public void deleteUser(String userid) {
-		Action<User> command = new PolicyCheckDecorator<User>(new DeleteUserAction(identityApi, userid));
+		Action<User> command = new PolicyCheckDecorator<User>(new DeleteUserAction(identityApi, userid), null, tokenApi,
+				policyApi);
 		command.execute();
 	}
 
@@ -81,27 +91,31 @@ public class UserV3ControllerImpl implements UserV3Controller {
 	@Override
 	public void addUserToGroup(String groupid, String userid) {
 		// TODO @controller.protected(callback=_check_user_and_group_protection)
-		Action<User> command = new PolicyCheckDecorator<User>(new AddUserToGroupAction(identityApi, userid, groupid));
+		Action<User> command = new PolicyCheckDecorator<User>(new AddUserToGroupAction(identityApi, userid, groupid), null,
+				tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void checkUserInGroup(String groupid, String userid) {
 		// TODO @controller.protected(callback=_check_user_and_group_protection)
-		Action<User> command = new PolicyCheckDecorator<User>(new CheckUserInGroupAction(identityApi, userid, groupid));
+		Action<User> command = new PolicyCheckDecorator<User>(new CheckUserInGroupAction(identityApi, userid, groupid),
+				null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void removeUserFromGroup(String groupid, String userid) {
 		// TODO @controller.protected(callback=_check_user_and_group_protection)
-		Action<User> command = new PolicyCheckDecorator<User>(new RemoveUserFromGroupAction(identityApi, userid, groupid));
+		Action<User> command = new PolicyCheckDecorator<User>(new RemoveUserFromGroupAction(identityApi, userid, groupid),
+				null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void changePassword(String userid, UserParam user) {
-		Action<User> command = new PolicyCheckDecorator<User>(new ChangePasswordAction(identityApi, userid, user));
+		Action<User> command = new PolicyCheckDecorator<User>(new ChangePasswordAction(identityApi, userid, user), null,
+				tokenApi, policyApi);
 		command.execute();
 	}
 

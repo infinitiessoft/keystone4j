@@ -16,7 +16,7 @@ import com.infinities.keystone4j.trust.model.Trust;
 
 public class DeleteTrustAction extends AbstractTrustAction<Trust> {
 
-	private String trustid;
+	private final String trustid;
 	private HttpServletRequest request;
 
 
@@ -45,5 +45,10 @@ public class DeleteTrustAction extends AbstractTrustAction<Trust> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "delete_trust";
 	}
 }

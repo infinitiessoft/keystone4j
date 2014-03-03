@@ -12,6 +12,7 @@ import com.google.common.base.Strings;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.Callback;
 import com.infinities.keystone4j.KeystoneContext;
+import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.TokenNotFoundException;
 import com.infinities.keystone4j.exception.UnauthorizedException;
@@ -68,9 +69,15 @@ public class PolicyCheckDecorator<T> extends AbstractActionDecorator<T> {
 	private Token buildPolicyCheckCredentials(String action, KeystoneContext context) {
 		logger.debug("RBAC: AUTHORIZING {}", action);
 
+		Token token = (Token) request.getAttribute(Authorization.AUTH_CONTEXT_ENV);
+		if (token != null) {
+			logger.debug("RBAC: using auth context from the request environment");
+			return token;
+		}
+
 		try {
 			logger.debug("RBAC:building auth context from the incoming auth token");
-			Token token = tokenApi.getToken(context.getTokenid());
+			token = tokenApi.getToken(context.getTokenid());
 			validateTokenBind(context, token);
 			return token;
 		} catch (TokenNotFoundException e) {

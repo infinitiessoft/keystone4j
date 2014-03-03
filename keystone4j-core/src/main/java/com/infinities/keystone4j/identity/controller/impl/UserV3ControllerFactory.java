@@ -6,15 +6,21 @@ import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class UserV3ControllerFactory implements Factory<UserV3Controller> {
 
 	private final IdentityApi identityApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
 	@Inject
-	public UserV3ControllerFactory(IdentityApi identityApi) {
+	public UserV3ControllerFactory(IdentityApi identityApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.identityApi = identityApi;
+		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
@@ -24,7 +30,7 @@ public class UserV3ControllerFactory implements Factory<UserV3Controller> {
 
 	@Override
 	public UserV3Controller provide() {
-		return new UserV3ControllerImpl(identityApi);
+		return new UserV3ControllerImpl(identityApi, tokenApi, policyApi);
 	}
 
 }

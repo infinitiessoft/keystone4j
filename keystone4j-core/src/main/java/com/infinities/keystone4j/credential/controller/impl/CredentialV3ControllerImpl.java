@@ -16,20 +16,26 @@ import com.infinities.keystone4j.credential.model.CredentialsWrapper;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class CredentialV3ControllerImpl implements CredentialV3Controller {
 
 	private final CredentialApi credentialApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
-	public CredentialV3ControllerImpl(CredentialApi credentialApi) {
+	public CredentialV3ControllerImpl(CredentialApi credentialApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.credentialApi = credentialApi;
+		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
 	public CredentialWrapper createCredential(Credential credential) {
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new CreateCredentialAction(credentialApi,
-				credential));
+				credential), null, tokenApi, policyApi);
 		Credential ret = command.execute();
 		return new CredentialWrapper(ret);
 	}
@@ -46,7 +52,7 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 	@Override
 	public CredentialWrapper getCredential(String credentialid) {
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new GetCredentialAction(credentialApi,
-				credentialid));
+				credentialid), null, tokenApi, policyApi);
 		Credential ret = command.execute();
 		return new CredentialWrapper(ret);
 	}
@@ -54,7 +60,7 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 	@Override
 	public CredentialWrapper updateCredential(String credentialid, Credential credential) {
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new UpdateCredentialAction(credentialApi,
-				credentialid, credential));
+				credentialid, credential), null, tokenApi, policyApi);
 		Credential ret = command.execute();
 		return new CredentialWrapper(ret);
 	}
@@ -62,7 +68,7 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 	@Override
 	public void deleteCredential(String credentialid) {
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new DeleteCredentialAction(credentialApi,
-				credentialid));
+				credentialid), null, tokenApi, policyApi);
 		command.execute();
 	}
 

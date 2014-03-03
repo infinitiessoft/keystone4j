@@ -22,8 +22,8 @@ import com.infinities.keystone4j.trust.model.TrustRole;
 
 public class CheckRoleForTrustAction extends AbstractTrustAction<Role> {
 
-	private String trustid;
-	private String roleid;
+	private final String trustid;
+	private final String roleid;
 	private HttpServletRequest request;
 
 
@@ -64,5 +64,10 @@ public class CheckRoleForTrustAction extends AbstractTrustAction<Role> {
 	@Context
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
+	}
+
+	@Override
+	public String getName() {
+		return "check_role_for_trust";
 	}
 }

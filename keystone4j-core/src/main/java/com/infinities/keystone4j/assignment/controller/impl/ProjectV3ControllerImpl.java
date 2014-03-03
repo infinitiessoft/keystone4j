@@ -17,19 +17,26 @@ import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class ProjectV3ControllerImpl implements ProjectV3Controller {
 
-	private AssignmentApi assignmentApi;
+	private final AssignmentApi assignmentApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
-	public ProjectV3ControllerImpl(AssignmentApi assignmentApi) {
+	public ProjectV3ControllerImpl(AssignmentApi assignmentApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
+		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
 	public ProjectWrapper createProject(Project project) {
-		Action<Project> command = new PolicyCheckDecorator<Project>(new CreateProjectAction(assignmentApi, project));
+		Action<Project> command = new PolicyCheckDecorator<Project>(new CreateProjectAction(assignmentApi, project), null,
+				tokenApi, policyApi);
 		Project ret = command.execute();
 		return new ProjectWrapper(ret);
 	}
@@ -54,7 +61,8 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 
 	@Override
 	public ProjectWrapper getProject(String projectid) {
-		Action<Project> command = new PolicyCheckDecorator<Project>(new GetProjectAction(assignmentApi, projectid));
+		Action<Project> command = new PolicyCheckDecorator<Project>(new GetProjectAction(assignmentApi, projectid), null,
+				tokenApi, policyApi);
 		Project ret = command.execute();
 		return new ProjectWrapper(ret);
 	}
@@ -62,14 +70,15 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 	@Override
 	public ProjectWrapper updateProject(String projectid, Project project) {
 		Action<Project> command = new PolicyCheckDecorator<Project>(new UpdateProjectAction(assignmentApi, projectid,
-				project));
+				project), null, tokenApi, policyApi);
 		Project ret = command.execute();
 		return new ProjectWrapper(ret);
 	}
 
 	@Override
 	public void deleteProject(String projectid) {
-		Action<Project> command = new PolicyCheckDecorator<Project>(new DeleteProjectAction(assignmentApi, projectid));
+		Action<Project> command = new PolicyCheckDecorator<Project>(new DeleteProjectAction(assignmentApi, projectid), null,
+				tokenApi, policyApi);
 		command.execute();
 	}
 }

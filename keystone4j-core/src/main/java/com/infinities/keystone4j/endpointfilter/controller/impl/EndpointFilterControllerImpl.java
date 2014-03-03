@@ -18,26 +18,33 @@ import com.infinities.keystone4j.endpointfilter.action.ListEndpointsForProjectAc
 import com.infinities.keystone4j.endpointfilter.action.ListProjectsForEndpointAction;
 import com.infinities.keystone4j.endpointfilter.action.RemoveEndpointToProjectAction;
 import com.infinities.keystone4j.endpointfilter.controller.EndpointFilterController;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class EndpointFilterControllerImpl implements EndpointFilterController {
 
 	private final AssignmentApi assignmentApi;
 	private final CatalogApi catalogApi;
 	private final EndpointFilterApi endpointFilterApi;
+	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
 	public EndpointFilterControllerImpl(AssignmentApi assignmentApi, CatalogApi catalogApi,
-			EndpointFilterApi endpointFilterApi) {
+			EndpointFilterApi endpointFilterApi, TokenApi tokenApi, PolicyApi policyApi) {
 		super();
 		this.assignmentApi = assignmentApi;
 		this.catalogApi = catalogApi;
 		this.endpointFilterApi = endpointFilterApi;
+		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
 	public ProjectsWrapper listProjectsForEndpoint(String endpointid, int page, int perPage) {
 		Action<List<Project>> command = new PolicyCheckDecorator<List<Project>>(new PaginateDecorator<Project>(
-				new ListProjectsForEndpointAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage));
+				new ListProjectsForEndpointAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage),
+				null, tokenApi, policyApi);
 		List<Project> ret = command.execute();
 		return new ProjectsWrapper(ret);
 	}
@@ -45,21 +52,22 @@ public class EndpointFilterControllerImpl implements EndpointFilterController {
 	@Override
 	public void addEndpointToProject(String projectid, String endpointid) {
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new AddEndpointToProjectAction(assignmentApi,
-				catalogApi, endpointFilterApi, projectid, endpointid));
+				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public void checkEndpointInProject(String projectid, String endpointid) {
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new CheckEndpointToProjectAction(assignmentApi,
-				catalogApi, endpointFilterApi, projectid, endpointid));
+				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi);
 		command.execute();
 	}
 
 	@Override
 	public EndpointsWrapper listEndpointsForProject(String endpointid, int page, int perPage) {
 		Action<List<Endpoint>> command = new PolicyCheckDecorator<List<Endpoint>>(new PaginateDecorator<Endpoint>(
-				new ListEndpointsForProjectAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage));
+				new ListEndpointsForProjectAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage),
+				null, tokenApi, policyApi);
 		List<Endpoint> ret = command.execute();
 		return new EndpointsWrapper(ret);
 	}
@@ -67,7 +75,7 @@ public class EndpointFilterControllerImpl implements EndpointFilterController {
 	@Override
 	public void removeEndpointFromProject(String projectid, String endpointid) {
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new RemoveEndpointToProjectAction(assignmentApi,
-				catalogApi, endpointFilterApi, projectid, endpointid));
+				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi);
 		command.execute();
 	}
 
