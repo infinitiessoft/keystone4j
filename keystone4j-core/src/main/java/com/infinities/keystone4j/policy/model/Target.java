@@ -16,6 +16,10 @@ public class Target {
 	private String url;
 
 
+	public Target() {
+
+	}
+
 	public Target(Token token, User user, Project project, Group group, Domain domain, String url) {
 		super();
 		this.token = token;

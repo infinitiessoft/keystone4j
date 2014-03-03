@@ -51,8 +51,7 @@ public class PolicyCheckDecorator<T> extends AbstractActionDecorator<T> {
 			String action = MessageFormat.format("identity:{0}", command.getName());
 
 			Token token = buildPolicyCheckCredentials(action, context);
-			Target target = new Target(token, token.getUser(), token.getTrust().getProject(), null, token.getUser()
-					.getDomain(), null);
+			Target target = new Target();
 			if (!Strings.isNullOrEmpty(context.getSubjectTokenid())) {
 				Token subjectToken = tokenApi.getToken(context.getSubjectTokenid());
 				target.setUser(subjectToken.getUser());

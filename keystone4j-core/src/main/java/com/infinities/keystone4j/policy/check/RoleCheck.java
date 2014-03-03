@@ -6,7 +6,7 @@ import com.google.common.collect.Sets;
 import com.infinities.keystone4j.policy.Enforcer;
 import com.infinities.keystone4j.policy.model.Target;
 import com.infinities.keystone4j.token.model.Token;
-import com.infinities.keystone4j.trust.model.TrustRole;
+import com.infinities.keystone4j.token.model.TokenRole;
 
 public class RoleCheck extends Check {
 
@@ -19,9 +19,9 @@ public class RoleCheck extends Check {
 	public boolean check(Target target, Token token, Enforcer enforcer) {
 		// TODO are roles from trust?
 		Set<String> roles = Sets.newHashSet();
-		Set<TrustRole> trustRoles = token.getTrust().getTrustRoles();
-		for (TrustRole trustRole : trustRoles) {
-			roles.add(trustRole.getRole().getName());
+		Set<TokenRole> tokenRoles = token.getTokenRoles();
+		for (TokenRole tokenRole : tokenRoles) {
+			roles.add(tokenRole.getRole().getName());
 		}
 		return roles.contains(this.getMatch().toLowerCase());
 	}
