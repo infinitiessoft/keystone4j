@@ -30,7 +30,7 @@ public class ValidateV3TokenCommand extends AbstractTokenProviderCommand<TokenDa
 
 	@Override
 	public TokenDataWrapper execute() {
-		String uniqueid = new Cms().uniqueid(tokenid);
+		String uniqueid = Cms.Instance.hashToken(tokenid);
 		TokenDataWrapper token = this.getTokenProviderDriver().validateV3Token(uniqueid);
 		isValidToken(token);
 		return token;

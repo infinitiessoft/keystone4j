@@ -29,7 +29,7 @@ public class GetTokenCommand extends AbstractTokenCommand<Token> {
 		if (Strings.isNullOrEmpty(tokenid)) {
 			throw new TokenNotFoundException(null);
 		}
-		String uniqueid = new Cms().uniqueid(tokenid);
+		String uniqueid = Cms.Instance.hashToken(tokenid);
 		Token token = this.getTokenDriver().getToken(uniqueid);
 		assertValid(token);
 		return token;

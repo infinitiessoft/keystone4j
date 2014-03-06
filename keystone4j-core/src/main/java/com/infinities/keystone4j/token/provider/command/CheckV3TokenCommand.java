@@ -19,7 +19,7 @@ public class CheckV3TokenCommand extends AbstractTokenProviderCommand<TokenMetad
 
 	@Override
 	public TokenMetadata execute() {
-		String uniqueid = new Cms().uniqueid(tokenid);
+		String uniqueid = Cms.Instance.hashToken(tokenid);
 		this.getTokenProviderApi().validateV3Token(uniqueid);
 		return null;
 	}
