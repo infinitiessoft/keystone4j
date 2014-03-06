@@ -17,7 +17,7 @@ public class CatalogDriverFactory implements Factory<CatalogDriver> {
 
 	@Override
 	public CatalogDriver provide() {
-		String driver = Config.Instance.getOpt(Config.Type.catalog, "driver").getText();
+		String driver = Config.Instance.getOpt(Config.Type.catalog, "driver").asText();
 		try {
 			Class<?> c = Class.forName(driver);
 			return (CatalogDriver) c.newInstance();

@@ -2,6 +2,7 @@ package com.infinities.keystone4j.policy.driver;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -14,7 +15,7 @@ import com.infinities.keystone4j.jpa.impl.PolicyDao;
 import com.infinities.keystone4j.policy.Enforcer;
 import com.infinities.keystone4j.policy.PolicyDriver;
 import com.infinities.keystone4j.policy.model.Policy;
-import com.infinities.keystone4j.policy.model.Target;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 
 public class PolicyJpaDriver implements PolicyDriver {
@@ -29,7 +30,7 @@ public class PolicyJpaDriver implements PolicyDriver {
 	public PolicyJpaDriver() throws JsonParseException, JsonMappingException, IOException {
 		super();
 		this.policyDao = new PolicyDao();
-		String policyPath = Config.Instance.getOpt(Config.Type.DEFAULT, POLICY_FILE).getText();
+		String policyPath = Config.Instance.getOpt(Config.Type.DEFAULT, POLICY_FILE).asText();
 		this.enforcer = new Enforcer(policyPath);
 	}
 
@@ -78,9 +79,10 @@ public class PolicyJpaDriver implements PolicyDriver {
 	}
 
 	@Override
-	public Policy enforce(Token token, String action, Target target, boolean doRaise) {
+	public Policy enforce(Token token, String action, Map<String, PolicyEntity> target, Map<String, Object> parMap,
+			boolean doRaise) {
 		logger.debug(ENFORCE_ACTION_CREDENTIALS, new Object[] { action, token });
-		enforcer.enforce(token, action, target, doRaise);
+		enforcer.enforce(token, action, target, parMap, doRaise);
 		return null;
 	}
 }

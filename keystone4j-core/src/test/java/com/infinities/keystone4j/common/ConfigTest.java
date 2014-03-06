@@ -21,7 +21,7 @@ public class ConfigTest {
 	@Test
 	public void testGetOpt() {
 		Option adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token");
-		assertEquals("ADMIN2", adminToken.getText());
+		assertEquals("ADMIN2", adminToken.asText());
 	}
 
 }

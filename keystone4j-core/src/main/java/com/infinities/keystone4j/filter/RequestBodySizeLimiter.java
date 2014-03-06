@@ -15,7 +15,7 @@ public class RequestBodySizeLimiter implements ContainerRequestFilter {
 
 
 	public RequestBodySizeLimiter() {
-		String maxSize = Config.Instance.getOpt(Config.Type.DEFAULT, "max_request_body_size").getText();
+		String maxSize = Config.Instance.getOpt(Config.Type.DEFAULT, "max_request_body_size").asText();
 		size = Integer.parseInt(maxSize);
 	}
 

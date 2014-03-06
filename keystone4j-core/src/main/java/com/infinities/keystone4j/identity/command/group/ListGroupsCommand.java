@@ -29,7 +29,7 @@ public class ListGroupsCommand extends AbstractIdentityCommand<List<Group>> {
 	@Override
 	public List<Group> execute() {
 		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).getText();
+			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
 		List<Group> ret = driver.listGroups();

@@ -21,7 +21,7 @@ public abstract class Option {
 		return value;
 	}
 
-	public String getText() {
+	public String asText() {
 		return value;
 	}
 
@@ -29,15 +29,15 @@ public abstract class Option {
 		this.value = value;
 	}
 
-	public int getIntValue() {
+	public int asInteger() {
 		throw new IllegalArgumentException("value is not an integer");
 	}
 
-	public boolean getBoolValue() {
+	public boolean asBoolean() {
 		throw new IllegalArgumentException("value is not a boolean");
 	}
 
-	public List<String> getListValue() {
+	public List<String> asList() {
 		throw new IllegalArgumentException("value is not a list");
 	}
 

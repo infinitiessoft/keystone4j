@@ -31,7 +31,7 @@ public class AuthContextMiddleware implements Middleware {
 		this.tokenApi = tokenApi;
 	}
 
-	// auth_token_head only use in token-related action
+	// subject_token_head only use in token-related action
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		if (!requestContext.getHeaders().containsKey(AUTH_TOKEN_HEADER)) {
@@ -50,7 +50,7 @@ public class AuthContextMiddleware implements Middleware {
 
 	private Token buildAuthContext(ContainerRequestContext requestContext) {
 		String tokenid = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER);
-		String adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").getText();
+		String adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText();
 		if (tokenid.equals(adminToken)) {
 			return new Token();
 		}
@@ -77,7 +77,7 @@ public class AuthContextMiddleware implements Middleware {
 	}
 
 	private void validateTokenBind(KeystoneContext context, Token token) {
-		String bindMode = Config.Instance.getOpt(Config.Type.token, "enforce_token_bind").getText();
+		String bindMode = Config.Instance.getOpt(Config.Type.token, "enforce_token_bind").asText();
 
 		if ("disabled".equals(bindMode)) {
 			return;

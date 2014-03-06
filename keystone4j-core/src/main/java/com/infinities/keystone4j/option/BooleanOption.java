@@ -16,7 +16,7 @@ public class BooleanOption extends Option {
 	}
 
 	@Override
-	public boolean getBoolValue() {
+	public boolean asBoolean() {
 		return boolValue;
 	}
 

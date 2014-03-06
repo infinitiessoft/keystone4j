@@ -31,7 +31,7 @@ public class AddUserToProjectCommand extends AbstractAssignmentCommand<Project> 
 
 	@Override
 	public Project execute() {
-		String roleid = Config.Instance.getOpt(Config.Type.DEFAULT, MEMBER_ROLE_ID).getText();
+		String roleid = Config.Instance.getOpt(Config.Type.DEFAULT, MEMBER_ROLE_ID).asText();
 		try {
 			this.getAssignmentDriver().addRoleToUserAndProject(userid, projectid, roleid);
 		} catch (RoleNotFoundException e) {

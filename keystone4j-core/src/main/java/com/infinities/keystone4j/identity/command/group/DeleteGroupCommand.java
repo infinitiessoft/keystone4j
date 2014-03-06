@@ -31,7 +31,7 @@ public class DeleteGroupCommand extends AbstractIdentityCommand<Group> {
 	@Override
 	public Group execute() {
 		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).getText();
+			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
 		List<User> users = this.getIdentityApi().listUsersInGroup(groupid, domainid);

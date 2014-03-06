@@ -135,7 +135,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			}
 		}
 
-		boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).getBoolValue();
+		boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
 		if (!enabled) {
 			return Lists.newArrayList(projects);
 		}

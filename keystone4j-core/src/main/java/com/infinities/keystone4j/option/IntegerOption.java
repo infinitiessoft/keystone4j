@@ -16,7 +16,7 @@ public class IntegerOption extends Option {
 	}
 
 	@Override
-	public int getIntValue() {
+	public int asInteger() {
 		return intValue;
 	}
 

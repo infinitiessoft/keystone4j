@@ -35,10 +35,10 @@ public class VersionApi {
 
 	protected URL getIdentityURL(String version) throws MalformedURLException {
 		String urlKey = MessageFormat.format(URL_POSTFIX, type);
-		String url = Config.Instance.getOpt(Config.Type.DEFAULT, urlKey).getText();
+		String url = Config.Instance.getOpt(Config.Type.DEFAULT, urlKey).asText();
 
 		String portKey = MessageFormat.format(PORT_POSTFIX, type);
-		String port = Config.Instance.getOpt(Config.Type.DEFAULT, portKey).getText();
+		String port = Config.Instance.getOpt(Config.Type.DEFAULT, portKey).asText();
 		url = MessageFormat.format(url, port);
 
 		if (!url.endsWith("/")) {

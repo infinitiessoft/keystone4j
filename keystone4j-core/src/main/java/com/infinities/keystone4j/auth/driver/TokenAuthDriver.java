@@ -59,7 +59,7 @@ public class TokenAuthDriver implements AuthDriver {
 
 	// wsgi.validate_token_bind
 	private void validateTokenBind(KeystoneContext context, TokenDataWrapper tokenRef) {
-		String bindMode = Config.Instance.getOpt(Config.Type.token, "enforce_token_bind").getText();
+		String bindMode = Config.Instance.getOpt(Config.Type.token, "enforce_token_bind").asText();
 
 		if (bindMode.equals("disabled")) {
 			return;

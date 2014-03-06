@@ -17,7 +17,7 @@ public class PolicyDriverFactory implements Factory<PolicyDriver> {
 
 	@Override
 	public PolicyDriver provide() {
-		String driver = Config.Instance.getOpt(Config.Type.policy, "driver").getText();
+		String driver = Config.Instance.getOpt(Config.Type.policy, "driver").asText();
 		try {
 			Class<?> c = Class.forName(driver);
 			return (PolicyDriver) c.newInstance();

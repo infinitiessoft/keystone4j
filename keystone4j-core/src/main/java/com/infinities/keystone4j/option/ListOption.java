@@ -35,7 +35,7 @@ public class ListOption extends Option {
 	}
 
 	@Override
-	public List<String> getListValue() {
+	public List<String> asList() {
 		return listValue;
 	}
 

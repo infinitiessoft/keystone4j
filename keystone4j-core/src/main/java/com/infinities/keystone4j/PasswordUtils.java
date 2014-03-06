@@ -58,7 +58,7 @@ public class PasswordUtils {
 	}
 
 	private static String truncPassword(String password) {
-		int length = Config.Instance.getOpt(Config.Type.identity, MAX_PASSWORD_LENGTH).getIntValue();
+		int length = Config.Instance.getOpt(Config.Type.identity, MAX_PASSWORD_LENGTH).asInteger();
 
 		if (password.length() > length) {
 			logger.warn(TRUNCATE_USER_PASSWORD, length);

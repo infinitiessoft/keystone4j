@@ -131,7 +131,7 @@ public class AuthInfo {
 			Domain domain = lookupDomain(auth.getScope().getDomain());
 			this.setDomainid(domain.getId());
 		} else if (auth.getScope().getTrust() != null) {
-			boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").getBoolValue();
+			boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
 			if (!enabled) {
 				throw new ForbiddenException("Trusts are disabled.");
 			}

@@ -26,7 +26,7 @@ public class DeleteDomainCommand extends AbstractAssignmentCommand<Domain> {
 
 	@Override
 	public Domain execute() {
-		String defaultDomainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).getText();
+		String defaultDomainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 
 		if (defaultDomainid.equals(domainid)) {
 			throw new ForbiddenActionException(null, DELETE_DEFAULT_DOMAIN);

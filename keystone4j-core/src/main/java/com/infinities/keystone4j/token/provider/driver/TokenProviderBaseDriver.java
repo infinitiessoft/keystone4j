@@ -30,7 +30,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 	@Override
 	public TokenMetadata issueV3Token(String userid, List<String> methodNames, Date expiresAt, String projectid,
 			String domainid, AuthContext authContext, Trust trust, Token token, boolean includeCatalog) {
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").getBoolValue();
+		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
 		if (enabled && trust == null && token != null && token.getTrust() != null) {
 			trust = token.getTrust();
 		}

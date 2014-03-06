@@ -13,7 +13,7 @@ public class AdminTokenAuthMiddleware implements Middleware {
 
 
 	public AdminTokenAuthMiddleware() {
-		adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").getText();
+		adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText();
 	}
 
 	@Override

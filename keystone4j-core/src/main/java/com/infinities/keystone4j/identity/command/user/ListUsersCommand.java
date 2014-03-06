@@ -29,7 +29,7 @@ public class ListUsersCommand extends AbstractIdentityCommand<List<User>> {
 	@Override
 	public List<User> execute() {
 		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).getText();
+			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
 		List<User> ret = driver.listUsers();

@@ -17,7 +17,7 @@ public class EndpointFilterDriverFactory implements Factory<EndpointFilterDriver
 
 	@Override
 	public EndpointFilterDriver provide() {
-		String driver = Config.Instance.getOpt(Config.Type.endpoint_filter, "driver").getText();
+		String driver = Config.Instance.getOpt(Config.Type.endpoint_filter, "driver").asText();
 		try {
 			Class<?> c = Class.forName(driver);
 			return (EndpointFilterDriver) c.newInstance();

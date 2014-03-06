@@ -67,7 +67,7 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 			} catch (MetadataNotFoundException e) {
 				// no group grant, skip
 			}
-			boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).getBoolValue();
+			boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
 			if (enabled) {
 				try {
 					GroupDomainGrant grant = this.getAssignmentDriver().getGroupDomainGrant(group.getId(),
@@ -99,7 +99,7 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 		} catch (MetadataNotFoundException e) {
 			// no group grant, skip
 		}
-		boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).getBoolValue();
+		boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
 		if (enabled) {
 			try {
 				UserDomainGrant grant = this.getAssignmentDriver().getUserDomainGrant(userid, project.getDomain().getId());

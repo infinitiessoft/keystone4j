@@ -26,8 +26,8 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 
 	@Override
 	public TokenProviderDriver provide() {
-		String provider = Config.Instance.getOpt(Config.Type.token, "provider").getText();
-		String tokenFormat = Config.Instance.getOpt(Config.Type.signing, "token_format").getText();
+		String provider = Config.Instance.getOpt(Config.Type.token, "provider").asText();
+		String tokenFormat = Config.Instance.getOpt(Config.Type.signing, "token_format").asText();
 		if (Strings.isNullOrEmpty(provider)) {
 			if (Strings.isNullOrEmpty(tokenFormat)) {
 				try {

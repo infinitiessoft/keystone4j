@@ -78,7 +78,7 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 			return;
 		}
 
-		List<String> methods = Config.Instance.getOpt(Config.Type.auth, "methods").getListValue();
+		List<String> methods = Config.Instance.getOpt(Config.Type.auth, "methods").asList();
 		AuthDriver driver;
 		for (String plugin : methods) {
 			if (plugin.contains(".")) {
@@ -90,7 +90,7 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 							"Cannot load an auth-plugin by class-name without a 'method' attribute define:" + className);
 				}
 			} else {
-				String className = Config.Instance.getOpt(Config.Type.auth, plugin).getText();
+				String className = Config.Instance.getOpt(Config.Type.auth, plugin).asText();
 				Class<?> c = Class.forName(className);
 				driver = (AuthDriver) c.newInstance();
 				if (Strings.isNullOrEmpty(driver.getMethod())) {

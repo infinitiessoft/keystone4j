@@ -30,7 +30,7 @@ public class AddUserToGroupCommand extends AbstractIdentityCommand<User> {
 	@Override
 	public User execute() {
 		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).getText();
+			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
 		driver.addUserToGroup(userid, groupid);

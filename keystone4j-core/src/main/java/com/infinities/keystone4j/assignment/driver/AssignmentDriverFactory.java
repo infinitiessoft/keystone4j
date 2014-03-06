@@ -17,7 +17,7 @@ public class AssignmentDriverFactory implements Factory<AssignmentDriver> {
 
 	@Override
 	public AssignmentDriver provide() {
-		String driver = Config.Instance.getOpt(Config.Type.assignment, "driver").getText();
+		String driver = Config.Instance.getOpt(Config.Type.assignment, "driver").asText();
 		try {
 			Class<?> c = Class.forName(driver);
 			return (AssignmentDriver) c.newInstance();

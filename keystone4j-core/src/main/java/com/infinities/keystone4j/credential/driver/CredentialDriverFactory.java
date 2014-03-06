@@ -17,7 +17,7 @@ public class CredentialDriverFactory implements Factory<CredentialDriver> {
 
 	@Override
 	public CredentialDriver provide() {
-		String driver = Config.Instance.getOpt(Config.Type.credential, "driver").getText();
+		String driver = Config.Instance.getOpt(Config.Type.credential, "driver").asText();
 		try {
 			Class<?> c = Class.forName(driver);
 			return (CredentialDriver) c.newInstance();

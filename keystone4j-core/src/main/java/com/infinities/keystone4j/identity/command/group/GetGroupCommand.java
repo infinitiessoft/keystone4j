@@ -29,7 +29,7 @@ public class GetGroupCommand extends AbstractIdentityCommand<Group> {
 	@Override
 	public Group execute() {
 		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).getText();
+			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
 		Group ret = driver.getGroup(groupid);

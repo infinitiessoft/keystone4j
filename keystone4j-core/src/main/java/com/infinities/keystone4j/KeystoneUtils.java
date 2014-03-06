@@ -1,6 +1,7 @@
 package com.infinities.keystone4j;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public class KeystoneUtils {
 	// used as _normalize_domain_id
 	public Domain getDomainForRequest(KeystoneContext context) {
 		if (context.isAdmin()) {
-			return assignmentApi.getDomain(Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).getText());
+			return assignmentApi.getDomain(Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText());
 		}
 
 		try {
@@ -59,7 +60,7 @@ public class KeystoneUtils {
 			try {
 				return token.getUser().getDomain();
 			} catch (Exception e) {
-				return assignmentApi.getDomain(Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).getText());
+				return assignmentApi.getDomain(Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText());
 			}
 
 		} catch (Exception TokenNotFound) {
@@ -81,7 +82,7 @@ public class KeystoneUtils {
 
 			validateTokenBind(context, token);
 
-			policyApi.enforce(token, "admin_required", null, true);
+			policyApi.enforce(token, "admin_required", null, new HashMap<String, Object>(), true);
 
 		}
 	}
@@ -97,7 +98,7 @@ public class KeystoneUtils {
 
 	private void validateTokenBind(KeystoneContext context, Token token) {
 
-		String bindMode = Config.Instance.getOpt(Config.Type.token, ENFORCE_TOKEN_BIND).getText();
+		String bindMode = Config.Instance.getOpt(Config.Type.token, ENFORCE_TOKEN_BIND).asText();
 		if (DISABLED.equals(bindMode)) {
 			return;
 		}
