@@ -15,11 +15,12 @@ import javax.validation.constraints.NotNull;
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 
 @Entity
 @Table(name = "DOMAIN", schema = "PUBLIC", catalog = "PUBLIC")
-public class Domain extends BaseEntity implements java.io.Serializable {
+public class Domain extends BaseEntity implements java.io.Serializable, PolicyEntity {
 
 	/**
 	 * 
@@ -159,6 +160,21 @@ public class Domain extends BaseEntity implements java.io.Serializable {
 
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
+	}
+
+	@Override
+	public User getUser() {
+		throw new IllegalStateException("propert 'user' not exist");
+	}
+
+	@Override
+	public Domain getDomain() {
+		throw new IllegalStateException("propert 'domain' not exist");
+	}
+
+	@Override
+	public Project getProject() {
+		throw new IllegalStateException("propert 'project' not exist");
 	}
 
 }

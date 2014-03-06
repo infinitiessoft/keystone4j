@@ -1,10 +1,12 @@
 package com.infinities.keystone4j.policy.check;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.policy.Enforcer;
-import com.infinities.keystone4j.policy.model.Target;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 
 public class HttpCheck extends Check {
@@ -18,7 +20,7 @@ public class HttpCheck extends Check {
 	}
 
 	@Override
-	public boolean check(Target target, Token token, Enforcer enforcer) {
+	public boolean check(Map<String, PolicyEntity> target, Token token, Map<String, Object> parMap, Enforcer enforcer) {
 		logger.warn("HttpCheck not implemented yet");
 		return false;
 		// String url = "http:" + MessageFormat.format(getMatch(),

@@ -1,8 +1,10 @@
 package com.infinities.keystone4j.policy.check;
 
+import java.util.Map;
+
 import com.infinities.keystone4j.policy.BaseCheck;
 import com.infinities.keystone4j.policy.Enforcer;
-import com.infinities.keystone4j.policy.model.Target;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 
 public class NotCheck implements BaseCheck {
@@ -20,7 +22,7 @@ public class NotCheck implements BaseCheck {
 	}
 
 	@Override
-	public boolean check(Target target, Token token, Enforcer enforcer) {
-		return !rule.check(target, token, enforcer);
+	public boolean check(Map<String, PolicyEntity> target, Token token, Map<String, Object> parMap, Enforcer enforcer) {
+		return !rule.check(target, token, parMap, enforcer);
 	}
 }

@@ -14,16 +14,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
 import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
+import com.infinities.keystone4j.assignment.model.Project;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 
 @Entity
 @Table(name = "GROUP", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"DOMAINID", "NAME" }) })
-public class Group extends BaseEntity implements java.io.Serializable {
+public class Group extends BaseEntity implements java.io.Serializable, PolicyEntity {
 
 	/**
 	 * 
@@ -53,6 +56,7 @@ public class Group extends BaseEntity implements java.io.Serializable {
 		setNameUpdated(true);
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOMAINID", nullable = false)
 	public Domain getDomain() {
@@ -124,6 +128,18 @@ public class Group extends BaseEntity implements java.io.Serializable {
 
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
+	}
+
+	@XmlTransient
+	@Override
+	public User getUser() {
+		throw new IllegalStateException("propert 'user' not exist");
+	}
+
+	@XmlTransient
+	@Override
+	public Project getProject() {
+		throw new IllegalStateException("propert 'project' not exist");
 	}
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade =

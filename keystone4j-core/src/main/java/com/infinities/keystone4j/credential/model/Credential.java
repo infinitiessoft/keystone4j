@@ -7,14 +7,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.infinities.keystone4j.BaseEntity;
+import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 
 @Entity
 @Table(name = "CREDENTIAL", schema = "PUBLIC", catalog = "PUBLIC")
-public class Credential extends BaseEntity implements java.io.Serializable {
+public class Credential extends BaseEntity implements java.io.Serializable, PolicyEntity {
 
 	/**
 	 * 
@@ -32,6 +35,7 @@ public class Credential extends BaseEntity implements java.io.Serializable {
 	private boolean extraUpdated = false;
 
 
+	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)
 	public User getUser() {
@@ -43,6 +47,7 @@ public class Credential extends BaseEntity implements java.io.Serializable {
 		userUpdated = true;
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECTID")
 	public Project getProject() {
@@ -124,6 +129,12 @@ public class Credential extends BaseEntity implements java.io.Serializable {
 
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
+	}
+
+	@XmlTransient
+	@Override
+	public Domain getDomain() {
+		throw new IllegalStateException("propert 'domain' not exist");
 	}
 
 }

@@ -1,10 +1,11 @@
 package com.infinities.keystone4j.policy.check;
 
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
 import com.infinities.keystone4j.policy.Enforcer;
-import com.infinities.keystone4j.policy.model.Target;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.token.model.TokenRole;
 
@@ -16,7 +17,7 @@ public class RoleCheck extends Check {
 	}
 
 	@Override
-	public boolean check(Target target, Token token, Enforcer enforcer) {
+	public boolean check(Map<String, PolicyEntity> target, Token token, Map<String, Object> parMap, Enforcer enforcer) {
 		// TODO are roles from trust?
 		Set<String> roles = Sets.newHashSet();
 		Set<TokenRole> tokenRoles = token.getTokenRoles();

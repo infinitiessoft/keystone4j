@@ -23,11 +23,12 @@ import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.trust.model.Trust;
 
 @Entity
 @Table(name = "TOKEN", schema = "PUBLIC", catalog = "PUBLIC")
-public class Token implements java.io.Serializable {
+public class Token implements java.io.Serializable, PolicyEntity {
 
 	/**
 	 * 

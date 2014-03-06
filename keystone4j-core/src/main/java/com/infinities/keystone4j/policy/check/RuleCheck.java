@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.policy.check;
 
+import java.util.Map;
+
 import com.infinities.keystone4j.policy.Enforcer;
-import com.infinities.keystone4j.policy.model.Target;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 
 public class RuleCheck extends Check {
@@ -12,9 +14,9 @@ public class RuleCheck extends Check {
 	}
 
 	@Override
-	public boolean check(Target target, Token token, Enforcer enforcer) {
+	public boolean check(Map<String, PolicyEntity> target, Token token, Map<String, Object> parMap, Enforcer enforcer) {
 		try {
-			return enforcer.getRules().get(this.getMatch()).check(target, token, enforcer);
+			return enforcer.getRules().get(this.getMatch()).check(target, token, parMap, enforcer);
 		} catch (IllegalArgumentException e) {
 			return false;
 		}

@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.assignment.model.Domain;
@@ -21,13 +22,14 @@ import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.UserDomainGrant;
 import com.infinities.keystone4j.assignment.model.UserProjectGrant;
 import com.infinities.keystone4j.credential.model.Credential;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.trust.model.Trust;
 
 @Entity
 @Table(name = "USER", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"DOMAINID", "NAME" }) })
-public class User extends BaseEntity implements java.io.Serializable {
+public class User extends BaseEntity implements java.io.Serializable, PolicyEntity {
 
 	/**
 	 * 
@@ -85,6 +87,7 @@ public class User extends BaseEntity implements java.io.Serializable {
 		emailUpdated = true;
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOMAINID", nullable = false)
 	public Domain getDomain() {
@@ -255,6 +258,18 @@ public class User extends BaseEntity implements java.io.Serializable {
 
 	public void setDefaultProjectUpdated(boolean defaultProjectUpdated) {
 		this.defaultProjectUpdated = defaultProjectUpdated;
+	}
+
+	@XmlTransient
+	@Override
+	public Project getProject() {
+		return default_project;
+	}
+
+	@XmlTransient
+	@Override
+	public User getUser() {
+		throw new IllegalStateException("propert 'user' not exist");
 	}
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =
