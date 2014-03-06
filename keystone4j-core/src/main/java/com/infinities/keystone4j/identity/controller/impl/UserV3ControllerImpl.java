@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.identity.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
@@ -30,24 +32,28 @@ public class UserV3ControllerImpl implements UserV3Controller {
 	private final IdentityApi identityApi;
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
+	private final Map<String, Object> parMap;
 
 
 	public UserV3ControllerImpl(IdentityApi identityApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.identityApi = identityApi;
 		this.tokenApi = tokenApi;
 		this.policyApi = policyApi;
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
 	public UserWrapper createUser(User user) {
+		parMap.put("user", user);
 		Action<User> command = new PolicyCheckDecorator<User>(new CreateUserAction(identityApi, user), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		User ret = command.execute();
 		return new UserWrapper(ret);
 	}
 
 	@Override
 	public UsersWrapper listUsers(String domainid, String email, Boolean enabled, String name, int page, int perPage) {
+		parMap.put("domainid", domainid);
 		Action<List<User>> command = new FilterCheckDecorator<List<User>>(new PaginateDecorator<User>(new ListUsersAction(
 				identityApi, domainid, email, enabled, name), page, perPage));
 
@@ -57,30 +63,36 @@ public class UserV3ControllerImpl implements UserV3Controller {
 
 	@Override
 	public UserWrapper getUser(String userid) {
+		parMap.put("userid", userid);
 		Action<User> command = new PolicyCheckDecorator<User>(new GetUserAction(identityApi, userid), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		User ret = command.execute();
 		return new UserWrapper(ret);
 	}
 
 	@Override
 	public UserWrapper updateUser(String userid, User user) {
+		parMap.put("userid", userid);
+		parMap.put("user", user);
 		Action<User> command = new PolicyCheckDecorator<User>(new UpdateUserAction(identityApi, userid, user), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		User ret = command.execute();
 		return new UserWrapper(ret);
 	}
 
 	@Override
 	public void deleteUser(String userid) {
+		parMap.put("userid", userid);
 		Action<User> command = new PolicyCheckDecorator<User>(new DeleteUserAction(identityApi, userid), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public UsersWrapper listUsersInGroup(String groupid, String domainid, String email, Boolean enabled, String name,
 			int page, int perPage) {
+		parMap.put("groupid", groupid);
+		parMap.put("domainid", domainid);
 		Action<List<User>> command = new FilterCheckDecorator<List<User>>(new PaginateDecorator<User>(
 				new ListUsersInGroupAction(identityApi, groupid, domainid, email, enabled, name), page, perPage));
 
@@ -91,31 +103,39 @@ public class UserV3ControllerImpl implements UserV3Controller {
 	@Override
 	public void addUserToGroup(String groupid, String userid) {
 		// TODO @controller.protected(callback=_check_user_and_group_protection)
+		parMap.put("groupid", groupid);
+		parMap.put("userid", userid);
 		Action<User> command = new PolicyCheckDecorator<User>(new AddUserToGroupAction(identityApi, userid, groupid), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void checkUserInGroup(String groupid, String userid) {
 		// TODO @controller.protected(callback=_check_user_and_group_protection)
+		parMap.put("groupid", groupid);
+		parMap.put("userid", userid);
 		Action<User> command = new PolicyCheckDecorator<User>(new CheckUserInGroupAction(identityApi, userid, groupid),
-				null, tokenApi, policyApi);
+				null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void removeUserFromGroup(String groupid, String userid) {
 		// TODO @controller.protected(callback=_check_user_and_group_protection)
+		parMap.put("groupid", groupid);
+		parMap.put("userid", userid);
 		Action<User> command = new PolicyCheckDecorator<User>(new RemoveUserFromGroupAction(identityApi, userid, groupid),
-				null, tokenApi, policyApi);
+				null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void changePassword(String userid, UserParam user) {
+		parMap.put("user", user);
+		parMap.put("userid", userid);
 		Action<User> command = new PolicyCheckDecorator<User>(new ChangePasswordAction(identityApi, userid, user), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		command.execute();
 	}
 

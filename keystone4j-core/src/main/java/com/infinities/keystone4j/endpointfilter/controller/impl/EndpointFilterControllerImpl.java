@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.endpointfilter.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Project;
@@ -28,6 +30,7 @@ public class EndpointFilterControllerImpl implements EndpointFilterController {
 	private final EndpointFilterApi endpointFilterApi;
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
+	private final Map<String, Object> parMap;
 
 
 	public EndpointFilterControllerImpl(AssignmentApi assignmentApi, CatalogApi catalogApi,
@@ -38,44 +41,53 @@ public class EndpointFilterControllerImpl implements EndpointFilterController {
 		this.endpointFilterApi = endpointFilterApi;
 		this.tokenApi = tokenApi;
 		this.policyApi = policyApi;
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
 	public ProjectsWrapper listProjectsForEndpoint(String endpointid, int page, int perPage) {
+		parMap.put("endpointid", endpointid);
 		Action<List<Project>> command = new PolicyCheckDecorator<List<Project>>(new PaginateDecorator<Project>(
 				new ListProjectsForEndpointAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage),
-				null, tokenApi, policyApi);
+				null, tokenApi, policyApi, parMap);
 		List<Project> ret = command.execute();
 		return new ProjectsWrapper(ret);
 	}
 
 	@Override
 	public void addEndpointToProject(String projectid, String endpointid) {
+		parMap.put("projectid", projectid);
+		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new AddEndpointToProjectAction(assignmentApi,
-				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi);
+				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void checkEndpointInProject(String projectid, String endpointid) {
+		parMap.put("projectid", projectid);
+		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new CheckEndpointToProjectAction(assignmentApi,
-				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi);
+				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public EndpointsWrapper listEndpointsForProject(String endpointid, int page, int perPage) {
+		parMap.put("endpointid", endpointid);
 		Action<List<Endpoint>> command = new PolicyCheckDecorator<List<Endpoint>>(new PaginateDecorator<Endpoint>(
 				new ListEndpointsForProjectAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage),
-				null, tokenApi, policyApi);
+				null, tokenApi, policyApi, parMap);
 		List<Endpoint> ret = command.execute();
 		return new EndpointsWrapper(ret);
 	}
 
 	@Override
 	public void removeEndpointFromProject(String projectid, String endpointid) {
+		parMap.put("projectid", projectid);
+		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new RemoveEndpointToProjectAction(assignmentApi,
-				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi);
+				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 

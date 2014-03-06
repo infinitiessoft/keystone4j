@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.identity.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
@@ -25,24 +27,28 @@ public class GroupV3ControllerImpl implements GroupV3Controller {
 	private final IdentityApi identityApi;
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
+	private final Map<String, Object> parMap;
 
 
 	public GroupV3ControllerImpl(IdentityApi identityApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.identityApi = identityApi;
 		this.tokenApi = tokenApi;
 		this.policyApi = policyApi;
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
 	public GroupWrapper createGroup(Group group) {
+		parMap.put("group", group);
 		Action<Group> command = new PolicyCheckDecorator<Group>(new CreateGroupAction(identityApi, group), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		Group ret = command.execute();
 		return new GroupWrapper(ret);
 	}
 
 	@Override
 	public GroupsWrapper listGroups(String domainid, String name, int page, int perPage) {
+		parMap.put("domainid", domainid);
 		Action<List<Group>> command = new FilterCheckDecorator<List<Group>>(new PaginateDecorator<Group>(
 				new ListGroupsAction(identityApi, domainid, name), page, perPage));
 
@@ -52,29 +58,34 @@ public class GroupV3ControllerImpl implements GroupV3Controller {
 
 	@Override
 	public GroupWrapper getGroup(String groupid) {
+		parMap.put("groupid", groupid);
 		Action<Group> command = new PolicyCheckDecorator<Group>(new GetGroupAction(identityApi, groupid), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		Group ret = command.execute();
 		return new GroupWrapper(ret);
 	}
 
 	@Override
 	public GroupWrapper updateGroup(String groupid, Group group) {
+		parMap.put("groupid", groupid);
+		parMap.put("group", group);
 		Action<Group> command = new PolicyCheckDecorator<Group>(new UpdateGroupAction(identityApi, groupid, group), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		Group ret = command.execute();
 		return new GroupWrapper(ret);
 	}
 
 	@Override
 	public void deleteGroup(String groupid) {
+		parMap.put("groupid", groupid);
 		Action<Group> command = new PolicyCheckDecorator<Group>(new DeleteGroupAction(identityApi, groupid), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public GroupsWrapper listGroupsForUser(String userid, String name, int page, int perPage) {
+		parMap.put("userid", userid);
 		Action<List<Group>> command = new FilterCheckDecorator<List<Group>>(new PaginateDecorator<Group>(
 				new ListGroupsForUserAction(identityApi, userid, name), page, perPage));
 

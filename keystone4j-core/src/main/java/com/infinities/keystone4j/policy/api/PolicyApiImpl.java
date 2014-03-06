@@ -1,6 +1,7 @@
 package com.infinities.keystone4j.policy.api;
 
 import java.util.List;
+import java.util.Map;
 
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.PolicyDriver;
@@ -11,7 +12,7 @@ import com.infinities.keystone4j.policy.command.GetPolicyCommand;
 import com.infinities.keystone4j.policy.command.ListPoliciesCommand;
 import com.infinities.keystone4j.policy.command.UpdatePolicyCommand;
 import com.infinities.keystone4j.policy.model.Policy;
-import com.infinities.keystone4j.policy.model.Target;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 
 public class PolicyApiImpl implements PolicyApi {
@@ -55,8 +56,9 @@ public class PolicyApiImpl implements PolicyApi {
 	}
 
 	@Override
-	public void enforce(Token token, String action, Target target, boolean doRaise) {
-		EnforceCommand command = new EnforceCommand(policyDriver, token, action, target, doRaise);
+	public void enforce(Token token, String action, Map<String, PolicyEntity> target, Map<String, Object> parMap,
+			boolean doRaise) {
+		EnforceCommand command = new EnforceCommand(policyDriver, token, action, target, parMap, doRaise);
 		command.execute();
 	}
 

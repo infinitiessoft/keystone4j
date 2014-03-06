@@ -15,6 +15,10 @@ public class TokenAuthMiddleware implements Middleware {
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		String tokenid = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER);
 		KeystoneContext context = (KeystoneContext) requestContext.getProperty(KeystoneContext.CONTEXT_NAME);
+		if (context == null) {
+			context = new KeystoneContext();
+		}
+
 		context.setTokenid(tokenid);
 
 		if (requestContext.getHeaders().containsKey(SUBJECT_TOKEN_HEADER)) {

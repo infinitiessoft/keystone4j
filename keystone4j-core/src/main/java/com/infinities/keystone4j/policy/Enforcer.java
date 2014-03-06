@@ -26,7 +26,7 @@ import com.infinities.keystone4j.policy.check.RoleCheck;
 import com.infinities.keystone4j.policy.check.RuleCheck;
 import com.infinities.keystone4j.policy.check.StringCheck;
 import com.infinities.keystone4j.policy.check.TrueCheck;
-import com.infinities.keystone4j.policy.model.Target;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 
 public class Enforcer {
@@ -163,14 +163,10 @@ public class Enforcer {
 		String match = splitStr[1];
 
 		if (checks.containsKey(kind)) {
-			Check check = checks.get(kind);
-			check.setKind(kind);
-			check.setMatch(match);
+			Check check = checks.get(kind).newInstance(kind, match);
 			return check;
 		} else if (checks.containsKey(NONE)) {
-			Check check = checks.get(NONE);
-			check.setKind(kind);
-			check.setMatch(match);
+			Check check = checks.get(NONE).newInstance(kind, match);
 			return check;
 		} else {
 			logger.error(NO_HANDLER, splitStr[0]);
@@ -179,7 +175,8 @@ public class Enforcer {
 	}
 
 	// rule, target, creds
-	public boolean enforce(Token token, String action, Target target, boolean doRaise) {
+	public boolean enforce(Token token, String action, Map<String, PolicyEntity> target, Map<String, Object> parMap,
+			boolean doRaise) {
 		logger.debug(RULE_ENFORCED, action);
 		// action ,target,creds soRaise,
 
@@ -189,7 +186,7 @@ public class Enforcer {
 		} else {
 			if (rules.containsKey(action)) {
 				BaseCheck check = this.rules.get(action);
-				result = check.check(target, token, this);
+				result = check.check(target, token, parMap, this);
 			} else {
 				logger.debug(RULE_DOES_NOT_EXIST, action);
 				result = false;

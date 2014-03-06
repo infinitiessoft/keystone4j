@@ -1,5 +1,8 @@
 package com.infinities.keystone4j.auth.controller.impl;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.action.AuthenticationForTokenAction;
@@ -26,6 +29,7 @@ public class AuthControllerImpl implements AuthController {
 	private final TokenApi tokenApi;
 	private final TrustApi trustApi;
 	private final PolicyApi policyApi;
+	private final Map<String, Object> parMap;
 
 
 	public AuthControllerImpl(AssignmentApi assignmentApi, IdentityApi identityApi, TokenProviderApi tokenProviderApi,
@@ -36,6 +40,7 @@ public class AuthControllerImpl implements AuthController {
 		this.tokenApi = tokenApi;
 		this.trustApi = trustApi;
 		this.policyApi = policyApi;
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
@@ -49,28 +54,28 @@ public class AuthControllerImpl implements AuthController {
 	@Override
 	public void checkToken() {
 		Action<TokenMetadata> command = new PolicyCheckDecorator<TokenMetadata>(new CheckTokenAction(assignmentApi,
-				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi);
+				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void revokeToken() {
 		Action<TokenMetadata> command = new PolicyCheckDecorator<TokenMetadata>(new RevokeTokenAction(assignmentApi,
-				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi);
+				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public TokenMetadata validateToken() {
 		Action<TokenMetadata> command = new PolicyCheckDecorator<TokenMetadata>(new ValidateTokenAction(assignmentApi,
-				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi);
+				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
 		return command.execute();
 	}
 
 	@Override
 	public SignedWrapper getRevocationList() {
 		Action<SignedWrapper> command = new PolicyCheckDecorator<SignedWrapper>(new GetRevocationListAction(assignmentApi,
-				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi);
+				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
 		return command.execute();
 	}
 

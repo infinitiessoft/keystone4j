@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.policy.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
@@ -22,17 +24,20 @@ public class PolicyV3ControllerImpl implements PolicyV3Controller {
 
 	private final PolicyApi policyApi;
 	private final TokenApi tokenApi;
+	private final Map<String, Object> parMap;
 
 
 	public PolicyV3ControllerImpl(PolicyApi policyApi, TokenApi tokenApi) {
 		this.policyApi = policyApi;
 		this.tokenApi = tokenApi;
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
 	public PolicyWrapper createPolicy(Policy policy) {
+		parMap.put("policy", policy);
 		Action<Policy> command = new PolicyCheckDecorator<Policy>(new CreatePolicyAction(policyApi, policy), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		Policy ret = command.execute();
 		return new PolicyWrapper(ret);
 	}
@@ -48,24 +53,28 @@ public class PolicyV3ControllerImpl implements PolicyV3Controller {
 
 	@Override
 	public PolicyWrapper getPolicy(String policyid) {
+		parMap.put("policyid", policyid);
 		Action<Policy> command = new PolicyCheckDecorator<Policy>(new GetPolicyAction(policyApi, policyid), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		Policy ret = command.execute();
 		return new PolicyWrapper(ret);
 	}
 
 	@Override
 	public PolicyWrapper updatePolicy(String policyid, Policy policy) {
+		parMap.put("policyid", policyid);
+		parMap.put("policy", policy);
 		Action<Policy> command = new PolicyCheckDecorator<Policy>(new UpdatePolicyAction(policyApi, policyid, policy), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		Policy ret = command.execute();
 		return new PolicyWrapper(ret);
 	}
 
 	@Override
 	public void deletePolicy(String policyid) {
+		parMap.put("policyid", policyid);
 		Action<Policy> command = new PolicyCheckDecorator<Policy>(new DeletePolicyAction(policyApi, policyid), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		command.execute();
 	}
 

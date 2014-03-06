@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.credential.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.credential.action.CreateCredentialAction;
@@ -24,18 +26,21 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 	private final CredentialApi credentialApi;
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
+	private final Map<String, Object> parMap;
 
 
 	public CredentialV3ControllerImpl(CredentialApi credentialApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.credentialApi = credentialApi;
 		this.tokenApi = tokenApi;
 		this.policyApi = policyApi;
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
 	public CredentialWrapper createCredential(Credential credential) {
+		parMap.put("credential", credential);
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new CreateCredentialAction(credentialApi,
-				credential), null, tokenApi, policyApi);
+				credential), null, tokenApi, policyApi, parMap);
 		Credential ret = command.execute();
 		return new CredentialWrapper(ret);
 	}
@@ -51,24 +56,28 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 
 	@Override
 	public CredentialWrapper getCredential(String credentialid) {
+		parMap.put("credentialid", credentialid);
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new GetCredentialAction(credentialApi,
-				credentialid), null, tokenApi, policyApi);
+				credentialid), null, tokenApi, policyApi, parMap);
 		Credential ret = command.execute();
 		return new CredentialWrapper(ret);
 	}
 
 	@Override
 	public CredentialWrapper updateCredential(String credentialid, Credential credential) {
+		parMap.put("credentialid", credentialid);
+		parMap.put("credential", credential);
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new UpdateCredentialAction(credentialApi,
-				credentialid, credential), null, tokenApi, policyApi);
+				credentialid, credential), null, tokenApi, policyApi, parMap);
 		Credential ret = command.execute();
 		return new CredentialWrapper(ret);
 	}
 
 	@Override
 	public void deleteCredential(String credentialid) {
+		parMap.put("credentialid", credentialid);
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new DeleteCredentialAction(credentialApi,
-				credentialid), null, tokenApi, policyApi);
+				credentialid), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 

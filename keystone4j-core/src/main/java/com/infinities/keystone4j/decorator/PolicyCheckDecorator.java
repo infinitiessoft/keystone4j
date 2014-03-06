@@ -1,6 +1,7 @@
 package com.infinities.keystone4j.decorator;
 
 import java.text.MessageFormat;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.Callback;
 import com.infinities.keystone4j.KeystoneContext;
@@ -17,7 +19,7 @@ import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.TokenNotFoundException;
 import com.infinities.keystone4j.exception.UnauthorizedException;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.policy.model.Target;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.Bind;
 import com.infinities.keystone4j.token.model.Token;
@@ -30,13 +32,16 @@ public class PolicyCheckDecorator<T> extends AbstractActionDecorator<T> {
 	private final static Logger logger = LoggerFactory.getLogger(PolicyCheckDecorator.class);
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
+	private final Map<String, Object> parMap;
 
 
-	public PolicyCheckDecorator(Action<T> command, Callback callback, TokenApi tokenApi, PolicyApi policyApi) {
+	public PolicyCheckDecorator(Action<T> command, Callback callback, TokenApi tokenApi, PolicyApi policyApi,
+			Map<String, Object> parMap) {
 		super(command);
 		this.callback = callback;
 		this.tokenApi = tokenApi;
 		this.policyApi = policyApi;
+		this.parMap = parMap;
 	}
 
 	@Override
@@ -51,14 +56,14 @@ public class PolicyCheckDecorator<T> extends AbstractActionDecorator<T> {
 			String action = MessageFormat.format("identity:{0}", command.getName());
 
 			Token token = buildPolicyCheckCredentials(action, context);
-			Target target = new Target();
+			Map<String, PolicyEntity> target = Maps.newHashMap();
 			if (!Strings.isNullOrEmpty(context.getSubjectTokenid())) {
 				Token subjectToken = tokenApi.getToken(context.getSubjectTokenid());
-				target.setUser(subjectToken.getUser());
-				target.setDomain(subjectToken.getUser().getDomain());
-				target.setProject(subjectToken.getTrust().getProject());
+				target.put("user", subjectToken.getUser());
+				target.put("domain", subjectToken.getDomain());
+				target.put("project", subjectToken.getProject());
 			}
-			policyApi.enforce(token, action, target, true);
+			policyApi.enforce(token, action, target, parMap, true);
 
 		}
 
@@ -88,7 +93,7 @@ public class PolicyCheckDecorator<T> extends AbstractActionDecorator<T> {
 
 	// wsgi.validate_token_bind
 	private void validateTokenBind(KeystoneContext context, Token token) {
-		String bindMode = Config.Instance.getOpt(Config.Type.token, "enforce_token_bind").getText();
+		String bindMode = Config.Instance.getOpt(Config.Type.token, "enforce_token_bind").asText();
 
 		if (bindMode.equals("disabled")) {
 			return;

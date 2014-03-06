@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.assignment.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.action.domain.CreateDomainAction;
@@ -24,18 +26,21 @@ public class DomainV3ControllerImpl implements DomainV3Controller {
 	private final AssignmentApi assignmentApi;
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
+	private final Map<String, Object> parMap;
 
 
 	public DomainV3ControllerImpl(AssignmentApi assignmentApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
 		this.tokenApi = tokenApi;
 		this.policyApi = policyApi;
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
 	public DomainWrapper createDomain(Domain domain) {
+		parMap.put("domain", domain);
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new CreateDomainAction(assignmentApi, domain), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		Domain ret = command.execute();
 		return new DomainWrapper(ret);
 	}
@@ -51,24 +56,28 @@ public class DomainV3ControllerImpl implements DomainV3Controller {
 
 	@Override
 	public DomainWrapper getDomain(String domainid) {
+		parMap.put("domainid", domainid);
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new GetDomainAction(assignmentApi, domainid), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		Domain ret = command.execute();
 		return new DomainWrapper(ret);
 	}
 
 	@Override
 	public DomainWrapper updateDomain(String domainid, Domain domain) {
+		parMap.put("domainid", domainid);
+		parMap.put("domain", domain);
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new UpdateDomainAction(assignmentApi, domainid, domain),
-				null, tokenApi, policyApi);
+				null, tokenApi, policyApi, parMap);
 		Domain ret = command.execute();
 		return new DomainWrapper(ret);
 	}
 
 	@Override
 	public void deleteDomain(String domainid) {
+		parMap.put("domainid", domainid);
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new DeleteDomainAction(assignmentApi, domainid), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		command.execute();
 	}
 

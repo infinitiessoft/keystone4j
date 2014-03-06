@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.assignment.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.action.grant.CheckGrantByGroupDomainAction;
@@ -43,6 +45,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
 	private static final boolean INHERITED = false;
+	private final Map<String, Object> parMap;
 
 
 	public RoleV3ControllerImpl(AssignmentApi assignmentApi, IdentityApi identityApi, TokenApi tokenApi, PolicyApi policyApi) {
@@ -50,13 +53,14 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 		this.identityApi = identityApi;
 		this.tokenApi = tokenApi;
 		this.policyApi = policyApi;
-
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
 	public RoleWrapper createRole(Role role) {
+		parMap.put("role", role);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateRoleAction(assignmentApi, role), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		Role ret = command.execute();
 		return new RoleWrapper(ret);
 	}
@@ -72,43 +76,55 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 
 	@Override
 	public RoleWrapper getRole(String roleid) {
+		parMap.put("roleid", roleid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new GetRoleAction(assignmentApi, roleid), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		Role ret = command.execute();
 		return new RoleWrapper(ret);
 	}
 
 	@Override
 	public RoleWrapper updateRole(String roleid, Role role) {
+		parMap.put("roleid", roleid);
+		parMap.put("role", role);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new UpdateRoleAction(assignmentApi, roleid, role), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		Role ret = command.execute();
 		return new RoleWrapper(ret);
 	}
 
 	@Override
 	public void deleteRole(String roleid) {
+		parMap.put("roleid", roleid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteRoleAction(assignmentApi, roleid), null, tokenApi,
-				policyApi);
+				policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void createGrantByUserDomain(String roleid, String userid, String domainid) {
+		parMap.put("roleid", roleid);
+		parMap.put("userid", userid);
+		parMap.put("domainid", domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByUserDomainAction(assignmentApi, identityApi,
-				roleid, userid, domainid, INHERITED), null, tokenApi, policyApi);
+				roleid, userid, domainid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void createGrantByGroupDomain(String roleid, String groupid, String domainid) {
+		parMap.put("roleid", roleid);
+		parMap.put("groupid", groupid);
+		parMap.put("domainid", domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByGroupDomainAction(assignmentApi, identityApi,
-				roleid, groupid, domainid, INHERITED), null, tokenApi, policyApi);
+				roleid, groupid, domainid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public RolesWrapper listGrantsByUserDomain(String userid, String domainid, int page, int perPage) {
+		parMap.put("userid", userid);
+		parMap.put("domainid", domainid);
 		Action<List<Role>> command = new FilterCheckDecorator<List<Role>>(new PaginateDecorator<Role>(
 				new ListGrantsByUserDomainAction(assignmentApi, identityApi, userid, domainid, INHERITED), page, perPage));
 
@@ -118,6 +134,8 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 
 	@Override
 	public RolesWrapper listGrantsByGroupDomain(String groupid, String domainid, int page, int perPage) {
+		parMap.put("groupid", groupid);
+		parMap.put("domainid", domainid);
 		Action<List<Role>> command = new FilterCheckDecorator<List<Role>>(new PaginateDecorator<Role>(
 				new ListGrantsByGroupDomainAction(assignmentApi, identityApi, groupid, domainid, INHERITED), page, perPage));
 
@@ -127,48 +145,68 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 
 	@Override
 	public void checkGrantByUserDomain(String roleid, String userid, String domainid) {
+		parMap.put("roleid", roleid);
+		parMap.put("userid", userid);
+		parMap.put("domainid", domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByUserDomainAction(assignmentApi, identityApi,
-				roleid, userid, domainid, INHERITED), null, tokenApi, policyApi);
+				roleid, userid, domainid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void checkGrantByGroupDomain(String roleid, String groupid, String domainid) {
+		parMap.put("roleid", roleid);
+		parMap.put("groupid", groupid);
+		parMap.put("domainid", domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByGroupDomainAction(assignmentApi, identityApi,
-				roleid, groupid, domainid, INHERITED), null, tokenApi, policyApi);
+				roleid, groupid, domainid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void revokeGrantByUserDomain(String roleid, String userid, String domainid) {
+		parMap.put("roleid", roleid);
+		parMap.put("userid", userid);
+		parMap.put("domainid", domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByUserDomainAction(assignmentApi, identityApi,
-				roleid, userid, domainid, INHERITED), null, tokenApi, policyApi);
+				roleid, userid, domainid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void revokeGrantByGroupDomain(String roleid, String groupid, String domainid) {
+		parMap.put("roleid", roleid);
+		parMap.put("groupid", groupid);
+		parMap.put("domainid", domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByGroupDomainAction(assignmentApi, identityApi,
-				roleid, groupid, domainid, INHERITED), null, tokenApi, policyApi);
+				roleid, groupid, domainid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void createGrantByUserProject(String roleid, String userid, String projectid) {
+		parMap.put("roleid", roleid);
+		parMap.put("userid", userid);
+		parMap.put("projectid", projectid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByUserProjectAction(assignmentApi, identityApi,
-				roleid, userid, projectid), null, tokenApi, policyApi);
+				roleid, userid, projectid), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void createGrantByGroupProject(String roleid, String groupid, String projectid) {
+		parMap.put("roleid", roleid);
+		parMap.put("groupid", groupid);
+		parMap.put("projectid", projectid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByGroupProjectAction(assignmentApi,
-				identityApi, roleid, groupid, projectid), null, tokenApi, policyApi);
+				identityApi, roleid, groupid, projectid), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public RolesWrapper listGrantsByUserProject(String userid, String projectid, int page, int perPage) {
+		parMap.put("projectid", projectid);
+		parMap.put("userid", userid);
 		Action<List<Role>> command = new FilterCheckDecorator<List<Role>>(new PaginateDecorator<Role>(
 				new ListGrantsByUserProjectAction(assignmentApi, identityApi, userid, projectid, INHERITED), page, perPage));
 
@@ -178,6 +216,8 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 
 	@Override
 	public RolesWrapper listGrantsByGroupProject(String groupid, String projectid, int page, int perPage) {
+		parMap.put("projectid", projectid);
+		parMap.put("groupid", groupid);
 		Action<List<Role>> command = new FilterCheckDecorator<List<Role>>(
 				new PaginateDecorator<Role>(new ListGrantsByGroupProjectAction(assignmentApi, identityApi, groupid,
 						projectid, INHERITED), page, perPage));
@@ -188,29 +228,41 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 
 	@Override
 	public void checkGrantByUserProject(String roleid, String userid, String projectid) {
+		parMap.put("roleid", roleid);
+		parMap.put("userid", userid);
+		parMap.put("projectid", projectid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByUserProjectAction(assignmentApi, identityApi,
-				roleid, userid, projectid, INHERITED), null, tokenApi, policyApi);
+				roleid, userid, projectid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void checkGrantByGroupProject(String roleid, String groupid, String projectid) {
+		parMap.put("roleid", roleid);
+		parMap.put("groupid", groupid);
+		parMap.put("projectid", projectid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByGroupProjectAction(assignmentApi, identityApi,
-				roleid, groupid, projectid, INHERITED), null, tokenApi, policyApi);
+				roleid, groupid, projectid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void revokeGrantByUserProject(String roleid, String userid, String projectid) {
+		parMap.put("roleid", roleid);
+		parMap.put("userid", userid);
+		parMap.put("projectid", projectid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByUserProjectAction(assignmentApi, identityApi,
-				roleid, userid, projectid, INHERITED), null, tokenApi, policyApi);
+				roleid, userid, projectid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 
 	@Override
 	public void revokeGrantByGroupProject(String roleid, String groupid, String projectid) {
+		parMap.put("roleid", roleid);
+		parMap.put("groupid", groupid);
+		parMap.put("projectid", projectid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByGroupProjectAction(assignmentApi,
-				identityApi, roleid, groupid, projectid, INHERITED), null, tokenApi, policyApi);
+				identityApi, roleid, groupid, projectid, INHERITED), null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 

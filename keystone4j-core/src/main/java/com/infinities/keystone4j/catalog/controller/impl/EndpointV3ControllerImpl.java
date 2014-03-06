@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.catalog.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.action.endpoint.CreateEndpointAction;
@@ -24,24 +26,28 @@ public class EndpointV3ControllerImpl implements EndpointV3Controller {
 	private final CatalogApi catalogApi;
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
+	private final Map<String, Object> parMap;
 
 
 	public EndpointV3ControllerImpl(CatalogApi catalogApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.catalogApi = catalogApi;
 		this.tokenApi = tokenApi;
 		this.policyApi = policyApi;
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
 	public EndpointWrapper createEndpoint(Endpoint endpoint) {
+		parMap.put("endpoint", endpoint);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new CreateEndpointAction(catalogApi, endpoint), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		Endpoint ret = command.execute();
 		return new EndpointWrapper(ret);
 	}
 
 	@Override
 	public EndpointsWrapper listEndpoints(String interfaceType, String serviceid, int page, int perPage) {
+		parMap.put("serviceid", serviceid);
 		Action<List<Endpoint>> command = new FilterCheckDecorator<List<Endpoint>>(new PaginateDecorator<Endpoint>(
 				new ListEndpointsAction(catalogApi, interfaceType, serviceid), page, perPage));
 
@@ -51,24 +57,28 @@ public class EndpointV3ControllerImpl implements EndpointV3Controller {
 
 	@Override
 	public EndpointWrapper getEndpoint(String endpointid) {
+		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new GetEndpointAction(catalogApi, endpointid), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		Endpoint ret = command.execute();
 		return new EndpointWrapper(ret);
 	}
 
 	@Override
 	public EndpointWrapper updateEndpoint(String endpointid, Endpoint endpoint) {
+		parMap.put("endpoint", endpoint);
+		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new UpdateEndpointAction(catalogApi, endpointid,
-				endpoint), null, tokenApi, policyApi);
+				endpoint), null, tokenApi, policyApi, parMap);
 		Endpoint ret = command.execute();
 		return new EndpointWrapper(ret);
 	}
 
 	@Override
 	public void deleteEndpoint(String endpointid) {
+		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new DeleteEndpointAction(catalogApi, endpointid),
-				null, tokenApi, policyApi);
+				null, tokenApi, policyApi, parMap);
 		command.execute();
 	}
 

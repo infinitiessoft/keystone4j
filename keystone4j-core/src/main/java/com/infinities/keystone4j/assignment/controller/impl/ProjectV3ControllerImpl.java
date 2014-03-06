@@ -1,7 +1,9 @@
 package com.infinities.keystone4j.assignment.controller.impl;
 
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.action.project.CreateProjectAction;
@@ -25,24 +27,28 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 	private final AssignmentApi assignmentApi;
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
+	private final Map<String, Object> parMap;
 
 
 	public ProjectV3ControllerImpl(AssignmentApi assignmentApi, TokenApi tokenApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
 		this.tokenApi = tokenApi;
 		this.policyApi = policyApi;
+		parMap = Maps.newHashMap();
 	}
 
 	@Override
 	public ProjectWrapper createProject(Project project) {
+		parMap.put("project", project);
 		Action<Project> command = new PolicyCheckDecorator<Project>(new CreateProjectAction(assignmentApi, project), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		Project ret = command.execute();
 		return new ProjectWrapper(ret);
 	}
 
 	@Override
 	public ProjectsWrapper listProjects(String domainid, String name, Boolean enabled, int page, int perPage) {
+		parMap.put("domainid", domainid);
 		Action<List<Project>> command = new FilterCheckDecorator<List<Project>>(new PaginateDecorator<Project>(
 				new ListProjectsAction(assignmentApi, domainid, name, enabled), page, perPage));
 
@@ -52,6 +58,7 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 
 	@Override
 	public ProjectsWrapper listUserProjects(String userid, Boolean enabled, String name, int page, int perPage) {
+		parMap.put("userid", userid);
 		Action<List<Project>> command = new FilterCheckDecorator<List<Project>>(new PaginateDecorator<Project>(
 				new ListUserProjectsAction(assignmentApi, userid, name, enabled), page, perPage));
 
@@ -61,24 +68,28 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 
 	@Override
 	public ProjectWrapper getProject(String projectid) {
+		parMap.put("projectid", projectid);
 		Action<Project> command = new PolicyCheckDecorator<Project>(new GetProjectAction(assignmentApi, projectid), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		Project ret = command.execute();
 		return new ProjectWrapper(ret);
 	}
 
 	@Override
 	public ProjectWrapper updateProject(String projectid, Project project) {
+		parMap.put("projectid", projectid);
+		parMap.put("project", project);
 		Action<Project> command = new PolicyCheckDecorator<Project>(new UpdateProjectAction(assignmentApi, projectid,
-				project), null, tokenApi, policyApi);
+				project), null, tokenApi, policyApi, parMap);
 		Project ret = command.execute();
 		return new ProjectWrapper(ret);
 	}
 
 	@Override
 	public void deleteProject(String projectid) {
+		parMap.put("projectid", projectid);
 		Action<Project> command = new PolicyCheckDecorator<Project>(new DeleteProjectAction(assignmentApi, projectid), null,
-				tokenApi, policyApi);
+				tokenApi, policyApi, parMap);
 		command.execute();
 	}
 }

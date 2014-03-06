@@ -1,10 +1,11 @@
 package com.infinities.keystone4j.policy;
 
 import java.util.List;
+import java.util.Map;
 
 import com.infinities.keystone4j.Api;
 import com.infinities.keystone4j.policy.model.Policy;
-import com.infinities.keystone4j.policy.model.Target;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 
 public interface PolicyApi extends Api {
@@ -19,6 +20,6 @@ public interface PolicyApi extends Api {
 
 	Policy deletePolicy(String policyid);
 
-	void enforce(Token token, String action, Target target, boolean doRaise);
+	void enforce(Token token, String action, Map<String, PolicyEntity> target, Map<String, Object> parMap, boolean doRaise);
 
 }
