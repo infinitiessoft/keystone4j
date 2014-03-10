@@ -47,8 +47,9 @@ public class ServiceV3ControllerImpl implements ServiceV3Controller {
 
 	@Override
 	public ServicesWrapper listServices(String type, int page, int perPage) {
+		parMap.put("type", type);
 		Action<List<Service>> command = new FilterCheckDecorator<List<Service>>(new PaginateDecorator<Service>(
-				new ListServicesAction(catalogApi, type), page, perPage));
+				new ListServicesAction(catalogApi, type), page, perPage), tokenApi, policyApi, parMap);
 		List<Service> ret = command.execute();
 		return new ServicesWrapper(ret);
 	}

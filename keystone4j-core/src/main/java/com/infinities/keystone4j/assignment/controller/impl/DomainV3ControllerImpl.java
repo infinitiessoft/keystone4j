@@ -47,8 +47,10 @@ public class DomainV3ControllerImpl implements DomainV3Controller {
 
 	@Override
 	public DomainsWrapper listDomains(String name, Boolean enabled, int page, int perPage) {
+		parMap.put("name", name);
+		parMap.put("enabled", enabled);
 		Action<List<Domain>> command = new FilterCheckDecorator<List<Domain>>(new PaginateDecorator<Domain>(
-				new ListDomainsAction(assignmentApi, name, enabled), page, perPage));
+				new ListDomainsAction(assignmentApi, name, enabled), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Domain> ret = command.execute();
 		return new DomainsWrapper(ret);

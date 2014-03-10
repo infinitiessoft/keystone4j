@@ -11,14 +11,17 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.infinities.keystone4j.BaseEntity;
+import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.TokenRole;
 import com.infinities.keystone4j.trust.model.TrustRole;
 
 @Entity
 @Table(name = "ROLE", schema = "PUBLIC", catalog = "PUBLIC")
-public class Role extends BaseEntity implements java.io.Serializable {
+public class Role extends BaseEntity implements java.io.Serializable, PolicyEntity {
 
 	/**
 	 * 
@@ -149,6 +152,24 @@ public class Role extends BaseEntity implements java.io.Serializable {
 
 	public void setTokenRoles(Set<TokenRole> tokenRoles) {
 		this.tokenRoles = tokenRoles;
+	}
+
+	@XmlTransient
+	@Override
+	public User getUser() {
+		throw new IllegalStateException("propert 'user' not exist");
+	}
+
+	@XmlTransient
+	@Override
+	public Domain getDomain() {
+		throw new IllegalStateException("propert 'domain' not exist");
+	}
+
+	@XmlTransient
+	@Override
+	public Project getProject() {
+		throw new IllegalStateException("propert 'project' not exist");
 	}
 
 }

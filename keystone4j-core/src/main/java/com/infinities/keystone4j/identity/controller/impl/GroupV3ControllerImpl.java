@@ -49,8 +49,9 @@ public class GroupV3ControllerImpl implements GroupV3Controller {
 	@Override
 	public GroupsWrapper listGroups(String domainid, String name, int page, int perPage) {
 		parMap.put("domainid", domainid);
+		parMap.put("name", name);
 		Action<List<Group>> command = new FilterCheckDecorator<List<Group>>(new PaginateDecorator<Group>(
-				new ListGroupsAction(identityApi, domainid, name), page, perPage));
+				new ListGroupsAction(identityApi, domainid, name), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Group> ret = command.execute();
 		return new GroupsWrapper(ret);
@@ -86,8 +87,9 @@ public class GroupV3ControllerImpl implements GroupV3Controller {
 	@Override
 	public GroupsWrapper listGroupsForUser(String userid, String name, int page, int perPage) {
 		parMap.put("userid", userid);
+		parMap.put("name", name);
 		Action<List<Group>> command = new FilterCheckDecorator<List<Group>>(new PaginateDecorator<Group>(
-				new ListGroupsForUserAction(identityApi, userid, name), page, perPage));
+				new ListGroupsForUserAction(identityApi, userid, name), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Group> ret = command.execute();
 		return new GroupsWrapper(ret);

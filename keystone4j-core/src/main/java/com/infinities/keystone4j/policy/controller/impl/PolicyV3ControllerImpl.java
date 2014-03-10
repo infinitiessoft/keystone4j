@@ -44,8 +44,9 @@ public class PolicyV3ControllerImpl implements PolicyV3Controller {
 
 	@Override
 	public PoliciesWrapper listPolicies(String type, int page, int perPage) {
+		parMap.put("type", type);
 		Action<List<Policy>> command = new FilterCheckDecorator<List<Policy>>(new PaginateDecorator<Policy>(
-				new ListPoliciesAction(policyApi, type), page, perPage));
+				new ListPoliciesAction(policyApi, type), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Policy> ret = command.execute();
 		return new PoliciesWrapper(ret);

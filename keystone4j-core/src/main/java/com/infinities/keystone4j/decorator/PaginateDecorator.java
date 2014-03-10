@@ -4,21 +4,22 @@ import java.util.List;
 
 import com.infinities.keystone4j.Action;
 
-public class PaginateDecorator<V> extends AbstractActionDecorator<List<V>> {
+public class PaginateDecorator<V> implements Action<List<V>> {
 
 	private final int page;
 	private final int perPage;
+	private final Action<List<V>> command;
 
 
 	public PaginateDecorator(Action<List<V>> command, int page, int perPage) {
-		super(command);
 		this.page = page;
 		this.perPage = perPage;
+		this.command = command;
 	}
 
 	@Override
 	public List<V> execute() {
-		List<V> list = this.getAction().execute();
+		List<V> list = command.execute();
 		int fromIndex = perPage * (page - 1);
 		int toIndex = perPage * page;
 		return list.subList(fromIndex, toIndex);

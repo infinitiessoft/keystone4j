@@ -15,7 +15,6 @@ import com.infinities.keystone4j.credential.controller.CredentialV3Controller;
 import com.infinities.keystone4j.credential.model.Credential;
 import com.infinities.keystone4j.credential.model.CredentialWrapper;
 import com.infinities.keystone4j.credential.model.CredentialsWrapper;
-import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.policy.PolicyApi;
@@ -47,8 +46,8 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 
 	@Override
 	public CredentialsWrapper listCredentials(int page, int perPage) {
-		Action<List<Credential>> command = new FilterCheckDecorator<List<Credential>>(new PaginateDecorator<Credential>(
-				new ListCredentialsAction(credentialApi), page, perPage));
+		Action<List<Credential>> command = new PolicyCheckDecorator<List<Credential>>(new PaginateDecorator<Credential>(
+				new ListCredentialsAction(credentialApi), page, perPage), null, tokenApi, policyApi, parMap);
 
 		List<Credential> ret = command.execute();
 		return new CredentialsWrapper(ret);

@@ -48,8 +48,9 @@ public class EndpointV3ControllerImpl implements EndpointV3Controller {
 	@Override
 	public EndpointsWrapper listEndpoints(String interfaceType, String serviceid, int page, int perPage) {
 		parMap.put("serviceid", serviceid);
+		parMap.put("interfaceType", interfaceType);
 		Action<List<Endpoint>> command = new FilterCheckDecorator<List<Endpoint>>(new PaginateDecorator<Endpoint>(
-				new ListEndpointsAction(catalogApi, interfaceType, serviceid), page, perPage));
+				new ListEndpointsAction(catalogApi, interfaceType, serviceid), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Endpoint> ret = command.execute();
 		return new EndpointsWrapper(ret);

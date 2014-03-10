@@ -9,7 +9,6 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.assignment.model.RoleWrapper;
 import com.infinities.keystone4j.assignment.model.RolesWrapper;
-import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
@@ -61,8 +60,9 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 	public TrustsWrapper listTrusts(String trustorid, String trusteeid, int page, int perPage) {
 		parMap.put("trustorid", trustorid);
 		parMap.put("trusteeid", trusteeid);
-		Action<List<Trust>> command = new FilterCheckDecorator<List<Trust>>(new PaginateDecorator<Trust>(
-				new ListTrustsAction(assignmentApi, identityApi, trustApi, tokenApi, trustorid, trusteeid), page, perPage));
+		Action<List<Trust>> command = new PolicyCheckDecorator<List<Trust>>(new PaginateDecorator<Trust>(
+				new ListTrustsAction(assignmentApi, identityApi, trustApi, tokenApi, trustorid, trusteeid), page, perPage),
+				null, tokenApi, policyApi, parMap);
 
 		List<Trust> ret = command.execute();
 		return new TrustsWrapper(ret);
@@ -71,8 +71,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 	@Override
 	public TrustWrapper getTrust(String trustid) {
 		parMap.put("trustid", trustid);
-		Action<Trust> command = new PolicyCheckDecorator<Trust>(new GetTrustAction(assignmentApi, identityApi, trustApi,
-				tokenApi, trustid), null, tokenApi, policyApi, parMap);
+		Action<Trust> command = new GetTrustAction(assignmentApi, identityApi, trustApi, tokenApi, trustid);
 		Trust ret = command.execute();
 		return new TrustWrapper(ret);
 	}
@@ -87,8 +86,10 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 
 	@Override
 	public RolesWrapper listRolesForTrust(String trustid, int page, int perPage) {
-		Action<List<Role>> command = new FilterCheckDecorator<List<Role>>(new PaginateDecorator<Role>(
-				new ListRolesForTrustAction(assignmentApi, identityApi, trustApi, tokenApi, trustid), page, perPage));
+		parMap.put("trustid", trustid);
+		Action<List<Role>> command = new PolicyCheckDecorator<List<Role>>(new PaginateDecorator<Role>(
+				new ListRolesForTrustAction(assignmentApi, identityApi, trustApi, tokenApi, trustid), page, perPage), null,
+				tokenApi, policyApi, parMap);
 
 		List<Role> ret = command.execute();
 		return new RolesWrapper(ret);

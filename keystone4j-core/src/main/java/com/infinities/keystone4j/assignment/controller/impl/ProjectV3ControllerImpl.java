@@ -49,8 +49,10 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 	@Override
 	public ProjectsWrapper listProjects(String domainid, String name, Boolean enabled, int page, int perPage) {
 		parMap.put("domainid", domainid);
+		parMap.put("name", name);
+		parMap.put("enabled", enabled);
 		Action<List<Project>> command = new FilterCheckDecorator<List<Project>>(new PaginateDecorator<Project>(
-				new ListProjectsAction(assignmentApi, domainid, name, enabled), page, perPage));
+				new ListProjectsAction(assignmentApi, domainid, name, enabled), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Project> ret = command.execute();
 		return new ProjectsWrapper(ret);
@@ -58,9 +60,11 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 
 	@Override
 	public ProjectsWrapper listUserProjects(String userid, Boolean enabled, String name, int page, int perPage) {
-		parMap.put("userid", userid);
+		parMap.put("name", name);
+		parMap.put("enabled", enabled);
 		Action<List<Project>> command = new FilterCheckDecorator<List<Project>>(new PaginateDecorator<Project>(
-				new ListUserProjectsAction(assignmentApi, userid, name, enabled), page, perPage));
+				new ListUserProjectsAction(assignmentApi, userid, name, enabled), page, perPage), tokenApi, policyApi,
+				parMap);
 
 		List<Project> ret = command.execute();
 		return new ProjectsWrapper(ret);
