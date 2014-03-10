@@ -111,8 +111,8 @@ public enum Config {
 				Options.newStrOpt("cert_subject", "/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost"));
 
 		FILE_OPTIONS.put(Config.Type.signing, "token_format", Options.newStrOpt("token_format", ""));
-		FILE_OPTIONS.put(Config.Type.signing, "certfile", Options.newStrOpt("certfile", "signing_cert.pem"));
-		FILE_OPTIONS.put(Config.Type.signing, "keyfile", Options.newStrOpt("keyfile", "signing_key.pem"));
+		FILE_OPTIONS.put(Config.Type.signing, "certfile", Options.newStrOpt("certfile", "/signing_cert_req.pem"));
+		FILE_OPTIONS.put(Config.Type.signing, "keyfile", Options.newStrOpt("keyfile", "/signing_key.pem"));
 		FILE_OPTIONS.put(Config.Type.signing, "ca_certs", Options.newStrOpt("ca_certs", "ca.pem"));
 		FILE_OPTIONS.put(Config.Type.signing, "ca_key", Options.newStrOpt("ca_key", "cakey.pem"));
 		FILE_OPTIONS.put(Config.Type.signing, "key_size", Options.newIntOpt("key_size", 2048));

@@ -90,6 +90,12 @@
 				<version>${shiroVersion}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk16</artifactId>
+				<version>1.46</version>
+			</dependency>
+
 			<!-- Logging (slf4j with log4j as an implementation -->
 			<dependency>
 				<groupId>org.slf4j</groupId>

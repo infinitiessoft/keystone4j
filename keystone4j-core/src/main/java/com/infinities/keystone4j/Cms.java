@@ -1,17 +1,18 @@
 package com.infinities.keystone4j;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.KeyFactory;
+import java.net.URL;
+import java.security.KeyPair;
 import java.security.PrivateKey;
+import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.spec.KeySpec;
-import java.security.spec.PKCS8EncodedKeySpec;
 
-import org.glassfish.jersey.internal.util.Base64;
+import org.bouncycastle.openssl.PEMReader;
 
 import com.infinities.keystone4j.common.Config;
 
@@ -20,61 +21,60 @@ public enum Cms {
 
 	// private final static String CERT_FILE = "certfile";
 	private final static String KEY_FILE = "keyfile";
+	// private final static Logger logger = LoggerFactory.getLogger(Cms.class);
 
 	// private Certificate cert;
 	private final Signature rsaSigner;
 
 
 	private Cms() {
-		// String certFile = Config.Instance.getOpt(Config.Type.signing,
-		// CERT_FILE).asText();
-		String keyFile = Config.Instance.getOpt(Config.Type.signing, KEY_FILE).asText();
-		// FileInputStream fis = null;
-		// BufferedInputStream bis = null;
-		// CertificateFactory cf;
-		// try {
-		// fis = new FileInputStream(certFile);
-		// bis = new BufferedInputStream(fis);
-		// cf = CertificateFactory.getInstance("X.509");
-		// while (bis.available() > 0) {
-		// Certificate cert = cf.generateCertificate(bis);
-		// }
-		// } catch (Exception e) {
-		// throw new RuntimeException("setup cerfile or keyfile fail", e);
-		// } finally {
-		// if (fis != null) {
-		// try {
-		// fis.close();
-		// } catch (IOException e) {
-		// // ignore
-		// }
-		// }
-		// if (bis != null) {
-		// try {
-		// bis.close();
-		// } catch (IOException e) {
-		// // ignore
-		// }
-		// }
-		// }
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-		File privateKeyFile = new File(keyFile);
-		FileInputStream keyFis = null;
+		String keyFile = Config.Instance.getOpt(Config.Type.signing, KEY_FILE).asText();
+		URL url = Cms.class.getResource(keyFile);
+		FileReader fileReader;
 		try {
-			keyFis = new FileInputStream(keyFile);
-			byte[] encodedPrivateKey = new byte[(int) privateKeyFile.length()];
-			keyFis.read(encodedPrivateKey);
-			KeyFactory kf = KeyFactory.getInstance("RSA");
-			KeySpec keySpec = new PKCS8EncodedKeySpec(encodedPrivateKey);
-			PrivateKey privateKey = kf.generatePrivate(keySpec);
+			fileReader = new FileReader(url.getPath());
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		PEMReader pr = new PEMReader(bufferedReader);
+		try {
+			Object obj = pr.readObject();
+			PrivateKey key = null;
+			if (obj instanceof KeyPair) {
+				KeyPair keyPair = (KeyPair) obj;
+				key = keyPair.getPrivate();
+			} else if (obj instanceof PrivateKey) {
+				key = (PrivateKey) obj;
+			} else {
+				throw new RuntimeException("invalid pem format");
+			}
 			rsaSigner = Signature.getInstance("SHA1withRSA");
-			rsaSigner.initSign(privateKey);
+			rsaSigner.initSign(key);
 		} catch (Exception e) {
 			throw new RuntimeException("setup cerfile or keyfile fail", e);
 		} finally {
-			if (keyFis != null) {
+			if (pr != null) {
 				try {
-					keyFis.close();
+					pr.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException e) {
+					// ignore
+				}
+			}
+
+			if (fileReader != null) {
+				try {
+					fileReader.close();
 				} catch (IOException e) {
 					// ignore
 				}
@@ -96,7 +96,7 @@ public enum Cms {
 	private String signText(String text) throws SignatureException, UnsupportedEncodingException {
 		rsaSigner.update(text.getBytes("UTF8"));
 		byte[] signaturesBytes = rsaSigner.sign();
-		return Base64.encodeAsString(signaturesBytes);
+		return new String(signaturesBytes);
 	}
 
 	public String hashToken(String tokenid) {
