@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.exception.DomainNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
 
@@ -26,7 +26,7 @@ public class IdentityUtils {
 		String domainid = user.getDomain().getId();
 		user.setDomain(null);
 		if (!Strings.isNullOrEmpty(domainid) && !driverMap.containsKey(domainid)) {
-			throw new DomainNotFoundException(null, domainid);
+			throw Exceptions.DomainNotFoundException.getInstance(null, domainid);
 		}
 
 		return user;
@@ -36,7 +36,7 @@ public class IdentityUtils {
 		String domainid = group.getDomain().getId();
 		group.setDomain(null);
 		if (!Strings.isNullOrEmpty(domainid) && !driverMap.containsKey(domainid)) {
-			throw new DomainNotFoundException(null, domainid);
+			throw Exceptions.DomainNotFoundException.getInstance(null, domainid);
 		}
 
 		return group;

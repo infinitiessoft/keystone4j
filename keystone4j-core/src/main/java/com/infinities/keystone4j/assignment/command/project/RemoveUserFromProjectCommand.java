@@ -11,8 +11,7 @@ import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.exception.NotFoundException;
-import com.infinities.keystone4j.exception.RoleNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.TokenApi;
 
@@ -20,8 +19,8 @@ public class RemoveUserFromProjectCommand extends AbstractAssignmentCommand<Proj
 
 	private final static Logger logger = LoggerFactory.getLogger(RemoveUserFromProjectCommand.class);
 	private final static String ROLE_NOT_FOUND = "Removing role {} failed because it does not exist.";
-	private String projectid;
-	private String userid;
+	private final String projectid;
+	private final String userid;
 
 
 	public RemoveUserFromProjectCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,
@@ -35,12 +34,12 @@ public class RemoveUserFromProjectCommand extends AbstractAssignmentCommand<Proj
 	public Project execute() {
 		List<Role> roles = this.getAssignmentApi().getRolesForUserAndProject(userid, projectid);
 		if (roles == null) {
-			throw new NotFoundException(null, projectid);
+			throw Exceptions.NotFoundException.getInstance(null, projectid);
 		}
 		for (Role role : roles) {
 			try {
 				this.getAssignmentDriver().removeRoleFromUserAndProject(userid, projectid, role.getId());
-			} catch (RoleNotFoundException e) {
+			} catch (Exception e) {
 				logger.debug(ROLE_NOT_FOUND, role.getId());
 			}
 		}

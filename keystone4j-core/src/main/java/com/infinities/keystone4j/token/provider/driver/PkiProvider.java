@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.JsonUtils;
-import com.infinities.keystone4j.exception.UnexpectedException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.model.TokenDataWrapper;
 
 public class PkiProvider extends TokenProviderBaseDriver {
@@ -22,7 +22,7 @@ public class PkiProvider extends TokenProviderBaseDriver {
 			return tokenid;
 		} catch (Exception e) {
 			logger.error("Unable to sign token");
-			throw new UnexpectedException("Unable to sign token.");
+			throw Exceptions.UnexpectedException.getInstance("Unable to sign token.");
 		}
 	}
 }

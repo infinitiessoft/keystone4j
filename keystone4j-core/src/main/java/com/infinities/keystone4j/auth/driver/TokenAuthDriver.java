@@ -13,9 +13,7 @@ import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.auth.model.AuthInfo;
 import com.infinities.keystone4j.auth.model.Identity;
-import com.infinities.keystone4j.exception.ForbiddenException;
-import com.infinities.keystone4j.exception.UnauthorizedException;
-import com.infinities.keystone4j.exception.ValidationException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.model.TokenDataWrapper;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
@@ -32,14 +30,14 @@ public class TokenAuthDriver extends TokenBindValidator implements AuthDriver {
 		try {
 			Identity authPayload = authInfo.getMethodData(METHOD);
 			if (Strings.isNullOrEmpty(authPayload.getToken().getId())) {
-				throw new ValidationException(null, "id", METHOD);
+				throw Exceptions.ValidationException.getInstance(null, "id", METHOD);
 			}
 
 			String tokenid = authPayload.getToken().getId();
 			TokenDataWrapper tokenRef = tokenProviderApi.validateV3Token(tokenid);
 
 			if (tokenRef.getToken().getTrust() != null) {
-				throw new ForbiddenException();
+				throw Exceptions.ForbiddenException.getInstance();
 			}
 
 			validateTokenBind(context, tokenRef.getToken().getToken());
@@ -52,7 +50,7 @@ public class TokenAuthDriver extends TokenBindValidator implements AuthDriver {
 
 		} catch (Exception e) {
 			logger.error("authenticate failed", e);
-			throw new UnauthorizedException();
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 	}
 

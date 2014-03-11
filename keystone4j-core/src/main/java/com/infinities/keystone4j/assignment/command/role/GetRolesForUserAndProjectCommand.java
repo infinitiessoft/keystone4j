@@ -20,8 +20,6 @@ import com.infinities.keystone4j.assignment.model.UserProjectGrant;
 import com.infinities.keystone4j.assignment.model.UserProjectGrantMetadata;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.exception.MetadataNotFoundException;
-import com.infinities.keystone4j.exception.NotImplementedException;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.token.TokenApi;
@@ -64,7 +62,7 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 				for (GroupProjectGrantMetadata metadata : metadatas) {
 					roles.add(metadata.getRole());
 				}
-			} catch (MetadataNotFoundException e) {
+			} catch (Exception e) {
 				// no group grant, skip
 			}
 			boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
@@ -76,9 +74,7 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 					for (GroupDomainGrantMetadata metadata : metadatas) {
 						roles.add(metadata.getRole());
 					}
-				} catch (MetadataNotFoundException e) {
-					// no group grant, skip
-				} catch (NotImplementedException e) {
+				} catch (Exception e) {
 					// ignore
 				}
 			}
@@ -96,7 +92,7 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 			for (UserProjectGrantMetadata metadata : metadatas) {
 				roles.add(metadata.getRole());
 			}
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			// no group grant, skip
 		}
 		boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
@@ -107,9 +103,7 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 				for (UserDomainGrantMetadata metadata : metadatas) {
 					roles.add(metadata.getRole());
 				}
-			} catch (MetadataNotFoundException e) {
-				// no user grant, skip
-			} catch (NotImplementedException e) {
+			} catch (Exception e) {
 				// ignore
 			}
 		}

@@ -8,7 +8,7 @@ import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.auth.model.AuthInfo;
 import com.infinities.keystone4j.auth.model.Identity;
 import com.infinities.keystone4j.auth.model.UserAuthInfo;
-import com.infinities.keystone4j.exception.UnauthorizedException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -28,7 +28,7 @@ public class PasswordAuthDriver implements AuthDriver {
 		try {
 			identityApi.authenticate(userInfo.getUserid(), userInfo.getPassword(), userInfo.getDomainid());
 		} catch (Exception e) {
-			throw new UnauthorizedException("Invalid username or password");
+			throw Exceptions.UnauthorizedException.getInstance("Invalid username or password");
 		}
 
 		if (Strings.isNullOrEmpty(userContext.getUserid())) {

@@ -14,8 +14,7 @@ import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.TokenBindValidator;
 import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.TokenNotFoundException;
-import com.infinities.keystone4j.exception.UnauthorizedException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.Token;
 
@@ -68,9 +67,9 @@ public class AuthContextMiddleware extends TokenBindValidator implements Middlew
 
 			return token;
 
-		} catch (TokenNotFoundException e) {
+		} catch (Exception e) {
 			logger.warn("RBAC: Invalid token");
-			throw new UnauthorizedException(null);
+			throw Exceptions.UnauthorizedException.getInstance(null);
 		}
 
 	}

@@ -8,7 +8,7 @@ import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterDriver;
 import com.infinities.keystone4j.endpointfilter.model.ProjectEndpoint;
-import com.infinities.keystone4j.exception.NotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.EndpointDao;
 import com.infinities.keystone4j.jpa.impl.ProjectDao;
 import com.infinities.keystone4j.jpa.impl.ProjectEndpointDao;
@@ -47,7 +47,7 @@ public class EndpointFilterJpaDriver implements EndpointFilterDriver {
 		if (projectEndpoint == null) {
 			String msg = "Endpoint ${0} not found in project ${1}";
 			String message = MessageFormat.format(msg, endpointid, projectid);
-			throw new NotFoundException(message);
+			throw Exceptions.NotFoundException.getInstance(message);
 		}
 		return projectEndpoint;
 	}

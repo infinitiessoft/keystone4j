@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.JsonUtils;
-import com.infinities.keystone4j.exception.TokenNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.TokenData;
 import com.infinities.keystone4j.token.model.TokenDataWrapper;
@@ -56,6 +56,6 @@ public class ValidateV3TokenCommand extends AbstractTokenProviderCommand<TokenDa
 			}
 
 		}
-		throw new TokenNotFoundException(FAILED_TO_VALIDATE_TOKEN);
+		throw Exceptions.TokenNotFoundException.getInstance(FAILED_TO_VALIDATE_TOKEN);
 	}
 }

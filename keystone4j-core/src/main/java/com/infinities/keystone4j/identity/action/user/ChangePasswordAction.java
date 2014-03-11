@@ -8,8 +8,7 @@ import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.KeystoneUtils;
 import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.exception.UnauthorizedException;
-import com.infinities.keystone4j.exception.ValidationException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.identity.model.UserParam;
@@ -32,11 +31,11 @@ public class ChangePasswordAction extends AbstractUserAction<User> {
 	public User execute() {
 		String originalPassword = user.getOriginalPassword();
 		if (Strings.isNullOrEmpty(originalPassword)) {
-			throw new ValidationException(null, ORIGINAL_PASSWORD, USER);
+			throw Exceptions.ValidationException.getInstance(null, ORIGINAL_PASSWORD, USER);
 		}
 		String password = user.getPassword();
 		if (Strings.isNullOrEmpty(password)) {
-			throw new ValidationException(null, PASSWORD, USER);
+			throw Exceptions.ValidationException.getInstance(null, PASSWORD, USER);
 		}
 
 		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
@@ -45,7 +44,7 @@ public class ChangePasswordAction extends AbstractUserAction<User> {
 		try {
 			this.getIdentityApi().authenticate(userid, password, domain.getId());
 		} catch (Exception e) {
-			throw new UnauthorizedException();
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 
 		KeystonePreconditions.requireMatchingId(userid, user);

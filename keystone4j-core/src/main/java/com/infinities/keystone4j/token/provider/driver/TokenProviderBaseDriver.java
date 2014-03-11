@@ -8,8 +8,7 @@ import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.ForbiddenException;
-import com.infinities.keystone4j.exception.UnauthorizedException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDataHelper;
 import com.infinities.keystone4j.token.model.Token;
@@ -36,7 +35,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 		}
 
 		if (methodNames.contains("oauth1")) {
-			throw new ForbiddenException("Oauth is disabled.");
+			throw Exceptions.ForbiddenException.getInstance("Oauth is disabled.");
 		}
 
 		TokenDataWrapper tokenData = helper.getTokenData(userid, methodNames, expiresAt, projectid, domainid,
@@ -81,7 +80,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 
 	private Token verifyTokenRef(Token token) {
 		if (token == null) {
-			throw new UnauthorizedException();
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 		return token;
 

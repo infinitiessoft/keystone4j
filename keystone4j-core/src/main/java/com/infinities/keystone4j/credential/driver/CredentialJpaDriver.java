@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.infinities.keystone4j.credential.CredentialDriver;
 import com.infinities.keystone4j.credential.model.Credential;
-import com.infinities.keystone4j.exception.CredentialNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.CredentialDao;
 
 public class CredentialJpaDriver implements CredentialDriver {
@@ -31,7 +31,7 @@ public class CredentialJpaDriver implements CredentialDriver {
 	public Credential getCredential(String credentialid) {
 		Credential credential = credentialDao.findById(credentialid);
 		if (credential != null) {
-			throw new CredentialNotFoundException(null, credentialid);
+			throw Exceptions.CredentialNotFoundException.getInstance(null, credentialid);
 		}
 		return credential;
 	}

@@ -2,13 +2,17 @@ package com.infinities.keystone4j.admin.v3;
 
 import java.net.MalformedURLException;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import com.infinities.keystone4j.common.model.VersionApi;
 import com.infinities.keystone4j.common.model.VersionWrapper;
 
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class ApiV3Resource {
 
 	private final VersionApi versionApi;
@@ -109,8 +113,6 @@ public class ApiV3Resource {
 	}
 
 	@GET
-	@Path("/")
-	@Produces("application/json")
 	public VersionWrapper getVersions() throws MalformedURLException {
 		return versionApi.getVersionV3();
 	}

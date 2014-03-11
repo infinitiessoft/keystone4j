@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.PolicyNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.PolicyDao;
 import com.infinities.keystone4j.policy.Enforcer;
 import com.infinities.keystone4j.policy.PolicyDriver;
@@ -49,7 +49,7 @@ public class PolicyJpaDriver implements PolicyDriver {
 	public Policy getPolicy(String policyid) {
 		Policy policy = policyDao.findById(policyid);
 		if (policy == null) {
-			throw new PolicyNotFoundException(null, policyid);
+			throw Exceptions.PolicyNotFoundException.getInstance(null, policyid);
 		}
 		return policy;
 	}

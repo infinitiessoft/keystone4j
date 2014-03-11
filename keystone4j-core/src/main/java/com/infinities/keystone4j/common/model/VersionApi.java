@@ -8,9 +8,12 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.VersionNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 
 public class VersionApi {
 
@@ -20,7 +23,8 @@ public class VersionApi {
 	private final static String V3 = "v3";
 	private String type;
 	private final static String URL_POSTFIX = "{0}_endpoint";
-	private final static String PORT_POSTFIX = "{0}_port";
+	// private final static String PORT_POSTFIX = "{0}_port";
+	private final static Logger logger = LoggerFactory.getLogger(VersionApi.class);
 
 
 	// private final List<String> versions = Lists.newArrayList();
@@ -37,15 +41,19 @@ public class VersionApi {
 		String urlKey = MessageFormat.format(URL_POSTFIX, type);
 		String url = Config.Instance.getOpt(Config.Type.DEFAULT, urlKey).asText();
 
-		String portKey = MessageFormat.format(PORT_POSTFIX, type);
-		String port = Config.Instance.getOpt(Config.Type.DEFAULT, portKey).asText();
-		url = MessageFormat.format(url, port);
+		// String portKey = MessageFormat.format(PORT_POSTFIX, type);
+		// String port = Config.Instance.getOpt(Config.Type.DEFAULT,
+		// portKey).asText();
+		// url = MessageFormat.format(url, port);
 
 		if (!url.endsWith("/")) {
 			url += "/";
 		}
+		url = url + version + "/";
 
-		return new URL(url + version + "/");
+		logger.debug("identityURL: {}", url);
+
+		return new URL(url);
 	}
 
 	protected List<Version> getVersionList() throws MalformedURLException {
@@ -98,6 +106,6 @@ public class VersionApi {
 				return new VersionWrapper(version);
 			}
 		}
-		throw new VersionNotFoundException(null, V3);
+		throw Exceptions.VersionNotFoundException.getInstance(null, V3);
 	}
 }

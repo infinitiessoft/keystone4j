@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.ForbiddenException;
+
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
@@ -11,13 +13,7 @@ import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.AuthMethodNotSupportedException;
-import com.infinities.keystone4j.exception.DomainNotFoundException;
-import com.infinities.keystone4j.exception.ForbiddenException;
-import com.infinities.keystone4j.exception.ProjectNotFoundException;
-import com.infinities.keystone4j.exception.TrustNotFoundException;
-import com.infinities.keystone4j.exception.UnauthorizedException;
-import com.infinities.keystone4j.exception.ValidationException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.trust.model.Trust;
 
@@ -90,14 +86,14 @@ public class AuthInfo {
 
 	public Identity getMethodData(String name) {
 		if (!getMethodNames().contains(name)) {
-			throw new ValidationException(null, name, IDENTITY);
+			throw Exceptions.ValidationException.getInstance(null, name, IDENTITY);
 		}
 		return auth.getIdentity();
 	}
 
 	private void validateAndNormalizeAuthData() {
 		if (auth == null) {
-			throw new ValidationException(null, "auth", "request body");
+			throw Exceptions.ValidationException.getInstance(null, "auth", "request body");
 		}
 
 		validateAuthMethods();
@@ -121,7 +117,7 @@ public class AuthInfo {
 		}
 
 		if (sum != 1) {
-			throw new ValidationException(null, "project, domain, or OS-TRUST:trust", "scope");
+			throw Exceptions.ValidationException.getInstance(null, "project, domain, or OS-TRUST:trust", "scope");
 		}
 
 		if (auth.getScope().getProject() != null) {
@@ -149,11 +145,11 @@ public class AuthInfo {
 	private Trust lookupTrust(Trust trust) {
 		String trustid = trust.getId();
 		if (Strings.isNullOrEmpty(trustid)) {
-			throw new ValidationException(null, "trust_id", "trust");
+			throw Exceptions.ValidationException.getInstance(null, "trust_id", "trust");
 		}
 		Trust ret = trustApi.getTrust(trustid);
 		if (ret == null) {
-			throw new TrustNotFoundException(null, trustid);
+			throw Exceptions.TrustNotFoundException.getInstance(null, trustid);
 		}
 
 		return ret;
@@ -163,7 +159,7 @@ public class AuthInfo {
 		String domainid = domain.getId();
 		String domainName = domain.getName();
 		if (Strings.isNullOrEmpty(domainid) && Strings.isNullOrEmpty(domainName)) {
-			throw new ValidationException(null, "id or name", "domain");
+			throw Exceptions.ValidationException.getInstance(null, "id or name", "domain");
 		}
 
 		Domain ret;
@@ -173,8 +169,8 @@ public class AuthInfo {
 			} else {
 				ret = assignmentApi.getDomain(domainid);
 			}
-		} catch (DomainNotFoundException e) {
-			throw new UnauthorizedException();
+		} catch (Exception e) {
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 		assertDomainIsEnabled(domain);
 
@@ -184,7 +180,7 @@ public class AuthInfo {
 	private void assertDomainIsEnabled(Domain domain) {
 		if (!domain.getEnabled()) {
 			String msg = MessageFormat.format("Domain is disabled: {}", domain.getId());
-			throw new UnauthorizedException(msg);
+			throw Exceptions.UnauthorizedException.getInstance(msg);
 		}
 	}
 
@@ -193,14 +189,14 @@ public class AuthInfo {
 		String projectName = project.getName();
 
 		if (Strings.isNullOrEmpty(projectName) && Strings.isNullOrEmpty(projectid)) {
-			throw new ValidationException(null, "id or name", "project");
+			throw Exceptions.ValidationException.getInstance(null, "id or name", "project");
 		}
 		Project ret;
 
 		try {
 			if (!Strings.isNullOrEmpty(projectName)) {
 				if (project.getDomain() == null) {
-					throw new ValidationException(null, "domain", "project");
+					throw Exceptions.ValidationException.getInstance(null, "domain", "project");
 				}
 				Domain domain = lookupDomain(project.getDomain());
 				ret = assignmentApi.getProjectByName(projectName, domain.getId());
@@ -208,8 +204,8 @@ public class AuthInfo {
 				ret = assignmentApi.getProject(projectid);
 			}
 
-		} catch (ProjectNotFoundException e) {
-			throw new UnauthorizedException();
+		} catch (Exception e) {
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 		assertProjectIsEnabled(project);
 
@@ -219,28 +215,28 @@ public class AuthInfo {
 	private void assertProjectIsEnabled(Project project) {
 		if (!project.getEnabled()) {
 			String msg = MessageFormat.format("Project is disabled: {}", project.getId());
-			throw new UnauthorizedException(msg);
+			throw Exceptions.UnauthorizedException.getInstance(msg);
 		}
 	}
 
 	private void validateAuthMethods() {
 		if (auth.getIdentity() == null) {
-			throw new ValidationException(null, "identity", "auth");
+			throw Exceptions.ValidationException.getInstance(null, "identity", "auth");
 		}
 
 		if (auth.getIdentity().getMethods().isEmpty()) {
-			throw new ValidationException(null, "methods", "identity");
+			throw Exceptions.ValidationException.getInstance(null, "methods", "identity");
 		}
 
 		for (String methodName : getMethodNames()) {
 			if (!auth.getIdentity().getMethods().contains(methodName)) {
-				throw new ValidationException(null, methodName, "identity");
+				throw Exceptions.ValidationException.getInstance(null, methodName, "identity");
 			}
 		}
 
 		for (String methodName : getMethodNames()) {
 			if (!AUTH_METHODS.containsKey(methodName)) {
-				throw new AuthMethodNotSupportedException();
+				throw Exceptions.AuthMethodNotSupportedException.getInstance();
 			}
 		}
 	}

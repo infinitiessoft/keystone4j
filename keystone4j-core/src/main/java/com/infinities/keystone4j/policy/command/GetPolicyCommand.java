@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.policy.command;
 
-import com.infinities.keystone4j.exception.NotFoundException;
-import com.infinities.keystone4j.exception.PolicyNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.policy.PolicyDriver;
 import com.infinities.keystone4j.policy.model.Policy;
 
@@ -19,8 +18,8 @@ public class GetPolicyCommand extends AbstractPolicyCommand<Policy> {
 	public Policy execute() {
 		try {
 			return this.getPolicyDriver().getPolicy(policyid);
-		} catch (NotFoundException e) {
-			throw new PolicyNotFoundException(null, policyid);
+		} catch (Exception e) {
+			throw Exceptions.PolicyNotFoundException.getInstance(null, policyid);
 		}
 	}
 

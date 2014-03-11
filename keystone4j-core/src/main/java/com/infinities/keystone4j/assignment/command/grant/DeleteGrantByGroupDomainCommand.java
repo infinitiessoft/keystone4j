@@ -12,19 +12,18 @@ import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.exception.GroupNotFoundException;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class DeleteGrantByGroupDomainCommand extends AbstractAssignmentCommand<Role> {
 
-	private Logger logger = LoggerFactory.getLogger(DeleteGrantByGroupDomainCommand.class);
+	private final Logger logger = LoggerFactory.getLogger(DeleteGrantByGroupDomainCommand.class);
 	private final static String GROUP_NOT_FOUND = "Group {} not found, no tokens to invalidate.";
-	private String roleid;
-	private String groupid;
-	private String domainid;
-	private boolean inherited;
+	private final String roleid;
+	private final String groupid;
+	private final String domainid;
+	private final boolean inherited;
 
 
 	public DeleteGrantByGroupDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,
@@ -44,7 +43,7 @@ public class DeleteGrantByGroupDomainCommand extends AbstractAssignmentCommand<R
 		if (!Strings.isNullOrEmpty(groupid)) {
 			try {
 				users = this.getIdentityApi().listUsersInGroup(groupid, domainid);
-			} catch (GroupNotFoundException e) {
+			} catch (Exception e) {
 				logger.debug(GROUP_NOT_FOUND, groupid);
 			}
 		}

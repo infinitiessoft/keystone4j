@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.common.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -13,9 +14,9 @@ public class Version implements java.io.Serializable {
 	private String id;
 	private String status;
 	private String updated;
-	private List<Link> links;
+	private List<Link> links = new ArrayList<Link>(0);
 	@XmlElement(name = "media-types")
-	private List<MediaType> mediaTypes;
+	private List<MediaType> mediaTypes = new ArrayList<MediaType>(0);
 
 
 	public String getId() {

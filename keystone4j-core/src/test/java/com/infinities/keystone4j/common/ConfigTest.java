@@ -24,4 +24,11 @@ public class ConfigTest {
 		assertEquals("ADMIN2", adminToken.asText());
 	}
 
+	@Test
+	public void testGetOpt_subpattern() {
+		Option endpoint = Config.Instance.getOpt(Config.Type.DEFAULT, "public_endpoint");
+		System.out.println(endpoint.asText());
+		// assertEquals("ADMIN2", adminToken.asText());
+	}
+
 }

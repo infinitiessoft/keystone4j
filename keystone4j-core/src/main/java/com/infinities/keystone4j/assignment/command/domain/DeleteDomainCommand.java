@@ -6,7 +6,7 @@ import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.exception.ForbiddenActionException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.TokenApi;
 
@@ -29,14 +29,14 @@ public class DeleteDomainCommand extends AbstractAssignmentCommand<Domain> {
 		String defaultDomainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 
 		if (defaultDomainid.equals(domainid)) {
-			throw new ForbiddenActionException(null, DELETE_DEFAULT_DOMAIN);
+			throw Exceptions.ForbiddenActionException.getInstance(null, DELETE_DEFAULT_DOMAIN);
 		}
 
 		Domain domain = this.getAssignmentDriver().getDomain(domainid);
 
 		// avoid inadvertent deletes.
 		if (domain.getEnabled()) {
-			throw new ForbiddenActionException(null, DOMAIN_IS_ENABLED);
+			throw Exceptions.ForbiddenActionException.getInstance(null, DOMAIN_IS_ENABLED);
 		}
 
 		deleteDomainContents(domainid);

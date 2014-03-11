@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.infinities.keystone4j.cert.controller.SimpleCertV3Controller;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.common.model.Link;
-import com.infinities.keystone4j.exception.CertificateFilesUnavailableException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.extension.ExtensionApi;
 import com.infinities.keystone4j.extension.model.Extension;
 
@@ -57,7 +57,7 @@ public class SimpleCertV3ControllerImpl implements SimpleCertV3Controller {
 			File file = new File(text);
 			return Response.status(200).type("application/x-pem-file").entity(getBytesFromFile(file)).build();
 		} catch (Exception e) {
-			throw new CertificateFilesUnavailableException(null);
+			throw Exceptions.CertificateFilesUnavailableException.getInstance(null);
 		}
 	}
 

@@ -14,8 +14,6 @@ import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
 import com.infinities.keystone4j.assignment.model.Assignment;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.exception.GroupNotFoundException;
-import com.infinities.keystone4j.exception.NotImplementedException;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.token.TokenApi;
@@ -37,7 +35,7 @@ public class DeleteRoleCommand extends AbstractAssignmentCommand<Role> {
 	public Role execute() {
 		try {
 			deleteTokenForRole(roleid);
-		} catch (NotImplementedException e) {
+		} catch (Exception e) {
 			// ignore
 		}
 		this.getAssignmentDriver().deleteRole(roleid);
@@ -62,7 +60,7 @@ public class DeleteRoleCommand extends AbstractAssignmentCommand<Role> {
 				List<User> tmp = Lists.newArrayList();
 				try {
 					tmp = this.getIdentityApi().listUsersInGroup(assignment.getGroup().getId(), null);
-				} catch (GroupNotFoundException e) {
+				} catch (Exception e) {
 					String arg1 = null;
 					if (assignment.getProject() != null) {
 						arg1 = "Project " + assignment.getProject().getId();

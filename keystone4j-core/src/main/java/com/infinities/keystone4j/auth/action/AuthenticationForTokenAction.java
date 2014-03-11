@@ -27,12 +27,7 @@ import com.infinities.keystone4j.auth.model.AuthInfo;
 import com.infinities.keystone4j.auth.model.AuthV3;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.AuthMethodNotSupportedException;
-import com.infinities.keystone4j.exception.DomainNotFoundException;
-import com.infinities.keystone4j.exception.ProjectNotFoundException;
-import com.infinities.keystone4j.exception.TrustNotFoundException;
-import com.infinities.keystone4j.exception.UnauthorizedException;
-import com.infinities.keystone4j.exception.UserNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.token.TokenApi;
@@ -147,8 +142,8 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 
 			return tokenMetadata;
 
-		} catch (TrustNotFoundException e) {
-			throw new UnauthorizedException();
+		} catch (Exception e) {
+			throw Exceptions.UnauthorizedException.getInstance();
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -172,8 +167,8 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 		User user = null;
 		try {
 			user = identityApi.getUser(authContext.getUserid(), null);
-		} catch (UserNotFoundException e) {
-			throw new UnauthorizedException().initCause(e);
+		} catch (Exception e) {
+			throw Exceptions.UnauthorizedException.getInstance(e);
 		}
 
 		Project defaultProject = user.getDefault_project();
@@ -183,11 +178,7 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 
 		try {
 			defaultProject = assignmentApi.getProject(defaultProject.getId());
-		} catch (ProjectNotFoundException e) {
-			logger.warn("User {} default project {} not found."
-					+ " The token will be unscoped rather than scoped to the project.", new Object[] { user.getId(),
-					defaultProject.getId() });
-		} catch (DomainNotFoundException e) {
+		} catch (Exception e) {
 			logger.warn("User {} default project {} not found."
 					+ " The token will be unscoped rather than scoped to the project.", new Object[] { user.getId(),
 					defaultProject.getId() });
@@ -237,13 +228,13 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 		}
 
 		if (Strings.isNullOrEmpty(authContext.getUserid())) {
-			throw new UnauthorizedException(USER_NOT_FOUND);
+			throw Exceptions.UnauthorizedException.getInstance(USER_NOT_FOUND);
 		}
 	}
 
 	private AuthDriver getAuthMethod(String name) {
 		if (!AUTH_METHODS.containsKey(name)) {
-			throw new AuthMethodNotSupportedException();
+			throw Exceptions.AuthMethodNotSupportedException.getInstance();
 			// AuthDriver driver = loadAuthMethod(name);
 			// AUTH_METHODS.put(name, driver);
 		}

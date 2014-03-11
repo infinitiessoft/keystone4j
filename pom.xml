@@ -35,11 +35,8 @@
 				<version>${jacksonVersion}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>com.google.code.gson</groupId>
-				<artifactId>gson</artifactId>
-				<version>2.2.4</version>
-			</dependency>
+			<!-- <dependency> <groupId>com.google.code.gson</groupId> <artifactId>gson</artifactId> 
+				<version>2.2.4</version> </dependency> -->
 
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -63,6 +60,24 @@
 			<dependency>
 				<groupId>org.glassfish.jersey.ext</groupId>
 				<artifactId>jersey-bean-validation</artifactId>
+				<version>2.5.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-container-jetty-http</artifactId>
+				<version>2.5.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-container-jetty-servlet</artifactId>
+				<version>2.5.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jersey.media</groupId>
+				<artifactId>jersey-media-json-jackson</artifactId>
 				<version>2.5.1</version>
 			</dependency>
 
@@ -169,7 +184,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<javaCompilerVersion>1.6</javaCompilerVersion>
+		<javaCompilerVersion>1.7</javaCompilerVersion>
 		<shiroVersion>1.2.1</shiroVersion>
 		<slf4jVersion>1.6.6</slf4jVersion>
 		<tomcatVersion>7.0.34</tomcatVersion>

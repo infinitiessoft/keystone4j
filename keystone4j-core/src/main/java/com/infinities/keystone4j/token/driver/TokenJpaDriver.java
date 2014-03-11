@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.exception.TokenNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.TokenDao;
 import com.infinities.keystone4j.token.TokenDriver;
 import com.infinities.keystone4j.token.model.Token;
@@ -22,11 +22,11 @@ public class TokenJpaDriver implements TokenDriver {
 	@Override
 	public Token getToken(String uniqueid) {
 		if (Strings.isNullOrEmpty(uniqueid)) {
-			throw new TokenNotFoundException(null, uniqueid);
+			throw Exceptions.TokenNotFoundException.getInstance(null, uniqueid);
 		}
 		Token token = tokenDao.findById(uniqueid);
 		if (token == null) {
-			throw new TokenNotFoundException(null, uniqueid);
+			throw Exceptions.TokenNotFoundException.getInstance(null, uniqueid);
 		}
 		return token;
 	}

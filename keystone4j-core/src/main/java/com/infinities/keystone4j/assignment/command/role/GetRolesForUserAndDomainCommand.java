@@ -14,16 +14,14 @@ import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.assignment.model.UserDomainGrant;
 import com.infinities.keystone4j.assignment.model.UserDomainGrantMetadata;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.exception.MetadataNotFoundException;
-import com.infinities.keystone4j.exception.NotImplementedException;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class GetRolesForUserAndDomainCommand extends AbstractAssignmentCommand<List<Role>> {
 
-	private String userid;
-	private String domainid;
+	private final String userid;
+	private final String domainid;
 
 
 	public GetRolesForUserAndDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,
@@ -58,10 +56,8 @@ public class GetRolesForUserAndDomainCommand extends AbstractAssignmentCommand<L
 				for (GroupDomainGrantMetadata metadata : metadatas) {
 					roles.add(metadata.getRole());
 				}
-			} catch (MetadataNotFoundException e) {
+			} catch (Exception e) {
 				// no group grant, skip
-			} catch (NotImplementedException e) {
-				// ignore
 			}
 		}
 		return roles;
@@ -76,10 +72,8 @@ public class GetRolesForUserAndDomainCommand extends AbstractAssignmentCommand<L
 			for (UserDomainGrantMetadata metadata : metadatas) {
 				roles.add(metadata.getRole());
 			}
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			// no group grant, skip
-		} catch (NotImplementedException e) {
-			// ignore
 		}
 		return roles;
 	}

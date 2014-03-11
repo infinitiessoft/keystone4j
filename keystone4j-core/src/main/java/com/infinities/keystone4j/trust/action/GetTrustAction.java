@@ -6,7 +6,7 @@ import javax.ws.rs.core.Context;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystoneUtils;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.exception.TrustNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.token.TokenApi;
@@ -32,7 +32,7 @@ public class GetTrustAction extends AbstractTrustAction<Trust> {
 		User user = new KeystoneUtils().getUser(context);
 		Trust trust = this.getTrustApi().getTrust(trustid);
 		if (trust == null) {
-			throw new TrustNotFoundException(null, trustid);
+			throw Exceptions.TrustNotFoundException.getInstance(null, trustid);
 		}
 
 		TrustUtils.trustorTrusteeOnly(trust, user.getId());

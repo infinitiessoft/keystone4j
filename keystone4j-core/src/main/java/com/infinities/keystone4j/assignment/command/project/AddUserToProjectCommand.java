@@ -9,7 +9,6 @@ import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.exception.RoleNotFoundException;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.TokenApi;
 
@@ -34,7 +33,7 @@ public class AddUserToProjectCommand extends AbstractAssignmentCommand<Project> 
 		String roleid = Config.Instance.getOpt(Config.Type.DEFAULT, MEMBER_ROLE_ID).asText();
 		try {
 			this.getAssignmentDriver().addRoleToUserAndProject(userid, projectid, roleid);
-		} catch (RoleNotFoundException e) {
+		} catch (Exception e) {
 			logger.info(ROLE_NOT_FOUND, roleid);
 		}
 

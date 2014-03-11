@@ -5,7 +5,7 @@ import java.util.Date;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.exception.TokenNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
@@ -27,7 +27,7 @@ public class GetTokenCommand extends AbstractTokenCommand<Token> {
 	@Override
 	public Token execute() {
 		if (Strings.isNullOrEmpty(tokenid)) {
-			throw new TokenNotFoundException(null);
+			throw Exceptions.TokenNotFoundException.getInstance(null);
 		}
 		String uniqueid = Cms.Instance.hashToken(tokenid);
 		Token token = this.getTokenDriver().getToken(uniqueid);
@@ -40,7 +40,7 @@ public class GetTokenCommand extends AbstractTokenCommand<Token> {
 		Date expires = token.getExpires();
 
 		if (expires == null || currentTime.after(expires)) {
-			throw new TokenNotFoundException(null, token.getId());
+			throw Exceptions.TokenNotFoundException.getInstance(null, token.getId());
 		}
 
 	}

@@ -9,8 +9,7 @@ import com.google.common.base.Strings;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.TokenNotFoundException;
-import com.infinities.keystone4j.exception.UnauthorizedException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
@@ -70,7 +69,7 @@ public class KeystoneUtils extends TokenBindValidator {
 
 		} catch (Exception TokenNotFound) {
 			logger.warn(INVALID_TOKEN);
-			throw new UnauthorizedException();
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 
 	}
@@ -80,9 +79,9 @@ public class KeystoneUtils extends TokenBindValidator {
 			Token token = null;
 			try {
 				token = tokenApi.getToken(context.getTokenid());
-			} catch (TokenNotFoundException e) {
+			} catch (Exception e) {
 				logger.error(UNAUTHORIZED, e);
-				throw new UnauthorizedException();
+				throw Exceptions.UnauthorizedException.getInstance();
 			}
 
 			validateTokenBind(context, token);

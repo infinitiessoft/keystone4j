@@ -4,8 +4,7 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.command.AbstractCatalogCommand;
 import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.exception.NotFoundException;
-import com.infinities.keystone4j.exception.ServiceNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 
 public class CreateEndpointCommand extends AbstractCatalogCommand<Endpoint> {
 
@@ -21,8 +20,8 @@ public class CreateEndpointCommand extends AbstractCatalogCommand<Endpoint> {
 	public Endpoint execute() {
 		try {
 			return this.getCatalogDriver().createEndpoint(endpoint);
-		} catch (NotFoundException e) {
-			throw new ServiceNotFoundException(null, endpoint.getService().getId());
+		} catch (Exception e) {
+			throw Exceptions.ServiceNotFoundException.getInstance(null, endpoint.getService().getId());
 
 		}
 	}

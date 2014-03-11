@@ -4,8 +4,7 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.command.AbstractCatalogCommand;
 import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.exception.EndpointNotFoundException;
-import com.infinities.keystone4j.exception.NotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 
 public class DeleteEndpointCommand extends AbstractCatalogCommand<Endpoint> {
 
@@ -22,8 +21,8 @@ public class DeleteEndpointCommand extends AbstractCatalogCommand<Endpoint> {
 		try {
 			this.getCatalogDriver().deleteEndpoint(endpointid);
 			return null;
-		} catch (NotFoundException e) {
-			throw new EndpointNotFoundException(null, endpointid);
+		} catch (Exception e) {
+			throw Exceptions.EndpointNotFoundException.getInstance(null, endpointid);
 
 		}
 	}

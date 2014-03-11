@@ -23,11 +23,7 @@ import com.infinities.keystone4j.assignment.model.UserDomainGrantMetadata;
 import com.infinities.keystone4j.assignment.model.UserProjectGrant;
 import com.infinities.keystone4j.assignment.model.UserProjectGrantMetadata;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.ConflictException;
-import com.infinities.keystone4j.exception.DomainNotFoundException;
-import com.infinities.keystone4j.exception.MetadataNotFoundException;
-import com.infinities.keystone4j.exception.ProjectNotFoundException;
-import com.infinities.keystone4j.exception.RoleNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.jpa.impl.DomainDao;
 import com.infinities.keystone4j.jpa.impl.GroupDomainGrantDao;
@@ -85,7 +81,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 	public Project getProject(String projectid) {
 		Project project = projectDao.findById(projectid);
 		if (project != null) {
-			throw new ProjectNotFoundException(null, projectid);
+			throw Exceptions.ProjectNotFoundException.getInstance(null, projectid);
 		}
 		return project;
 	}
@@ -96,7 +92,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			Project project = projectDao.findByName(projectName, domainid);
 			return project;
 		} catch (NoResultException e) {
-			throw new ProjectNotFoundException(null, projectName);
+			throw Exceptions.ProjectNotFoundException.getInstance(null, projectName);
 		}
 	}
 
@@ -169,7 +165,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getUserProjectGrant(userid, projectid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			isNew = true;
 			grant = new UserProjectGrant();
 			grant.setUser(user);
@@ -184,8 +180,8 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 
 		} catch (IllegalArgumentException e) {
 			String msg = MessageFormat.format(USER_ALREADY_HAS_ROLE, userid, roleid, projectid);
-			throw new ConflictException(null, ROLE_GRANT, msg); // replace
-																// KeyError
+			throw Exceptions.ConflictException.getInstance(null, ROLE_GRANT, msg); // replace
+			// KeyError
 		}
 
 		if (isNew) {
@@ -202,9 +198,9 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getUserProjectGrant(userid, projectid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			String msg = MessageFormat.format(CANNOT_REMOVE_ROLE, roleid);
-			throw new RoleNotFoundException(msg);
+			throw Exceptions.RoleNotFoundException.getInstance(msg);
 		}
 
 		try {
@@ -213,7 +209,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			userProjectGrantMetadataDao.remove(metadata);
 		} catch (IllegalArgumentException e) {
 			String msg = MessageFormat.format(CANNOT_REMOVE_ROLE, roleid);
-			throw new RoleNotFoundException(msg);
+			throw Exceptions.RoleNotFoundException.getInstance(msg);
 		}
 
 		if (!grant.getMetadatas().isEmpty()) {
@@ -337,7 +333,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 	public Domain getDomain(String domainid) {
 		Domain domain = domainDao.findById(domainid);
 		if (domain == null) {
-			throw new DomainNotFoundException(null, domainid);
+			throw Exceptions.DomainNotFoundException.getInstance(null, domainid);
 		}
 		return domain;
 	}
@@ -348,7 +344,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			Domain domain = domainDao.findByName(domainName);
 			return domain;
 		} catch (NoResultException e) {
-			throw new DomainNotFoundException(null, domainName);
+			throw Exceptions.DomainNotFoundException.getInstance(null, domainName);
 		}
 	}
 
@@ -391,7 +387,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 	public Role getRole(String roleid) {
 		Role role = roleDao.findById(roleid);
 		if (role != null) {
-			throw new RoleNotFoundException(null, roleid);
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
 	}
@@ -434,7 +430,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			GroupProjectGrant grant = groupProjectGrantDao.findByGroupidAndProjectid(groupid, projectid);
 			return grant;
 		} catch (NoResultException e) {
-			throw new MetadataNotFoundException(null);
+			throw Exceptions.MetadataNotFoundException.getInstance(null);
 		}
 	}
 
@@ -445,7 +441,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			GroupDomainGrant grant = groupDomainGrantDao.findByGroupidAndDomainid(groupid, domainid);
 			return grant;
 		} catch (NoResultException e) {
-			throw new MetadataNotFoundException(null);
+			throw Exceptions.MetadataNotFoundException.getInstance(null);
 		}
 	}
 
@@ -456,7 +452,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			UserProjectGrant grant = userProjectGrantDao.findByUseridAndProjectid(userid, projectid);
 			return grant;
 		} catch (NoResultException e) {
-			throw new MetadataNotFoundException(null);
+			throw Exceptions.MetadataNotFoundException.getInstance(null);
 		}
 	}
 
@@ -467,7 +463,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			UserDomainGrant grant = userDomainGrantDao.findByUseridAndDomainid(userid, domainid);
 			return grant;
 		} catch (NoResultException e) {
-			throw new MetadataNotFoundException(null);
+			throw Exceptions.MetadataNotFoundException.getInstance(null);
 		}
 	}
 
@@ -483,7 +479,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			GroupDomainGrantMetadata metadata = removeRoleFromGroupDomainGrantMetadata(roleid, grant, inherited);
 			groupDomainGrantMetadataDao.remove(metadata);
 		} catch (IllegalArgumentException e) {
-			throw new RoleNotFoundException(null, roleid);
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		groupDomainGrantDao.merge(grant);
 	}
@@ -501,7 +497,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			GroupProjectGrantMetadata metadata = removeRoleFromGroupProjectGrantMetadata(roleid, grant, inherited);
 			groupProjectGrantMetadataDao.remove(metadata);
 		} catch (IllegalArgumentException e) {
-			throw new RoleNotFoundException(null, roleid);
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		groupProjectGrantDao.merge(grant);
 	}
@@ -519,7 +515,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			UserDomainGrantMetadata metadata = removeRoleFromUserDomainGrantMetadata(roleid, grant, inherited);
 			userDomainGrantMetadataDao.remove(metadata);
 		} catch (IllegalArgumentException e) {
-			throw new RoleNotFoundException(null, roleid);
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		userDomainGrantDao.merge(grant);
 	}
@@ -536,7 +532,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			UserProjectGrantMetadata metadata = removeRoleFromUserProjectGrantMetadata(roleid, grant, inherited);
 			userProjectGrantMetadataDao.remove(metadata);
 		} catch (IllegalArgumentException e) {
-			throw new RoleNotFoundException(null, roleid);
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		userProjectGrantDao.merge(grant);
 	}
@@ -549,13 +545,13 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getGroupDomainGrant(groupid, domainid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new GroupDomainGrant();
 		}
 		// _roles_from_role_dicts
 		List<Role> roles = filterGroupDomainGrant(grant.getMetadatas(), inherited);
 		if (!roles.contains(role)) {
-			throw new RoleNotFoundException(null, roleid);
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
 	}
@@ -568,13 +564,13 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getGroupProjectGrant(groupid, projectid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new GroupProjectGrant();
 		}
 		// _roles_from_role_dicts
 		List<Role> roles = filterGroupProjectGrant(grant.getMetadatas(), inherited);
 		if (!roles.contains(role)) {
-			throw new RoleNotFoundException(null, roleid);
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
 	}
@@ -587,13 +583,13 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getUserDomainGrant(userid, domainid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new UserDomainGrant();
 		}
 		// _roles_from_role_dicts
 		List<Role> roles = filterUserDomainGrant(grant.getMetadatas(), inherited);
 		if (!roles.contains(role)) {
-			throw new RoleNotFoundException(null, roleid);
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
 	}
@@ -606,13 +602,13 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getUserProjectGrant(userid, projectid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new UserProjectGrant();
 		}
 		// _roles_from_role_dicts
 		List<Role> roles = filterUserProjectGrant(grant.getMetadatas(), inherited);
 		if (!roles.contains(role)) {
-			throw new RoleNotFoundException(null, roleid);
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
 	}
@@ -626,7 +622,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getGroupDomainGrant(groupid, domainid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new GroupDomainGrant();
 			isNew = true;
 		}
@@ -651,7 +647,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getGroupProjectGrant(groupid, projectid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new GroupProjectGrant();
 			isNew = true;
 		}
@@ -677,7 +673,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getUserDomainGrant(userid, domainid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new UserDomainGrant();
 			isNew = true;
 		}
@@ -703,7 +699,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getUserProjectGrant(userid, projectid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new UserProjectGrant();
 			isNew = true;
 		}
@@ -727,7 +723,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getGroupDomainGrant(groupid, domainid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new GroupDomainGrant();
 		}
 		// _roles_from_role_dics
@@ -742,7 +738,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getGroupProjectGrant(groupid, projectid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new GroupProjectGrant();
 		}
 		// _roles_from_role_dics
@@ -757,7 +753,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getUserProjectGrant(userid, projectid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new UserProjectGrant();
 		}
 		// _roles_from_role_dics
@@ -772,7 +768,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		try {
 			// _get_metadata
 			grant = getUserDomainGrant(userid, domainid);
-		} catch (MetadataNotFoundException e) {
+		} catch (Exception e) {
 			grant = new UserDomainGrant();
 		}
 		// _roles_from_role_dics

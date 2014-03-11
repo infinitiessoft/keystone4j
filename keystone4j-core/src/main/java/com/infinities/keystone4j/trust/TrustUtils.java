@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.exception.ForbiddenException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.trust.model.Trust;
 import com.infinities.keystone4j.trust.model.TrustRole;
 
@@ -18,13 +18,13 @@ public class TrustUtils {
 
 	public static void trustorTrusteeOnly(Trust trust, String userid) {
 		if (!userid.equals(trust.getTrustee().getId()) && !userid.equals(trust.getTrustor().getId())) {
-			throw new ForbiddenException();
+			throw Exceptions.ForbiddenException.getInstance();
 		}
 	}
 
 	public static void adminTrustorOnly(KeystoneContext context, Trust trust, String userid) {
 		if (!userid.equals(trust.getTrustor().getId()) && !context.isAdmin()) {
-			throw new ForbiddenException();
+			throw Exceptions.ForbiddenException.getInstance();
 		}
 	}
 

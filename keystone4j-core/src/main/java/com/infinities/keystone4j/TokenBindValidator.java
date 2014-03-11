@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.UnauthorizedException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.model.Bind;
 import com.infinities.keystone4j.token.model.Token;
 
@@ -41,7 +41,7 @@ public abstract class TokenBindValidator {
 
 		if (!Strings.isNullOrEmpty(name) && !bind.getName().equals(name)) {
 			logger.info("Named bind mode {] not in bind information", name);
-			throw new UnauthorizedException();
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 
 		if (bind.getBindType().equals("kerberos")) {
@@ -53,12 +53,12 @@ public abstract class TokenBindValidator {
 
 			if (!(authType.equals("negotiate"))) {
 				logger.info("Kerberos credentials required and not present");
-				throw new UnauthorizedException();
+				throw Exceptions.UnauthorizedException.getInstance();
 			}
 
 			if (!(context.getEnvironment().getRemoteUser().equals(bind.getIdentifier()))) {
 				logger.info("Kerberos credentials do not match those in bind");
-				throw new UnauthorizedException();
+				throw Exceptions.UnauthorizedException.getInstance();
 			}
 			logger.info("Kerberos bind authentication successful");
 		} else if (bindMode.equals("permissive")) {
@@ -66,7 +66,7 @@ public abstract class TokenBindValidator {
 					new Object[] { bind.getBindType(), bind.getIdentifier() });
 		} else {
 			logger.info("Couldn't verify unknown bind: {}: {}", new Object[] { bind.getBindType(), bind.getIdentifier() });
-			throw new UnauthorizedException();
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 
 	}

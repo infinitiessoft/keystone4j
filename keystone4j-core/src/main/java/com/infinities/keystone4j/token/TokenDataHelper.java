@@ -13,9 +13,7 @@ import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.model.Catalog;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.ForbiddenException;
-import com.infinities.keystone4j.exception.NotImplementedException;
-import com.infinities.keystone4j.exception.UnauthorizedException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.token.model.Bind;
@@ -51,7 +49,7 @@ public class TokenDataHelper {
 
 		if (enabled && trust != null) {
 			if (!userid.equals(trust.getTrustee().getId())) {
-				throw new ForbiddenException("User is not a trustee");
+				Exceptions.ForbiddenException.getInstance("User is not a trustee");
 			}
 		}
 
@@ -89,7 +87,7 @@ public class TokenDataHelper {
 			Catalog catalog;
 			try {
 				catalog = catalogApi.getV3Catalog(userid, projectid);
-			} catch (NotImplementedException e) {
+			} catch (Exception e) {
 				catalog = new Catalog();
 			}
 			tokenData.setCatalog(catalog);
@@ -132,7 +130,7 @@ public class TokenDataHelper {
 					}
 
 					if (matchRoles.isEmpty()) {
-						throw new ForbiddenException("Trustee has no delegated roles");
+						Exceptions.ForbiddenException.getInstance("Trustee has no delegated roles");
 					} else {
 						filteredRoles.add(matchRoles.get(0));
 					}
@@ -146,11 +144,11 @@ public class TokenDataHelper {
 				if (!Strings.isNullOrEmpty(tokenProjectid)) {
 					String msg = "User {0} has no access to project {1}";
 					msg = MessageFormat.format(msg, userid, tokenProjectid);
-					throw new UnauthorizedException(msg);
+					throw Exceptions.UnauthorizedException.getInstance(msg);
 				} else {
 					String msg = "User {0} has no access to domain {1}";
 					msg = MessageFormat.format(msg, userid, domainid);
-					throw new UnauthorizedException(msg);
+					throw Exceptions.UnauthorizedException.getInstance(msg);
 				}
 			}
 
@@ -182,7 +180,7 @@ public class TokenDataHelper {
 		if (enabled && trust != null && tokenData.getTrust() != null) {
 			User trustor = this.identityApi.getUser(trust.getTrustor().getId(), null);
 			if (!trustor.getEnabled()) {
-				throw new ForbiddenException("Trustor is disabled");
+				Exceptions.ForbiddenException.getInstance("Trustor is disabled");
 			}
 			if (trust.getImpersonation()) {
 				user = trustor;

@@ -4,8 +4,7 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.command.AbstractCatalogCommand;
 import com.infinities.keystone4j.catalog.model.Service;
-import com.infinities.keystone4j.exception.NotFoundException;
-import com.infinities.keystone4j.exception.ServiceNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 
 public class DeleteServiceCommand extends AbstractCatalogCommand<Service> {
 
@@ -22,8 +21,8 @@ public class DeleteServiceCommand extends AbstractCatalogCommand<Service> {
 		try {
 			this.getCatalogDriver().deleteService(serviceid);
 			return null;
-		} catch (NotFoundException e) {
-			throw new ServiceNotFoundException(null, serviceid);
+		} catch (Exception e) {
+			throw Exceptions.ServiceNotFoundException.getInstance(null, serviceid);
 		}
 	}
 

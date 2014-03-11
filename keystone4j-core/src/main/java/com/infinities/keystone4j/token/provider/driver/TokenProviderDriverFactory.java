@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.exception.UnexpectedException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 
 public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> {
@@ -56,8 +56,8 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 					throw new RuntimeException(e);
 				}
 			} else {
-				throw new UnexpectedException(
-						"Unrecognized keystone.conf [signing] token_format: expected either UUID or PKI");
+				throw Exceptions.UnexpectedException
+						.getInstance("Unrecognized keystone.conf [signing] token_format: expected either UUID or PKI");
 			}
 
 		} else {
@@ -65,8 +65,8 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 			if (!Strings.isNullOrEmpty(tokenFormat)
 					&& ((provider.equals(PKI_PROVIDER) && !tokenFormat.equals("PKI")) || (provider.equals(UUID_PROVIDER) && !tokenFormat
 							.equals("UUID")))) {
-				throw new UnexpectedException(
-						"keystone.conf [signing] token_format (depreciated) conflicts with keystone.conf [token] provider");
+				throw Exceptions.UnexpectedException
+						.getInstance("keystone.conf [signing] token_format (depreciated) conflicts with keystone.conf [token] provider");
 			}
 			try {
 				Class<?> c = Class.forName(provider);

@@ -14,10 +14,7 @@ import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystoneUtils;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.exception.ForbiddenException;
-import com.infinities.keystone4j.exception.RoleNotFoundException;
-import com.infinities.keystone4j.exception.UserNotFoundException;
-import com.infinities.keystone4j.exception.ValidationException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.token.TokenApi;
@@ -46,7 +43,7 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 	@Override
 	public Trust execute() {
 		if (trust == null) {
-			throw new ValidationException(null, REQUEST, TRUST);
+			throw Exceptions.ValidationException.getInstance(null, REQUEST, TRUST);
 		}
 
 		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
@@ -56,7 +53,7 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 
 		User trustee = this.getIdentityApi().getUser(trust.getTrustee().getId(), null);
 		if (trustee == null) {
-			throw new UserNotFoundException(null, trust.getTrustee().getId());
+			throw Exceptions.UserNotFoundException.getInstance(null, trust.getTrustee().getId());
 		}
 
 		List<Role> allRoles = this.getAssignmentApi().listRoles();
@@ -80,7 +77,7 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 				}
 			}
 			if (matchingRoles.isEmpty()) {
-				throw new RoleNotFoundException(null, trustRole.getId());
+				throw Exceptions.RoleNotFoundException.getInstance(null, trustRole.getId());
 			}
 		}
 
@@ -102,7 +99,7 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 
 	private void trustorOnly(Trust trust, User user) {
 		if (user.getId() != trust.getTrustor().getId()) {
-			throw new ForbiddenException();
+			throw Exceptions.ForbiddenException.getInstance();
 
 		}
 	}
@@ -122,10 +119,10 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 					trustRoles.add(allRoleNames.get(roleName));
 				} else {
 					String msg = MessageFormat.format(ROLE_NOT_FOUND, roleName);
-					throw new RoleNotFoundException(msg);
+					throw Exceptions.RoleNotFoundException.getInstance(msg);
 				}
 			} else {
-				throw new ValidationException(null, ROLES, ID_OR_NAME);
+				throw Exceptions.ValidationException.getInstance(null, ROLES, ID_OR_NAME);
 			}
 		}
 		return trustRoles;

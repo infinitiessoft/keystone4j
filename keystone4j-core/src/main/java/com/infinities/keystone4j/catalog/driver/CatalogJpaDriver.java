@@ -7,8 +7,7 @@ import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.model.Catalog;
 import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.catalog.model.Service;
-import com.infinities.keystone4j.exception.EndpointNotFoundException;
-import com.infinities.keystone4j.exception.ServiceNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.EndpointDao;
 import com.infinities.keystone4j.jpa.impl.ServiceDao;
 
@@ -39,7 +38,7 @@ public class CatalogJpaDriver implements CatalogDriver {
 	public Service getService(String serviceid) {
 		Service service = serviceDao.findById(serviceid);
 		if (service != null) {
-			throw new ServiceNotFoundException(null, serviceid);
+			throw Exceptions.ServiceNotFoundException.getInstance(null, serviceid);
 		}
 		return service;
 	}
@@ -78,7 +77,7 @@ public class CatalogJpaDriver implements CatalogDriver {
 	public Endpoint getEndpoint(String endpointid) {
 		Endpoint endpoint = endpointDao.findById(endpointid);
 		if (endpoint != null) {
-			throw new EndpointNotFoundException(null, endpointid);
+			throw Exceptions.EndpointNotFoundException.getInstance(null, endpointid);
 		}
 		return endpoint;
 	}

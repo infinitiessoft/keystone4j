@@ -10,7 +10,7 @@ import com.google.common.collect.Lists;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystoneUtils;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.exception.ForbiddenException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.token.TokenApi;
@@ -44,14 +44,14 @@ public class ListTrustsAction extends AbstractTrustAction<List<Trust>> {
 
 		if (!Strings.isNullOrEmpty(trustorid)) {
 			if (!trustorid.equals(callingUser.getId())) {
-				throw new ForbiddenException();
+				throw Exceptions.ForbiddenException.getInstance();
 			}
 			trusts.addAll(this.getTrustApi().listTrustsForTrustor(trustorid));
 		}
 
 		if (!Strings.isNullOrEmpty(trusteeid)) {
 			if (!trusteeid.equals(callingUser.getId())) {
-				throw new ForbiddenException();
+				throw Exceptions.ForbiddenException.getInstance();
 			}
 			trusts.addAll(this.getTrustApi().listTrustsForTrustee(trusteeid));
 		}

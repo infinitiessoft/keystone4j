@@ -8,10 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.exception.DomainNotFoundException;
-import com.infinities.keystone4j.exception.UnauthorizedException;
-import com.infinities.keystone4j.exception.UserNotFoundException;
-import com.infinities.keystone4j.exception.ValidationException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 
@@ -34,7 +31,7 @@ public class UserAuthInfo {
 
 	private void validateAndNormalizeAuthData(Identity identity) {
 		if (identity.getUser() == null) {
-			throw new ValidationException(null, "user", "password");
+			throw Exceptions.ValidationException.getInstance(null, "user", "password");
 		}
 
 		User userInfo = identity.getUser();
@@ -42,7 +39,7 @@ public class UserAuthInfo {
 		String userName = userInfo.getName();
 
 		if (Strings.isNullOrEmpty(userid) && Strings.isNullOrEmpty(userName)) {
-			throw new ValidationException(null, "id or name", "user");
+			throw Exceptions.ValidationException.getInstance(null, "id or name", "user");
 		}
 
 		this.password = userInfo.getPassword();
@@ -52,7 +49,7 @@ public class UserAuthInfo {
 		try {
 			if (!Strings.isNullOrEmpty(userName)) {
 				if (userInfo.getDomain() == null) {
-					throw new ValidationException(null, "domain", "user");
+					throw Exceptions.ValidationException.getInstance(null, "domain", "user");
 				}
 				domain = lookupDomain(userInfo.getDomain());
 				user = identityApi.getUserByName(userName, domain.getId());
@@ -62,9 +59,9 @@ public class UserAuthInfo {
 				domain = user.getDomain();
 				assertDomainIsEnabled(domain);
 			}
-		} catch (UserNotFoundException e) {
+		} catch (Exception e) {
 			logger.error("user not found", e);
-			throw new UnauthorizedException();
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 
 		assertUserIsEnabled(user);
@@ -79,7 +76,7 @@ public class UserAuthInfo {
 			String msgf = "User is disabled: {0}";
 			String msg = MessageFormat.format(msgf, user.getId());
 			logger.warn(msg);
-			throw new UnauthorizedException(msg);
+			throw Exceptions.UnauthorizedException.getInstance(msg);
 		}
 	}
 
@@ -88,7 +85,7 @@ public class UserAuthInfo {
 			String msgf = "Domain is disabled: {0}";
 			String msg = MessageFormat.format(msgf, domain.getId());
 			logger.warn(msg);
-			throw new UnauthorizedException(msg);
+			throw Exceptions.UnauthorizedException.getInstance(msg);
 		}
 	}
 
@@ -97,7 +94,7 @@ public class UserAuthInfo {
 		String domainName = domain.getName();
 		Domain ret;
 		if (Strings.isNullOrEmpty(domainid) && Strings.isNullOrEmpty(domainName)) {
-			throw new ValidationException(null, "id or name", "domain");
+			throw Exceptions.ValidationException.getInstance(null, "id or name", "domain");
 		}
 
 		try {
@@ -106,9 +103,9 @@ public class UserAuthInfo {
 			} else {
 				ret = assignmentApi.getDomain(domainid);
 			}
-		} catch (DomainNotFoundException e) {
+		} catch (Exception e) {
 			logger.error("domain not found", e);
-			throw new UnauthorizedException();
+			throw Exceptions.UnauthorizedException.getInstance();
 		}
 		assertDomainIsEnabled(ret);
 		return ret;

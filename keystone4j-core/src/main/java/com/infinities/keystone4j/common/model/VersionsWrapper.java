@@ -2,6 +2,9 @@ package com.infinities.keystone4j.common.model;
 
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class VersionsWrapper {
 
 	private VersionValueWrapper versions;

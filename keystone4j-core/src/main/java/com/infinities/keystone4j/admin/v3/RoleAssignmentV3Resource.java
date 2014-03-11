@@ -11,7 +11,7 @@ import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.assignment.controller.RoleAssignmentV3Controller;
 import com.infinities.keystone4j.assignment.model.RoleAssignmentWrapper;
 import com.infinities.keystone4j.assignment.model.RoleAssignmentsWrapper;
-import com.infinities.keystone4j.exception.NotImplementedException;
+import com.infinities.keystone4j.exception.Exceptions;
 
 public class RoleAssignmentV3Resource {
 
@@ -25,35 +25,35 @@ public class RoleAssignmentV3Resource {
 	@POST
 	public Response createRoleAssignment() {
 		// TODO not implemented yet
-		throw new NotImplementedException(null, null);
+		throw Exceptions.NotImplementedException.getInstance();
 	}
 
 	@GET
 	public RoleAssignmentsWrapper listRoleAssignment() {
 		// TODO not implemented yet
 		roleAssignmentController.listRoleAssignments();
-		throw new NotImplementedException(null, null);
+		throw Exceptions.NotImplementedException.getInstance();
 	}
 
 	@GET
 	@Path("/{roleAssignmentid}")
 	public RoleAssignmentWrapper getRoleAssignment(@PathParam("roleAssignmentid") String roleAssignmentid) {
 		// TODO not implemented yet
-		throw new NotImplementedException(null, null);
+		throw Exceptions.NotImplementedException.getInstance();
 	}
 
 	@PATCH
 	@Path("/{roleAssignmentid}")
 	public RoleAssignmentWrapper updateRoleAssignment() {
 		// TODO not implemented yet
-		throw new NotImplementedException(null, null);
+		throw Exceptions.NotImplementedException.getInstance();
 	}
 
 	@DELETE
 	@Path("/{roleAssignmentid}")
 	public Response deleteRoleAssignment(@PathParam("roleAssignmentid") String roleAssignmentid) {
 		// TODO not implemented yet
-		throw new NotImplementedException(null, null);
+		throw Exceptions.NotImplementedException.getInstance();
 	}
 
 }

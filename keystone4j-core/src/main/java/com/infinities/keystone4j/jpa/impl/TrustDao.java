@@ -10,7 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.exception.TrustNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.AbstractDao;
 import com.infinities.keystone4j.trust.model.Trust;
 
@@ -85,7 +85,7 @@ public class TrustDao extends AbstractDao<Trust> {
 	public void deleteTrust(String trustid) {
 		Trust trust = this.findById(trustid);
 		if (trust == null) {
-			throw new TrustNotFoundException(null, trustid);
+			throw Exceptions.TrustNotFoundException.getInstance(null, trustid);
 		}
 		trust.setDeletedAt(new Date());
 		this.merge(trust);

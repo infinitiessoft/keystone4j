@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.infinities.keystone4j.JsonUtils;
-import com.infinities.keystone4j.exception.PolicyNotAuthorizedException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.policy.check.Check;
 import com.infinities.keystone4j.policy.check.FalseCheck;
 import com.infinities.keystone4j.policy.check.GenericCheck;
@@ -194,7 +194,7 @@ public class Enforcer {
 		}
 
 		if (doRaise && !result) {
-			throw new PolicyNotAuthorizedException(null, action);
+			throw Exceptions.PolicyNotAuthorizedException.getInstance(null, action);
 		}
 		return result;
 	}

@@ -6,9 +6,7 @@ import javax.persistence.NoResultException;
 
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.PasswordUtils;
-import com.infinities.keystone4j.exception.GroupNotFoundException;
-import com.infinities.keystone4j.exception.NotFoundException;
-import com.infinities.keystone4j.exception.UserNotFoundException;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityDriver;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
@@ -38,7 +36,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 		User user = null;
 		try {
 			user = getUser(userid);
-		} catch (UserNotFoundException e) {
+		} catch (Exception e) {
 			// replace AssertionError
 			throw new IllegalArgumentException(INVALID_USER_PASSWORD);
 		}
@@ -78,7 +76,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 	public User getUser(String userid) {
 		User user = userDao.findById(userid);
 		if (user == null) {
-			throw new UserNotFoundException(null, userid);
+			throw Exceptions.UserNotFoundException.getInstance(null, userid);
 		}
 		return user;
 	}
@@ -138,7 +136,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 			userGroupMembershipDao.findByUserGroup(userid, groupid);
 			return;
 		} catch (NoResultException e) {
-			throw new NotFoundException(USER_NOT_FOUND);
+			throw Exceptions.NotFoundException.getInstance(USER_NOT_FOUND);
 		}
 	}
 
@@ -148,7 +146,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 			UserGroupMembership membership = userGroupMembershipDao.findByUserGroup(userid, groupid);
 			userGroupMembershipDao.remove(membership);
 		} catch (NoResultException e) {
-			throw new NotFoundException(USER_NOT_FOUND);
+			throw Exceptions.NotFoundException.getInstance(USER_NOT_FOUND);
 		}
 	}
 
@@ -164,7 +162,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 			User user = userDao.findByName(userName, domainid);
 			return user;
 		} catch (NoResultException e) {
-			throw new UserNotFoundException(null, userName);
+			throw Exceptions.UserNotFoundException.getInstance(null, userName);
 		}
 	}
 
@@ -194,7 +192,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 	public Group getGroup(String groupid) {
 		Group group = groupDao.findById(groupid);
 		if (group == null) {
-			throw new GroupNotFoundException(null, groupid);
+			throw Exceptions.GroupNotFoundException.getInstance(null, groupid);
 		}
 		return group;
 	}
