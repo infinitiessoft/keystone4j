@@ -5,8 +5,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -37,6 +41,16 @@ public class JsonUtils {
 	public static Map<String, String> readJson(File file) throws JsonParseException, JsonMappingException, IOException {
 		Map<String, String> map = objectMapper.readValue(file, mapTypeRef);
 		return map;
+	}
+
+	public static JsonNode convertToJsonNode(String text) throws JsonProcessingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		JsonFactory factory = mapper.getJsonFactory(); // since 2.1 use
+														// mapper.getFactory()
+														// instead
+		JsonParser jp = factory.createJsonParser(text);
+		JsonNode node = mapper.readTree(jp);
+		return node;
 	}
 
 }

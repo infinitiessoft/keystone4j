@@ -102,7 +102,7 @@ public class VersionApi {
 	public VersionWrapper getVersionV3() throws MalformedURLException {
 		List<Version> versions = getVersionList();
 		for (Version version : versions) {
-			if (V3.equals(version.getId())) {
+			if ("v3.0".equals(version.getId())) {
 				return new VersionWrapper(version);
 			}
 		}

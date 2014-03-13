@@ -7,22 +7,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class VersionsWrapper {
 
-	private VersionValueWrapper versions;
+	private Set<Version> versions;
 
 
 	public VersionsWrapper() {
 
 	}
 
-	public VersionsWrapper(Set<Version> version) {
-		this.versions = new VersionValueWrapper(version);
+	public VersionsWrapper(Set<Version> versions) {
+		this.versions = versions;
 	}
 
-	public VersionValueWrapper getVersions() {
+	public Set<Version> getVersions() {
 		return versions;
 	}
 
-	public void setVersions(VersionValueWrapper versions) {
+	public void setVersions(Set<Version> versions) {
 		this.versions = versions;
 	}
 
