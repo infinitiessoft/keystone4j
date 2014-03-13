@@ -12,6 +12,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
@@ -111,6 +112,7 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 	}
 
 	@XmlID
+	@Transient
 	public String getEndpointId() {
 		return this.getId();
 	}
@@ -163,11 +165,11 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 		this.extraUpdated = extraUpdated;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "endpoint", cascade = CascadeType.ALL)
 	public Set<ProjectEndpoint> getProjectEndpoints() {
 		return projectEndpoints;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "endpoint", cascade = CascadeType.ALL)
 	public void setProjectEndpoints(Set<ProjectEndpoint> projectEndpoints) {
 		this.projectEndpoints = projectEndpoints;
 	}

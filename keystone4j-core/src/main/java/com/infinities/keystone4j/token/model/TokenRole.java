@@ -32,12 +32,12 @@ public class TokenRole extends BaseEntity implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TOKENID", nullable = false)
-	public Token getTrust() {
+	public Token getToken() {
 		return token;
 	}
 
-	public void setTrust(Token trust) {
-		this.token = trust;
+	public void setToken(Token token) {
+		this.token = token;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

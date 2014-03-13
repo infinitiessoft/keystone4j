@@ -9,7 +9,7 @@
 ### Maven ###
 target/
 
-### Skyport ###
+### Log ###
 **/logs/**
 
 ### Manifest ###
@@ -21,4 +21,7 @@ META-INF
 ### LOG ###
 *.log
 *.log.*
+
+### DB ###
+**/db/**
 

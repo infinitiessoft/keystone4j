@@ -10,7 +10,9 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.identity.model.Group;
@@ -163,16 +165,22 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 	}
 
 	@Override
+	@XmlTransient
+	@Transient
 	public User getUser() {
 		throw new IllegalStateException("propert 'user' not exist");
 	}
 
 	@Override
+	@XmlTransient
+	@Transient
 	public Domain getDomain() {
 		throw new IllegalStateException("propert 'domain' not exist");
 	}
 
 	@Override
+	@XmlTransient
+	@Transient
 	public Project getProject() {
 		throw new IllegalStateException("propert 'project' not exist");
 	}

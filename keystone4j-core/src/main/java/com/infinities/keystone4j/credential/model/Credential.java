@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlTransient;
 
 import com.infinities.keystone4j.BaseEntity;
@@ -132,6 +133,7 @@ public class Credential extends BaseEntity implements java.io.Serializable, Poli
 	}
 
 	@XmlTransient
+	@Transient
 	@Override
 	public Domain getDomain() {
 		throw new IllegalStateException("propert 'domain' not exist");

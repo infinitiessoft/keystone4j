@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory name="Keystone4j">
+		<property name="hibernate.bytecode.use_reflection_optimizer">false</property>
+		<property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
+		<property name="hibernate.connection.url">jdbc:hsqldb:file:./db/keystone4j</property>
+		<property name="hibernate.connection.username">sa</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.HSQLDialect</property>
+		<property name="hibernate.search.autoregister_listeners">false</property>
+	</session-factory>
+</hibernate-configuration>

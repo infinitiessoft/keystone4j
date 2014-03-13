@@ -12,6 +12,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
@@ -261,12 +262,14 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 	}
 
 	@XmlTransient
+	@Transient
 	@Override
 	public Project getProject() {
 		return default_project;
 	}
 
 	@XmlTransient
+	@Transient
 	@Override
 	public User getUser() {
 		throw new IllegalStateException("propert 'user' not exist");

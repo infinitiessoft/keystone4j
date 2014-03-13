@@ -12,6 +12,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
@@ -131,12 +132,14 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 	}
 
 	@XmlTransient
+	@Transient
 	@Override
 	public User getUser() {
 		throw new IllegalStateException("propert 'user' not exist");
 	}
 
 	@XmlTransient
+	@Transient
 	@Override
 	public Project getProject() {
 		throw new IllegalStateException("propert 'project' not exist");

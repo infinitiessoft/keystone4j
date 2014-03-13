@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.common.model;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 public class Link implements java.io.Serializable {
 
 	/**
@@ -19,6 +21,7 @@ public class Link implements java.io.Serializable {
 		this.rel = rel;
 	}
 
+	@XmlTransient
 	public String getType() {
 		return type;
 	}

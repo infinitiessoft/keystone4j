@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -58,6 +59,7 @@ public class Token implements java.io.Serializable, PolicyEntity {
 		this.version = version;
 	}
 
+	@Override
 	@Id
 	// @GeneratedValue(generator = "system-uuid")
 	// @GenericGenerator(name = "system-uuid", strategy = "uuid")
@@ -109,6 +111,7 @@ public class Token implements java.io.Serializable, PolicyEntity {
 		this.valid = valid;
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID", nullable = false)
 	public User getUser() {
@@ -119,6 +122,7 @@ public class Token implements java.io.Serializable, PolicyEntity {
 		this.user = user;
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECTID", nullable = true)
 	public Project getProject() {
@@ -129,6 +133,7 @@ public class Token implements java.io.Serializable, PolicyEntity {
 		this.project = project;
 	}
 
+	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOMAINID", nullable = true)
 	public Domain getDomain() {
@@ -149,10 +154,12 @@ public class Token implements java.io.Serializable, PolicyEntity {
 		this.trust = trust;
 	}
 
+	@Transient
 	public Bind getBind() {
 		return bind;
 	}
 
+	@Transient
 	public void setBind(Bind bind) {
 		this.bind = bind;
 	}
@@ -167,6 +174,7 @@ public class Token implements java.io.Serializable, PolicyEntity {
 	}
 
 	@XmlTransient
+	@Transient
 	public TokenDataWrapper getTokenData() {
 		TokenData tokenData = new TokenData();
 		tokenData.setBind(getBind());
@@ -184,6 +192,7 @@ public class Token implements java.io.Serializable, PolicyEntity {
 		return new TokenDataWrapper(tokenData);
 	}
 
+	@Transient
 	public void setTokenData(TokenDataWrapper tokenData) {
 		setBind(tokenData.getToken().getBind());
 		setUser(tokenData.getToken().getUser());

@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlID;
 
@@ -62,6 +63,7 @@ public class Service extends BaseEntity implements java.io.Serializable {
 	}
 
 	@XmlID
+	@Transient
 	public String getServiceId() {
 		return this.getId();
 	}

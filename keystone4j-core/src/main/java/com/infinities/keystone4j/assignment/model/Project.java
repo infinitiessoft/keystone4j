@@ -12,6 +12,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
@@ -170,22 +171,24 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 		this.domainUpdated = domainUpdated;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "endpoint", cascade = CascadeType.ALL)
 	public Set<ProjectEndpoint> getProjectEndpoints() {
 		return projectEndpoints;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "endpoint", cascade = CascadeType.ALL)
 	public void setProjectEndpoints(Set<ProjectEndpoint> projectEndpoints) {
 		this.projectEndpoints = projectEndpoints;
 	}
 
 	@XmlTransient
+	@Transient
 	@Override
 	public User getUser() {
 		throw new IllegalStateException("propert 'user' not exist");
 	}
 
 	@XmlTransient
+	@Transient
 	@Override
 	public Project getProject() {
 		throw new IllegalStateException("propert 'project' not exist");
