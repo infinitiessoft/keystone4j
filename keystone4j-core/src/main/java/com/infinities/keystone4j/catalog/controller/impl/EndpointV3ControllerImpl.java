@@ -15,13 +15,14 @@ import com.infinities.keystone4j.catalog.controller.EndpointV3Controller;
 import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.catalog.model.EndpointWrapper;
 import com.infinities.keystone4j.catalog.model.EndpointsWrapper;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class EndpointV3ControllerImpl implements EndpointV3Controller {
+public class EndpointV3ControllerImpl extends BaseController implements EndpointV3Controller {
 
 	private final CatalogApi catalogApi;
 	private final TokenApi tokenApi;
@@ -41,7 +42,7 @@ public class EndpointV3ControllerImpl implements EndpointV3Controller {
 		parMap.put("endpoint", endpoint);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new CreateEndpointAction(catalogApi, endpoint), null,
 				tokenApi, policyApi, parMap);
-		Endpoint ret = command.execute();
+		Endpoint ret = command.execute(getRequest());
 		return new EndpointWrapper(ret);
 	}
 
@@ -52,7 +53,7 @@ public class EndpointV3ControllerImpl implements EndpointV3Controller {
 		Action<List<Endpoint>> command = new FilterCheckDecorator<List<Endpoint>>(new PaginateDecorator<Endpoint>(
 				new ListEndpointsAction(catalogApi, interfaceType, serviceid), page, perPage), tokenApi, policyApi, parMap);
 
-		List<Endpoint> ret = command.execute();
+		List<Endpoint> ret = command.execute(getRequest());
 		return new EndpointsWrapper(ret);
 	}
 
@@ -61,7 +62,7 @@ public class EndpointV3ControllerImpl implements EndpointV3Controller {
 		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new GetEndpointAction(catalogApi, endpointid), null,
 				tokenApi, policyApi, parMap);
-		Endpoint ret = command.execute();
+		Endpoint ret = command.execute(getRequest());
 		return new EndpointWrapper(ret);
 	}
 
@@ -71,7 +72,7 @@ public class EndpointV3ControllerImpl implements EndpointV3Controller {
 		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new UpdateEndpointAction(catalogApi, endpointid,
 				endpoint), null, tokenApi, policyApi, parMap);
-		Endpoint ret = command.execute();
+		Endpoint ret = command.execute(getRequest());
 		return new EndpointWrapper(ret);
 	}
 
@@ -80,7 +81,7 @@ public class EndpointV3ControllerImpl implements EndpointV3Controller {
 		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new DeleteEndpointAction(catalogApi, endpointid),
 				null, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 }

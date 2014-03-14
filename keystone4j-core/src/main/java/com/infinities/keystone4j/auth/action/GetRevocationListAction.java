@@ -2,6 +2,8 @@ package com.infinities.keystone4j.auth.action;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.JsonUtils;
 import com.infinities.keystone4j.assignment.AssignmentApi;
@@ -20,7 +22,7 @@ public class GetRevocationListAction extends AbstractTokenAction<SignedWrapper> 
 	}
 
 	@Override
-	public SignedWrapper execute() {
+	public SignedWrapper execute(ContainerRequestContext request) {
 		List<Token> tokens = this.getTokenApi().listRevokedTokens();
 
 		RevokedWrapper revoked = new RevokedWrapper(tokens);

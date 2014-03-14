@@ -10,7 +10,7 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class GetRoleCommand extends AbstractAssignmentCommand<Role> {
 
-	private String roleid;
+	private final String roleid;
 
 
 	public GetRoleCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

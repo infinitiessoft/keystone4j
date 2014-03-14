@@ -5,13 +5,14 @@ import javax.inject.Inject;
 import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.trust.controller.TrustV3Controller;
 
-public class TrustV3ControllerFactory implements Factory<TrustV3Controller> {
+public class TrustV3ControllerFactory extends BaseControllerFactory implements Factory<TrustV3Controller> {
 
 	private final AssignmentApi assignmentApi;
 	private final IdentityApi identityApi;
@@ -37,7 +38,10 @@ public class TrustV3ControllerFactory implements Factory<TrustV3Controller> {
 
 	@Override
 	public TrustV3Controller provide() {
-		return new TrustV3ControllerImpl(assignmentApi, identityApi, trustApi, tokenApi, policyApi);
+		TrustV3ControllerImpl controller = new TrustV3ControllerImpl(assignmentApi, identityApi, trustApi, tokenApi,
+				policyApi);
+		controller.setRequest(getRequest());
+		return controller;
 	}
 
 }

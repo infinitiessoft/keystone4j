@@ -10,8 +10,8 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class UpdateDomainCommand extends AbstractAssignmentCommand<Domain> {
 
-	private String domainid;
-	private Domain domain;
+	private final String domainid;
+	private final Domain domain;
 
 
 	public UpdateDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

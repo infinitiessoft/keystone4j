@@ -2,8 +2,7 @@ package com.infinities.keystone4j.identity.action.group;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ContainerRequestContext;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -20,7 +19,6 @@ public class ListGroupsForUserAction extends AbstractGroupAction<List<Group>> {
 
 	private final String userid;
 	private final String name;
-	private HttpServletRequest request;
 
 
 	public ListGroupsForUserAction(IdentityApi identityApi, String userid, String name) {
@@ -30,8 +28,8 @@ public class ListGroupsForUserAction extends AbstractGroupAction<List<Group>> {
 	}
 
 	@Override
-	public List<Group> execute() {
-		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
+	public List<Group> execute(ContainerRequestContext request) {
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		Domain domain = new KeystoneUtils().getDomainForRequest(context);
 		Iterable<Group> groups = this.getIdentityApi().listGroupsForUser(userid, domain.getId());
 
@@ -54,11 +52,6 @@ public class ListGroupsForUserAction extends AbstractGroupAction<List<Group>> {
 		}
 
 		return Lists.newArrayList(groups);
-	}
-
-	@Context
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
 	}
 
 	@Override

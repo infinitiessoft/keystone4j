@@ -1,9 +1,10 @@
 package com.infinities.keystone4j.filter;
 
 import java.io.IOException;
+import java.security.Principal;
 
+import javax.annotation.Priority;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.Token;
 
+@Priority(1000)
 public class AuthContextMiddleware extends TokenBindValidator implements Middleware {
 
 	private final static Logger logger = LoggerFactory.getLogger(AuthContextMiddleware.class);
@@ -32,6 +34,7 @@ public class AuthContextMiddleware extends TokenBindValidator implements Middlew
 	// subject_token_head only use in token-related action
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
+		logger.debug("enter AuthContextMiddleware filter");
 		if (!requestContext.getHeaders().containsKey(AUTH_TOKEN_HEADER)) {
 			logger.debug("Auth token not in the request headder. Will not build auth context.");
 			return;
@@ -49,28 +52,32 @@ public class AuthContextMiddleware extends TokenBindValidator implements Middlew
 	private Token buildAuthContext(ContainerRequestContext requestContext) {
 		String tokenid = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER);
 		String adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText();
+		logger.debug("adminToken: {}", adminToken);
+		logger.debug("userToken: {}", tokenid);
 		if (tokenid.equals(adminToken)) {
 			return new Token();
 		}
 
 		KeystoneContext context = new KeystoneContext();
 		context.setTokenid(tokenid);
-		HttpServletRequest request = (HttpServletRequest) requestContext.getRequest();
+		ContainerRequestContext request = (ContainerRequestContext) requestContext.getRequest();
 		Environment environment = new Environment();
-		environment.setAuthType(request.getAuthType());
-		environment.setRemoteUser(request.getRemoteUser());
+		environment.setAuthType(request.getSecurityContext().getAuthenticationScheme());
+		Principal principal = request.getSecurityContext().getUserPrincipal();
+		if (principal != null) {
+			environment.setRemoteUser(principal.getName());
+		}
 		context.setEnvironment(environment);
 
 		try {
 			Token token = tokenApi.getToken(tokenid);
 			validateTokenBind(context, token);
-
 			return token;
-
 		} catch (Exception e) {
-			logger.warn("RBAC: Invalid token");
+			logger.warn("RBAC: Invalid token", e);
 			throw Exceptions.UnauthorizedException.getInstance(null);
 		}
 
 	}
+
 }

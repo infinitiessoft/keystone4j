@@ -10,7 +10,7 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class GetDomainCommand extends AbstractAssignmentCommand<Domain> {
 
-	private String domainid;
+	private final String domainid;
 
 
 	public GetDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

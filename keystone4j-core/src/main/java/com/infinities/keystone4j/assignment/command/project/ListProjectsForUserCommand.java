@@ -14,7 +14,7 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class ListProjectsForUserCommand extends AbstractAssignmentCommand<List<Project>> {
 
-	private String userid;
+	private final String userid;
 
 
 	public ListProjectsForUserCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

@@ -2,22 +2,26 @@ package com.infinities.keystone4j.assignment.callback;
 
 import java.util.Map;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
-import com.infinities.keystone4j.PolicyCredentialChecker;
 import com.infinities.keystone4j.Callback;
 import com.infinities.keystone4j.KeystoneContext;
+import com.infinities.keystone4j.PolicyCredentialChecker;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
+import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.model.Token;
 
 public class CheckGrantCallback extends PolicyCredentialChecker implements Callback {
 
@@ -43,7 +47,7 @@ public class CheckGrantCallback extends PolicyCredentialChecker implements Callb
 	}
 
 	@Override
-	public void execute(KeystoneContext context, Action<?> command, Map<String, Object> parMap) {
+	public void execute(ContainerRequestContext request, Action<?> command, Map<String, Object> parMap) {
 		Map<String, PolicyEntity> target = Maps.newHashMap();
 		if (!Strings.isNullOrEmpty(domainid)) {
 			Domain domain = this.assignmentApi.getDomain(domainid);
@@ -65,7 +69,10 @@ public class CheckGrantCallback extends PolicyCredentialChecker implements Callb
 			Role role = this.assignmentApi.getRole(roleid);
 			target.put("role", role);
 		}
-		checkProtection(context, command, target, parMap);
+
+		Token token = (Token) request.getProperty(Authorization.AUTH_CONTEXT_ENV);
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
+		checkProtection(context, token, command, target, parMap);
 	}
 
 }

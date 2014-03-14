@@ -10,10 +10,10 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class GetGrantByUserDomainCommand extends AbstractAssignmentCommand<Role> {
 
-	private String roleid;
-	private String userid;
-	private String domainid;
-	private boolean inherited;
+	private final String roleid;
+	private final String userid;
+	private final String domainid;
+	private final boolean inherited;
 
 
 	public GetGrantByUserDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

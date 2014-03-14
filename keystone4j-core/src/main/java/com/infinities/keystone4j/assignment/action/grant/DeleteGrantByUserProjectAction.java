@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.assignment.action.grant;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Role;
@@ -23,7 +25,7 @@ public class DeleteGrantByUserProjectAction extends AbstractGrantAction<Role> {
 	}
 
 	@Override
-	public Role execute() {
+	public Role execute(ContainerRequestContext request) {
 		KeystonePreconditions.requireUser(userid);
 		KeystonePreconditions.requireProject(projectid);
 		assignmentApi.deleteGrantByUserProject(roleid, userid, projectid, inherited);

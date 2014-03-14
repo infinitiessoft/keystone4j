@@ -2,6 +2,8 @@ package com.infinities.keystone4j.catalog.action.service;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
@@ -21,7 +23,7 @@ public class ListServicesAction extends AbstractServiceAction<List<Service>> {
 	}
 
 	@Override
-	public List<Service> execute() {
+	public List<Service> execute(ContainerRequestContext request) {
 		Iterable<Service> services = this.getCatalogApi().listServices();
 
 		List<Predicate<Service>> filters = Lists.newArrayList();

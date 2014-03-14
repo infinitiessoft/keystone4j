@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.identity.action.user;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystoneUtils;
@@ -13,7 +12,6 @@ public class CheckUserInGroupAction extends AbstractUserAction<User> {
 
 	private final String userid;
 	private final String groupid;
-	private HttpServletRequest request;
 
 
 	public CheckUserInGroupAction(IdentityApi identityApi, String userid, String groupid) {
@@ -23,15 +21,10 @@ public class CheckUserInGroupAction extends AbstractUserAction<User> {
 	}
 
 	@Override
-	public User execute() {
-		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
+	public User execute(ContainerRequestContext request) {
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		Domain domain = new KeystoneUtils().getDomainForRequest(context);
 		return this.getIdentityApi().checkUserInGroup(userid, groupid, domain.getId());
-	}
-
-	@Context
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
 	}
 
 	@Override

@@ -9,8 +9,8 @@ import com.infinities.keystone4j.main.PublicResource;
 public class KeystoneApplication extends ResourceConfig {
 
 	public KeystoneApplication() {
-		register(JacksonFeature.class);
-		register(new AbstractBinder() {
+		this.register(JacksonFeature.class);
+		this.register(new AbstractBinder() {
 
 			@Override
 			protected void configure() {
@@ -75,6 +75,6 @@ public class KeystoneApplication extends ResourceConfig {
 		// register(TokenAuthMiddleware.class);
 		// register(AdminTokenAuthMiddleware.class);
 		// register(RequestBodySizeLimiter.class);
-		register(PublicResource.class);
+		this.register(PublicResource.class);
 	}
 }

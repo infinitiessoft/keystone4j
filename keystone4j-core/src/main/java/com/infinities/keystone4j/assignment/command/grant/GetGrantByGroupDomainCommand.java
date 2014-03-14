@@ -14,10 +14,10 @@ public class GetGrantByGroupDomainCommand extends AbstractAssignmentCommand<Role
 	// LoggerFactory.getLogger(GetGrantByGroupDomainCommand.class);
 	// private final static String GROUP_NOT_FOUND =
 	// "Group {} not found, no tokens to invalidate.";
-	private String roleid;
-	private String groupid;
-	private String domainid;
-	private boolean inherited;
+	private final String roleid;
+	private final String groupid;
+	private final String domainid;
+	private final boolean inherited;
 
 
 	public GetGrantByGroupDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

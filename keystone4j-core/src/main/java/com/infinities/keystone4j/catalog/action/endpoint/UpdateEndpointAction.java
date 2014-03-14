@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.catalog.action.endpoint;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.model.Endpoint;
@@ -15,7 +17,7 @@ public class UpdateEndpointAction extends AbstractEndpointAction<Endpoint> {
 	}
 
 	@Override
-	public Endpoint execute() {
+	public Endpoint execute(ContainerRequestContext request) {
 		KeystonePreconditions.requireMatchingId(endpointid, endpoint);
 		return this.getCatalogApi().updateEndpoint(endpointid, endpoint);
 	}

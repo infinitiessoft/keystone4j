@@ -15,13 +15,14 @@ import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
 import com.infinities.keystone4j.catalog.model.Service;
 import com.infinities.keystone4j.catalog.model.ServiceWrapper;
 import com.infinities.keystone4j.catalog.model.ServicesWrapper;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class ServiceV3ControllerImpl implements ServiceV3Controller {
+public class ServiceV3ControllerImpl extends BaseController implements ServiceV3Controller {
 
 	private final CatalogApi catalogApi;
 	private final TokenApi tokenApi;
@@ -41,7 +42,7 @@ public class ServiceV3ControllerImpl implements ServiceV3Controller {
 		parMap.put("service", service);
 		Action<Service> command = new PolicyCheckDecorator<Service>(new CreateServiceAction(catalogApi, service), null,
 				tokenApi, policyApi, parMap);
-		Service ret = command.execute();
+		Service ret = command.execute(getRequest());
 		return new ServiceWrapper(ret);
 	}
 
@@ -50,7 +51,7 @@ public class ServiceV3ControllerImpl implements ServiceV3Controller {
 		parMap.put("type", type);
 		Action<List<Service>> command = new FilterCheckDecorator<List<Service>>(new PaginateDecorator<Service>(
 				new ListServicesAction(catalogApi, type), page, perPage), tokenApi, policyApi, parMap);
-		List<Service> ret = command.execute();
+		List<Service> ret = command.execute(getRequest());
 		return new ServicesWrapper(ret);
 	}
 
@@ -59,7 +60,7 @@ public class ServiceV3ControllerImpl implements ServiceV3Controller {
 		parMap.put("serviceid", serviceid);
 		Action<Service> command = new PolicyCheckDecorator<Service>(new GetServiceAction(catalogApi, serviceid), null,
 				tokenApi, policyApi, parMap);
-		Service ret = command.execute();
+		Service ret = command.execute(getRequest());
 		return new ServiceWrapper(ret);
 	}
 
@@ -69,7 +70,7 @@ public class ServiceV3ControllerImpl implements ServiceV3Controller {
 		parMap.put("service", service);
 		Action<Service> command = new PolicyCheckDecorator<Service>(new UpdateServiceAction(catalogApi, serviceid, service),
 				null, tokenApi, policyApi, parMap);
-		Service ret = command.execute();
+		Service ret = command.execute(getRequest());
 		return new ServiceWrapper(ret);
 	}
 
@@ -78,7 +79,7 @@ public class ServiceV3ControllerImpl implements ServiceV3Controller {
 		parMap.put("serviceid", serviceid);
 		Action<Service> command = new PolicyCheckDecorator<Service>(new DeleteServiceAction(catalogApi, serviceid), null,
 				tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 }

@@ -48,37 +48,37 @@
 				<groupId>org.glassfish.jersey.containers</groupId>
 				<!-- if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core" -->
 				<artifactId>jersey-container-servlet</artifactId>
-				<version>2.5.1</version>
+				<version>${jerseyVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-json-jackson</artifactId>
-				<version>2.5.1</version>
+				<version>${jerseyVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.jersey.ext</groupId>
 				<artifactId>jersey-bean-validation</artifactId>
-				<version>2.5.1</version>
+				<version>${jerseyVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.jersey.containers</groupId>
 				<artifactId>jersey-container-jetty-http</artifactId>
-				<version>2.5.1</version>
+				<version>${jerseyVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.jersey.containers</groupId>
 				<artifactId>jersey-container-jetty-servlet</artifactId>
-				<version>2.5.1</version>
+				<version>${jerseyVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-json-jackson</artifactId>
-				<version>2.5.1</version>
+				<version>${jerseyVersion}</version>
 			</dependency>
 
 			<dependency>
@@ -205,6 +205,7 @@
 		<slf4jVersion>1.6.6</slf4jVersion>
 		<tomcatVersion>7.0.34</tomcatVersion>
 		<jacksonVersion>2.2.1</jacksonVersion>
+		<jerseyVersion>2.6</jerseyVersion>
 	</properties>
 	<modules>
 		<module>keystone4j-core</module>

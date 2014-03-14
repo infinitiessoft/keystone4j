@@ -2,6 +2,8 @@ package com.infinities.keystone4j.decorator;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.Action;
 
 public class PaginateDecorator<V> implements Action<List<V>> {
@@ -18,8 +20,8 @@ public class PaginateDecorator<V> implements Action<List<V>> {
 	}
 
 	@Override
-	public List<V> execute() {
-		List<V> list = command.execute();
+	public List<V> execute(ContainerRequestContext request) {
+		List<V> list = command.execute(request);
 		int fromIndex = perPage * (page - 1);
 		int toIndex = perPage * page;
 		return list.subList(fromIndex, toIndex);

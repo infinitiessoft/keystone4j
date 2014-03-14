@@ -3,13 +3,9 @@ package com.infinities.keystone4j;
 import java.text.MessageFormat;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
@@ -21,7 +17,6 @@ public abstract class PolicyCredentialChecker extends TokenBindValidator {
 	private final static Logger logger = LoggerFactory.getLogger(PolicyCredentialChecker.class);
 	private final TokenApi tokenApi;
 	private final PolicyApi policyApi;
-	private HttpServletRequest request;
 
 
 	public PolicyCredentialChecker(TokenApi tokenApi, PolicyApi policyApi) {
@@ -29,21 +24,22 @@ public abstract class PolicyCredentialChecker extends TokenBindValidator {
 		this.policyApi = policyApi;
 	}
 
-	protected void checkProtection(KeystoneContext context, Action<?> command, Map<String, PolicyEntity> target,
-			Map<String, Object> parMap) {
+	protected void checkProtection(KeystoneContext context, Token token, Action<?> command,
+			Map<String, PolicyEntity> target, Map<String, Object> parMap) {
 		if (context.isAdmin()) {
 			logger.warn("RBAC: Bypassing authorization");
 		} else {
 			String action = MessageFormat.format("identity:{0}", command.getName());
-			Token token = buildPolicyCheckCredentials(action, context);
-			policyApi.enforce(token, action, target, parMap, true);
+			Token subjectToken = buildPolicyCheckCredentials(action, context, token);
+			policyApi.enforce(subjectToken, action, target, parMap, true);
 		}
 	}
 
-	protected Token buildPolicyCheckCredentials(String action, KeystoneContext context) {
+	protected Token buildPolicyCheckCredentials(String action, KeystoneContext context, Token token) {
 		logger.debug("RBAC: AUTHORIZING {}", action);
 
-		Token token = (Token) request.getAttribute(Authorization.AUTH_CONTEXT_ENV);
+		// Token token = (Token)
+		// request.getProperty(Authorization.AUTH_CONTEXT_ENV);
 		if (token != null) {
 			logger.debug("RBAC: using auth context from the request environment");
 			return token;
@@ -59,11 +55,6 @@ public abstract class PolicyCredentialChecker extends TokenBindValidator {
 			throw Exceptions.UnauthorizedException.getInstance();
 		}
 
-	}
-
-	@Context
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
 	}
 
 }

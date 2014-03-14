@@ -4,8 +4,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ContainerRequestContext;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -31,7 +30,6 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 	private final static String ID_OR_NAME = "id or name";
 	private final static String ROLE_NOT_FOUND = "role {0} is not defined";
 	private final Trust trust;
-	private HttpServletRequest request;
 
 
 	public CreateTrustAction(AssignmentApi assignmentApi, IdentityApi identityApi, TrustApi trustApi, TokenApi tokenApi,
@@ -41,12 +39,12 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 	}
 
 	@Override
-	public Trust execute() {
+	public Trust execute(ContainerRequestContext request) {
 		if (trust == null) {
 			throw Exceptions.ValidationException.getInstance(null, REQUEST, TRUST);
 		}
 
-		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		// try {
 		User user = new KeystoneUtils().getUser(context);
 		trustorOnly(trust, user);
@@ -126,11 +124,6 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 			}
 		}
 		return trustRoles;
-	}
-
-	@Context
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
 	}
 
 	@Override

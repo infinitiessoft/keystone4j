@@ -16,4 +16,5 @@ public class PublicResource {
 	public Class<PublicVersionApiResource> getPublicVersionApiResource() {
 		return PublicVersionApiResource.class;
 	}
+
 }

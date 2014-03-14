@@ -12,9 +12,9 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class ListGrantsByUserDomainCommand extends AbstractAssignmentCommand<List<Role>> {
 
-	private String userid;
-	private String domainid;
-	private boolean inherited;
+	private final String userid;
+	private final String domainid;
+	private final boolean inherited;
 
 
 	public ListGrantsByUserDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

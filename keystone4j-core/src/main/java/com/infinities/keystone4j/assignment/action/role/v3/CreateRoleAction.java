@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.assignment.action.role.v3;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Role;
 
@@ -14,7 +16,7 @@ public class CreateRoleAction extends AbstractRoleAction<Role> {
 	}
 
 	@Override
-	public Role execute() {
+	public Role execute(ContainerRequestContext request) {
 		Role ret = assignmentApi.createRole(role);
 		return ret;
 	}

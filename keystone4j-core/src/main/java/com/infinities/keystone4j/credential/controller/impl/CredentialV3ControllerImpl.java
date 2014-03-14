@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.credential.action.CreateCredentialAction;
 import com.infinities.keystone4j.credential.action.DeleteCredentialAction;
@@ -20,7 +21,7 @@ import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class CredentialV3ControllerImpl implements CredentialV3Controller {
+public class CredentialV3ControllerImpl extends BaseController implements CredentialV3Controller {
 
 	private final CredentialApi credentialApi;
 	private final TokenApi tokenApi;
@@ -40,7 +41,7 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 		parMap.put("credential", credential);
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new CreateCredentialAction(credentialApi,
 				credential), null, tokenApi, policyApi, parMap);
-		Credential ret = command.execute();
+		Credential ret = command.execute(getRequest());
 		return new CredentialWrapper(ret);
 	}
 
@@ -49,7 +50,7 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 		Action<List<Credential>> command = new PolicyCheckDecorator<List<Credential>>(new PaginateDecorator<Credential>(
 				new ListCredentialsAction(credentialApi), page, perPage), null, tokenApi, policyApi, parMap);
 
-		List<Credential> ret = command.execute();
+		List<Credential> ret = command.execute(getRequest());
 		return new CredentialsWrapper(ret);
 	}
 
@@ -58,7 +59,7 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 		parMap.put("credentialid", credentialid);
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new GetCredentialAction(credentialApi,
 				credentialid), null, tokenApi, policyApi, parMap);
-		Credential ret = command.execute();
+		Credential ret = command.execute(getRequest());
 		return new CredentialWrapper(ret);
 	}
 
@@ -68,7 +69,7 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 		parMap.put("credential", credential);
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new UpdateCredentialAction(credentialApi,
 				credentialid, credential), null, tokenApi, policyApi, parMap);
-		Credential ret = command.execute();
+		Credential ret = command.execute(getRequest());
 		return new CredentialWrapper(ret);
 	}
 
@@ -77,7 +78,7 @@ public class CredentialV3ControllerImpl implements CredentialV3Controller {
 		parMap.put("credentialid", credentialid);
 		Action<Credential> command = new PolicyCheckDecorator<Credential>(new DeleteCredentialAction(credentialApi,
 				credentialid), null, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 }

@@ -2,6 +2,8 @@ package com.infinities.keystone4j.credential.action;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.credential.model.Credential;
 
@@ -12,7 +14,7 @@ public class ListCredentialsAction extends AbstractCredentialAction<List<Credent
 	}
 
 	@Override
-	public List<Credential> execute() {
+	public List<Credential> execute(ContainerRequestContext request) {
 		return getCredentialApi().listCredentials();
 	}
 

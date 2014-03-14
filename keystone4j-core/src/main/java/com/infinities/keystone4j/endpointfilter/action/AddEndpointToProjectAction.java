@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.endpointfilter.action;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.model.Endpoint;
@@ -19,7 +21,7 @@ public class AddEndpointToProjectAction extends AbstractEndpointFilterAction<End
 	}
 
 	@Override
-	public Endpoint execute() {
+	public Endpoint execute(ContainerRequestContext request) {
 		this.getCatalogApi().getEndpoint(endpointid);
 		this.getAssignmentApi().getProject(projectid);
 		this.getEndpointFilterApi().addEndpointToProject(endpointid, projectid);

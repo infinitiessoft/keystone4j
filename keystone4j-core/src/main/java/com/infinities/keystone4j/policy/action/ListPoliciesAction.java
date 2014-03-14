@@ -2,6 +2,8 @@ package com.infinities.keystone4j.policy.action;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
@@ -21,7 +23,7 @@ public class ListPoliciesAction extends AbstractPolicyAction<List<Policy>> {
 	}
 
 	@Override
-	public List<Policy> execute() {
+	public List<Policy> execute(ContainerRequestContext request) {
 		Iterable<Policy> policies = this.getPolicyApi().listPolicies();
 
 		List<Predicate<Policy>> filters = Lists.newArrayList();

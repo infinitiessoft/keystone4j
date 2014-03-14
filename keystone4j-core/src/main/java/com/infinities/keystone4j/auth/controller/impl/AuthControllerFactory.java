@@ -6,13 +6,14 @@ import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.controller.AuthController;
+import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
-public class AuthControllerFactory implements Factory<AuthController> {
+public class AuthControllerFactory extends BaseControllerFactory implements Factory<AuthController> {
 
 	private final AssignmentApi assignmentApi;
 	private final TokenProviderApi tokenProviderApi;
@@ -40,7 +41,10 @@ public class AuthControllerFactory implements Factory<AuthController> {
 
 	@Override
 	public AuthController provide() {
-		return new AuthControllerImpl(assignmentApi, identityApi, tokenProviderApi, tokenApi, trustApi, policyApi);
+		AuthControllerImpl controller = new AuthControllerImpl(assignmentApi, identityApi, tokenProviderApi, tokenApi,
+				trustApi, policyApi);
+		controller.setRequest(getRequest());
+		return controller;
 	}
 
 }

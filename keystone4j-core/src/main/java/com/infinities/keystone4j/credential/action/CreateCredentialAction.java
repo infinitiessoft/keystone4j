@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.credential.action;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.credential.model.Credential;
 
@@ -14,7 +16,7 @@ public class CreateCredentialAction extends AbstractCredentialAction<Credential>
 	}
 
 	@Override
-	public Credential execute() {
+	public Credential execute(ContainerRequestContext request) {
 		credential = assignUniqueId(credential);
 		Credential ret = credentialApi.createCredential(credential);
 		return ret;

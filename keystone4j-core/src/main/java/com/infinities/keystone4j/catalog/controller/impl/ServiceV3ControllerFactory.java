@@ -6,10 +6,11 @@ import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
+import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class ServiceV3ControllerFactory implements Factory<ServiceV3Controller> {
+public class ServiceV3ControllerFactory extends BaseControllerFactory implements Factory<ServiceV3Controller> {
 
 	private final CatalogApi catalogApi;
 	private final TokenApi tokenApi;
@@ -30,7 +31,9 @@ public class ServiceV3ControllerFactory implements Factory<ServiceV3Controller> 
 
 	@Override
 	public ServiceV3Controller provide() {
-		return new ServiceV3ControllerImpl(catalogApi, tokenApi, policyApi);
+		ServiceV3ControllerImpl controller = new ServiceV3ControllerImpl(catalogApi, tokenApi, policyApi);
+		controller.setRequest(getRequest());
+		return controller;
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.assignment.action.domain;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 
@@ -14,7 +16,7 @@ public class GetDomainAction extends AbstractDomainAction<Domain> {
 	}
 
 	@Override
-	public Domain execute() {
+	public Domain execute(ContainerRequestContext request) {
 		return this.getAssignmentApi().getDomain(domainid);
 	}
 

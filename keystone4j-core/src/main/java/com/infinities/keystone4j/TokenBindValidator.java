@@ -16,6 +16,7 @@ public abstract class TokenBindValidator {
 
 	// wsgi.validate_token_bind
 	protected void validateTokenBind(KeystoneContext context, Token token) {
+
 		String bindMode = Config.Instance.getOpt(Config.Type.token, "enforce_token_bind").asText();
 
 		if (bindMode.equals("disabled")) {

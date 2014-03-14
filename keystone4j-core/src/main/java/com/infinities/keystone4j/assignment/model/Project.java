@@ -17,6 +17,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.credential.model.Credential;
 import com.infinities.keystone4j.endpointfilter.model.ProjectEndpoint;
@@ -183,6 +185,7 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 	@XmlTransient
 	@Transient
 	@Override
+	@JsonIgnore
 	public User getUser() {
 		throw new IllegalStateException("propert 'user' not exist");
 	}
@@ -190,6 +193,7 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 	@XmlTransient
 	@Transient
 	@Override
+	@JsonIgnore
 	public Project getProject() {
 		throw new IllegalStateException("propert 'project' not exist");
 	}

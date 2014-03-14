@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.assignment.action.domain;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
@@ -15,7 +17,7 @@ public class UpdateDomainAction extends AbstractDomainAction<Domain> {
 	}
 
 	@Override
-	public Domain execute() {
+	public Domain execute(ContainerRequestContext request) {
 		KeystonePreconditions.requireMatchingId(domainid, domain);
 		return this.getAssignmentApi().updateDomain(domainid, domain);
 	}

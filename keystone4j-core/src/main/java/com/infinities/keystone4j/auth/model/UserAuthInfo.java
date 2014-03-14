@@ -23,18 +23,18 @@ public class UserAuthInfo {
 	private final AssignmentApi assignmentApi;
 
 
-	public UserAuthInfo(Identity identity, IdentityApi identityApi, AssignmentApi assignmentApi) {
+	public UserAuthInfo(AuthData authData, IdentityApi identityApi, AssignmentApi assignmentApi) {
 		this.identityApi = identityApi;
 		this.assignmentApi = assignmentApi;
-		validateAndNormalizeAuthData(identity);
+		validateAndNormalizeAuthData(authData);
 	}
 
-	private void validateAndNormalizeAuthData(Identity identity) {
-		if (identity.getUser() == null) {
+	private void validateAndNormalizeAuthData(AuthData authData) {
+		if (authData.getUser() == null) {
 			throw Exceptions.ValidationException.getInstance(null, "user", "password");
 		}
 
-		User userInfo = identity.getUser();
+		User userInfo = authData.getUser();
 		String userid = userInfo.getId();
 		String userName = userInfo.getName();
 

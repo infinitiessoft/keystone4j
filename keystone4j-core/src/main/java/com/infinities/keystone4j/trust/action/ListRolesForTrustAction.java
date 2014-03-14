@@ -2,8 +2,7 @@ package com.infinities.keystone4j.trust.action;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ContainerRequestContext;
 
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.KeystoneContext;
@@ -22,7 +21,6 @@ import com.infinities.keystone4j.trust.model.TrustRole;
 public class ListRolesForTrustAction extends AbstractTrustAction<List<Role>> {
 
 	private final String trustid;
-	private HttpServletRequest request;
 
 
 	public ListRolesForTrustAction(AssignmentApi assignmentApi, IdentityApi identityApi, TrustApi trustApi,
@@ -32,8 +30,8 @@ public class ListRolesForTrustAction extends AbstractTrustAction<List<Role>> {
 	}
 
 	@Override
-	public List<Role> execute() {
-		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
+	public List<Role> execute(ContainerRequestContext request) {
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		User user = new KeystoneUtils().getUser(context);
 
 		Trust trust = this.getTrustApi().getTrust(trustid);
@@ -49,11 +47,6 @@ public class ListRolesForTrustAction extends AbstractTrustAction<List<Role>> {
 		}
 
 		return roles;
-	}
-
-	@Context
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
 	}
 
 	@Override

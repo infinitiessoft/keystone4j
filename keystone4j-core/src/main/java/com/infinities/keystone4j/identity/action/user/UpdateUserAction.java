@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.identity.action.user;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystonePreconditions;
@@ -14,7 +13,6 @@ public class UpdateUserAction extends AbstractUserAction<User> {
 
 	private String userid;
 	private User user;
-	private HttpServletRequest request;
 
 
 	public UpdateUserAction(IdentityApi identityApi, String userid, User user) {
@@ -22,17 +20,12 @@ public class UpdateUserAction extends AbstractUserAction<User> {
 	}
 
 	@Override
-	public User execute() {
+	public User execute(ContainerRequestContext request) {
 		KeystonePreconditions.requireMatchingId(userid, user);
-		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		Domain domain = new KeystoneUtils().getDomainForRequest(context);
 
 		return this.getIdentityApi().updateUser(userid, user, domain.getId());
-	}
-
-	@Context
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
 	}
 
 	@Override

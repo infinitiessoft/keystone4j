@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.assignment.action.project;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Project;
 
@@ -14,7 +16,7 @@ public class GetProjectAction extends AbstractProjectAction<Project> {
 	}
 
 	@Override
-	public Project execute() {
+	public Project execute(ContainerRequestContext request) {
 		return this.getAssignmentApi().getProject(projectid);
 	}
 

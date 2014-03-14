@@ -55,7 +55,8 @@ public class CredentialApiImpl implements CredentialApi {
 
 	@Override
 	public void deleteCredentialsForProject(String projectid) {
-		DeleteCredentialsForProjectCommand command = new DeleteCredentialsForProjectCommand(this, credentialDriver, projectid);
+		DeleteCredentialsForProjectCommand command = new DeleteCredentialsForProjectCommand(this, credentialDriver,
+				projectid);
 		command.execute();
 	}
 

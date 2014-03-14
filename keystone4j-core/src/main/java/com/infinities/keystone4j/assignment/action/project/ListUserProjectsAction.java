@@ -2,6 +2,8 @@ package com.infinities.keystone4j.assignment.action.project;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
@@ -25,7 +27,7 @@ public class ListUserProjectsAction extends AbstractProjectAction<List<Project>>
 	}
 
 	@Override
-	public List<Project> execute() {
+	public List<Project> execute(ContainerRequestContext request) {
 		Iterable<Project> projects = this.getAssignmentApi().listProjectsForUser(userid);
 
 		List<Predicate<Project>> filters = Lists.newArrayList();

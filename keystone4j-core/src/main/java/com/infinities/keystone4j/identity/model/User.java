@@ -17,6 +17,9 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
@@ -27,6 +30,7 @@ import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.trust.model.Trust;
 
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Entity
 @Table(name = "USER", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"DOMAINID", "NAME" }) })
@@ -268,9 +272,10 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 		return default_project;
 	}
 
-	@XmlTransient
 	@Transient
 	@Override
+	@XmlTransient
+	@JsonIgnore
 	public User getUser() {
 		throw new IllegalStateException("propert 'user' not exist");
 	}

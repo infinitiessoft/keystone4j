@@ -16,9 +16,9 @@ public class ListGrantsByGroupProjectCommand extends AbstractAssignmentCommand<L
 	// LoggerFactory.getLogger(GetGrantByGroupProjectCommand.class);
 	// private final static String GROUP_NOT_FOUND =
 	// "Group {} not found, no tokens to invalidate.";
-	private String groupid;
-	private String projectid;
-	private boolean inherited;
+	private final String groupid;
+	private final String projectid;
+	private final boolean inherited;
 
 
 	public ListGrantsByGroupProjectCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

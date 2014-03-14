@@ -10,7 +10,7 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class CreateRoleCommand extends AbstractAssignmentCommand<Role> {
 
-	private Role role;
+	private final Role role;
 
 
 	public CreateRoleCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

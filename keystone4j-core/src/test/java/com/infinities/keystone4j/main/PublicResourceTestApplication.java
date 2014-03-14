@@ -1,14 +1,17 @@
-package com.infinities.keystone4j;
+package com.infinities.keystone4j.main;
+
+import javax.inject.Singleton;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import com.infinities.keystone4j.main.PublicResource;
+import com.infinities.keystone4j.common.api.VersionApi;
+import com.infinities.keystone4j.common.api.VersionApiFactory;
 
-public class TestingApplication extends ResourceConfig {
+public class PublicResourceTestApplication extends ResourceConfig {
 
-	public TestingApplication() {
+	public PublicResourceTestApplication() {
 		register(JacksonFeature.class);
 		register(new AbstractBinder() {
 
@@ -68,6 +71,9 @@ public class TestingApplication extends ResourceConfig {
 				//
 				// // simple_cert
 				// bindFactory(SimpleCertV3ControllerFactory.class).to(SimpleCertV3Controller.class);
+
+				// versionApi
+				bindFactory(VersionApiFactory.class).to(VersionApi.class).in(Singleton.class);
 			}
 
 		});

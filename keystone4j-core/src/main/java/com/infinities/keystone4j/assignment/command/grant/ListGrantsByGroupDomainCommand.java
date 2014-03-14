@@ -16,9 +16,9 @@ public class ListGrantsByGroupDomainCommand extends AbstractAssignmentCommand<Li
 	// LoggerFactory.getLogger(GetGrantByGroupDomainCommand.class);
 	// private final static String GROUP_NOT_FOUND =
 	// "Group {} not found, no tokens to invalidate.";
-	private String groupid;
-	private String domainid;
-	private boolean inherited;
+	private final String groupid;
+	private final String domainid;
+	private final boolean inherited;
 
 
 	public ListGrantsByGroupDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

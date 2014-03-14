@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.auth.action;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
@@ -14,18 +13,15 @@ import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ValidateTokenAction extends AbstractTokenAction<TokenMetadata> {
 
-	private HttpServletRequest request;
-
-
 	public ValidateTokenAction(AssignmentApi assignmentApi, IdentityApi identityApi, TokenProviderApi tokenProviderApi,
 			TokenApi tokenApi) {
 		super(assignmentApi, identityApi, tokenProviderApi, tokenApi);
 	}
 
 	@Override
-	public TokenMetadata execute() {
-		boolean includeCatalog = !request.getQueryString().contains(AuthController.NOCATALOG);
-		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
+	public TokenMetadata execute(ContainerRequestContext request) {
+		boolean includeCatalog = !request.getUriInfo().getQueryParameters().containsKey(AuthController.NOCATALOG);
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		String tokenid = context.getSubjectTokenid();
 		TokenDataWrapper tokenData = this.tokenProviderApi.validateV3Token(tokenid);
 
@@ -34,11 +30,6 @@ public class ValidateTokenAction extends AbstractTokenAction<TokenMetadata> {
 		}
 
 		return new TokenMetadata(tokenid, tokenData);
-	}
-
-	@Context
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
 	}
 
 	@Override

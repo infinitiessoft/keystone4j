@@ -32,6 +32,7 @@ import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.assignment.model.RoleWrapper;
 import com.infinities.keystone4j.assignment.model.RolesWrapper;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
@@ -39,7 +40,7 @@ import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class RoleV3ControllerImpl implements RoleV3Controller {
+public class RoleV3ControllerImpl extends BaseController implements RoleV3Controller {
 
 	private final AssignmentApi assignmentApi;
 	private final IdentityApi identityApi;
@@ -62,7 +63,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 		parMap.put("role", role);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateRoleAction(assignmentApi, role), null, tokenApi,
 				policyApi, parMap);
-		Role ret = command.execute();
+		Role ret = command.execute(getRequest());
 		return new RoleWrapper(ret);
 	}
 
@@ -72,7 +73,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 		Action<List<Role>> command = new FilterCheckDecorator<List<Role>>(new PaginateDecorator<Role>(new ListRolesAction(
 				assignmentApi, name), page, perPage), tokenApi, policyApi, parMap);
 
-		List<Role> ret = command.execute();
+		List<Role> ret = command.execute(getRequest());
 		return new RolesWrapper(ret);
 	}
 
@@ -81,7 +82,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 		parMap.put("roleid", roleid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new GetRoleAction(assignmentApi, roleid), null, tokenApi,
 				policyApi, parMap);
-		Role ret = command.execute();
+		Role ret = command.execute(getRequest());
 		return new RoleWrapper(ret);
 	}
 
@@ -91,7 +92,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 		parMap.put("role", role);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new UpdateRoleAction(assignmentApi, roleid, role), null,
 				tokenApi, policyApi, parMap);
-		Role ret = command.execute();
+		Role ret = command.execute(getRequest());
 		return new RoleWrapper(ret);
 	}
 
@@ -100,7 +101,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 		parMap.put("roleid", roleid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteRoleAction(assignmentApi, roleid), null, tokenApi,
 				policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -112,7 +113,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				roleid, null, null, domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByUserDomainAction(assignmentApi, identityApi,
 				roleid, userid, domainid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -124,7 +125,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				groupid, null, domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByGroupDomainAction(assignmentApi, identityApi,
 				roleid, groupid, domainid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -137,7 +138,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				new ListGrantsByUserDomainAction(assignmentApi, identityApi, userid, domainid, INHERITED), page, perPage),
 				callback, tokenApi, policyApi, parMap);
 
-		List<Role> ret = command.execute();
+		List<Role> ret = command.execute(getRequest());
 		return new RolesWrapper(ret);
 	}
 
@@ -151,7 +152,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				new ListGrantsByGroupDomainAction(assignmentApi, identityApi, groupid, domainid, INHERITED), page, perPage),
 				callback, tokenApi, policyApi, parMap);
 
-		List<Role> ret = command.execute();
+		List<Role> ret = command.execute(getRequest());
 		return new RolesWrapper(ret);
 	}
 
@@ -164,7 +165,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				roleid, null, null, domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByUserDomainAction(assignmentApi, identityApi,
 				roleid, userid, domainid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -176,7 +177,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				groupid, null, domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByGroupDomainAction(assignmentApi, identityApi,
 				roleid, groupid, domainid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -188,7 +189,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				roleid, null, null, domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByUserDomainAction(assignmentApi, identityApi,
 				roleid, userid, domainid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -200,7 +201,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				groupid, null, domainid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByGroupDomainAction(assignmentApi, identityApi,
 				roleid, groupid, domainid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -212,7 +213,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				roleid, null, projectid, null);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByUserProjectAction(assignmentApi, identityApi,
 				roleid, userid, projectid), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -224,7 +225,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				groupid, projectid, null);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateGrantByGroupProjectAction(assignmentApi,
 				identityApi, roleid, groupid, projectid), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -237,7 +238,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				new ListGrantsByUserProjectAction(assignmentApi, identityApi, userid, projectid, INHERITED), page, perPage),
 				callback, tokenApi, policyApi, parMap);
 
-		List<Role> ret = command.execute();
+		List<Role> ret = command.execute(getRequest());
 		return new RolesWrapper(ret);
 	}
 
@@ -251,7 +252,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				new PaginateDecorator<Role>(new ListGrantsByGroupProjectAction(assignmentApi, identityApi, groupid,
 						projectid, INHERITED), page, perPage), callback, tokenApi, policyApi, parMap);
 
-		List<Role> ret = command.execute();
+		List<Role> ret = command.execute(getRequest());
 		return new RolesWrapper(ret);
 	}
 
@@ -264,7 +265,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				roleid, null, projectid, null);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByUserProjectAction(assignmentApi, identityApi,
 				roleid, userid, projectid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -276,7 +277,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				groupid, projectid, null);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckGrantByGroupProjectAction(assignmentApi, identityApi,
 				roleid, groupid, projectid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -288,7 +289,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				roleid, null, projectid, null);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByUserProjectAction(assignmentApi, identityApi,
 				roleid, userid, projectid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -300,7 +301,7 @@ public class RoleV3ControllerImpl implements RoleV3Controller {
 				groupid, projectid, null);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new DeleteGrantByGroupProjectAction(assignmentApi,
 				identityApi, roleid, groupid, projectid, INHERITED), callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 }

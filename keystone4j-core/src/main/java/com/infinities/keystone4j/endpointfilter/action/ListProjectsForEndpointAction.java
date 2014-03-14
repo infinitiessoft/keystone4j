@@ -2,6 +2,8 @@ package com.infinities.keystone4j.endpointfilter.action;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.catalog.CatalogApi;
@@ -19,7 +21,7 @@ public class ListProjectsForEndpointAction extends AbstractEndpointFilterAction<
 	}
 
 	@Override
-	public List<Project> execute() {
+	public List<Project> execute(ContainerRequestContext request) {
 		return this.getEndpointFilterApi().listProjectsForEndpoint(endpointid);
 	}
 

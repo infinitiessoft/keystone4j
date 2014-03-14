@@ -4,12 +4,13 @@ import javax.inject.Inject;
 
 import org.glassfish.hk2.api.Factory;
 
+import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class GroupV3ControllerFactory implements Factory<GroupV3Controller> {
+public class GroupV3ControllerFactory extends BaseControllerFactory implements Factory<GroupV3Controller> {
 
 	private final IdentityApi identityApi;
 	private final TokenApi tokenApi;
@@ -30,7 +31,9 @@ public class GroupV3ControllerFactory implements Factory<GroupV3Controller> {
 
 	@Override
 	public GroupV3Controller provide() {
-		return new GroupV3ControllerImpl(identityApi, tokenApi, policyApi);
+		GroupV3ControllerImpl controller = new GroupV3ControllerImpl(identityApi, tokenApi, policyApi);
+		controller.setRequest(getRequest());
+		return controller;
 	}
 
 }

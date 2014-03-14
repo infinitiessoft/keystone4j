@@ -10,7 +10,7 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class CreateProjectCommand extends AbstractAssignmentCommand<Project> {
 
-	private Project project;
+	private final Project project;
 
 
 	public CreateProjectCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

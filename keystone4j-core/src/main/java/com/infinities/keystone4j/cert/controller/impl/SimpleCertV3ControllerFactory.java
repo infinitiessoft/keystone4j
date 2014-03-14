@@ -5,9 +5,10 @@ import javax.inject.Inject;
 import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.cert.controller.SimpleCertV3Controller;
+import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.extension.ExtensionApi;
 
-public class SimpleCertV3ControllerFactory implements Factory<SimpleCertV3Controller> {
+public class SimpleCertV3ControllerFactory extends BaseControllerFactory implements Factory<SimpleCertV3Controller> {
 
 	private final ExtensionApi extensionApi;
 
@@ -24,7 +25,9 @@ public class SimpleCertV3ControllerFactory implements Factory<SimpleCertV3Contro
 
 	@Override
 	public SimpleCertV3Controller provide() {
-		return new SimpleCertV3ControllerImpl(extensionApi);
+		SimpleCertV3ControllerImpl controller = new SimpleCertV3ControllerImpl(extensionApi);
+		controller.setRequest(getRequest());
+		return controller;
 	}
 
 }

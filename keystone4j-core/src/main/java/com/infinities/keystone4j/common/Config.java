@@ -16,6 +16,7 @@ import com.google.common.collect.Table.Cell;
 import com.infinities.keystone4j.FileScanner;
 import com.infinities.keystone4j.option.Option;
 import com.infinities.keystone4j.option.Options;
+import com.infinities.keystone4j.option.StringOption;
 
 public enum Config {
 	Instance;
@@ -25,7 +26,9 @@ public enum Config {
 	}
 
 
-	private final String[] DEFAULT_AUTH_METHODS = { "external", "password", "token" };
+	// private final String[] DEFAULT_AUTH_METHODS = { "external", "password",
+	// "token" };
+	private final String[] DEFAULT_AUTH_METHODS = { "password", "token" };
 	private final Logger logger = LoggerFactory.getLogger(Config.class);
 	private URL DEFAULT_CONFIG_FILENAME;
 	private final Table<Type, String, Option> FILE_OPTIONS = HashBasedTable.create();
@@ -286,19 +289,22 @@ public enum Config {
 
 	public Option getOpt(Type type, String attr) {
 		Option option = FILE_OPTIONS.get(type, attr);
-		Option newOption = Options.newStrOpt(option.getName(), option.getValue());
-		Matcher matcher = pattern.matcher(option.asText());
-		while (matcher.find()) {
-			String match = matcher.group(1);
+		if (option instanceof StringOption) {
+			Option newOption = Options.newStrOpt(option.getName(), option.getValue());
+			Matcher matcher = pattern.matcher(option.asText());
+			while (matcher.find()) {
+				String match = matcher.group(1);
 
-			logger.debug("sub-option pattern match: {}", match);
-			Option suboption = FILE_OPTIONS.get(type, match);
-			if (suboption != null) {
-				String newValue = matcher.replaceFirst(suboption.getValue());
-				newOption.setValue(newValue);
+				logger.debug("sub-option pattern match: {}", match);
+				Option suboption = FILE_OPTIONS.get(type, match);
+				if (suboption != null) {
+					String newValue = matcher.replaceFirst(suboption.getValue());
+					newOption.setValue(newValue);
+				}
 			}
+			return newOption;
+		} else {
+			return option;
 		}
-
-		return newOption;
 	}
 }

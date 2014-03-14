@@ -84,11 +84,12 @@ public class AuthInfo {
 		return auth.getIdentity().getMethods();
 	}
 
-	public Identity getMethodData(String name) {
+	public AuthData getMethodData(String name) {
 		if (!getMethodNames().contains(name)) {
 			throw Exceptions.ValidationException.getInstance(null, name, IDENTITY);
 		}
-		return auth.getIdentity();
+
+		return auth.getIdentity().getAuthMethods().get(name);
 	}
 
 	private void validateAndNormalizeAuthData() {

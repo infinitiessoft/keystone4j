@@ -5,8 +5,8 @@ import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.auth.model.AuthContext;
+import com.infinities.keystone4j.auth.model.AuthData;
 import com.infinities.keystone4j.auth.model.AuthInfo;
-import com.infinities.keystone4j.auth.model.Identity;
 import com.infinities.keystone4j.auth.model.UserAuthInfo;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
@@ -20,9 +20,9 @@ public class PasswordAuthDriver implements AuthDriver {
 
 
 	@Override
-	public void authenticate(KeystoneContext context, AuthInfo authInfo, AuthContext userContext,
+	public void authenticate(KeystoneContext context, AuthData authPayload, AuthContext userContext,
 			TokenProviderApi tokenProviderApi, IdentityApi identityApi, AssignmentApi assignmentApi) {
-		Identity authPayload = authInfo.getMethodData(METHOD);
+		// Identity authPayload = authInfo.getMethodData(METHOD);
 		UserAuthInfo userInfo = new UserAuthInfo(authPayload, identityApi, assignmentApi);
 
 		try {
@@ -38,7 +38,13 @@ public class PasswordAuthDriver implements AuthDriver {
 
 	@Override
 	public String getMethod() {
-		// TODO Auto-generated method stub
 		return METHOD;
+	}
+
+	@Override
+	public void authenticate(KeystoneContext context, AuthInfo authInfo, AuthContext authContext,
+			TokenProviderApi tokenProviderApi, IdentityApi identityApi, AssignmentApi assignmentApi) {
+		AuthData methodData = authInfo.getMethodData(METHOD);
+		authenticate(context, methodData, authContext, tokenProviderApi, identityApi, assignmentApi);
 	}
 }

@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.admin.v3;
 
+import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
@@ -8,7 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import com.infinities.keystone4j.auth.controller.AuthController;
-import com.infinities.keystone4j.auth.model.AuthV3;
+import com.infinities.keystone4j.auth.model.AuthV3Wrapper;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.trust.model.SignedWrapper;
@@ -19,14 +20,15 @@ public class AuthResource {
 	private final AuthController authController;
 
 
+	@Inject
 	public AuthResource(AuthController authController) {
 		this.authController = authController;
 	}
 
 	@POST
 	@Path("/tokens")
-	public Response authenticateForToken(AuthV3 auth) {
-		TokenMetadata token = authController.authenticateForToken(auth);
+	public Response authenticateForToken(AuthV3Wrapper authWrapper) {
+		TokenMetadata token = authController.authenticateForToken(authWrapper.getAuth());
 		return Response.status(CustomResponseStatus.CREATE_TOKEN).entity(token.getTokenData())
 				.header(SUBJECT_TOKEN_HEADER, token.getTokenid()).build();
 	}

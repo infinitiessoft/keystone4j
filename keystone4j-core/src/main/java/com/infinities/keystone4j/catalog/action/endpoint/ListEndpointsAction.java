@@ -2,6 +2,8 @@ package com.infinities.keystone4j.catalog.action.endpoint;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
@@ -23,7 +25,7 @@ public class ListEndpointsAction extends AbstractEndpointAction<List<Endpoint>> 
 	}
 
 	@Override
-	public List<Endpoint> execute() {
+	public List<Endpoint> execute(ContainerRequestContext request) {
 		Iterable<Endpoint> endpoints = this.getCatalogApi().listEndpoints();
 
 		List<Predicate<Endpoint>> filters = Lists.newArrayList();

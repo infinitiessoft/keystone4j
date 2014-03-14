@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.identity.action.group;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystonePreconditions;
@@ -14,7 +13,6 @@ public class UpdateGroupAction extends AbstractGroupAction<Group> {
 
 	private String groupid;
 	private Group group;
-	private HttpServletRequest request;
 
 
 	public UpdateGroupAction(IdentityApi identityApi, String groupid, Group group) {
@@ -22,17 +20,12 @@ public class UpdateGroupAction extends AbstractGroupAction<Group> {
 	}
 
 	@Override
-	public Group execute() {
+	public Group execute(ContainerRequestContext request) {
 		KeystonePreconditions.requireMatchingId(groupid, group);
-		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		Domain domain = new KeystoneUtils().getDomainForRequest(context);
 
 		return this.getIdentityApi().updateGroup(groupid, group, domain.getId());
-	}
-
-	@Context
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
 	}
 
 	@Override

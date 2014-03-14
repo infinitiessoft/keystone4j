@@ -6,12 +6,13 @@ import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.catalog.CatalogApi;
+import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterApi;
 import com.infinities.keystone4j.endpointfilter.controller.EndpointFilterController;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class EndpointFilterControllerFactory implements Factory<EndpointFilterController> {
+public class EndpointFilterControllerFactory extends BaseControllerFactory implements Factory<EndpointFilterController> {
 
 	private final AssignmentApi assignmentApi;
 	private final CatalogApi catalogApi;
@@ -37,7 +38,10 @@ public class EndpointFilterControllerFactory implements Factory<EndpointFilterCo
 
 	@Override
 	public EndpointFilterController provide() {
-		return new EndpointFilterControllerImpl(assignmentApi, catalogApi, endpointFilterApi, tokenApi, policyApi);
+		EndpointFilterControllerImpl controller = new EndpointFilterControllerImpl(assignmentApi, catalogApi,
+				endpointFilterApi, tokenApi, policyApi);
+		controller.setRequest(getRequest());
+		return controller;
 	}
 
 }

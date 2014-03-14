@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.catalog.action.service;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.model.Service;
 
@@ -14,7 +16,7 @@ public class CreateServiceAction extends AbstractServiceAction<Service> {
 	}
 
 	@Override
-	public Service execute() {
+	public Service execute(ContainerRequestContext request) {
 		Service ret = catalogApi.createService(service);
 		return ret;
 	}

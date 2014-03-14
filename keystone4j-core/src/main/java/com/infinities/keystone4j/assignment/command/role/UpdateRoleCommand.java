@@ -10,8 +10,8 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class UpdateRoleCommand extends AbstractAssignmentCommand<Role> {
 
-	private String roleid;
-	private Role role;
+	private final String roleid;
+	private final Role role;
 
 
 	public UpdateRoleCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

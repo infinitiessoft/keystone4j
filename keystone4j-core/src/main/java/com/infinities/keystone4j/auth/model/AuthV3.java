@@ -6,6 +6,10 @@ public class AuthV3 {
 	private Scope scope;
 
 
+	public AuthV3() {
+
+	}
+
 	public Identity getIdentity() {
 		return identity;
 	}

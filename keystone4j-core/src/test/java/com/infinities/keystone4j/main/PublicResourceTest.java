@@ -16,7 +16,6 @@ import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
 
 import com.infinities.keystone4j.JsonUtils;
-import com.infinities.keystone4j.TestingApplication;
 
 public class PublicResourceTest extends JerseyTest {
 
@@ -24,7 +23,7 @@ public class PublicResourceTest extends JerseyTest {
 	protected Application configure() {
 		enable(TestProperties.LOG_TRAFFIC);
 		enable(TestProperties.DUMP_ENTITY);
-		return new TestingApplication();
+		return new PublicResourceTestApplication();
 	}
 
 	@Test

@@ -53,5 +53,4 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 		ValidateV3TokenCommand command = new ValidateV3TokenCommand(tokenApi, this, tokenProviderDriver, tokenid);
 		return command.execute();
 	}
-
 }

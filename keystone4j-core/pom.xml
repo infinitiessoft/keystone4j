@@ -33,10 +33,10 @@
 			<artifactId>jersey-bean-validation</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-jetty-http</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>

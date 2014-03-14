@@ -10,9 +10,9 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class RemoveRoleFromUserAndProjectCommand extends AbstractAssignmentCommand<Role> {
 
-	private String userid;
-	private String projectid;
-	private String roleid;
+	private final String userid;
+	private final String projectid;
+	private final String roleid;
 
 
 	public RemoveRoleFromUserAndProjectCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,

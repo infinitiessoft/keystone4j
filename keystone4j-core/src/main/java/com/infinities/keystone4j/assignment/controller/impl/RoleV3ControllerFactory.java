@@ -6,11 +6,12 @@ import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
+import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class RoleV3ControllerFactory implements Factory<RoleV3Controller> {
+public class RoleV3ControllerFactory extends BaseControllerFactory implements Factory<RoleV3Controller> {
 
 	private final AssignmentApi assignmentApi;
 	private final IdentityApi identityApi;
@@ -34,7 +35,9 @@ public class RoleV3ControllerFactory implements Factory<RoleV3Controller> {
 
 	@Override
 	public RoleV3Controller provide() {
-		return new RoleV3ControllerImpl(assignmentApi, identityApi, tokenApi, policyApi);
+		RoleV3ControllerImpl controller = new RoleV3ControllerImpl(assignmentApi, identityApi, tokenApi, policyApi);
+		controller.setRequest(getRequest());
+		return controller;
 	}
 
 }

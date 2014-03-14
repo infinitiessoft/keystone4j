@@ -17,6 +17,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
@@ -133,6 +135,7 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 
 	@XmlTransient
 	@Transient
+	@JsonIgnore
 	@Override
 	public User getUser() {
 		throw new IllegalStateException("propert 'user' not exist");
@@ -140,6 +143,7 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 
 	@XmlTransient
 	@Transient
+	@JsonIgnore
 	@Override
 	public Project getProject() {
 		throw new IllegalStateException("propert 'project' not exist");

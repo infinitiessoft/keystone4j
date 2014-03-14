@@ -2,6 +2,8 @@ package com.infinities.keystone4j.assignment.action.domain;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
@@ -23,7 +25,7 @@ public class ListDomainsAction extends AbstractDomainAction<List<Domain>> {
 	}
 
 	@Override
-	public List<Domain> execute() {
+	public List<Domain> execute(ContainerRequestContext request) {
 		Iterable<Domain> domains = this.getAssignmentApi().listDomains();
 
 		List<Predicate<Domain>> filters = Lists.newArrayList();

@@ -6,10 +6,11 @@ import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.controller.DomainV3Controller;
+import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class DomainV3ControllerFactory implements Factory<DomainV3Controller> {
+public class DomainV3ControllerFactory extends BaseControllerFactory implements Factory<DomainV3Controller> {
 
 	private final AssignmentApi assignmentApi;
 	private final TokenApi tokenApi;
@@ -30,7 +31,8 @@ public class DomainV3ControllerFactory implements Factory<DomainV3Controller> {
 
 	@Override
 	public DomainV3Controller provide() {
-		return new DomainV3ControllerImpl(assignmentApi, tokenApi, policyApi);
+		DomainV3ControllerImpl controller = new DomainV3ControllerImpl(assignmentApi, tokenApi, policyApi);
+		controller.setRequest(getRequest());
+		return controller;
 	}
-
 }

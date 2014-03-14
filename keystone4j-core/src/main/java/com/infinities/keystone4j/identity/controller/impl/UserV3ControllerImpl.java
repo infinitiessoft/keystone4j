@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
@@ -28,7 +29,7 @@ import com.infinities.keystone4j.identity.model.UsersWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class UserV3ControllerImpl implements UserV3Controller {
+public class UserV3ControllerImpl extends BaseController implements UserV3Controller {
 
 	private final IdentityApi identityApi;
 	private final TokenApi tokenApi;
@@ -48,7 +49,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 		parMap.put("user", user);
 		Action<User> command = new PolicyCheckDecorator<User>(new CreateUserAction(identityApi, user), null, tokenApi,
 				policyApi, parMap);
-		User ret = command.execute();
+		User ret = command.execute(getRequest());
 		return new UserWrapper(ret);
 	}
 
@@ -61,7 +62,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 		Action<List<User>> command = new FilterCheckDecorator<List<User>>(new PaginateDecorator<User>(new ListUsersAction(
 				identityApi, domainid, email, enabled, name), page, perPage), tokenApi, policyApi, parMap);
 
-		List<User> ret = command.execute();
+		List<User> ret = command.execute(getRequest());
 		return new UsersWrapper(ret);
 	}
 
@@ -70,7 +71,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 		parMap.put("userid", userid);
 		Action<User> command = new PolicyCheckDecorator<User>(new GetUserAction(identityApi, userid), null, tokenApi,
 				policyApi, parMap);
-		User ret = command.execute();
+		User ret = command.execute(getRequest());
 		return new UserWrapper(ret);
 	}
 
@@ -80,7 +81,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 		parMap.put("user", user);
 		Action<User> command = new PolicyCheckDecorator<User>(new UpdateUserAction(identityApi, userid, user), null,
 				tokenApi, policyApi, parMap);
-		User ret = command.execute();
+		User ret = command.execute(getRequest());
 		return new UserWrapper(ret);
 	}
 
@@ -89,7 +90,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 		parMap.put("userid", userid);
 		Action<User> command = new PolicyCheckDecorator<User>(new DeleteUserAction(identityApi, userid), null, tokenApi,
 				policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -104,7 +105,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 				new ListUsersInGroupAction(identityApi, groupid, domainid, email, enabled, name), page, perPage), tokenApi,
 				policyApi, parMap);
 
-		List<User> ret = command.execute();
+		List<User> ret = command.execute(getRequest());
 		return new UsersWrapper(ret);
 	}
 
@@ -116,7 +117,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 				policyApi);
 		Action<User> command = new PolicyCheckDecorator<User>(new AddUserToGroupAction(identityApi, userid, groupid),
 				callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -127,7 +128,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 				policyApi);
 		Action<User> command = new PolicyCheckDecorator<User>(new CheckUserInGroupAction(identityApi, userid, groupid),
 				callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -138,7 +139,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 				policyApi);
 		Action<User> command = new PolicyCheckDecorator<User>(new RemoveUserFromGroupAction(identityApi, userid, groupid),
 				callback, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -147,7 +148,7 @@ public class UserV3ControllerImpl implements UserV3Controller {
 		parMap.put("userid", userid);
 		Action<User> command = new PolicyCheckDecorator<User>(new ChangePasswordAction(identityApi, userid, user), null,
 				tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 }

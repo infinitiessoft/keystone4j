@@ -15,13 +15,14 @@ import com.infinities.keystone4j.assignment.controller.DomainV3Controller;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.DomainWrapper;
 import com.infinities.keystone4j.assignment.model.DomainsWrapper;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class DomainV3ControllerImpl implements DomainV3Controller {
+public class DomainV3ControllerImpl extends BaseController implements DomainV3Controller {
 
 	private final AssignmentApi assignmentApi;
 	private final TokenApi tokenApi;
@@ -41,7 +42,7 @@ public class DomainV3ControllerImpl implements DomainV3Controller {
 		parMap.put("domain", domain);
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new CreateDomainAction(assignmentApi, domain), null,
 				tokenApi, policyApi, parMap);
-		Domain ret = command.execute();
+		Domain ret = command.execute(getRequest());
 		return new DomainWrapper(ret);
 	}
 
@@ -52,7 +53,7 @@ public class DomainV3ControllerImpl implements DomainV3Controller {
 		Action<List<Domain>> command = new FilterCheckDecorator<List<Domain>>(new PaginateDecorator<Domain>(
 				new ListDomainsAction(assignmentApi, name, enabled), page, perPage), tokenApi, policyApi, parMap);
 
-		List<Domain> ret = command.execute();
+		List<Domain> ret = command.execute(getRequest());
 		return new DomainsWrapper(ret);
 	}
 
@@ -61,7 +62,7 @@ public class DomainV3ControllerImpl implements DomainV3Controller {
 		parMap.put("domainid", domainid);
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new GetDomainAction(assignmentApi, domainid), null,
 				tokenApi, policyApi, parMap);
-		Domain ret = command.execute();
+		Domain ret = command.execute(getRequest());
 		return new DomainWrapper(ret);
 	}
 
@@ -71,7 +72,7 @@ public class DomainV3ControllerImpl implements DomainV3Controller {
 		parMap.put("domain", domain);
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new UpdateDomainAction(assignmentApi, domainid, domain),
 				null, tokenApi, policyApi, parMap);
-		Domain ret = command.execute();
+		Domain ret = command.execute(getRequest());
 		return new DomainWrapper(ret);
 	}
 
@@ -80,7 +81,7 @@ public class DomainV3ControllerImpl implements DomainV3Controller {
 		parMap.put("domainid", domainid);
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new DeleteDomainAction(assignmentApi, domainid), null,
 				tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 }

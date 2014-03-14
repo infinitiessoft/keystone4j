@@ -13,6 +13,7 @@ import com.infinities.keystone4j.auth.action.ValidateTokenAction;
 import com.infinities.keystone4j.auth.controller.AuthController;
 import com.infinities.keystone4j.auth.model.AuthV3;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.policy.PolicyApi;
@@ -21,7 +22,7 @@ import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.trust.model.SignedWrapper;
 
-public class AuthControllerImpl implements AuthController {
+public class AuthControllerImpl extends BaseController implements AuthController {
 
 	private final AssignmentApi assignmentApi;
 	private final TokenProviderApi tokenProviderApi;
@@ -47,7 +48,7 @@ public class AuthControllerImpl implements AuthController {
 	public TokenMetadata authenticateForToken(AuthV3 auth) {
 		Action<TokenMetadata> command = new AuthenticationForTokenAction(assignmentApi, identityApi, tokenProviderApi,
 				tokenApi, trustApi, auth);
-		TokenMetadata ret = command.execute();
+		TokenMetadata ret = command.execute(getRequest());
 		return ret;
 	}
 
@@ -55,28 +56,27 @@ public class AuthControllerImpl implements AuthController {
 	public void checkToken() {
 		Action<TokenMetadata> command = new PolicyCheckDecorator<TokenMetadata>(new CheckTokenAction(assignmentApi,
 				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
 	public void revokeToken() {
 		Action<TokenMetadata> command = new PolicyCheckDecorator<TokenMetadata>(new RevokeTokenAction(assignmentApi,
 				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
 	public TokenMetadata validateToken() {
 		Action<TokenMetadata> command = new PolicyCheckDecorator<TokenMetadata>(new ValidateTokenAction(assignmentApi,
 				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
-		return command.execute();
+		return command.execute(getRequest());
 	}
 
 	@Override
 	public SignedWrapper getRevocationList() {
 		Action<SignedWrapper> command = new PolicyCheckDecorator<SignedWrapper>(new GetRevocationListAction(assignmentApi,
 				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
-		return command.execute();
+		return command.execute(getRequest());
 	}
-
 }

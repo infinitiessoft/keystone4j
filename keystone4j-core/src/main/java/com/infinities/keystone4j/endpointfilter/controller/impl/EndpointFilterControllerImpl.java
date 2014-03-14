@@ -11,6 +11,7 @@ import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.catalog.model.EndpointsWrapper;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterApi;
@@ -23,7 +24,7 @@ import com.infinities.keystone4j.endpointfilter.controller.EndpointFilterControl
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class EndpointFilterControllerImpl implements EndpointFilterController {
+public class EndpointFilterControllerImpl extends BaseController implements EndpointFilterController {
 
 	private final AssignmentApi assignmentApi;
 	private final CatalogApi catalogApi;
@@ -50,7 +51,7 @@ public class EndpointFilterControllerImpl implements EndpointFilterController {
 		Action<List<Project>> command = new PolicyCheckDecorator<List<Project>>(new PaginateDecorator<Project>(
 				new ListProjectsForEndpointAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage),
 				null, tokenApi, policyApi, parMap);
-		List<Project> ret = command.execute();
+		List<Project> ret = command.execute(getRequest());
 		return new ProjectsWrapper(ret);
 	}
 
@@ -60,7 +61,7 @@ public class EndpointFilterControllerImpl implements EndpointFilterController {
 		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new AddEndpointToProjectAction(assignmentApi,
 				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class EndpointFilterControllerImpl implements EndpointFilterController {
 		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new CheckEndpointToProjectAction(assignmentApi,
 				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public class EndpointFilterControllerImpl implements EndpointFilterController {
 		Action<List<Endpoint>> command = new PolicyCheckDecorator<List<Endpoint>>(new PaginateDecorator<Endpoint>(
 				new ListEndpointsForProjectAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage),
 				null, tokenApi, policyApi, parMap);
-		List<Endpoint> ret = command.execute();
+		List<Endpoint> ret = command.execute(getRequest());
 		return new EndpointsWrapper(ret);
 	}
 
@@ -88,7 +89,7 @@ public class EndpointFilterControllerImpl implements EndpointFilterController {
 		parMap.put("endpointid", endpointid);
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new RemoveEndpointToProjectAction(assignmentApi,
 				catalogApi, endpointFilterApi, projectid, endpointid), null, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 }

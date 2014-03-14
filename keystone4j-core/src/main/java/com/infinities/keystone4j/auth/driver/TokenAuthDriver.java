@@ -11,8 +11,8 @@ import com.infinities.keystone4j.TokenBindValidator;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.auth.model.AuthContext;
+import com.infinities.keystone4j.auth.model.AuthData;
 import com.infinities.keystone4j.auth.model.AuthInfo;
-import com.infinities.keystone4j.auth.model.Identity;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.model.TokenDataWrapper;
@@ -25,15 +25,14 @@ public class TokenAuthDriver extends TokenBindValidator implements AuthDriver {
 
 
 	@Override
-	public void authenticate(KeystoneContext context, AuthInfo authInfo, AuthContext userContext,
+	public void authenticate(KeystoneContext context, AuthData authPayload, AuthContext userContext,
 			TokenProviderApi tokenProviderApi, IdentityApi identityApi, AssignmentApi assignmentApi) {
 		try {
-			Identity authPayload = authInfo.getMethodData(METHOD);
-			if (Strings.isNullOrEmpty(authPayload.getToken().getId())) {
+			if (Strings.isNullOrEmpty(authPayload.getId())) {
 				throw Exceptions.ValidationException.getInstance(null, "id", METHOD);
 			}
 
-			String tokenid = authPayload.getToken().getId();
+			String tokenid = authPayload.getId();
 			TokenDataWrapper tokenRef = tokenProviderApi.validateV3Token(tokenid);
 
 			if (tokenRef.getToken().getTrust() != null) {
@@ -116,6 +115,13 @@ public class TokenAuthDriver extends TokenBindValidator implements AuthDriver {
 	// }
 	//
 	// }
+
+	@Override
+	public void authenticate(KeystoneContext context, AuthInfo authInfo, AuthContext authContext,
+			TokenProviderApi tokenProviderApi, IdentityApi identityApi, AssignmentApi assignmentApi) {
+		AuthData methodData = authInfo.getMethodData(METHOD);
+		authenticate(context, methodData, authContext, tokenProviderApi, identityApi, assignmentApi);
+	}
 
 	@Override
 	public String getMethod() {

@@ -16,13 +16,14 @@ import com.infinities.keystone4j.assignment.controller.ProjectV3Controller;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.ProjectWrapper;
 import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class ProjectV3ControllerImpl implements ProjectV3Controller {
+public class ProjectV3ControllerImpl extends BaseController implements ProjectV3Controller {
 
 	private final AssignmentApi assignmentApi;
 	private final TokenApi tokenApi;
@@ -42,7 +43,7 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 		parMap.put("project", project);
 		Action<Project> command = new PolicyCheckDecorator<Project>(new CreateProjectAction(assignmentApi, project), null,
 				tokenApi, policyApi, parMap);
-		Project ret = command.execute();
+		Project ret = command.execute(getRequest());
 		return new ProjectWrapper(ret);
 	}
 
@@ -54,7 +55,7 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 		Action<List<Project>> command = new FilterCheckDecorator<List<Project>>(new PaginateDecorator<Project>(
 				new ListProjectsAction(assignmentApi, domainid, name, enabled), page, perPage), tokenApi, policyApi, parMap);
 
-		List<Project> ret = command.execute();
+		List<Project> ret = command.execute(getRequest());
 		return new ProjectsWrapper(ret);
 	}
 
@@ -66,7 +67,7 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 				new ListUserProjectsAction(assignmentApi, userid, name, enabled), page, perPage), tokenApi, policyApi,
 				parMap);
 
-		List<Project> ret = command.execute();
+		List<Project> ret = command.execute(getRequest());
 		return new ProjectsWrapper(ret);
 	}
 
@@ -75,7 +76,7 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 		parMap.put("projectid", projectid);
 		Action<Project> command = new PolicyCheckDecorator<Project>(new GetProjectAction(assignmentApi, projectid), null,
 				tokenApi, policyApi, parMap);
-		Project ret = command.execute();
+		Project ret = command.execute(getRequest());
 		return new ProjectWrapper(ret);
 	}
 
@@ -85,7 +86,7 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 		parMap.put("project", project);
 		Action<Project> command = new PolicyCheckDecorator<Project>(new UpdateProjectAction(assignmentApi, projectid,
 				project), null, tokenApi, policyApi, parMap);
-		Project ret = command.execute();
+		Project ret = command.execute(getRequest());
 		return new ProjectWrapper(ret);
 	}
 
@@ -94,6 +95,6 @@ public class ProjectV3ControllerImpl implements ProjectV3Controller {
 		parMap.put("projectid", projectid);
 		Action<Project> command = new PolicyCheckDecorator<Project>(new DeleteProjectAction(assignmentApi, projectid), null,
 				tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 }

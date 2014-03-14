@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.admin.v3;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -33,7 +32,7 @@ public class ProjectResource {
 	}
 
 	@POST
-	public ProjectWrapper createProject(HttpServletRequest request, Project project) {
+	public ProjectWrapper createProject(Project project) {
 		return projectController.createProject(project);
 	}
 

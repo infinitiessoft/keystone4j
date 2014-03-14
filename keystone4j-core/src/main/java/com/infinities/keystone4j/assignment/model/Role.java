@@ -14,6 +14,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
@@ -158,6 +160,7 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 	@XmlTransient
 	@Transient
 	@Override
+	@JsonIgnore
 	public User getUser() {
 		throw new IllegalStateException("propert 'user' not exist");
 	}
@@ -165,6 +168,7 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 	@XmlTransient
 	@Transient
 	@Override
+	@JsonIgnore
 	public Domain getDomain() {
 		throw new IllegalStateException("propert 'domain' not exist");
 	}
@@ -172,6 +176,7 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 	@XmlTransient
 	@Transient
 	@Override
+	@JsonIgnore
 	public Project getProject() {
 		throw new IllegalStateException("propert 'project' not exist");
 	}

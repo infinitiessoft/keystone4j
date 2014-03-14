@@ -1,4 +1,4 @@
-package com.infinities.keystone4j.common.model;
+package com.infinities.keystone4j.common.api;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -6,6 +6,7 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.inject.Singleton;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
@@ -13,8 +14,15 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.common.model.CustomResponseStatus;
+import com.infinities.keystone4j.common.model.Link;
+import com.infinities.keystone4j.common.model.MediaType;
+import com.infinities.keystone4j.common.model.Version;
+import com.infinities.keystone4j.common.model.VersionWrapper;
+import com.infinities.keystone4j.common.model.VersionsWrapper;
 import com.infinities.keystone4j.exception.Exceptions;
 
+@Singleton
 public class VersionApi {
 
 	// private final static String DEFAULT_VERSION = "v2.0";

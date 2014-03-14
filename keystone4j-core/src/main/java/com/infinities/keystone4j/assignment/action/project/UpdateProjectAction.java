@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.assignment.action.project;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Project;
@@ -17,7 +19,7 @@ public class UpdateProjectAction extends AbstractProjectAction<Project> {
 	}
 
 	@Override
-	public Project execute() {
+	public Project execute(ContainerRequestContext request) {
 		KeystonePreconditions.requireMatchingId(projectid, project);
 		return this.getAssignmentApi().updateProject(projectid, project);
 	}

@@ -9,6 +9,7 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.assignment.model.RoleWrapper;
 import com.infinities.keystone4j.assignment.model.RolesWrapper;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
@@ -27,7 +28,7 @@ import com.infinities.keystone4j.trust.model.Trust;
 import com.infinities.keystone4j.trust.model.TrustWrapper;
 import com.infinities.keystone4j.trust.model.TrustsWrapper;
 
-public class TrustV3ControllerImpl implements TrustV3Controller {
+public class TrustV3ControllerImpl extends BaseController implements TrustV3Controller {
 
 	private final AssignmentApi assignmentApi;
 	private final IdentityApi identityApi;
@@ -52,7 +53,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 		parMap.put("trust", trust);
 		Action<Trust> command = new PolicyCheckDecorator<Trust>(new CreateTrustAction(assignmentApi, identityApi, trustApi,
 				tokenApi, trust), null, tokenApi, policyApi, parMap);
-		Trust ret = command.execute();
+		Trust ret = command.execute(getRequest());
 		return new TrustWrapper(ret);
 	}
 
@@ -64,7 +65,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 				new ListTrustsAction(assignmentApi, identityApi, trustApi, tokenApi, trustorid, trusteeid), page, perPage),
 				null, tokenApi, policyApi, parMap);
 
-		List<Trust> ret = command.execute();
+		List<Trust> ret = command.execute(getRequest());
 		return new TrustsWrapper(ret);
 	}
 
@@ -72,7 +73,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 	public TrustWrapper getTrust(String trustid) {
 		parMap.put("trustid", trustid);
 		Action<Trust> command = new GetTrustAction(assignmentApi, identityApi, trustApi, tokenApi, trustid);
-		Trust ret = command.execute();
+		Trust ret = command.execute(getRequest());
 		return new TrustWrapper(ret);
 	}
 
@@ -81,7 +82,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 		parMap.put("trustid", trustid);
 		Action<Trust> command = new PolicyCheckDecorator<Trust>(new DeleteTrustAction(assignmentApi, identityApi, trustApi,
 				tokenApi, trustid), null, tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -91,7 +92,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 				new ListRolesForTrustAction(assignmentApi, identityApi, trustApi, tokenApi, trustid), page, perPage), null,
 				tokenApi, policyApi, parMap);
 
-		List<Role> ret = command.execute();
+		List<Role> ret = command.execute(getRequest());
 		return new RolesWrapper(ret);
 	}
 
@@ -102,7 +103,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CheckRoleForTrustAction(assignmentApi, identityApi,
 				trustApi, tokenApi, trustid, roleid), null, tokenApi, policyApi, parMap);
 
-		command.execute();
+		command.execute(getRequest());
 	}
 
 	@Override
@@ -111,7 +112,7 @@ public class TrustV3ControllerImpl implements TrustV3Controller {
 		parMap.put("roleid", roleid);
 		Action<Role> command = new PolicyCheckDecorator<Role>(new GetRoleForTrustAction(assignmentApi, identityApi,
 				trustApi, tokenApi, trustid, roleid), null, tokenApi, policyApi, parMap);
-		Role ret = command.execute();
+		Role ret = command.execute(getRequest());
 		return new RoleWrapper(ret);
 	}
 

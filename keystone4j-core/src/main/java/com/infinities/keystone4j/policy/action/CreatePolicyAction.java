@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.policy.action;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.model.Policy;
 
@@ -14,7 +16,7 @@ public class CreatePolicyAction extends AbstractPolicyAction<Policy> {
 	}
 
 	@Override
-	public Policy execute() {
+	public Policy execute(ContainerRequestContext request) {
 		Policy ret = policyApi.createPolicy(policy);
 		return ret;
 	}

@@ -2,6 +2,8 @@ package com.infinities.keystone4j.assignment.action.role.v3;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
@@ -21,7 +23,7 @@ public class ListRolesAction extends AbstractRoleAction<List<Role>> {
 	}
 
 	@Override
-	public List<Role> execute() {
+	public List<Role> execute(ContainerRequestContext request) {
 		Iterable<Role> roles = this.getAssignmentApi().listRoles();
 
 		List<Predicate<Role>> filters = Lists.newArrayList();

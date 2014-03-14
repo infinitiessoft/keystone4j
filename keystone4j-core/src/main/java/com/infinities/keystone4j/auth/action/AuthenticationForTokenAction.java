@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.container.ContainerRequestContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +22,7 @@ import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.auth.controller.AuthController;
 import com.infinities.keystone4j.auth.model.AuthContext;
+import com.infinities.keystone4j.auth.model.AuthData;
 import com.infinities.keystone4j.auth.model.AuthInfo;
 import com.infinities.keystone4j.auth.model.AuthV3;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
@@ -53,7 +53,6 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 	private final static Map<String, AuthDriver> AUTH_METHODS = new ConcurrentHashMap<String, AuthDriver>();
 	private static boolean AUTH_PLUGINS_LOADED = false;
 	private final AuthV3 auth;
-	private HttpServletRequest request;
 	private TrustApi trustApi;
 
 
@@ -61,11 +60,6 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 			TokenProviderApi tokenProviderApi, TokenApi tokenApi, TrustApi trustApi, AuthV3 auth) {
 		super(assignmentApi, identityApi, tokenProviderApi, tokenApi);
 		this.auth = auth;
-		try {
-			loadAuthMethods();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	private void loadAuthMethods() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -92,7 +86,7 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 					throw new RuntimeException(
 							"Cannot load an auth-plugin by class-name without a 'method' attribute define:" + className);
 				} else {
-					if (!className.equals(driver.getMethod())) {
+					if (!plugin.equals(driver.getMethod())) {
 						String msg = MessageFormat.format("Driver requested method {0} does not match plugin name {1}",
 								driver.getMethod(), plugin);
 						throw new RuntimeException(msg);
@@ -112,9 +106,14 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 	}
 
 	@Override
-	public TokenMetadata execute() {
-		boolean includeCatalog = !request.getQueryString().contains(AuthController.NOCATALOG);
-		KeystoneContext context = (KeystoneContext) request.getAttribute(KeystoneContext.CONTEXT_NAME);
+	public TokenMetadata execute(ContainerRequestContext request) {
+		try {
+			loadAuthMethods();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		boolean includeCatalog = !request.getUriInfo().getQueryParameters().containsKey(AuthController.NOCATALOG);
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 
 		try {
 			AuthInfo authInfo = new AuthInfo(context, auth, AUTH_METHODS, this.getAssignmentApi(), this.getTrustApi());
@@ -143,14 +142,13 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 			return tokenMetadata;
 
 		} catch (Exception e) {
+			logger.warn("authenticate token failed", e);
 			throw Exceptions.UnauthorizedException.getInstance();
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
 		}
 
 	}
 
-	private void checkAndSetDefaultScoping(AuthInfo authInfo, AuthContext authContext) throws Throwable {
+	private void checkAndSetDefaultScoping(AuthInfo authInfo, AuthContext authContext) throws Exception {
 		String domainid = authInfo.getDomainid();
 		String projectid = authInfo.getProjectid();
 		Trust trust = authInfo.getTrust();
@@ -218,8 +216,8 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 		// List<String> authResponse = Lists.newArrayList();
 		for (String name : authInfo.getMethodNames()) {
 			AuthDriver driver = getAuthMethod(name);
-			authInfo.getMethodData(name);
-			driver.authenticate(context, authInfo, authContext, tokenProviderApi, identityApi, assignmentApi);
+			AuthData methodData = authInfo.getMethodData(name);
+			driver.authenticate(context, methodData, authContext, tokenProviderApi, identityApi, assignmentApi);
 			// TODO trace if resp:, wired
 			// authResponse.getMethods().add(name);
 			// authResponse.
@@ -254,11 +252,6 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 	// AuthDriver driver = (AuthDriver) c.newInstance();
 	// return driver;
 	// }
-
-	@Context
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
-	}
 
 	public TrustApi getTrustApi() {
 		return trustApi;

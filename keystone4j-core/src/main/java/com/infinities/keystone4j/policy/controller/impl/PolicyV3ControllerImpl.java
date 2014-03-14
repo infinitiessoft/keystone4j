@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
@@ -20,7 +21,7 @@ import com.infinities.keystone4j.policy.model.Policy;
 import com.infinities.keystone4j.policy.model.PolicyWrapper;
 import com.infinities.keystone4j.token.TokenApi;
 
-public class PolicyV3ControllerImpl implements PolicyV3Controller {
+public class PolicyV3ControllerImpl extends BaseController implements PolicyV3Controller {
 
 	private final PolicyApi policyApi;
 	private final TokenApi tokenApi;
@@ -38,7 +39,7 @@ public class PolicyV3ControllerImpl implements PolicyV3Controller {
 		parMap.put("policy", policy);
 		Action<Policy> command = new PolicyCheckDecorator<Policy>(new CreatePolicyAction(policyApi, policy), null, tokenApi,
 				policyApi, parMap);
-		Policy ret = command.execute();
+		Policy ret = command.execute(getRequest());
 		return new PolicyWrapper(ret);
 	}
 
@@ -48,7 +49,7 @@ public class PolicyV3ControllerImpl implements PolicyV3Controller {
 		Action<List<Policy>> command = new FilterCheckDecorator<List<Policy>>(new PaginateDecorator<Policy>(
 				new ListPoliciesAction(policyApi, type), page, perPage), tokenApi, policyApi, parMap);
 
-		List<Policy> ret = command.execute();
+		List<Policy> ret = command.execute(getRequest());
 		return new PoliciesWrapper(ret);
 	}
 
@@ -57,7 +58,7 @@ public class PolicyV3ControllerImpl implements PolicyV3Controller {
 		parMap.put("policyid", policyid);
 		Action<Policy> command = new PolicyCheckDecorator<Policy>(new GetPolicyAction(policyApi, policyid), null, tokenApi,
 				policyApi, parMap);
-		Policy ret = command.execute();
+		Policy ret = command.execute(getRequest());
 		return new PolicyWrapper(ret);
 	}
 
@@ -67,7 +68,7 @@ public class PolicyV3ControllerImpl implements PolicyV3Controller {
 		parMap.put("policy", policy);
 		Action<Policy> command = new PolicyCheckDecorator<Policy>(new UpdatePolicyAction(policyApi, policyid, policy), null,
 				tokenApi, policyApi, parMap);
-		Policy ret = command.execute();
+		Policy ret = command.execute(getRequest());
 		return new PolicyWrapper(ret);
 	}
 
@@ -76,7 +77,7 @@ public class PolicyV3ControllerImpl implements PolicyV3Controller {
 		parMap.put("policyid", policyid);
 		Action<Policy> command = new PolicyCheckDecorator<Policy>(new DeletePolicyAction(policyApi, policyid), null,
 				tokenApi, policyApi, parMap);
-		command.execute();
+		command.execute(getRequest());
 	}
 
 }
