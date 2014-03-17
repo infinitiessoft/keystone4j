@@ -55,6 +55,9 @@ public class CatalogJpaDriver implements CatalogDriver {
 		if (service.isTypeUpdated()) {
 			oldService.setType(service.getType());
 		}
+		if (service.isNameUpdated()) {
+			oldService.setName(service.getName());
+		}
 		return serviceDao.merge(oldService);
 	}
 
@@ -67,7 +70,7 @@ public class CatalogJpaDriver implements CatalogDriver {
 	@Override
 	public Endpoint createEndpoint(Endpoint endpoint) {
 		if (endpoint.getService() != null) {
-			getService(endpoint.getService().getServiceId());
+			getService(endpoint.getService().getId());
 		}
 		endpointDao.persist(endpoint);
 		return endpoint;

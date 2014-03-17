@@ -7,6 +7,7 @@ import javax.ws.rs.HEAD;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.codehaus.jackson.map.annotate.JsonView;
 
@@ -33,8 +34,8 @@ public class AuthResource {
 	@JsonView(Views.AuthenticateForToken.class)
 	public Response authenticateForToken(AuthV3Wrapper authWrapper) {
 		TokenMetadata token = authController.authenticateForToken(authWrapper.getAuth());
-		return Response.status(CustomResponseStatus.CREATE_TOKEN).entity(token.getTokenData())
-				.header(SUBJECT_TOKEN_HEADER, token.getTokenid()).build();
+		return Response.status(Status.CREATED).entity(token.getTokenData()).header(SUBJECT_TOKEN_HEADER, token.getTokenid())
+				.build();
 	}
 
 	@HEAD

@@ -8,12 +8,14 @@ import com.infinities.keystone4j.catalog.model.Service;
 
 public class UpdateServiceAction extends AbstractServiceAction<Service> {
 
-	private String serviceid;
-	private Service service;
+	private final String serviceid;
+	private final Service service;
 
 
 	public UpdateServiceAction(CatalogApi catalogApi, String serviceid, Service service) {
 		super(catalogApi);
+		this.serviceid = serviceid;
+		this.service = service;
 	}
 
 	@Override

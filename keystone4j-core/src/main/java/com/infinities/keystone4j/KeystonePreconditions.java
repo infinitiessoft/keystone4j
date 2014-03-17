@@ -23,7 +23,7 @@ public class KeystonePreconditions {
 	}
 
 	public static void requireMatchingId(String id, BaseEntity entity) {
-		if (!Strings.isNullOrEmpty(entity.getId()) && id.equals(entity.getId())) {
+		if (!Strings.isNullOrEmpty(entity.getId()) && !id.equals(entity.getId())) {
 			throw new BadRequestException(REQUIRE_MATCHING_ID);
 
 		}

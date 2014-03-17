@@ -1,4 +1,4 @@
-package com.infinities.keystone4j.admin.v3;
+package com.infinities.keystone4j.admin.v3.service;
 
 import javax.inject.Singleton;
 
@@ -6,18 +6,44 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.infinities.keystone4j.ObjectMapperResolver;
+import com.infinities.keystone4j.admin.v3.MockAssignmentApiFactory;
+import com.infinities.keystone4j.admin.v3.MockCatalogApiFactory;
+import com.infinities.keystone4j.admin.v3.MockIdentityApiFactory;
+import com.infinities.keystone4j.admin.v3.MockPolicyApiFactory;
+import com.infinities.keystone4j.admin.v3.MockTokenApiFactory;
+import com.infinities.keystone4j.admin.v3.MockTokenProviderApiFactory;
+import com.infinities.keystone4j.admin.v3.MockTrustApiFactory;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.catalog.CatalogApi;
+import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
+import com.infinities.keystone4j.catalog.controller.impl.ServiceV3ControllerFactory;
 import com.infinities.keystone4j.common.api.VersionApi;
 import com.infinities.keystone4j.common.api.VersionApiFactory;
+import com.infinities.keystone4j.filter.AdminTokenAuthMiddleware;
 import com.infinities.keystone4j.filter.AuthContextMiddleware;
+import com.infinities.keystone4j.filter.RequestBodySizeLimiter;
+import com.infinities.keystone4j.filter.TokenAuthMiddleware;
+import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.main.PublicResource;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+import com.infinities.keystone4j.trust.TrustApi;
 
-public class AuthContextMiddlewareTestApplication extends ResourceConfig {
+public class ServiceResourceTestApplication extends ResourceConfig {
 
-	public AuthContextMiddlewareTestApplication(TokenApi tokenApi) {
+	public ServiceResourceTestApplication(CatalogApi catalogApi, TokenApi tokenApi, TokenProviderApi tokenProviderApi,
+			AssignmentApi assignmentApi, IdentityApi identityApi, PolicyApi policyApi, TrustApi trustApi) {
+		final MockCatalogApiFactory catalogApiFactory = new MockCatalogApiFactory(catalogApi);
 		final MockTokenApiFactory tokenApiFactory = new MockTokenApiFactory(tokenApi);
-		register(JacksonFeature.class);
-		register(new AbstractBinder() {
+		final MockTokenProviderApiFactory tokenProviderApiFactory = new MockTokenProviderApiFactory(tokenProviderApi);
+		final MockIdentityApiFactory identityApiFactory = new MockIdentityApiFactory(identityApi);
+		final MockAssignmentApiFactory assignmentApiFactory = new MockAssignmentApiFactory(assignmentApi);
+		final MockPolicyApiFactory policyApiFactory = new MockPolicyApiFactory(policyApi);
+		final MockTrustApiFactory trustApiFactory = new MockTrustApiFactory(trustApi);
+
+		this.register(new AbstractBinder() {
 
 			@Override
 			protected void configure() {
@@ -36,7 +62,7 @@ public class AuthContextMiddlewareTestApplication extends ResourceConfig {
 				// // catalog
 				// bindFactory(CatalogApiFactory.class).to(CatalogApi.class);
 				// bindFactory(EndpointV3ControllerFactory.class).to(EndpointV3Controller.class);
-				// bindFactory(ServiceV3ControllerFactory.class).to(ServiceV3Controller.class);
+				bindFactory(ServiceV3ControllerFactory.class).to(ServiceV3Controller.class);
 				// bindFactory(CatalogDriverFactory.class).to(CatalogDriver.class);
 				//
 				// // credential
@@ -77,14 +103,21 @@ public class AuthContextMiddlewareTestApplication extends ResourceConfig {
 				// bindFactory(SimpleCertV3ControllerFactory.class).to(SimpleCertV3Controller.class);
 				bindFactory(VersionApiFactory.class).to(VersionApi.class).in(Singleton.class);
 				bindFactory(tokenApiFactory).to(TokenApi.class);
+				bindFactory(tokenProviderApiFactory).to(TokenProviderApi.class);
+				bindFactory(assignmentApiFactory).to(AssignmentApi.class);
+				bindFactory(identityApiFactory).to(IdentityApi.class);
+				bindFactory(policyApiFactory).to(PolicyApi.class);
+				bindFactory(trustApiFactory).to(TrustApi.class);
+				bindFactory(catalogApiFactory).to(CatalogApi.class);
 			}
 
 		});
-		register(AuthContextMiddleware.class);
-		// register(TokenAuthMiddleware.class);
-		// register(AdminTokenAuthMiddleware.class);
-		// register(RequestBodySizeLimiter.class);
-		register(PublicResource.class);
-
+		this.register(AuthContextMiddleware.class);
+		this.register(TokenAuthMiddleware.class);
+		this.register(AdminTokenAuthMiddleware.class);
+		this.register(RequestBodySizeLimiter.class);
+		this.register(PublicResource.class);
+		this.register(ObjectMapperResolver.class);
+		this.register(JacksonFeature.class);
 	}
 }

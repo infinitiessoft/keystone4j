@@ -1,4 +1,4 @@
-package com.infinities.keystone4j.admin.v3;
+package com.infinities.keystone4j.admin.v3.filter;
 
 import static org.junit.Assert.assertEquals;
 
