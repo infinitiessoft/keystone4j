@@ -18,10 +18,6 @@ public class Identity {
 	private final Map<String, AuthData> authMethods = new HashMap<String, AuthData>();
 
 
-	// private Token token;
-
-	// private User user;
-
 	public Identity() {
 
 	}
@@ -33,22 +29,6 @@ public class Identity {
 	public void setMethods(List<String> methods) {
 		this.methods = methods;
 	}
-
-	// public Password getPassword() {
-	// return password;
-	// }
-	//
-	// public void setPassword(Password password) {
-	// this.password = password;
-	// }
-	//
-	// public Token getToken() {
-	// return token;
-	// }
-	//
-	// public void setToken(Token token) {
-	// this.token = token;
-	// }
 
 	@XmlTransient
 	public Map<String, AuthData> getAuthMethods() {
@@ -67,13 +47,5 @@ public class Identity {
 	public void setToken(Token token) {
 		authMethods.put("token", token);
 	}
-
-	// public User getUser() {
-	// return user;
-	// }
-	//
-	// public void setUser(User user) {
-	// this.user = user;
-	// }
 
 }

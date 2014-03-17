@@ -18,8 +18,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.infinities.keystone4j.ISO8601DateAdapter;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
@@ -36,7 +39,11 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 	 * 
 	 */
 	private static final long serialVersionUID = 899631282574098673L;
+	@XmlElement(name = "expires_at")
+	@XmlJavaTypeAdapter(value = ISO8601DateAdapter.class, type = Date.class)
 	private Date expires = new Date();
+	@XmlElement(name = "issued_at")
+	@XmlJavaTypeAdapter(value = ISO8601DateAdapter.class, type = Date.class)
 	private Date issueAt = new Date();
 	private String extra;
 	private Boolean valid = true;

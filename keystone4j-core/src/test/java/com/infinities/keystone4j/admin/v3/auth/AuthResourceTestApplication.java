@@ -1,4 +1,4 @@
-package com.infinities.keystone4j.admin.v3;
+package com.infinities.keystone4j.admin.v3.auth;
 
 import javax.inject.Singleton;
 
@@ -6,6 +6,13 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.infinities.keystone4j.ObjectMapperResolver;
+import com.infinities.keystone4j.admin.v3.MockAssignmentApiFactory;
+import com.infinities.keystone4j.admin.v3.MockIdentityApiFactory;
+import com.infinities.keystone4j.admin.v3.MockPolicyApiFactory;
+import com.infinities.keystone4j.admin.v3.MockTokenApiFactory;
+import com.infinities.keystone4j.admin.v3.MockTokenProviderApiFactory;
+import com.infinities.keystone4j.admin.v3.MockTrustApiFactory;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.controller.AuthController;
 import com.infinities.keystone4j.auth.controller.impl.AuthControllerFactory;
@@ -107,6 +114,8 @@ public class AuthResourceTestApplication extends ResourceConfig {
 		this.register(AdminTokenAuthMiddleware.class);
 		this.register(RequestBodySizeLimiter.class);
 		this.register(PublicResource.class);
+		this.register(ObjectMapperResolver.class);
 		this.register(JacksonFeature.class);
+		// this.register(ObjectMapperResolver.class);
 	}
 }

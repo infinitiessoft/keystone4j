@@ -7,7 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
+import javax.xml.bind.annotation.XmlTransient;
 
+import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.annotations.GenericGenerator;
 
 @MappedSuperclass
@@ -24,6 +26,7 @@ public class BaseEntity implements Serializable {
 	private boolean descriptionUpdated = false;
 
 
+	@JsonView(Views.All.class)
 	@Column(name = "DESC", length = 150)
 	public String getDescription() {
 		return description;
@@ -35,6 +38,7 @@ public class BaseEntity implements Serializable {
 
 	}
 
+	@XmlTransient
 	@Version
 	@Column(name = "OPTLOCK")
 	public int getVersion() {
@@ -91,6 +95,7 @@ public class BaseEntity implements Serializable {
 		return true;
 	}
 
+	@XmlTransient
 	public boolean isDescriptionUpdated() {
 		return descriptionUpdated;
 	}

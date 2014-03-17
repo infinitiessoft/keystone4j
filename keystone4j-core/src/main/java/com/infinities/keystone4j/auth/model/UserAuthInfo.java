@@ -53,7 +53,6 @@ public class UserAuthInfo {
 				}
 				domain = lookupDomain(userInfo.getDomain());
 				user = identityApi.getUserByName(userName, domain.getId());
-
 			} else {
 				user = identityApi.getUser(userid, null);
 				domain = user.getDomain();

@@ -25,13 +25,15 @@ import com.infinities.keystone4j.trust.model.TrustRole;
 
 public class TokenDataHelper {
 
-	private IdentityApi identityApi;
-	private AssignmentApi assignmentApi;
-	private CatalogApi catalogApi;
+	private final IdentityApi identityApi;
+	private final AssignmentApi assignmentApi;
+	private final CatalogApi catalogApi;
 
 
-	public TokenDataHelper() {
-
+	public TokenDataHelper(IdentityApi identityApi, AssignmentApi assignmentApi, CatalogApi catalogApi) {
+		this.identityApi = identityApi;
+		this.assignmentApi = assignmentApi;
+		this.catalogApi = catalogApi;
 	}
 
 	public TokenDataWrapper getTokenData(String userid, List<String> methodNames, Date expiresAt, String projectid,

@@ -15,8 +15,10 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.infinities.keystone4j.BaseEntity;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
@@ -47,6 +49,7 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 	private boolean extraUpdated = false;
 
 
+	@JsonView(Views.AuthenticateForToken.class)
 	@Column(name = "NAME", length = 64, nullable = false, unique = true)
 	public String getName() {
 		return name;
@@ -57,6 +60,7 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		nameUpdated = true;
 	}
 
+	@JsonView(Views.All.class)
 	@Column(name = "ENABLED", nullable = false)
 	public Boolean getEnabled() {
 		return enabled;
@@ -67,6 +71,7 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		enabledUpdated = true;
 	}
 
+	@XmlTransient
 	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
@@ -78,6 +83,7 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		extraUpdated = true;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "domain", cascade = CascadeType.ALL)
 	public Set<Project> getProjects() {
 		return projects;
@@ -87,6 +93,7 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		this.projects = projects;
 	}
 
+	@XmlTransient
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "domain", cascade = CascadeType.ALL)
 	public Set<UserDomainGrant> getUserDomainGrants() {
 		return userDomainGrants;
@@ -96,6 +103,7 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		this.userDomainGrants = userDomainGrants;
 	}
 
+	@XmlTransient
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "domain", cascade = CascadeType.ALL)
 	public Set<GroupDomainGrant> getGroupDomainGrants() {
 		return groupDomainGrants;
@@ -105,6 +113,7 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		this.groupDomainGrants = groupDomainGrants;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "domain", cascade = CascadeType.ALL)
 	public Set<Group> getGroups() {
 		return groups;
@@ -114,6 +123,7 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		this.groups = groups;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "domain", cascade = CascadeType.ALL)
 	public Set<User> getUsers() {
 		return users;
@@ -123,6 +133,7 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		this.users = users;
 	}
 
+	@XmlTransient
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "domain", cascade = CascadeType.ALL)
 	public Set<Token> getTokens() {
 		return tokens;
@@ -141,7 +152,8 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 	// public void setAssignments(Set<Assignment> assignments) {
 	// this.assignments = assignments;
 	// }
-
+	@XmlTransient
+	@Transient
 	public boolean isNameUpdated() {
 		return nameUpdated;
 	}
@@ -150,6 +162,8 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		this.nameUpdated = nameUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public boolean isEnabledUpdated() {
 		return enabledUpdated;
 	}
@@ -158,6 +172,8 @@ public class Domain extends BaseEntity implements java.io.Serializable, PolicyEn
 		this.enabledUpdated = enabledUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public boolean isExtraUpdated() {
 		return extraUpdated;
 	}

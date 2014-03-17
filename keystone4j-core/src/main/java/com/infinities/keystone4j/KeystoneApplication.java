@@ -52,6 +52,7 @@ public class KeystoneApplication extends ResourceConfig {
 				// bindFactory(TokenApiFactory.class).to(TokenApi.class);
 				// bindFactory(TokenProviderApiFactory.class).to(TokenProviderApi.class);
 				// bindFactory(TokenProviderDriverFactory.class).to(TokenProviderDriver.class);
+				// bindFactory(TokenDataHelperFactory.class).to(TokenDataHelper.class);
 				//
 				// // trust
 				// bindFactory(TrustApiFactory.class).to(TrustApi.class);
@@ -71,10 +72,12 @@ public class KeystoneApplication extends ResourceConfig {
 			}
 
 		});
-		// register(AuthContextMiddleware.class);
-		// register(TokenAuthMiddleware.class);
-		// register(AdminTokenAuthMiddleware.class);
-		// register(RequestBodySizeLimiter.class);
+		// this.register(AuthContextMiddleware.class);
+		// this.register(TokenAuthMiddleware.class);
+		// this.register(AdminTokenAuthMiddleware.class);
+		// this.register(RequestBodySizeLimiter.class);
+		this.register(ObjectMapperResolver.class);
+		this.register(JacksonFeature.class);
 		this.register(PublicResource.class);
 	}
 }

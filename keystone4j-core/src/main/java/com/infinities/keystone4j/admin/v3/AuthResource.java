@@ -8,6 +8,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.auth.controller.AuthController;
 import com.infinities.keystone4j.auth.model.AuthV3Wrapper;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
@@ -27,6 +30,7 @@ public class AuthResource {
 
 	@POST
 	@Path("/tokens")
+	@JsonView(Views.AuthenticateForToken.class)
 	public Response authenticateForToken(AuthV3Wrapper authWrapper) {
 		TokenMetadata token = authController.authenticateForToken(authWrapper.getAuth());
 		return Response.status(CustomResponseStatus.CREATE_TOKEN).entity(token.getTokenData())
@@ -49,6 +53,7 @@ public class AuthResource {
 
 	@GET
 	@Path("/tokens")
+	@JsonView(Views.AuthenticateForToken.class)
 	public Response validateToken() {
 		TokenMetadata token = authController.validateToken();
 		return Response.status(CustomResponseStatus.VALIDATE_TOKEN).entity(token.getTokenData())

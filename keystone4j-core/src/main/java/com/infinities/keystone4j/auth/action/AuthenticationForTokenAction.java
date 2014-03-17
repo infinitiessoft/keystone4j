@@ -66,7 +66,6 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 		if (AUTH_PLUGINS_LOADED) {
 			return;
 		}
-
 		List<String> methods = Config.Instance.getOpt(Config.Type.auth, "methods").asList();
 		AuthDriver driver;
 		for (String plugin : methods) {

@@ -4,7 +4,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import com.infinities.keystone4j.ISO8601DateAdapter;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
@@ -23,12 +29,17 @@ public class TokenData {
 	private Domain domain;
 	@XmlElement(name = "OS-TRUST:trust")
 	private Trust trust;
+	@XmlJavaTypeAdapter(value = ISO8601DateAdapter.class, type = Date.class)
+	@XmlElement(name = "expires_at")
 	private Date expireAt;
+	@XmlJavaTypeAdapter(value = ISO8601DateAdapter.class, type = Date.class)
+	@XmlElement(name = "issued_at")
 	private Date issuedAt;
 	private Token token;
 	private Bind bind;
 
 
+	@JsonView(Views.AuthenticateForToken.class)
 	public List<String> getMethods() {
 		return methods;
 	}
@@ -37,14 +48,17 @@ public class TokenData {
 		this.methods = methods;
 	}
 
+	@XmlTransient
 	public String getExtras() {
 		return extras;
 	}
 
+	@XmlTransient
 	public void setExtras(String extras) {
 		this.extras = extras;
 	}
 
+	@JsonView(Views.AuthenticateForToken.class)
 	public List<Role> getRoles() {
 		return roles;
 	}
@@ -53,6 +67,7 @@ public class TokenData {
 		this.roles = roles;
 	}
 
+	@JsonView(Views.AuthenticateForToken.class)
 	public User getUser() {
 		return user;
 	}
@@ -61,6 +76,8 @@ public class TokenData {
 		this.user = user;
 	}
 
+	@JsonView(Views.AuthenticateForToken.class)
+	@XmlElement()
 	public Catalog getCatalog() {
 		return catalog;
 	}
@@ -69,6 +86,7 @@ public class TokenData {
 		this.catalog = catalog;
 	}
 
+	@JsonView(Views.AuthenticateForToken.class)
 	public Project getProject() {
 		return project;
 	}
@@ -77,6 +95,7 @@ public class TokenData {
 		this.project = project;
 	}
 
+	@JsonView(Views.AuthenticateForToken.class)
 	public Domain getDomain() {
 		return domain;
 	}
@@ -85,18 +104,22 @@ public class TokenData {
 		this.domain = domain;
 	}
 
+	@XmlTransient
 	public Token getToken() {
 		return token;
 	}
 
+	@XmlTransient
 	public void setToken(Token token) {
 		this.token = token;
 	}
 
+	@XmlTransient
 	public Bind getBind() {
 		return bind;
 	}
 
+	@XmlTransient
 	public void setBind(Bind bind) {
 		this.bind = bind;
 	}
@@ -109,6 +132,7 @@ public class TokenData {
 		this.trust = trust;
 	}
 
+	@JsonView(Views.AuthenticateForToken.class)
 	public Date getExpireAt() {
 		return expireAt;
 	}
@@ -117,6 +141,7 @@ public class TokenData {
 		this.expireAt = expireAt;
 	}
 
+	@JsonView(Views.AuthenticateForToken.class)
 	public Date getIssuedAt() {
 		return issuedAt;
 	}
