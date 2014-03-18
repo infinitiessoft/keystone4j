@@ -46,7 +46,7 @@ public class CreateTrustAction extends AbstractTrustAction<Trust> {
 
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		// try {
-		User user = new KeystoneUtils().getUser(context);
+		User user = new KeystoneUtils().getUser(tokenApi, context);
 		trustorOnly(trust, user);
 
 		User trustee = this.getIdentityApi().getUser(trust.getTrustee().getId(), null);

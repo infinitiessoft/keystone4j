@@ -33,10 +33,10 @@ public class ListTrustsAction extends AbstractTrustAction<List<Trust>> {
 	public List<Trust> execute(ContainerRequestContext request) {
 		List<Trust> trusts = Lists.newArrayList();
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		User callingUser = new KeystoneUtils().getUser(context);
+		User callingUser = new KeystoneUtils().getUser(tokenApi, context);
 
 		if (Strings.isNullOrEmpty(trustorid) && Strings.isNullOrEmpty(trusteeid)) {
-			new KeystoneUtils().assertAdmin(context);
+			new KeystoneUtils().assertAdmin(tokenApi, context);
 			trusts = this.getTrustApi().listTrusts();
 		}
 

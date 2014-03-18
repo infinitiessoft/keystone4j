@@ -42,9 +42,9 @@ public interface RoleV3Controller {
 
 	void createGrantByGroupProject(String roleid, String groupid, String projectid);
 
-	RolesWrapper listGrantsByUserProject(String userid, String projectid, int page, int perPage);
+	List<Role> listGrantsByUserProject(String userid, String projectid, int page, int perPage);
 
-	RolesWrapper listGrantsByGroupProject(String groupid, String projectid, int page, int perPage);
+	List<Role> listGrantsByGroupProject(String groupid, String projectid, int page, int perPage);
 
 	void checkGrantByUserProject(String roleid, String userid, String projectid);
 

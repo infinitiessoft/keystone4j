@@ -11,9 +11,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystoneUtils;
+import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class ListUsersAction extends AbstractUserAction<List<User>> {
 
@@ -23,8 +25,9 @@ public class ListUsersAction extends AbstractUserAction<List<User>> {
 	private final String name;
 
 
-	public ListUsersAction(IdentityApi identityApi, String domainid, String email, Boolean enabled, String name) {
-		super(identityApi);
+	public ListUsersAction(AssignmentApi assignmentApi, TokenApi tokenApi, IdentityApi identityApi, String domainid,
+			String email, Boolean enabled, String name) {
+		super(assignmentApi, identityApi, tokenApi);
 		this.domainid = domainid;
 		this.email = email;
 		this.enabled = enabled;
@@ -34,7 +37,7 @@ public class ListUsersAction extends AbstractUserAction<List<User>> {
 	@Override
 	public List<User> execute(ContainerRequestContext request) {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		Domain domain = new KeystoneUtils().getDomainForRequest(context);
+		Domain domain = new KeystoneUtils().getDomainForRequest(assignmentApi, tokenApi, context);
 		Iterable<User> users = this.getIdentityApi().listUsers(domain.getId());
 
 		List<Predicate<User>> filters = Lists.newArrayList();

@@ -1,8 +1,11 @@
 package com.infinities.keystone4j.assignment.controller;
 
+import java.util.List;
+
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.ProjectWrapper;
 import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
+import com.infinities.keystone4j.identity.model.User;
 
 public interface ProjectV3Controller {
 
@@ -17,5 +20,7 @@ public interface ProjectV3Controller {
 	ProjectWrapper updateProject(String projectid, Project project);
 
 	void deleteProject(String projectid);
+
+	List<User> getProjectUsers(String projectid, Boolean enabled, String name, int page, int perPage);
 
 }

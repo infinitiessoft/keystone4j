@@ -11,9 +11,11 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystoneUtils;
+import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.Group;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class ListGroupsAction extends AbstractGroupAction<List<Group>> {
 
@@ -21,8 +23,9 @@ public class ListGroupsAction extends AbstractGroupAction<List<Group>> {
 	private final String name;
 
 
-	public ListGroupsAction(IdentityApi identityApi, String domainid, String name) {
-		super(identityApi);
+	public ListGroupsAction(AssignmentApi assignmentApi, TokenApi tokenApi, IdentityApi identityApi, String domainid,
+			String name) {
+		super(assignmentApi, tokenApi, identityApi);
 		this.domainid = domainid;
 		this.name = name;
 	}
@@ -30,7 +33,7 @@ public class ListGroupsAction extends AbstractGroupAction<List<Group>> {
 	@Override
 	public List<Group> execute(ContainerRequestContext request) {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		Domain domain = new KeystoneUtils().getDomainForRequest(context);
+		Domain domain = new KeystoneUtils().getDomainForRequest(assignmentApi, tokenApi, context);
 		Iterable<Group> groups = this.getIdentityApi().listGroups(domain.getId());
 
 		List<Predicate<Group>> filters = Lists.newArrayList();

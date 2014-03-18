@@ -1,10 +1,13 @@
 package com.infinities.keystone4j.assignment.model;
 
-
 public class ProjectWrapper {
 
 	private Project project;
 
+
+	public ProjectWrapper() {
+
+	}
 
 	public ProjectWrapper(Project project) {
 		this.project = project;

@@ -6,11 +6,13 @@ import com.google.common.base.Strings;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.KeystoneUtils;
+import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.identity.model.UserParam;
+import com.infinities.keystone4j.token.TokenApi;
 
 public class ChangePasswordAction extends AbstractUserAction<User> {
 
@@ -21,8 +23,9 @@ public class ChangePasswordAction extends AbstractUserAction<User> {
 	private UserParam user;
 
 
-	public ChangePasswordAction(IdentityApi identityApi, String userid, UserParam user) {
-		super(identityApi);
+	public ChangePasswordAction(AssignmentApi assignmentApi, TokenApi tokenApi, IdentityApi identityApi, String userid,
+			UserParam user) {
+		super(assignmentApi, identityApi, tokenApi);
 	}
 
 	@Override
@@ -37,7 +40,7 @@ public class ChangePasswordAction extends AbstractUserAction<User> {
 		}
 
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		Domain domain = new KeystoneUtils().getDomainForRequest(context);
+		Domain domain = new KeystoneUtils().getDomainForRequest(assignmentApi, tokenApi, context);
 
 		try {
 			this.getIdentityApi().authenticate(userid, password, domain.getId());

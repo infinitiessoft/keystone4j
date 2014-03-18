@@ -15,10 +15,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.google.common.base.Strings;
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
@@ -59,6 +61,7 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 		setNameUpdated(true);
 	}
 
+	@XmlTransient
 	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOMAINID", nullable = false)
@@ -66,9 +69,29 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 		return domain;
 	}
 
+	@XmlTransient
 	public void setDomain(Domain domain) {
 		this.domain = domain;
 		setDomainUpdated(true);
+	}
+
+	@Transient
+	@XmlElement(name = "domain_id")
+	public String getDomainid() {
+		if (getDomain() != null) {
+			return getDomain().getId();
+		}
+		return null;
+	}
+
+	@Transient
+	@XmlElement(name = "domain_id")
+	public void setDomainid(String domainid) {
+		if (!Strings.isNullOrEmpty(domainid)) {
+			Domain domain = new Domain();
+			domain.setId(domainid);
+			setDomain(domain);
+		}
 	}
 
 	@Lob

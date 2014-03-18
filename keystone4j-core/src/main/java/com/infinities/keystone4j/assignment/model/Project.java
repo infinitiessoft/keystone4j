@@ -15,11 +15,15 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
 
+import com.google.common.base.Strings;
 import com.infinities.keystone4j.BaseEntity;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.credential.model.Credential;
 import com.infinities.keystone4j.endpointfilter.model.ProjectEndpoint;
 import com.infinities.keystone4j.identity.model.User;
@@ -62,6 +66,7 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 		setNameUpdate(true);
 	}
 
+	@XmlTransient
 	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOMAINID", nullable = false)
@@ -69,9 +74,29 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 		return domain;
 	}
 
+	@XmlTransient
 	public void setDomain(Domain domain) {
 		this.domain = domain;
 		setDomainUpdated(true);
+	}
+
+	@Transient
+	@XmlElement(name = "domain_id")
+	public String getDomainid() {
+		if (getDomain() != null) {
+			return getDomain().getId();
+		}
+		return null;
+	}
+
+	@Transient
+	@XmlElement(name = "domain_id")
+	public void setDomainid(String domainid) {
+		if (!Strings.isNullOrEmpty(domainid)) {
+			Domain domain = new Domain();
+			domain.setId(domainid);
+			setDomain(domain);
+		}
 	}
 
 	@Column(name = "ENABLED", nullable = false)
@@ -84,49 +109,59 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 		setEnabledUpdate(true);
 	}
 
+	@XmlTransient
 	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;
 	}
 
+	@XmlTransient
 	public void setExtra(String extra) {
 		this.extra = extra;
 		setExtraUpdated(true);
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
 	public Set<UserProjectGrant> getUserProjectGrants() {
 		return userProjectGrants;
 	}
 
+	@JsonView(Views.All.class)
 	public void setUserProjectGrants(Set<UserProjectGrant> userProjectGrants) {
 		this.userProjectGrants = userProjectGrants;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
 	public Set<GroupProjectGrant> getGroupProjectGrants() {
 		return groupProjectGrants;
 	}
 
+	@JsonView(Views.All.class)
 	public void setGroupProjectGrants(Set<GroupProjectGrant> groupProjectGrants) {
 		this.groupProjectGrants = groupProjectGrants;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
 	public Set<Credential> getCredentials() {
 		return credentials;
 	}
 
+	@JsonView(Views.All.class)
 	public void setCredentials(Set<Credential> credentials) {
 		this.credentials = credentials;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
 	public Set<Token> getTokens() {
 		return tokens;
 	}
 
+	@JsonView(Views.All.class)
 	public void setTokens(Set<Token> tokens) {
 		this.tokens = tokens;
 	}
@@ -141,43 +176,53 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 	// this.assignments = assignments;
 	// }
 
+	@XmlTransient
 	public boolean isNameUpdate() {
 		return nameUpdated;
 	}
 
+	@XmlTransient
 	public void setNameUpdate(boolean nameUpdated) {
 		this.nameUpdated = nameUpdated;
 	}
 
+	@XmlTransient
 	public boolean isEnabledUpdate() {
 		return enabledUpdated;
 	}
 
+	@XmlTransient
 	public void setEnabledUpdate(boolean enabledUpdated) {
 		this.enabledUpdated = enabledUpdated;
 	}
 
+	@XmlTransient
 	public boolean isExtraUpdated() {
 		return extraUpdated;
 	}
 
+	@XmlTransient
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
 	}
 
+	@XmlTransient
 	public boolean isDomainUpdated() {
 		return domainUpdated;
 	}
 
+	@XmlTransient
 	public void setDomainUpdated(boolean domainUpdated) {
 		this.domainUpdated = domainUpdated;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "endpoint", cascade = CascadeType.ALL)
 	public Set<ProjectEndpoint> getProjectEndpoints() {
 		return projectEndpoints;
 	}
 
+	@JsonView(Views.All.class)
 	public void setProjectEndpoints(Set<ProjectEndpoint> projectEndpoints) {
 		this.projectEndpoints = projectEndpoints;
 	}

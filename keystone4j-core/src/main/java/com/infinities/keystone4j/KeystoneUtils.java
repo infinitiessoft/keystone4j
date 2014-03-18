@@ -42,8 +42,8 @@ public class KeystoneUtils extends TokenBindValidator {
 	// "Ignoring unknown bind for permissice mode: {0}: {1}";
 	// private final static String COULD_NOT_VERIFY_UNKNOWN_BIND =
 	// "Couldn't verify unknown bind for permissive bind: {0}:{1}";
-	private TokenApi tokenApi;
-	private AssignmentApi assignmentApi;
+	// private TokenApi tokenApi;
+	// private AssignmentApi assignmentApi;
 	private PolicyApi policyApi;
 
 
@@ -53,7 +53,7 @@ public class KeystoneUtils extends TokenBindValidator {
 	}
 
 	// used as _normalize_domain_id
-	public Domain getDomainForRequest(KeystoneContext context) {
+	public Domain getDomainForRequest(AssignmentApi assignmentApi, TokenApi tokenApi, KeystoneContext context) {
 		if (context.isAdmin()) {
 			return assignmentApi.getDomain(Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText());
 		}
@@ -74,7 +74,7 @@ public class KeystoneUtils extends TokenBindValidator {
 
 	}
 
-	public void assertAdmin(KeystoneContext context) {
+	public void assertAdmin(TokenApi tokenApi, KeystoneContext context) {
 		if (!context.isAdmin()) {
 			Token token = null;
 			try {
@@ -91,7 +91,7 @@ public class KeystoneUtils extends TokenBindValidator {
 		}
 	}
 
-	public User getUser(KeystoneContext context) {
+	public User getUser(TokenApi tokenApi, KeystoneContext context) {
 		if (!Strings.isNullOrEmpty(context.getTokenid())) {
 			String tokenid = context.getTokenid();
 			Token token = tokenApi.getToken(tokenid);

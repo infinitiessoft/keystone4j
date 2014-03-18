@@ -229,7 +229,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 	}
 
 	@Override
-	public RolesWrapper listGrantsByUserProject(String userid, String projectid, int page, int perPage) {
+	public List<Role> listGrantsByUserProject(String userid, String projectid, int page, int perPage) {
 		parMap.put("projectid", projectid);
 		parMap.put("userid", userid);
 		CheckGrantCallback callback = new CheckGrantCallback(tokenApi, policyApi, identityApi, assignmentApi, userid, null,
@@ -239,11 +239,11 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 				callback, tokenApi, policyApi, parMap);
 
 		List<Role> ret = command.execute(getRequest());
-		return new RolesWrapper(ret);
+		return ret;
 	}
 
 	@Override
-	public RolesWrapper listGrantsByGroupProject(String groupid, String projectid, int page, int perPage) {
+	public List<Role> listGrantsByGroupProject(String groupid, String projectid, int page, int perPage) {
 		parMap.put("projectid", projectid);
 		parMap.put("groupid", groupid);
 		CheckGrantCallback callback = new CheckGrantCallback(tokenApi, policyApi, identityApi, assignmentApi, null, null,
@@ -253,7 +253,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 						projectid, INHERITED), page, perPage), callback, tokenApi, policyApi, parMap);
 
 		List<Role> ret = command.execute(getRequest());
-		return new RolesWrapper(ret);
+		return ret;
 	}
 
 	@Override

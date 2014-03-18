@@ -68,6 +68,7 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "tcp_keepalive", Options.newBoolOpt("tcp_keepalive", false));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "tcp_keepidle", Options.newIntOpt("tcp_keepidle", 600));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "policy_file", Options.newStrOpt("policy_file", "/etc/policy.json"));
+		FILE_OPTIONS.put(Config.Type.DEFAULT, "domain_id_immutable", Options.newBoolOpt("domain_id_immutable", false));
 
 		FILE_OPTIONS.put(Config.Type.identity, "default_domain_id", Options.newStrOpt("default_domain_id", "default"));
 		FILE_OPTIONS.put(Config.Type.identity, "domain_specific_drivers_enabled",

@@ -34,7 +34,7 @@ public class CheckRoleForTrustAction extends AbstractTrustAction<Role> {
 	@Override
 	public Role execute(ContainerRequestContext request) {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		User user = new KeystoneUtils().getUser(context);
+		User user = new KeystoneUtils().getUser(tokenApi, context);
 
 		Trust trust = this.getTrustApi().getTrust(trustid);
 		if (trust == null) {

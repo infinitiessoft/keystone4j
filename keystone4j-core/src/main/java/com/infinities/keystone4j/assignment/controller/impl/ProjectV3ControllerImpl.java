@@ -9,6 +9,7 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.action.project.CreateProjectAction;
 import com.infinities.keystone4j.assignment.action.project.DeleteProjectAction;
 import com.infinities.keystone4j.assignment.action.project.GetProjectAction;
+import com.infinities.keystone4j.assignment.action.project.GetProjectUsersAction;
 import com.infinities.keystone4j.assignment.action.project.ListProjectsAction;
 import com.infinities.keystone4j.assignment.action.project.ListUserProjectsAction;
 import com.infinities.keystone4j.assignment.action.project.UpdateProjectAction;
@@ -20,6 +21,7 @@ import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 
@@ -41,8 +43,8 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 	@Override
 	public ProjectWrapper createProject(Project project) {
 		parMap.put("project", project);
-		Action<Project> command = new PolicyCheckDecorator<Project>(new CreateProjectAction(assignmentApi, project), null,
-				tokenApi, policyApi, parMap);
+		Action<Project> command = new PolicyCheckDecorator<Project>(
+				new CreateProjectAction(assignmentApi, tokenApi, project), null, tokenApi, policyApi, parMap);
 		Project ret = command.execute(getRequest());
 		return new ProjectWrapper(ret);
 	}
@@ -96,5 +98,17 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 		Action<Project> command = new PolicyCheckDecorator<Project>(new DeleteProjectAction(assignmentApi, projectid), null,
 				tokenApi, policyApi, parMap);
 		command.execute(getRequest());
+	}
+
+	@Override
+	public List<User> getProjectUsers(String projectid, Boolean enabled, String name, int page, int perPage) {
+		parMap.put("name", name);
+		parMap.put("enabled", enabled);
+		Action<List<User>> command = new FilterCheckDecorator<List<User>>(new PaginateDecorator<User>(
+				new GetProjectUsersAction(assignmentApi, tokenApi, projectid, name, enabled), page, perPage), tokenApi,
+				policyApi, parMap);
+
+		List<User> ret = command.execute(getRequest());
+		return ret;
 	}
 }

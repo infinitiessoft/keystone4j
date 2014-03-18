@@ -31,7 +31,7 @@ public class DeleteTrustAction extends AbstractTrustAction<Trust> {
 			throw Exceptions.TrustNotFoundException.getInstance(null, trustid);
 		}
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		User user = new KeystoneUtils().getUser(context);
+		User user = new KeystoneUtils().getUser(tokenApi, context);
 		TrustUtils.adminTrustorOnly(context, trust, user.getId());
 		String userid = trust.getTrustor().getId();
 		this.getTrustApi().deleteTrust(trustid);

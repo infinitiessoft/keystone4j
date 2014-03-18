@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonView;
 
+import com.google.common.base.Strings;
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.model.Domain;
@@ -74,7 +75,7 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
 
 	@Column(name = "NAME", length = 255, nullable = false)
-	@JsonView(Views.AuthenticateForToken.class)
+	@JsonView(Views.Basic.class)
 	public String getName() {
 		return name;
 	}
@@ -106,6 +107,25 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 	public void setDomain(Domain domain) {
 		this.domain = domain;
 		domainUpdated = true;
+	}
+
+	@Transient
+	@XmlElement(name = "domain_id")
+	public String getDomainid() {
+		if (getDomain() != null) {
+			return getDomain().getId();
+		}
+		return null;
+	}
+
+	@Transient
+	@XmlElement(name = "domain_id")
+	public void setDomainid(String domainid) {
+		if (!Strings.isNullOrEmpty(domainid)) {
+			Domain domain = new Domain();
+			domain.setId(domainid);
+			setDomain(domain);
+		}
 	}
 
 	@Column(name = "PASSWORD", length = 128)
@@ -227,64 +247,85 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 	}
 
 	@XmlTransient
+	@Transient
 	public boolean isNameUpdated() {
 		return nameUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public void setNameUpdated(boolean nameUpdated) {
 		this.nameUpdated = nameUpdated;
 	}
 
 	@XmlTransient
+	@Transient
 	public boolean isEmailUpdated() {
 		return emailUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public void setEmailUpdated(boolean emailUpdated) {
 		this.emailUpdated = emailUpdated;
 	}
 
 	@XmlTransient
+	@Transient
 	public boolean isDomainUpdated() {
 		return domainUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public void setDomainUpdated(boolean domainUpdated) {
 		this.domainUpdated = domainUpdated;
 	}
 
 	@XmlTransient
+	@Transient
 	public boolean isPasswordUpdated() {
 		return passwordUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public void setPasswordUpdated(boolean passwordUpdated) {
 		this.passwordUpdated = passwordUpdated;
 	}
 
 	@XmlTransient
+	@Transient
 	public boolean isEnabledUpdated() {
 		return enabledUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public void setEnabledUpdated(boolean enabledUpdated) {
 		this.enabledUpdated = enabledUpdated;
 	}
 
 	@XmlTransient
+	@Transient
 	public boolean isExtraUpdated() {
 		return extraUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
 	}
 
 	@XmlTransient
+	@Transient
 	public boolean isDefaultProjectUpdated() {
 		return defaultProjectUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public void setDefaultProjectUpdated(boolean defaultProjectUpdated) {
 		this.defaultProjectUpdated = defaultProjectUpdated;
 	}
@@ -319,23 +360,6 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 		Project project = new Project();
 		project.setId(defaultProjectId);
 		setDefault_project(project);
-	}
-
-	@JsonView(Views.All.class)
-	@XmlElement(name = "domain_id")
-	public String getDomainId() {
-		if (getDomain() == null) {
-			return null;
-		} else {
-			return getDomain().getId();
-		}
-	}
-
-	@XmlElement(name = "domain_id")
-	public void setDomainId(String domainId) {
-		Domain domain = new Domain();
-		domain.setId(domainId);
-		setDomain(domain);
 	}
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =
