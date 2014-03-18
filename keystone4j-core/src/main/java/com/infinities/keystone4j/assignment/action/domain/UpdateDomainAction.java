@@ -8,12 +8,14 @@ import com.infinities.keystone4j.assignment.model.Domain;
 
 public class UpdateDomainAction extends AbstractDomainAction<Domain> {
 
-	private String domainid;
-	private Domain domain;
+	private final String domainid;
+	private final Domain domain;
 
 
 	public UpdateDomainAction(AssignmentApi assignmentApi, String domainid, Domain domain) {
 		super(assignmentApi);
+		this.domain = domain;
+		this.domainid = domainid;
 	}
 
 	@Override

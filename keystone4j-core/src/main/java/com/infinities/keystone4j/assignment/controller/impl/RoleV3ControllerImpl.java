@@ -129,7 +129,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 	}
 
 	@Override
-	public RolesWrapper listGrantsByUserDomain(String userid, String domainid, int page, int perPage) {
+	public List<Role> listGrantsByUserDomain(String userid, String domainid, int page, int perPage) {
 		parMap.put("userid", userid);
 		parMap.put("domainid", domainid);
 		CheckGrantCallback callback = new CheckGrantCallback(tokenApi, policyApi, identityApi, assignmentApi, userid, null,
@@ -139,11 +139,11 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 				callback, tokenApi, policyApi, parMap);
 
 		List<Role> ret = command.execute(getRequest());
-		return new RolesWrapper(ret);
+		return ret;
 	}
 
 	@Override
-	public RolesWrapper listGrantsByGroupDomain(String groupid, String domainid, int page, int perPage) {
+	public List<Role> listGrantsByGroupDomain(String groupid, String domainid, int page, int perPage) {
 		parMap.put("groupid", groupid);
 		parMap.put("domainid", domainid);
 		CheckGrantCallback callback = new CheckGrantCallback(tokenApi, policyApi, identityApi, assignmentApi, null, null,
@@ -153,7 +153,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 				callback, tokenApi, policyApi, parMap);
 
 		List<Role> ret = command.execute(getRequest());
-		return new RolesWrapper(ret);
+		return ret;
 	}
 
 	@Override

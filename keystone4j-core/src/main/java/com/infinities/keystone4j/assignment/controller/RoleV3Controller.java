@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.assignment.controller;
 
+import java.util.List;
+
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.assignment.model.RoleWrapper;
 import com.infinities.keystone4j.assignment.model.RolesWrapper;
@@ -24,9 +26,9 @@ public interface RoleV3Controller {
 
 	void createGrantByGroupDomain(String roleid, String groupid, String domainid);
 
-	RolesWrapper listGrantsByUserDomain(String userid, String domainid, int page, int perPage);
+	List<Role> listGrantsByUserDomain(String userid, String domainid, int page, int perPage);
 
-	RolesWrapper listGrantsByGroupDomain(String groupid, String domainid, int page, int perPage);
+	List<Role> listGrantsByGroupDomain(String groupid, String domainid, int page, int perPage);
 
 	void checkGrantByUserDomain(String roleid, String userid, String domainid);
 

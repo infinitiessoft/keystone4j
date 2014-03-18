@@ -15,8 +15,10 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.infinities.keystone4j.BaseEntity;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.TokenRole;
@@ -57,58 +59,70 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 		setNameUpdated(true);
 	}
 
+	@XmlTransient
 	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;
 	}
 
+	@XmlTransient
 	public void setExtra(String extra) {
 		this.extra = extra;
 		setExtraUpdated(true);
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
 	public Set<TrustRole> getTrustRoles() {
 		return trustRoles;
 	}
 
+	@JsonView(Views.All.class)
 	public void setTrustRoles(Set<TrustRole> trustRoles) {
 		this.trustRoles = trustRoles;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
 	public Set<GroupProjectGrantMetadata> getGroupProjectMetadatas() {
 		return groupProjectMetadatas;
 	}
 
+	@JsonView(Views.All.class)
 	public void setGroupProjectMetadatas(Set<GroupProjectGrantMetadata> groupProjectMetadatas) {
 		this.groupProjectMetadatas = groupProjectMetadatas;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
 	public Set<GroupDomainGrantMetadata> getGroupDomainMetadatas() {
 		return groupDomainMetadatas;
 	}
 
+	@JsonView(Views.All.class)
 	public void setGroupDomainMetadatas(Set<GroupDomainGrantMetadata> groupDomainMetadatas) {
 		this.groupDomainMetadatas = groupDomainMetadatas;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
 	public Set<UserProjectGrantMetadata> getUserProjectMetadatas() {
 		return userProjectMetadatas;
 	}
 
+	@JsonView(Views.All.class)
 	public void setUserProjectMetadatas(Set<UserProjectGrantMetadata> userProjectMetadatas) {
 		this.userProjectMetadatas = userProjectMetadatas;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
 	public Set<UserDomainGrantMetadata> getUserDomainMetadatas() {
 		return userDomainMetadatas;
 	}
 
+	@JsonView(Views.All.class)
 	public void setUserDomainMetadatas(Set<UserDomainGrantMetadata> userDomainMetadatas) {
 		this.userDomainMetadatas = userDomainMetadatas;
 	}
@@ -128,31 +142,38 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 		return inheritedTo;
 	}
 
+	@XmlTransient
 	public void setInheritedTo(String inheritedTo) {
 		this.inheritedTo = inheritedTo;
 	}
 
+	@XmlTransient
 	public boolean isNameUpdated() {
 		return nameUpdated;
 	}
 
+	@XmlTransient
 	public void setNameUpdated(boolean nameUpdated) {
 		this.nameUpdated = nameUpdated;
 	}
 
+	@XmlTransient
 	public boolean isExtraUpdated() {
 		return extraUpdated;
 	}
 
+	@XmlTransient
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
 	public Set<TokenRole> getTokenRoles() {
 		return tokenRoles;
 	}
 
+	@JsonView(Views.All.class)
 	public void setTokenRoles(Set<TokenRole> tokenRoles) {
 		this.tokenRoles = tokenRoles;
 	}

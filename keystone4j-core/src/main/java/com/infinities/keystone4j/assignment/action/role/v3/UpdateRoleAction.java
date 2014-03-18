@@ -8,12 +8,14 @@ import com.infinities.keystone4j.assignment.model.Role;
 
 public class UpdateRoleAction extends AbstractRoleAction<Role> {
 
-	private String roleid;
-	private Role role;
+	private final String roleid;
+	private final Role role;
 
 
 	public UpdateRoleAction(AssignmentApi assignmentApi, String roleid, Role role) {
 		super(assignmentApi);
+		this.role = role;
+		this.roleid = roleid;
 	}
 
 	@Override

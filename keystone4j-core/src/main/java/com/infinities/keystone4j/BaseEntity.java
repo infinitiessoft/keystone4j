@@ -26,7 +26,7 @@ public class BaseEntity implements Serializable {
 	private boolean descriptionUpdated = false;
 
 
-	@JsonView(Views.All.class)
+	@JsonView(Views.Basic.class)
 	@Column(name = "DESC", length = 150)
 	public String getDescription() {
 		return description;

@@ -1,5 +1,8 @@
 package com.infinities.keystone4j.admin.v3;
 
+import java.util.List;
+
+import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -10,14 +13,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.infinities.keystone4j.PATCH;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.controller.DomainV3Controller;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
-import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.DomainWrapper;
 import com.infinities.keystone4j.assignment.model.DomainsWrapper;
-import com.infinities.keystone4j.assignment.model.RolesWrapper;
+import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
 public class DomainResource {
@@ -26,14 +32,16 @@ public class DomainResource {
 	private final DomainV3Controller domainController;
 
 
+	@Inject
 	public DomainResource(RoleV3Controller roleController, DomainV3Controller domainController) {
 		this.roleController = roleController;
 		this.domainController = domainController;
 	}
 
 	@POST
-	public DomainWrapper createDomain(Domain domain) {
-		return domainController.createDomain(domain);
+	@JsonView(Views.Basic.class)
+	public Response createDomain(DomainWrapper domainWrapper) {
+		return Response.status(Status.CREATED).entity(domainController.createDomain(domainWrapper.getDomain())).build();
 	}
 
 	@GET
@@ -50,8 +58,8 @@ public class DomainResource {
 
 	@PATCH
 	@Path("/{domainid}")
-	public DomainWrapper updateDomain(@PathParam("domainid") String domainid, Domain domain) {
-		return domainController.updateDomain(domainid, domain);
+	public DomainWrapper updateDomain(@PathParam("domainid") String domainid, DomainWrapper domainWrapper) {
+		return domainController.updateDomain(domainid, domainWrapper.getDomain());
 	}
 
 	@DELETE
@@ -94,15 +102,17 @@ public class DomainResource {
 	}
 
 	@GET
-	@Path("/{domainid}/users/{userid}/roles/{roleid}")
-	public RolesWrapper listGrantByUser(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
+	@Path("/{domainid}/users/{userid}/roles")
+	@JsonView(Views.Basic.class)
+	public List<Role> listGrantByUser(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
 		return roleController.listGrantsByUserDomain(userid, domainid, page, perPage);
 	}
 
 	@GET
-	@Path("/{domainid}/groups/{groupid}/roles/{roleid}")
-	public RolesWrapper listGrantByGroup(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
+	@Path("/{domainid}/groups/{groupid}/roles")
+	@JsonView(Views.Basic.class)
+	public List<Role> listGrantByGroup(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
 		return roleController.listGrantsByGroupDomain(groupid, domainid, page, perPage);
 	}

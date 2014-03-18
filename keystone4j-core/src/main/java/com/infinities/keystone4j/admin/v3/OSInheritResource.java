@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.admin.v3;
 
+import java.util.List;
+
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -11,7 +13,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
-import com.infinities.keystone4j.assignment.model.RolesWrapper;
+import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
 public class OSInheritResource {
@@ -57,14 +59,14 @@ public class OSInheritResource {
 
 	@GET
 	@Path("/domains/{domainid}/users/{userid}/roles/{roleid}/inherited_to_projects")
-	public RolesWrapper listGrantByUser(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
+	public List<Role> listGrantByUser(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
 		return roleController.listGrantsByUserDomain(userid, domainid, page, perPage);
 	}
 
 	@GET
 	@Path("/domains/{domainid}/groups/{groupid}/roles/{roleid}/inherited_to_projects")
-	public RolesWrapper listGrantByGroup(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
+	public List<Role> listGrantByGroup(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
 		return roleController.listGrantsByGroupDomain(groupid, domainid, page, perPage);
 	}

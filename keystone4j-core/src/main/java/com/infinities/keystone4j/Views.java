@@ -11,7 +11,7 @@ public class Views {
 	public static class All extends Advance {
 	}
 
-	public static class AuthenticateForToken {
+	public static class AuthenticateForToken extends Basic {
 
 	}
 }
