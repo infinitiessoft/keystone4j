@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.admin.v3;
 
+import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -8,10 +9,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.infinities.keystone4j.PATCH;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.catalog.controller.EndpointV3Controller;
-import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.catalog.model.EndpointWrapper;
 import com.infinities.keystone4j.catalog.model.EndpointsWrapper;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
@@ -21,16 +25,20 @@ public class EndpointResource {
 	private final EndpointV3Controller endpointController;
 
 
+	@Inject
 	public EndpointResource(EndpointV3Controller endpointController) {
 		this.endpointController = endpointController;
 	}
 
 	@POST
-	public EndpointWrapper createEndpoint(Endpoint endpoint) {
-		return endpointController.createEndpoint(endpoint);
+	@JsonView(Views.Basic.class)
+	public Response createEndpoint(EndpointWrapper endpointWrapper) {
+		return Response.status(Status.CREATED).entity(endpointController.createEndpoint(endpointWrapper.getEndpoint()))
+				.build();
 	}
 
 	@GET
+	@JsonView(Views.Basic.class)
 	public EndpointsWrapper listEndpoints(@QueryParam("interface") String interfaceType,
 			@QueryParam("service_id") String serviceid, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) {
@@ -39,14 +47,16 @@ public class EndpointResource {
 
 	@GET
 	@Path("/{endpointid}")
+	@JsonView(Views.Basic.class)
 	public EndpointWrapper getEndpoint(@PathParam("endpointid") String endpointid) {
 		return endpointController.getEndpoint(endpointid);
 	}
 
 	@PATCH
 	@Path("/{endpointid}")
-	public EndpointWrapper updateEndpoint(@PathParam("endpointid") String endpointid, Endpoint endpoint) {
-		return endpointController.updateEndpoint(endpointid, endpoint);
+	@JsonView(Views.Basic.class)
+	public EndpointWrapper updateEndpoint(@PathParam("endpointid") String endpointid, EndpointWrapper endpointWrapper) {
+		return endpointController.updateEndpoint(endpointid, endpointWrapper.getEndpoint());
 	}
 
 	@DELETE

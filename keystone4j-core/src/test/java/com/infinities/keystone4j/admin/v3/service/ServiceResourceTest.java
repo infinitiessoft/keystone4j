@@ -84,7 +84,7 @@ public class ServiceResourceTest extends JerseyTest {
 
 	}
 
-	// @Test
+	@Test
 	public void testCreateService() throws JsonGenerationException, JsonMappingException, IOException {
 		final String id = "newservice";
 		context.checking(new Expectations() {
@@ -126,7 +126,7 @@ public class ServiceResourceTest extends JerseyTest {
 
 	}
 
-	// @Test
+	@Test
 	public void testListServices() throws JsonProcessingException, IOException {
 		final List<Service> services = new ArrayList<Service>();
 		service.setId("service1");
@@ -153,7 +153,7 @@ public class ServiceResourceTest extends JerseyTest {
 
 	}
 
-	// @Test
+	@Test
 	public void testGetService() throws JsonProcessingException, IOException {
 		service.setId("service1");
 		context.checking(new Expectations() {

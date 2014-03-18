@@ -13,6 +13,7 @@ import com.infinities.keystone4j.filter.AuthContextMiddleware;
 import com.infinities.keystone4j.filter.RequestBodySizeLimiter;
 import com.infinities.keystone4j.filter.TokenAuthMiddleware;
 import com.infinities.keystone4j.main.PublicResource;
+import com.infinities.keystone4j.mock.MockTokenApiFactory;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class UserV3ResourceTestApplication extends ResourceConfig {

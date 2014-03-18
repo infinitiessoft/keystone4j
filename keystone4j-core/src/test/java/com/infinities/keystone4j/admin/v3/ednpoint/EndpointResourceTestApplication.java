@@ -1,4 +1,4 @@
-package com.infinities.keystone4j.admin.v3.auth;
+package com.infinities.keystone4j.admin.v3.ednpoint;
 
 import javax.inject.Singleton;
 
@@ -8,8 +8,9 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import com.infinities.keystone4j.ObjectMapperResolver;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.auth.controller.AuthController;
-import com.infinities.keystone4j.auth.controller.impl.AuthControllerFactory;
+import com.infinities.keystone4j.catalog.CatalogApi;
+import com.infinities.keystone4j.catalog.controller.EndpointV3Controller;
+import com.infinities.keystone4j.catalog.controller.impl.EndpointV3ControllerFactory;
 import com.infinities.keystone4j.common.api.VersionApi;
 import com.infinities.keystone4j.common.api.VersionApiFactory;
 import com.infinities.keystone4j.filter.AdminTokenAuthMiddleware;
@@ -19,6 +20,7 @@ import com.infinities.keystone4j.filter.TokenAuthMiddleware;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.main.PublicResource;
 import com.infinities.keystone4j.mock.MockAssignmentApiFactory;
+import com.infinities.keystone4j.mock.MockCatalogApiFactory;
 import com.infinities.keystone4j.mock.MockIdentityApiFactory;
 import com.infinities.keystone4j.mock.MockPolicyApiFactory;
 import com.infinities.keystone4j.mock.MockTokenApiFactory;
@@ -29,11 +31,11 @@ import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
-public class AuthResourceTestApplication extends ResourceConfig {
+public class EndpointResourceTestApplication extends ResourceConfig {
 
-	public AuthResourceTestApplication(TokenApi tokenApi, TokenProviderApi tokenProviderApi, AssignmentApi assignmentApi,
-			IdentityApi identityApi, PolicyApi policyApi, TrustApi trustApi) {
-		// register(JacksonFeature.class);
+	public EndpointResourceTestApplication(CatalogApi catalogApi, TokenApi tokenApi, TokenProviderApi tokenProviderApi,
+			AssignmentApi assignmentApi, IdentityApi identityApi, PolicyApi policyApi, TrustApi trustApi) {
+		final MockCatalogApiFactory catalogApiFactory = new MockCatalogApiFactory(catalogApi);
 		final MockTokenApiFactory tokenApiFactory = new MockTokenApiFactory(tokenApi);
 		final MockTokenProviderApiFactory tokenProviderApiFactory = new MockTokenProviderApiFactory(tokenProviderApi);
 		final MockIdentityApiFactory identityApiFactory = new MockIdentityApiFactory(identityApi);
@@ -55,11 +57,11 @@ public class AuthResourceTestApplication extends ResourceConfig {
 				// bindFactory(AssignmentDriverFactory.class).to(AssignmentDriver.class);
 				//
 				// // auth
-				bindFactory(AuthControllerFactory.class).to(AuthController.class);
+				// bindFactory(AuthControllerFactory.class).to(AuthController.class);
 				//
 				// // catalog
 				// bindFactory(CatalogApiFactory.class).to(CatalogApi.class);
-				// bindFactory(EndpointV3ControllerFactory.class).to(EndpointV3Controller.class);
+				bindFactory(EndpointV3ControllerFactory.class).to(EndpointV3Controller.class);
 				// bindFactory(ServiceV3ControllerFactory.class).to(ServiceV3Controller.class);
 				// bindFactory(CatalogDriverFactory.class).to(CatalogDriver.class);
 				//
@@ -106,6 +108,7 @@ public class AuthResourceTestApplication extends ResourceConfig {
 				bindFactory(identityApiFactory).to(IdentityApi.class);
 				bindFactory(policyApiFactory).to(PolicyApi.class);
 				bindFactory(trustApiFactory).to(TrustApi.class);
+				bindFactory(catalogApiFactory).to(CatalogApi.class);
 			}
 
 		});
@@ -116,6 +119,5 @@ public class AuthResourceTestApplication extends ResourceConfig {
 		this.register(PublicResource.class);
 		this.register(ObjectMapperResolver.class);
 		this.register(JacksonFeature.class);
-		// this.register(ObjectMapperResolver.class);
 	}
 }

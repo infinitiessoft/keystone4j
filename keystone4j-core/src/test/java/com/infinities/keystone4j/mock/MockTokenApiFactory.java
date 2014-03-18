@@ -1,4 +1,4 @@
-package com.infinities.keystone4j.admin.v3;
+package com.infinities.keystone4j.mock;
 
 import org.glassfish.hk2.api.Factory;
 

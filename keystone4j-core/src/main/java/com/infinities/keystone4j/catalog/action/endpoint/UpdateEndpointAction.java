@@ -8,12 +8,14 @@ import com.infinities.keystone4j.catalog.model.Endpoint;
 
 public class UpdateEndpointAction extends AbstractEndpointAction<Endpoint> {
 
-	private String endpointid;
-	private Endpoint endpoint;
+	private final String endpointid;
+	private final Endpoint endpoint;
 
 
 	public UpdateEndpointAction(CatalogApi catalogApi, String endpointid, Endpoint endpoint) {
 		super(catalogApi);
+		this.endpoint = endpoint;
+		this.endpointid = endpointid;
 	}
 
 	@Override

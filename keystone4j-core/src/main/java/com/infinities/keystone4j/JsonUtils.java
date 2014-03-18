@@ -14,6 +14,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import org.codehaus.jackson.type.TypeReference;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
@@ -28,9 +29,10 @@ public class JsonUtils {
 		AnnotationIntrospector secondaryIntrospector = new JaxbAnnotationIntrospector();
 		AnnotationIntrospector pairIntrospector = new AnnotationIntrospector.Pair(primaryIntrospector, secondaryIntrospector);
 		// make deserializer use JAXB annotations (only)
-		objectMapper.getDeserializationConfig().withAnnotationIntrospector(pairIntrospector);
+		objectMapper.setAnnotationIntrospector(pairIntrospector);
 		// make serializer use JAXB annotations (only)
-		objectMapper.getSerializationConfig().withAnnotationIntrospector(pairIntrospector);
+		objectMapper.setAnnotationIntrospector(pairIntrospector);
+		objectMapper.enable(Feature.INDENT_OUTPUT);
 	}
 
 
