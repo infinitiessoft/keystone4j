@@ -16,13 +16,15 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class UpdateGroupAction extends AbstractGroupAction<Group> {
 
-	private String groupid;
-	private Group group;
+	private final String groupid;
+	private final Group group;
 
 
 	public UpdateGroupAction(AssignmentApi assignmentApi, TokenApi tokenApi, IdentityApi identityApi, String groupid,
 			Group group) {
 		super(assignmentApi, tokenApi, identityApi);
+		this.group = group;
+		this.groupid = groupid;
 	}
 
 	@Override

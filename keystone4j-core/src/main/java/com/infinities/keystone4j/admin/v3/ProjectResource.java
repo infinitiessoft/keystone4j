@@ -46,6 +46,7 @@ public class ProjectResource {
 	}
 
 	@GET
+	@JsonView(Views.Basic.class)
 	public ProjectsWrapper listProject(@QueryParam("domain_id") String domainid, @QueryParam("name") String name,
 			@QueryParam("enabled") Boolean enabled, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) {
@@ -54,12 +55,14 @@ public class ProjectResource {
 
 	@GET
 	@Path("/{projectid}")
+	@JsonView(Views.Basic.class)
 	public ProjectWrapper getProject(@PathParam("projectid") String projectid) {
 		return projectController.getProject(projectid);
 	}
 
 	@PATCH
 	@Path("/{projectid}")
+	@JsonView(Views.Basic.class)
 	public ProjectWrapper updateProject(@PathParam("projectid") String projectid, ProjectWrapper projectWrapper) {
 		return projectController.updateProject(projectid, projectWrapper.getProject());
 	}

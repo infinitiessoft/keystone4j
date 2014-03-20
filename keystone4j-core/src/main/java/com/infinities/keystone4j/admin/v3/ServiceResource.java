@@ -11,7 +11,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import com.infinities.keystone4j.PATCH;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
 import com.infinities.keystone4j.catalog.model.ServiceWrapper;
 import com.infinities.keystone4j.catalog.model.ServicesWrapper;
@@ -28,11 +31,13 @@ public class ServiceResource {
 	}
 
 	@POST
+	@JsonView(Views.Basic.class)
 	public Response createService(ServiceWrapper serviceWrapper) {
 		return Response.status(Status.CREATED).entity(serviceController.createService(serviceWrapper.getService())).build();
 	}
 
 	@GET
+	@JsonView(Views.Basic.class)
 	public ServicesWrapper listServices(@QueryParam("type") String type, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) {
 		return serviceController.listServices(type, page, perPage);
@@ -40,12 +45,14 @@ public class ServiceResource {
 
 	@GET
 	@Path("/{serviceid}")
+	@JsonView(Views.Basic.class)
 	public ServiceWrapper getService(@PathParam("serviceid") String serviceid) {
 		return serviceController.getService(serviceid);
 	}
 
 	@PATCH
 	@Path("/{serviceid}")
+	@JsonView(Views.Basic.class)
 	public ServiceWrapper updateService(@PathParam("serviceid") String serviceid, ServiceWrapper serviceWrapper) {
 		return serviceController.updateService(serviceid, serviceWrapper.getService());
 	}

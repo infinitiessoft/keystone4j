@@ -236,7 +236,7 @@ public class ProjectResourceTest extends JerseyTest {
 
 	}
 
-	@Test
+	// @Test
 	public void testCreateProject() throws JsonGenerationException, JsonMappingException, IOException {
 		final String id = "newproject";
 		context.checking(new Expectations() {

@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.admin.v3;
 
+import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -10,12 +11,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.infinities.keystone4j.PATCH;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
-import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.GroupWrapper;
 import com.infinities.keystone4j.identity.model.GroupsWrapper;
 import com.infinities.keystone4j.identity.model.UsersWrapper;
@@ -26,17 +30,20 @@ public class GroupResource {
 	private final GroupV3Controller groupController;
 
 
+	@Inject
 	public GroupResource(UserV3Controller userController, GroupV3Controller groupController) {
 		this.userController = userController;
 		this.groupController = groupController;
 	}
 
 	@POST
-	public GroupWrapper createGroup(Group group) {
-		return groupController.createGroup(group);
+	@JsonView(Views.Basic.class)
+	public Response createGroup(GroupWrapper groupWrapper) {
+		return Response.status(Status.CREATED).entity(groupController.createGroup(groupWrapper.getGroup())).build();
 	}
 
 	@GET
+	@JsonView(Views.Basic.class)
 	public GroupsWrapper listGroups(@QueryParam("domain_id") String domainid, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
 		return groupController.listGroups(domainid, name, page, perPage);
@@ -44,14 +51,16 @@ public class GroupResource {
 
 	@GET
 	@Path("/{groupid}")
+	@JsonView(Views.Basic.class)
 	public GroupWrapper getGroup(@PathParam("groupid") String groupid) {
 		return groupController.getGroup(groupid);
 	}
 
 	@PATCH
 	@Path("/{groupid}")
-	public GroupWrapper updateGroup(@PathParam("groupid") String groupid, Group group) {
-		return groupController.updateGroup(groupid, group);
+	@JsonView(Views.Basic.class)
+	public GroupWrapper updateGroup(@PathParam("groupid") String groupid, GroupWrapper groupWrapper) {
+		return groupController.updateGroup(groupid, groupWrapper.getGroup());
 	}
 
 	@DELETE
@@ -63,6 +72,7 @@ public class GroupResource {
 
 	@GET
 	@Path("/{groupid}/users")
+	@JsonView(Views.Basic.class)
 	public UsersWrapper listUsersInGroup(@PathParam("groupid") String groupid, @QueryParam("domain_id") String domainid,
 			@QueryParam("email") String email, @QueryParam("enabled") Boolean enabled, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
@@ -71,7 +81,8 @@ public class GroupResource {
 
 	@PUT
 	@Path("/{groupid}/users/{userid}")
-	public Response listUsersInGroup(@PathParam("groupid") String groupid, @PathParam("userid") String userid) {
+	@JsonView(Views.Basic.class)
+	public Response addUserToGroup(@PathParam("groupid") String groupid, @PathParam("userid") String userid) {
 		userController.addUserToGroup(groupid, userid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}

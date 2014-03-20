@@ -45,6 +45,7 @@ public class DomainResource {
 	}
 
 	@GET
+	@JsonView(Views.Basic.class)
 	public DomainsWrapper listDomain(@QueryParam("name") String name, @QueryParam("enabled") Boolean enabled,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
 		return domainController.listDomains(name, enabled, page, perPage);
@@ -52,12 +53,14 @@ public class DomainResource {
 
 	@GET
 	@Path("/{domainid}")
+	@JsonView(Views.Basic.class)
 	public DomainWrapper getDomain(@PathParam("domainid") String domainid) {
 		return domainController.getDomain(domainid);
 	}
 
 	@PATCH
 	@Path("/{domainid}")
+	@JsonView(Views.Basic.class)
 	public DomainWrapper updateDomain(@PathParam("domainid") String domainid, DomainWrapper domainWrapper) {
 		return domainController.updateDomain(domainid, domainWrapper.getDomain());
 	}

@@ -1,4 +1,4 @@
-package com.infinities.keystone4j.admin.v3.user;
+package com.infinities.keystone4j.admin.v3.group;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -13,10 +13,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.client.ClientProtocolException;
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
@@ -49,17 +47,15 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.Group;
+import com.infinities.keystone4j.identity.model.GroupWrapper;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.identity.model.UserGroupMembership;
-import com.infinities.keystone4j.identity.model.UserParam;
-import com.infinities.keystone4j.identity.model.UserParamWrapper;
-import com.infinities.keystone4j.identity.model.UserWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
-public class UserV3ResourceTest extends JerseyTest {
+public class GroupResourceTest extends JerseyTest {
 
 	private Mockery context;
 	private TokenApi tokenApi;
@@ -136,7 +132,7 @@ public class UserV3ResourceTest extends JerseyTest {
 		user.setPassword("password");
 
 		group = new Group();
-		group.setId("newgroup");
+		// group.setId("newgroup");
 		group.setDescription("my group");
 		group.setName("example group");
 		group.setDomain(domain);
@@ -220,7 +216,7 @@ public class UserV3ResourceTest extends JerseyTest {
 		groupProjectGrantMetadata.setRole(role2);
 		role2.getGroupProjectMetadatas().add(groupProjectGrantMetadata);
 		groupProjectGrant.getMetadatas().add(groupProjectGrantMetadata);
-		group.getGroupProjectGrants().add(groupProjectGrant);
+		// group.getGroupProjectGrants().add(groupProjectGrant);
 		// project.getGroupProjectGrants().add(groupProjectGrant);
 
 		groupDomainGrant2 = new GroupDomainGrant();
@@ -235,107 +231,68 @@ public class UserV3ResourceTest extends JerseyTest {
 		role3.getGroupDomainMetadatas().add(groupDomainGrantMetadata2);
 		groupDomainGrant2.getMetadatas().add(groupDomainGrantMetadata2);
 
-		group.getGroupDomainGrants().add(groupDomainGrant);
-		group.getGroupDomainGrants().add(groupDomainGrant2);
+		// group.getGroupDomainGrants().add(groupDomainGrant);
+		// group.getGroupDomainGrants().add(groupDomainGrant2);
 		userGroupMembership = new UserGroupMembership();
 		userGroupMembership.setDescription("my usergroupmembership");
 		userGroupMembership.setId("newgroupmembership");
 		userGroupMembership.setUser(user);
 		userGroupMembership.setGroup(group);
 
-		group.getUserGroupMemberships().add(userGroupMembership);
+		// group.getUserGroupMemberships().add(userGroupMembership);
 
-		return new UserResourceTestApplication(catalogApi, tokenApi, tokenProviderApi, assignmentApi, identityApi,
+		return new GroupResourceTestApplication(catalogApi, tokenApi, tokenProviderApi, assignmentApi, identityApi,
 				policyApi, trustApi);
-
 	}
 
-	@Test
-	public void testListUserProjects() throws JsonProcessingException, IOException {
-		user.setId("newuser");
-		final List<Project> projects = new ArrayList<Project>();
-		projects.add(project);
-
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(assignmentApi).getDomain(
-						Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
-				will(returnValue(defaultDomain));
-				exactly(1).of(assignmentApi).listProjectsForUser(user.getId());
-				will(returnValue(projects));
-			}
-		});
-		Response response = target("/v3/users").path(user.getId()).path("projects").register(JacksonFeature.class)
-				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
-		assertEquals(200, response.getStatus());
-		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
-		JsonNode projectsJ = node.get("projects");
-		assertEquals(1, projectsJ.size());
-		JsonNode projectJ = projectsJ.get(0);
-		assertEquals(project.getId(), projectJ.get("id").asText());
-		assertEquals(project.getName(), projectJ.get("name").asText());
-		assertEquals(project.getDescription(), projectJ.get("description").asText());
-		assertEquals(project.getDomain().getId(), projectJ.get("domain_id").asText());
-	}
-
-	@Test
-	public void testCreateUser() throws JsonGenerationException, JsonMappingException, IOException {
-		final String id = "newuser";
+	// @Test
+	public void testCreateGroup() throws JsonProcessingException, IOException {
+		final String id = "newgroup";
 		context.checking(new Expectations() {
 
 			{
 				exactly(1).of(assignmentApi).getDomain(defaultDomain.getId());
 				will(returnValue(defaultDomain));
 
-				exactly(1).of(identityApi).createUser(user);
-				will(new CustomAction("add id to project") {
+				exactly(1).of(identityApi).createGroup(group);
+				will(new CustomAction("add id to group") {
 
 					@Override
 					public Object invoke(Invocation invocation) throws Throwable {
-						User user = (User) invocation.getParameter(0);
-						user.setId(id);
-						return user;
+						Group group = (Group) invocation.getParameter(0);
+						group.setId(id);
+						return group;
 					}
 
 				});
 			}
 		});
 
-		UserWrapper wrapper = new UserWrapper(user);
+		GroupWrapper wrapper = new GroupWrapper(group);
 		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
-		JsonNode userJ = node.get("user");
-		assertEquals(user.getName(), userJ.get("name").asText());
-		assertEquals(user.getDescription(), userJ.get("description").asText());
-		assertEquals(user.getDomain().getId(), userJ.get("domain_id").asText());
-		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
-		assertEquals(user.getEmail(), userJ.get("email").asText());
-		assertEquals(user.getPassword(), userJ.get("password").asText());
-		Response response = target("/v3/users").register(JacksonFeature.class).register(ObjectMapperResolver.class)
+		JsonNode groupJ = node.get("group");
+		assertEquals(group.getName(), groupJ.get("name").asText());
+		assertEquals(group.getDescription(), groupJ.get("description").asText());
+		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
+		Response response = target("/v3/groups").register(JacksonFeature.class).register(ObjectMapperResolver.class)
 				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(201, response.getStatus());
-
 		node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
-		userJ = node.get("user");
-		assertEquals(id, userJ.get("id").asText());
-		assertEquals(user.getName(), userJ.get("name").asText());
-		assertEquals(user.getDescription(), userJ.get("description").asText());
-		assertEquals(user.getDomain().getId(), userJ.get("domain_id").asText());
-		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
-		assertEquals(user.getEmail(), userJ.get("email").asText());
-		assertNull(userJ.get("password"));
-
+		groupJ = node.get("group");
+		assertEquals(id, groupJ.get("id").asText());
+		assertEquals(group.getName(), groupJ.get("name").asText());
+		assertEquals(group.getDescription(), groupJ.get("description").asText());
+		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
 	}
 
-	@Test
-	public void testListUsers() throws JsonProcessingException, IOException {
-		final List<User> users = new ArrayList<User>();
-		user.setDomain(defaultDomain);
-		user.setId("user1");
-		users.add(user);
+	// @Test
+	public void testListGroups() throws JsonProcessingException, IOException {
+		final List<Group> groups = new ArrayList<Group>();
+		group.setDomain(defaultDomain);
+		group.setId("group1");
+		groups.add(group);
 
 		context.checking(new Expectations() {
 
@@ -343,12 +300,117 @@ public class UserV3ResourceTest extends JerseyTest {
 				exactly(1).of(assignmentApi).getDomain(
 						Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
 				will(returnValue(defaultDomain));
-				exactly(1).of(identityApi).listUsers(defaultDomain.getId());
+				exactly(1).of(identityApi).listGroups(defaultDomain.getId());
+				will(returnValue(groups));
+			}
+		});
+		Response response = target("/v3/groups").register(JacksonFeature.class).register(ObjectMapperResolver.class)
+				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+		assertEquals(200, response.getStatus());
+		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
+		JsonNode groupsJ = node.get("groups");
+		assertEquals(1, groupsJ.size());
+		JsonNode groupJ = groupsJ.get(0);
+		assertEquals(group.getId(), groupJ.get("id").asText());
+		assertEquals(group.getName(), groupJ.get("name").asText());
+		assertEquals(group.getDescription(), groupJ.get("description").asText());
+		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
+	}
+
+	// @Test
+	public void testGetGroup() throws JsonProcessingException, IOException {
+		group.setDomain(defaultDomain);
+		group.setId("group1");
+
+		context.checking(new Expectations() {
+
+			{
+				exactly(1).of(assignmentApi).getDomain(
+						Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+				will(returnValue(defaultDomain));
+				exactly(1).of(identityApi).getGroup(group.getId(), defaultDomain.getId());
+				will(returnValue(group));
+			}
+		});
+		Response response = target("/v3/groups").path(group.getId()).register(JacksonFeature.class)
+				.register(ObjectMapperResolver.class).request()
+				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+		assertEquals(200, response.getStatus());
+		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
+		JsonNode groupJ = node.get("group");
+		assertEquals(group.getId(), groupJ.get("id").asText());
+		assertEquals(group.getName(), groupJ.get("name").asText());
+		assertEquals(group.getDescription(), groupJ.get("description").asText());
+		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
+	}
+
+	// @Test
+	public void testUpdateGroup() throws ClientProtocolException, IOException {
+		group.setDomain(defaultDomain);
+		group.setId("group1");
+
+		context.checking(new Expectations() {
+
+			{
+				exactly(1).of(assignmentApi).getDomain(
+						Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+				will(returnValue(defaultDomain));
+				exactly(1).of(identityApi).updateGroup(group.getId(), group, defaultDomain.getId());
+				will(returnValue(group));
+			}
+		});
+		GroupWrapper wrapper = new GroupWrapper(group);
+		PatchClient client = new PatchClient("http://localhost:9998/v3/groups/" + group.getId());
+		JsonNode node = client.connect(wrapper);
+		JsonNode groupJ = node.get("group");
+		assertEquals(group.getId(), groupJ.get("id").asText());
+		assertEquals(group.getName(), groupJ.get("name").asText());
+		assertEquals(group.getDescription(), groupJ.get("description").asText());
+		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
+	}
+
+	@Test
+	public void testDeleteGroup() {
+		group.setDomain(defaultDomain);
+		group.setId("group1");
+		context.checking(new Expectations() {
+
+			{
+				exactly(1).of(assignmentApi).getDomain(defaultDomain.getId());
+				will(returnValue(defaultDomain));
+
+				exactly(1).of(identityApi).deleteGroup(group.getId(), defaultDomain.getId());
+				will(returnValue(group));
+			}
+		});
+
+		Response response = target("/v3/groups").path(group.getId()).register(JacksonFeature.class)
+				.register(ObjectMapperResolver.class).request()
+				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+		assertEquals(204, response.getStatus());
+	}
+
+	// @Test
+	public void testListUsersInGroup() throws JsonProcessingException, IOException {
+		group.setDomain(defaultDomain);
+		group.setId("group1");
+		user.setId("newuser");
+		final List<User> users = new ArrayList<User>();
+		users.add(user);
+		context.checking(new Expectations() {
+
+			{
+				exactly(1).of(assignmentApi).getDomain(defaultDomain.getId());
+				will(returnValue(defaultDomain));
+
+				exactly(1).of(identityApi).listUsersInGroup(group.getId(), defaultDomain.getId());
 				will(returnValue(users));
 			}
 		});
-		Response response = target("/v3/users").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+
+		Response response = target("/v3/groups").path(group.getId()).path("users").register(JacksonFeature.class)
+				.register(ObjectMapperResolver.class).request()
+				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		JsonNode usersJ = node.get("users");
@@ -364,155 +426,67 @@ public class UserV3ResourceTest extends JerseyTest {
 	}
 
 	@Test
-	public void testGetUser() throws JsonGenerationException, JsonMappingException, IOException {
-		final String id = "newuser";
-		user.setId(id);
-		user.setDomain(defaultDomain);
+	public void testAddUserToGroup() {
+		group.setDomain(defaultDomain);
+		group.setId("group1");
+		user.setId("newuser");
 		context.checking(new Expectations() {
 
 			{
 				exactly(1).of(assignmentApi).getDomain(defaultDomain.getId());
 				will(returnValue(defaultDomain));
 
-				exactly(1).of(identityApi).getUser(user.getId(), defaultDomain.getId());
+				exactly(1).of(identityApi).addUserToGroup(user.getId(), group.getId(), defaultDomain.getId());
 				will(returnValue(user));
 			}
 		});
-
-		Response response = target("/v3/users").path(user.getId()).register(JacksonFeature.class)
-				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
-		assertEquals(200, response.getStatus());
-
-		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
-		JsonNode userJ = node.get("user");
-		assertEquals(id, userJ.get("id").asText());
-		assertEquals(user.getName(), userJ.get("name").asText());
-		assertEquals(user.getDescription(), userJ.get("description").asText());
-		assertEquals(user.getDomain().getId(), userJ.get("domain_id").asText());
-		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
-		assertEquals(user.getEmail(), userJ.get("email").asText());
-		assertNull(userJ.get("password"));
-
+		Response response = target("/v3/groups").path(group.getId()).path("users").path(user.getId())
+				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
+				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.put(Entity.json(""));
+		assertEquals(204, response.getStatus());
 	}
 
 	@Test
-	public void testUpdateUser() throws ClientProtocolException, IOException {
-		final String id = "newuser";
-		user.setId(id);
-		user.setDomain(defaultDomain);
+	public void testCheckUserInGroup() {
+		group.setDomain(defaultDomain);
+		group.setId("group1");
+		user.setId("newuser");
 		context.checking(new Expectations() {
 
 			{
 				exactly(1).of(assignmentApi).getDomain(defaultDomain.getId());
 				will(returnValue(defaultDomain));
 
-				exactly(1).of(identityApi).updateUser(user.getId(), user, defaultDomain.getId());
+				exactly(1).of(identityApi).checkUserInGroup(user.getId(), group.getId(), defaultDomain.getId());
 				will(returnValue(user));
 			}
 		});
-		UserWrapper wrapper = new UserWrapper(user);
-		PatchClient client = new PatchClient("http://localhost:9998/v3/users/" + user.getId());
-		JsonNode node = client.connect(wrapper);
-
-		JsonNode userJ = node.get("user");
-		assertEquals(id, userJ.get("id").asText());
-		assertEquals(user.getName(), userJ.get("name").asText());
-		assertEquals(user.getDescription(), userJ.get("description").asText());
-		assertEquals(user.getDomain().getId(), userJ.get("domain_id").asText());
-		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
-		assertEquals(user.getEmail(), userJ.get("email").asText());
-		assertNull(userJ.get("password"));
+		Response response = target("/v3/groups").path(group.getId()).path("users").path(user.getId())
+				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
+				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
+		assertEquals(204, response.getStatus());
 	}
 
 	@Test
-	public void testDeleteUser() {
-		final String id = "newuser";
-		user.setId(id);
-		user.setDomain(defaultDomain);
+	public void testRemoveUserFromGroup() {
+		group.setDomain(defaultDomain);
+		group.setId("group1");
+		user.setId("newuser");
 		context.checking(new Expectations() {
 
 			{
 				exactly(1).of(assignmentApi).getDomain(defaultDomain.getId());
 				will(returnValue(defaultDomain));
 
-				exactly(1).of(identityApi).deleteUser(user.getId(), defaultDomain.getId());
+				exactly(1).of(identityApi).removeUserFromGroup(user.getId(), group.getId(), defaultDomain.getId());
 				will(returnValue(user));
 			}
 		});
-
-		Response response = target("/v3/users").path(user.getId()).register(JacksonFeature.class)
-				.register(ObjectMapperResolver.class).request()
+		Response response = target("/v3/groups").path(group.getId()).path("users").path(user.getId())
+				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
-	}
-
-	@Test
-	public void testChangePassword() throws JsonGenerationException, JsonMappingException, IOException {
-		final String id = "newuser";
-		user.setId(id);
-		final UserParam param = new UserParam();
-		param.setPassword("secret2");
-		param.setOriginalPassword("secret");
-
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(assignmentApi).getDomain(defaultDomain.getId());
-				will(returnValue(defaultDomain));
-
-				exactly(1).of(identityApi).authenticate(user.getId(), param.getOriginalPassword(), defaultDomain.getId());
-				will(returnValue(user));
-
-				exactly(1).of(identityApi).getUser(user.getId(), defaultDomain.getId());
-				will(returnValue(user));
-
-				exactly(1).of(identityApi).updateUser(user.getId(), user, defaultDomain.getId());
-				will(returnValue(user));
-			}
-		});
-
-		UserParamWrapper wrapper = new UserParamWrapper(param);
-		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
-		JsonNode node = JsonUtils.convertToJsonNode(json);
-		JsonNode userJ = node.get("user");
-		assertEquals(param.getPassword(), userJ.get("password").asText());
-		assertEquals(param.getOriginalPassword(), userJ.get("original_password").asText());
-		Response response = target("/v3/users").path(user.getId()).path("password").register(JacksonFeature.class)
-				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
-				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
-		assertEquals(204, response.getStatus());
-	}
-
-	@Test
-	public void testListGroupsForUser() throws JsonProcessingException, IOException {
-		user.setId("newuser");
-		final List<Group> groups = new ArrayList<Group>();
-		groups.add(group);
-
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(assignmentApi).getDomain(
-						Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
-				will(returnValue(defaultDomain));
-				exactly(1).of(identityApi).listGroupsForUser(user.getId(), defaultDomain.getId());
-				will(returnValue(groups));
-			}
-		});
-		Response response = target("/v3/users").path(user.getId()).path("groups").register(JacksonFeature.class)
-				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
-		assertEquals(200, response.getStatus());
-		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
-		JsonNode groupsJ = node.get("groups");
-		assertEquals(1, groupsJ.size());
-		JsonNode groupJ = groupsJ.get(0);
-		assertEquals(group.getId(), groupJ.get("id").asText());
-		assertEquals(group.getName(), groupJ.get("name").asText());
-		assertEquals(group.getDescription(), groupJ.get("description").asText());
-		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
 	}
 
 }
