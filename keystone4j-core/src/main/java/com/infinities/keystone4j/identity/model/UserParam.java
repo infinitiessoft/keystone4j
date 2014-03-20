@@ -3,15 +3,12 @@ package com.infinities.keystone4j.identity.model;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class UserParam extends User {
+public class UserParam {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -158595822635574710L;
 	@XmlAttribute(name = "original_password")
 	@Transient
 	private String originalPassword;
+	private String password;
 
 
 	public String getOriginalPassword() {
@@ -20,6 +17,14 @@ public class UserParam extends User {
 
 	public void setOriginalPassword(String originalPassword) {
 		this.originalPassword = originalPassword;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

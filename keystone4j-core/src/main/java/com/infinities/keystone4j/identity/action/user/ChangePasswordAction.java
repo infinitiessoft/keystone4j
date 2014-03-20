@@ -4,7 +4,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.KeystoneContext;
-import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.KeystoneUtils;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
@@ -19,22 +18,27 @@ public class ChangePasswordAction extends AbstractUserAction<User> {
 	private final static String ORIGINAL_PASSWORD = "original_password";
 	private final static String USER = "user";
 	private final static String PASSWORD = "password";
-	private String userid;
-	private UserParam user;
+	private final String userid;
+	private final UserParam param;
 
+
+	// private final Logger logger =
+	// LoggerFactory.getLogger(ChangePasswordAction.class);
 
 	public ChangePasswordAction(AssignmentApi assignmentApi, TokenApi tokenApi, IdentityApi identityApi, String userid,
-			UserParam user) {
+			UserParam param) {
 		super(assignmentApi, identityApi, tokenApi);
+		this.param = param;
+		this.userid = userid;
 	}
 
 	@Override
 	public User execute(ContainerRequestContext request) {
-		String originalPassword = user.getOriginalPassword();
+		String originalPassword = param.getOriginalPassword();
 		if (Strings.isNullOrEmpty(originalPassword)) {
 			throw Exceptions.ValidationException.getInstance(null, ORIGINAL_PASSWORD, USER);
 		}
-		String password = user.getPassword();
+		String password = param.getPassword();
 		if (Strings.isNullOrEmpty(password)) {
 			throw Exceptions.ValidationException.getInstance(null, PASSWORD, USER);
 		}
@@ -43,12 +47,14 @@ public class ChangePasswordAction extends AbstractUserAction<User> {
 		Domain domain = new KeystoneUtils().getDomainForRequest(assignmentApi, tokenApi, context);
 
 		try {
-			this.getIdentityApi().authenticate(userid, password, domain.getId());
+			this.getIdentityApi().authenticate(userid, originalPassword, domain.getId());
 		} catch (Exception e) {
-			throw Exceptions.UnauthorizedException.getInstance();
+			throw Exceptions.UnauthorizedException.getInstance(e);
 		}
+		User user = identityApi.getUser(userid, domain.getId());
+		user.setPassword(password);
 
-		KeystonePreconditions.requireMatchingId(userid, user);
+		// KeystonePreconditions.requireMatchingId(userid, user);
 
 		return this.getIdentityApi().updateUser(userid, user, domain.getId());
 	}

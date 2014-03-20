@@ -40,6 +40,11 @@ public class JsonUtils {
 		return objectMapper.writeValueAsString(object);
 	}
 
+	public static String toJson(Object object, Class<?> view) throws JsonGenerationException, JsonMappingException,
+			IOException {
+		return objectMapper.writerWithView(view).writeValueAsString(object);
+	}
+
 	public static Map<String, String> readJson(File file) throws JsonParseException, JsonMappingException, IOException {
 		Map<String, String> map = objectMapper.readValue(file, mapTypeRef);
 		return map;

@@ -16,12 +16,14 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class UpdateUserAction extends AbstractUserAction<User> {
 
-	private String userid;
-	private User user;
+	private final String userid;
+	private final User user;
 
 
 	public UpdateUserAction(AssignmentApi assignmentApi, TokenApi tokenApi, IdentityApi identityApi, String userid, User user) {
 		super(assignmentApi, identityApi, tokenApi);
+		this.user = user;
+		this.userid = userid;
 	}
 
 	@Override

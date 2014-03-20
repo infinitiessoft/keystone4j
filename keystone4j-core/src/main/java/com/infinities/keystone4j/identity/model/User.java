@@ -129,7 +129,7 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 	}
 
 	@Column(name = "PASSWORD", length = 128)
-	@JsonView(Views.All.class)
+	@JsonView(Views.Advance.class)
 	public String getPassword() {
 		return password;
 	}

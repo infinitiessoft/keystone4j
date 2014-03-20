@@ -9,16 +9,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.infinities.keystone4j.PATCH;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.controller.ProjectV3Controller;
 import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
 import com.infinities.keystone4j.identity.model.GroupsWrapper;
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.identity.model.UserParam;
+import com.infinities.keystone4j.identity.model.UserParamWrapper;
 import com.infinities.keystone4j.identity.model.UserWrapper;
 import com.infinities.keystone4j.identity.model.UsersWrapper;
 
@@ -39,6 +42,7 @@ public class UserV3Resource {
 
 	@GET
 	@Path("/{userid}/projects")
+	@JsonView(Views.Basic.class)
 	public ProjectsWrapper listUserProjects(@PathParam("userid") String userid, @QueryParam("name") String name,
 			@QueryParam("enabled") Boolean enabled, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) {
@@ -46,11 +50,13 @@ public class UserV3Resource {
 	}
 
 	@POST
-	public UserWrapper createUser(User user) {
-		return userController.createUser(user);
+	@JsonView(Views.Basic.class)
+	public Response createUser(UserWrapper userWrapper) {
+		return Response.status(Status.CREATED).entity(userController.createUser(userWrapper.getUser())).build();
 	}
 
 	@GET
+	@JsonView(Views.Basic.class)
 	public UsersWrapper listUsers(@QueryParam("domain_id") String domainid, @QueryParam("email") String email,
 			@QueryParam("enabled") Boolean enabled, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
@@ -59,14 +65,16 @@ public class UserV3Resource {
 
 	@GET
 	@Path("/{userid}")
+	@JsonView(Views.Basic.class)
 	public UserWrapper getUser(@PathParam("userid") String userid) {
 		return userController.getUser(userid);
 	}
 
 	@PATCH
 	@Path("/{userid}")
-	public UserWrapper updateUser(@PathParam("userid") String userid, User user) {
-		return userController.updateUser(userid, user);
+	@JsonView(Views.Basic.class)
+	public UserWrapper updateUser(@PathParam("userid") String userid, UserWrapper userWrapper) {
+		return userController.updateUser(userid, userWrapper.getUser());
 	}
 
 	@DELETE
@@ -78,13 +86,14 @@ public class UserV3Resource {
 
 	@POST
 	@Path("/{userid}/password")
-	public Response changePassword(@PathParam("userid") String userid, UserParam user) {
-		userController.changePassword(userid, user);
+	public Response changePassword(@PathParam("userid") String userid, UserParamWrapper userWrapper) {
+		userController.changePassword(userid, userWrapper.getUser());
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
 	@GET
 	@Path("/{userid}/groups")
+	@JsonView(Views.Basic.class)
 	public GroupsWrapper listGroupsForUser(@PathParam("userid") String userid, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
 		return groupController.listGroupsForUser(userid, name, page, perPage);

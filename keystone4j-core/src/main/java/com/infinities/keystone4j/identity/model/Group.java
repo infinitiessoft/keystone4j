@@ -19,9 +19,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.BaseEntity;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
 import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
@@ -105,53 +107,71 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 		setExtraUpdated(true);
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.ALL)
 	public Set<UserGroupMembership> getUserGroupMemberships() {
 		return userGroupMemberships;
 	}
 
+	@JsonView(Views.All.class)
 	public void setUserGroupMemberships(Set<UserGroupMembership> userGroupMemberships) {
 		this.userGroupMemberships = userGroupMemberships;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.ALL)
 	public Set<GroupProjectGrant> getGroupProjectGrants() {
 		return groupProjectGrants;
 	}
 
+	@JsonView(Views.All.class)
 	public void setGroupProjectGrants(Set<GroupProjectGrant> groupProjectGrants) {
 		this.groupProjectGrants = groupProjectGrants;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.ALL)
 	public Set<GroupDomainGrant> getGroupDomainGrants() {
 		return groupDomainGrants;
 	}
 
+	@JsonView(Views.All.class)
 	public void setGroupDomainGrants(Set<GroupDomainGrant> groupDomainGrants) {
 		this.groupDomainGrants = groupDomainGrants;
 	}
 
+	@Transient
+	@XmlTransient
 	public boolean isNameUpdated() {
 		return nameUpdated;
 	}
 
+	@Transient
+	@XmlTransient
 	public void setNameUpdated(boolean nameUpdated) {
 		this.nameUpdated = nameUpdated;
 	}
 
+	@Transient
+	@XmlTransient
 	public boolean isDomainUpdated() {
 		return domainUpdated;
 	}
 
+	@Transient
+	@XmlTransient
 	public void setDomainUpdated(boolean domainUpdated) {
 		this.domainUpdated = domainUpdated;
 	}
 
+	@Transient
+	@XmlTransient
 	public boolean isExtraUpdated() {
 		return extraUpdated;
 	}
 
+	@Transient
+	@XmlTransient
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
 	}
