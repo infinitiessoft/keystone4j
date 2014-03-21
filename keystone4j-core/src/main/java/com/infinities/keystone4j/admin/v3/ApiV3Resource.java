@@ -36,11 +36,11 @@ public class ApiV3Resource {
 		return RoleV3Resource.class;
 	}
 
-	@Path("/role_assignments")
-	// assignment
-	public Class<RoleAssignmentV3Resource> getRoleAssignmentV3Resource() {
-		return RoleAssignmentV3Resource.class;
-	}
+	// @Path("/role_assignments")
+	// // assignment
+	// public Class<RoleAssignmentV3Resource> getRoleAssignmentV3Resource() {
+	// return RoleAssignmentV3Resource.class;
+	// }
 
 	@Path("/projects")
 	// assignment
@@ -54,11 +54,11 @@ public class ApiV3Resource {
 		return DomainResource.class;
 	}
 
-	@Path("/OS-INHERIT")
-	// assignment
-	public Class<OSInheritResource> getOSInheritResource() {
-		return OSInheritResource.class;
-	}
+	// @Path("/OS-INHERIT")
+	// // assignment
+	// public Class<OSInheritResource> getOSInheritResource() {
+	// return OSInheritResource.class;
+	// }
 
 	@Path("/auth")
 	// auth

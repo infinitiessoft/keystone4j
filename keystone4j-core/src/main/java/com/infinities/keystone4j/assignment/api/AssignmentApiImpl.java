@@ -246,17 +246,17 @@ public class AssignmentApiImpl implements AssignmentApi {
 	}
 
 	@Override
-	public void getGrantByGroupProject(String roleid, String groupid, String projectid, boolean inherited) {
+	public Role getGrantByGroupProject(String roleid, String groupid, String projectid, boolean inherited) {
 		GetGrantByGroupProjectCommand command = new GetGrantByGroupProjectCommand(credentialApi, identityApi, tokenApi,
 				this, assignmentDriver, roleid, groupid, projectid, inherited);
-		command.execute();
+		return command.execute();
 	}
 
 	@Override
-	public void getGrantByUserProject(String roleid, String userid, String projectid, boolean inherited) {
+	public Role getGrantByUserProject(String roleid, String userid, String projectid, boolean inherited) {
 		GetGrantByUserProjectCommand command = new GetGrantByUserProjectCommand(credentialApi, identityApi, tokenApi, this,
 				assignmentDriver, roleid, userid, projectid, inherited);
-		command.execute();
+		return command.execute();
 	}
 
 	@Override

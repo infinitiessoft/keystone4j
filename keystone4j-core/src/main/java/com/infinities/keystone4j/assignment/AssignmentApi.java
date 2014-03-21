@@ -65,9 +65,9 @@ public interface AssignmentApi extends Api {
 
 	List<Assignment> listRoleAssignmentsForRole(String roleid);
 
-	void getGrantByGroupProject(String roleid, String groupid, String projectid, boolean inherited);
+	Role getGrantByGroupProject(String roleid, String groupid, String projectid, boolean inherited);
 
-	void getGrantByUserProject(String roleid, String userid, String projectid, boolean inherited);
+	Role getGrantByUserProject(String roleid, String userid, String projectid, boolean inherited);
 
 	void createGrantByGroupProject(String roleid, String groupid, String projectid);
 
