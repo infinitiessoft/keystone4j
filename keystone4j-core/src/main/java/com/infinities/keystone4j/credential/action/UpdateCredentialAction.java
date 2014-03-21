@@ -8,12 +8,14 @@ import com.infinities.keystone4j.credential.model.Credential;
 
 public class UpdateCredentialAction extends AbstractCredentialAction<Credential> {
 
-	private String credentialid;
-	private Credential credential;
+	private final String credentialid;
+	private final Credential credential;
 
 
 	public UpdateCredentialAction(CredentialApi credentialApi, String credentialid, Credential credential) {
 		super(credentialApi);
+		this.credential = credential;
+		this.credentialid = credentialid;
 	}
 
 	@Override
