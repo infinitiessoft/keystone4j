@@ -32,6 +32,9 @@ public class GetGroupCommand extends AbstractIdentityCommand<Group> {
 			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 		Group ret = driver.getGroup(groupid);
 
 		if (!driver.isDomainAware()) {

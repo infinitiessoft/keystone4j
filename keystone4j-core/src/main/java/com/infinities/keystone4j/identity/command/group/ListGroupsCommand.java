@@ -32,6 +32,9 @@ public class ListGroupsCommand extends AbstractIdentityCommand<List<Group>> {
 			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 		List<Group> ret = driver.listGroups();
 
 		if (!driver.isDomainAware()) {

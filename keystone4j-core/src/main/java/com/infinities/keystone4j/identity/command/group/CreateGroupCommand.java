@@ -25,6 +25,9 @@ public class CreateGroupCommand extends AbstractIdentityCommand<Group> {
 	public Group execute() {
 		Domain domain = group.getDomain();
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domain.getId());
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 
 		if (!driver.isDomainAware()) {
 			new IdentityUtils().clearDomainid(group);

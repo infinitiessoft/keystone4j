@@ -31,6 +31,9 @@ public class DeleteUserCommand extends AbstractIdentityCommand<User> {
 			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 		driver.deleteUser(userid);
 		this.getCredentialApi().deleteCredentialsForUser(userid);
 		this.getTokenApi().deleteTokensForUser(userid, null);

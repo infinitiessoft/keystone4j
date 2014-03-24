@@ -34,6 +34,9 @@ public class UpdateGroupCommand extends AbstractIdentityCommand<Group> {
 			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 
 		if (!driver.isDomainAware()) {
 			new IdentityUtils().clearDomainid(group);

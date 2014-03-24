@@ -25,6 +25,9 @@ public class CreateUserCommand extends AbstractIdentityCommand<User> {
 	public User execute() {
 		Domain domain = user.getDomain();
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domain.getId());
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 
 		if (!driver.isDomainAware()) {
 			new IdentityUtils().clearDomainid(user);

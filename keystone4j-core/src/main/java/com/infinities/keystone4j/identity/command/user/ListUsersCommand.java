@@ -32,6 +32,9 @@ public class ListUsersCommand extends AbstractIdentityCommand<List<User>> {
 			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 		List<User> ret = driver.listUsers();
 
 		if (!driver.isDomainAware()) {

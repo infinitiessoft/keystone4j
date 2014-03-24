@@ -31,6 +31,9 @@ public class GetUserByNameCommand extends AbstractIdentityCommand<User> {
 		// DEFAULT_DOMAIN_ID);
 		// }
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 		User ret = driver.getUserByName(userName, domainid);
 
 		if (!driver.isDomainAware()) {

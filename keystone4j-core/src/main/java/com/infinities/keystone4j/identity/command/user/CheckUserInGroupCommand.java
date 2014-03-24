@@ -33,6 +33,9 @@ public class CheckUserInGroupCommand extends AbstractIdentityCommand<User> {
 			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 		driver.checkUserInGroup(userid, groupid);
 		return null;
 	}

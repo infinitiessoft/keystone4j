@@ -14,6 +14,7 @@ public class IdentityUtils {
 	private IdentityDriver defaultDriver;
 
 
+	// TODO don't allow multiple identity driver now.
 	public IdentityDriver selectIdentityDirver(String domainid) {
 		if (driverMap.containsKey(domainid)) {
 			return driverMap.get(domainid);

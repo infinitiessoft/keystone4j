@@ -34,6 +34,9 @@ public class DeleteGroupCommand extends AbstractIdentityCommand<Group> {
 			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
 		}
 		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
+		if (driver == null) {
+			driver = this.getIdentityDriver();
+		}
 		List<User> users = this.getIdentityApi().listUsersInGroup(groupid, domainid);
 		for (User user : users) {
 			this.getTokenApi().deleteTokensForUser(user.getId(), null);
