@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.JsonUtils;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.TokenData;
@@ -49,8 +50,8 @@ public class ValidateV3TokenCommand extends AbstractTokenProviderCommand<TokenDa
 		} catch (Exception e) {
 			String data;
 			try {
-				data = JsonUtils.toJson(token);
-				logger.error(UNEXPECTED_ERROR, data);
+				data = JsonUtils.toJson(token, Views.AuthenticateForToken.class);
+				logger.error(UNEXPECTED_ERROR, data, e);
 			} catch (Exception e1) {
 				logger.error("Unexpected error or malformed token determining token expiry", e1);
 			}

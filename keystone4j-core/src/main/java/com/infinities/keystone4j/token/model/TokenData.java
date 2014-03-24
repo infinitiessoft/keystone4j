@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.token.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,9 +21,9 @@ import com.infinities.keystone4j.trust.model.Trust;
 
 public class TokenData {
 
-	private List<String> methods;
+	private List<String> methods = new ArrayList<String>();
 	private String extras;
-	private List<Role> roles;
+	private List<Role> roles = new ArrayList<Role>();
 	private User user;
 	private Catalog catalog;
 	private Project project;
