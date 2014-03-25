@@ -2,7 +2,6 @@ package com.infinities.keystone4j.catalog;
 
 import java.util.List;
 
-import com.infinities.keystone4j.catalog.model.Catalog;
 import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.catalog.model.Service;
 
@@ -28,7 +27,7 @@ public interface CatalogDriver {
 
 	// Catalog getCatalog(String userid, String projectid);
 	//
-	List<Catalog> getV3Catalog(String userid, String projectid);
+	// Catalog getV3Catalog(String userid, String projectid);
 
 	List<Endpoint> listEndpoints();
 

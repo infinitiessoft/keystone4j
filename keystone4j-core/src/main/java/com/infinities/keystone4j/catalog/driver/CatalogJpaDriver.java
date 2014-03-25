@@ -2,9 +2,7 @@ package com.infinities.keystone4j.catalog.driver;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.infinities.keystone4j.catalog.CatalogDriver;
-import com.infinities.keystone4j.catalog.model.Catalog;
 import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.catalog.model.Service;
 import com.infinities.keystone4j.exception.Exceptions;
@@ -37,7 +35,7 @@ public class CatalogJpaDriver implements CatalogDriver {
 	@Override
 	public Service getService(String serviceid) {
 		Service service = serviceDao.findById(serviceid);
-		if (service != null) {
+		if (service == null) {
 			throw Exceptions.ServiceNotFoundException.getInstance(null, serviceid);
 		}
 		return service;
@@ -79,7 +77,7 @@ public class CatalogJpaDriver implements CatalogDriver {
 	@Override
 	public Endpoint getEndpoint(String endpointid) {
 		Endpoint endpoint = endpointDao.findById(endpointid);
-		if (endpoint != null) {
+		if (endpoint == null) {
 			throw Exceptions.EndpointNotFoundException.getInstance(null, endpointid);
 		}
 		return endpoint;
@@ -88,6 +86,9 @@ public class CatalogJpaDriver implements CatalogDriver {
 	@Override
 	public Endpoint updateEndpoint(String endpointid, Endpoint endpoint) {
 		Endpoint oldEndpoint = getEndpoint(endpointid);
+		if (endpoint.isNameUpdated()) {
+			oldEndpoint.setName(endpoint.getName());
+		}
 		if (endpoint.isDescriptionUpdated()) {
 			oldEndpoint.setDescription(endpoint.getDescription());
 		}
@@ -109,7 +110,7 @@ public class CatalogJpaDriver implements CatalogDriver {
 		if (endpoint.isUrlUpdated()) {
 			oldEndpoint.setUrl(endpoint.getUrl());
 		}
-		return null;
+		return endpointDao.merge(oldEndpoint);
 	}
 
 	@Override
@@ -135,25 +136,25 @@ public class CatalogJpaDriver implements CatalogDriver {
 		return endpointDao.findAll();
 	}
 
-	@Override
-	public List<Catalog> getV3Catalog(String userid, String projectid) {
-		List<Service> services = serviceDao.findAll();
-		List<Catalog> catalogs = Lists.newArrayList();
-
-		for (Service service : services) {
-			Catalog catalog = new Catalog();
-			catalog.setId(service.getId());
-			catalog.setType(service.getType());
-			// for (Endpoint endpoint : service.getEndpoints()) {
-			// TODO format endpoint url
-			// String.
-			// endpoint.setUrl(MessageFormat.format(endpoint.getUrl(), ));
-			// }
-
-			catalog.setEndpoints(service.getEndpoints());
-		}
-
-		return catalogs;
-	}
+	// @Override
+	// public Catalog getV3Catalog(String userid, String projectid) {
+	// List<Service> services = serviceDao.findAll();
+	// List<Catalog> catalogs = Lists.newArrayList();
+	//
+	// for (Service service : services) {
+	// Catalog catalog = new Catalog();
+	// catalog.setId(service.getId());
+	// catalog.setType(service.getType());
+	// // for (Endpoint endpoint : service.getEndpoints()) {
+	// // TODO format endpoint url
+	// // String.
+	// // endpoint.setUrl(MessageFormat.format(endpoint.getUrl(), ));
+	// // }
+	//
+	// catalog.setEndpoints(service.getEndpoints());
+	// }
+	//
+	// return catalog;
+	// }
 
 }

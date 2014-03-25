@@ -47,6 +47,7 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 	private boolean serviceUpdated = false;
 	private boolean urlUpdated = false;
 	private boolean extraUpdated = false;
+	private boolean nameUpdated = false;
 	private Set<ProjectEndpoint> projectEndpoints = new HashSet<ProjectEndpoint>(0);
 
 
@@ -208,6 +209,18 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 
 	@XmlTransient
 	@Transient
+	public boolean isNameUpdated() {
+		return nameUpdated;
+	}
+
+	@XmlTransient
+	@Transient
+	public void setNameUpdated(boolean nameUpdated) {
+		this.nameUpdated = nameUpdated;
+	}
+
+	@XmlTransient
+	@Transient
 	public boolean isExtraUpdated() {
 		return extraUpdated;
 	}
@@ -236,6 +249,7 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+		nameUpdated = true;
 	}
 
 }

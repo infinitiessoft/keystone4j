@@ -2,6 +2,11 @@
 <dataset>
 	<DOMAIN id="default" optlock="1" name="newdomain" enabled="true"
 		desc="my domain" />
+	<SERVICE id="79ea2c65-4679-441f-a596-8aec16752a0f" optlock="1"
+		name="keystone" desc="identity service" type="identity" />
+	<ENDPOINT id="79ea2c65-4679-441f-a596-8aec16752a1f" optlock="1"
+		name="keystone_endpoint" desc="keystone endpoint" interface="public"
+		url="http://localhost:%(public_port)/" serviceid="79ea2c65-4679-441f-a596-8aec16752a0f" />
 	<PROJECT id="79ea2c65-4679-441f-a596-8aec16752a2f" optlock="1"
 		name="admin" enabled="true" desc="admin project" domainid="default" />
 	<PROJECT id="79ea2c65-4679-441f-a596-8aec16752a20" optlock="1"
