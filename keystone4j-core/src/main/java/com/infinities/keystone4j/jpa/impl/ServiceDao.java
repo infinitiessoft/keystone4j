@@ -2,6 +2,7 @@ package com.infinities.keystone4j.jpa.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,7 +21,13 @@ public class ServiceDao extends AbstractDao<Service> {
 	}
 
 	public Service findByName(String name) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Service> cq = cb.createQuery(getEntityType());
 		Root<Service> root = cq.from(getEntityType());
 		Path<String> path = root.get("name");
@@ -30,8 +37,19 @@ public class ServiceDao extends AbstractDao<Service> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Service> q = getEntityManager().createQuery(cq);
+		TypedQuery<Service> q = em.createQuery(cq);
 		Service domain = q.getSingleResult();
+		// tx.commit();
 		return domain;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 }

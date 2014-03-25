@@ -4,6 +4,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.infinities.keystone4j.jpa.EntityManagerInterceptor;
 import com.infinities.keystone4j.main.PublicResource;
 
 public class KeystoneApplication extends ResourceConfig {
@@ -76,6 +77,7 @@ public class KeystoneApplication extends ResourceConfig {
 		// this.register(TokenAuthMiddleware.class);
 		// this.register(AdminTokenAuthMiddleware.class);
 		// this.register(RequestBodySizeLimiter.class);
+		this.register(EntityManagerInterceptor.class);
 		this.register(ObjectMapperResolver.class);
 		this.register(JacksonFeature.class);
 		this.register(PublicResource.class);

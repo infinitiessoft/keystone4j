@@ -2,6 +2,7 @@ package com.infinities.keystone4j.jpa.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,20 +20,43 @@ public class GroupProjectGrantDao extends AbstractDao<GroupProjectGrant> {
 	}
 
 	public List<GroupProjectGrant> listGroupProjectGrant(String groupid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<GroupProjectGrant> cq = cb.createQuery(GroupProjectGrant.class);
 		Root<GroupProjectGrant> root = cq.from(GroupProjectGrant.class);
 		Predicate predicate = cb.equal(root.get("group").get("id"), groupid);
 		cq.where(predicate);
 		cq.select(root);
 
-		TypedQuery<GroupProjectGrant> q = getEntityManager().createQuery(cq);
+		TypedQuery<GroupProjectGrant> q = em.createQuery(cq);
 		List<GroupProjectGrant> grants = q.getResultList();
+
+		// tx.commit();
 		return grants;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	public GroupProjectGrant findByGroupidAndProjectid(String groupid, String projectid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<GroupProjectGrant> cq = cb.createQuery(GroupProjectGrant.class);
 		Root<GroupProjectGrant> root = cq.from(GroupProjectGrant.class);
 		List<Predicate> predicates = Lists.newArrayList();
@@ -43,9 +67,20 @@ public class GroupProjectGrantDao extends AbstractDao<GroupProjectGrant> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<GroupProjectGrant> q = getEntityManager().createQuery(cq);
+		TypedQuery<GroupProjectGrant> q = em.createQuery(cq);
 		GroupProjectGrant grant = q.getSingleResult();
+		// tx.commit();
 		return grant;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 }

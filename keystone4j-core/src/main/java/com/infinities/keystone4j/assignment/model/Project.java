@@ -48,6 +48,7 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 	private Set<GroupProjectGrant> groupProjectGrants = new HashSet<GroupProjectGrant>(0);
 	private Set<Credential> credentials = new HashSet<Credential>(0);
 	private Set<Token> tokens = new HashSet<Token>(0);
+	private Set<User> users = new HashSet<User>(0);
 	private Set<ProjectEndpoint> projectEndpoints = new HashSet<ProjectEndpoint>(0);
 	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
 	private boolean nameUpdated = false;
@@ -166,6 +167,17 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 		this.tokens = tokens;
 	}
 
+	@JsonView(Views.All.class)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "default_project", cascade = CascadeType.ALL)
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	@JsonView(Views.All.class)
+	public void setUsers(Set<User> users) {
+		this.users = users;
+	}
+
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade =
 	// CascadeType.ALL)
 	// public Set<Assignment> getAssignments() {
@@ -176,41 +188,49 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 	// this.assignments = assignments;
 	// }
 
+	@Transient
 	@XmlTransient
 	public boolean isNameUpdate() {
 		return nameUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public void setNameUpdate(boolean nameUpdated) {
 		this.nameUpdated = nameUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public boolean isEnabledUpdate() {
 		return enabledUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public void setEnabledUpdate(boolean enabledUpdated) {
 		this.enabledUpdated = enabledUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public boolean isExtraUpdated() {
 		return extraUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public boolean isDomainUpdated() {
 		return domainUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public void setDomainUpdated(boolean domainUpdated) {
 		this.domainUpdated = domainUpdated;

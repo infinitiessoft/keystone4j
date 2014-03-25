@@ -2,6 +2,7 @@ package com.infinities.keystone4j.jpa.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,7 +22,13 @@ public class ProjectDao extends AbstractDao<Project> {
 	}
 
 	public Project findByName(String name, String domainid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Project> cq = cb.createQuery(getEntityType());
 		Root<Project> root = cq.from(getEntityType());
 		Path<String> path = root.get("name");
@@ -35,13 +42,31 @@ public class ProjectDao extends AbstractDao<Project> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Project> q = getEntityManager().createQuery(cq);
+		TypedQuery<Project> q = em.createQuery(cq);
 		Project project = q.getSingleResult();
+
+		// tx.commit();
 		return project;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	public List<Project> listProject(String domainid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Project> cq = cb.createQuery(getEntityType());
 		Root<Project> root = cq.from(getEntityType());
 		List<Predicate> predicates = Lists.newArrayList();
@@ -52,8 +77,19 @@ public class ProjectDao extends AbstractDao<Project> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Project> q = getEntityManager().createQuery(cq);
+		TypedQuery<Project> q = em.createQuery(cq);
 		List<Project> projects = q.getResultList();
+		// tx.commit();
 		return projects;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 }

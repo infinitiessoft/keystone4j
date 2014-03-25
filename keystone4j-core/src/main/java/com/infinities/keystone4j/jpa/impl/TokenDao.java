@@ -3,6 +3,7 @@ package com.infinities.keystone4j.jpa.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,7 +23,13 @@ public class TokenDao extends AbstractDao<Token> {
 	}
 
 	public List<Token> findBeforeExpireAndValid(Date date, boolean valid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
 		Root<Token> root = cq.from(getEntityType());
 		Path<Date> path = root.get("expires");
@@ -36,13 +43,30 @@ public class TokenDao extends AbstractDao<Token> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Token> q = getEntityManager().createQuery(cq);
+		TypedQuery<Token> q = em.createQuery(cq);
 		List<Token> tokens = q.getResultList();
+
+		// tx.commit();
 		return tokens;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	public void deleteTokensForTrust(String userid, String projectid, String trustid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
 		Root<Token> root = cq.from(getEntityType());
 		Path<Date> path = root.get("expires");
@@ -59,7 +83,7 @@ public class TokenDao extends AbstractDao<Token> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Token> q = getEntityManager().createQuery(cq);
+		TypedQuery<Token> q = em.createQuery(cq);
 		List<Token> tokens = q.getResultList();
 
 		for (Token token : tokens) {
@@ -70,12 +94,28 @@ public class TokenDao extends AbstractDao<Token> {
 			}
 
 			token.setValid(false);
-			this.merge(token);
+			em.merge(token);
 		}
+		// tx.commit();
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	public void deleteTokensForUser(String userid, String projectid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
 		Root<Token> root = cq.from(getEntityType());
 		Path<Date> path = root.get("expires");
@@ -92,7 +132,7 @@ public class TokenDao extends AbstractDao<Token> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Token> q = getEntityManager().createQuery(cq);
+		TypedQuery<Token> q = em.createQuery(cq);
 		List<Token> tokens = q.getResultList();
 
 		for (Token token : tokens) {
@@ -103,12 +143,28 @@ public class TokenDao extends AbstractDao<Token> {
 			}
 
 			token.setValid(false);
-			this.merge(token);
+			em.merge(token);
 		}
+		// tx.commit();
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	public void flushExpiredTokens() {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
 		Root<Token> root = cq.from(getEntityType());
 		Path<Date> path = root.get("expires");
@@ -119,12 +175,22 @@ public class TokenDao extends AbstractDao<Token> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Token> q = getEntityManager().createQuery(cq);
+		TypedQuery<Token> q = em.createQuery(cq);
 		List<Token> tokens = q.getResultList();
 
 		for (Token token : tokens) {
-			this.remove(token);
+			em.remove(token);
 		}
+		// tx.commit();
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	private boolean isTenantMatches(String tenantid, Token token) {

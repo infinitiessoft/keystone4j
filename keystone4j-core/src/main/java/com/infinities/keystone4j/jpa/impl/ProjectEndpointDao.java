@@ -2,6 +2,7 @@ package com.infinities.keystone4j.jpa.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,7 +21,13 @@ public class ProjectEndpointDao extends AbstractDao<ProjectEndpoint> {
 	}
 
 	public ProjectEndpoint findByProjectidAndEndpointid(String projectid, String endpointid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<ProjectEndpoint> cq = cb.createQuery(getEntityType());
 		Root<ProjectEndpoint> root = cq.from(getEntityType());
 		List<Predicate> predicates = Lists.newArrayList();
@@ -31,13 +38,30 @@ public class ProjectEndpointDao extends AbstractDao<ProjectEndpoint> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<ProjectEndpoint> q = getEntityManager().createQuery(cq);
+		TypedQuery<ProjectEndpoint> q = em.createQuery(cq);
 		ProjectEndpoint projectEndpoint = q.getSingleResult();
+		// tx.commit();
 		return projectEndpoint;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	public List<ProjectEndpoint> listEndpointsForProject(String projectid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<ProjectEndpoint> cq = cb.createQuery(getEntityType());
 		Root<ProjectEndpoint> root = cq.from(getEntityType());
 		List<Predicate> predicates = Lists.newArrayList();
@@ -48,13 +72,30 @@ public class ProjectEndpointDao extends AbstractDao<ProjectEndpoint> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<ProjectEndpoint> q = getEntityManager().createQuery(cq);
+		TypedQuery<ProjectEndpoint> q = em.createQuery(cq);
 		List<ProjectEndpoint> projectEndpoints = q.getResultList();
+		// tx.commit();
 		return projectEndpoints;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	public List<ProjectEndpoint> listProjectsForEndpoint(String endpointid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<ProjectEndpoint> cq = cb.createQuery(getEntityType());
 		Root<ProjectEndpoint> root = cq.from(getEntityType());
 		List<Predicate> predicates = Lists.newArrayList();
@@ -65,8 +106,19 @@ public class ProjectEndpointDao extends AbstractDao<ProjectEndpoint> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<ProjectEndpoint> q = getEntityManager().createQuery(cq);
+		TypedQuery<ProjectEndpoint> q = em.createQuery(cq);
 		List<ProjectEndpoint> projectEndpoints = q.getResultList();
+		// tx.commit();
 		return projectEndpoints;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 }

@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -51,7 +52,7 @@ public class BaseEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
 	@Column(name = "ID", unique = true, nullable = false)
 	public String getId() {
 		return this.id;
@@ -95,11 +96,14 @@ public class BaseEntity implements Serializable {
 		return true;
 	}
 
+	@Transient
 	@XmlTransient
 	public boolean isDescriptionUpdated() {
 		return descriptionUpdated;
 	}
 
+	@Transient
+	@XmlTransient
 	public void setDescriptionUpdated(boolean descriptionUpdated) {
 		this.descriptionUpdated = descriptionUpdated;
 	}

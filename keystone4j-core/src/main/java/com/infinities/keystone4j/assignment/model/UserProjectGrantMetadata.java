@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import com.infinities.keystone4j.BaseEntity;
 
 @Entity
-@Table(name = "GROUP_PROJECT_GRANT_METADATA", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "USER_PROJECT_GRANT_METADATA", schema = "PUBLIC", catalog = "PUBLIC")
 public class UserProjectGrantMetadata extends BaseEntity implements java.io.Serializable {
 
 	/**

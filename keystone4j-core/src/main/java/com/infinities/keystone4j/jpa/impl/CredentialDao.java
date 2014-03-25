@@ -2,6 +2,7 @@ package com.infinities.keystone4j.jpa.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -20,7 +21,13 @@ public class CredentialDao extends AbstractDao<Credential> {
 	}
 
 	public List<Credential> listCredentialsForUser(String userid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Credential> cq = cb.createQuery(Credential.class);
 		Root<Credential> root = cq.from(Credential.class);
 		if (!Strings.isNullOrEmpty(userid)) {
@@ -28,20 +35,57 @@ public class CredentialDao extends AbstractDao<Credential> {
 			cq.where(predicate);
 		}
 		cq.select(root);
-		TypedQuery<Credential> q = getEntityManager().createQuery(cq);
+		TypedQuery<Credential> q = em.createQuery(cq);
 		List<Credential> credentials = q.getResultList();
+		// tx.commit();
 		return credentials;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
 	}
 
 	public void removeCredentialForProject(String projectid) {
-		Query query = getEntityManager().createQuery("DELETE FROM CREDENTIAL c where c.project.id = :projectid ");
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		Query query = em.createQuery("DELETE FROM CREDENTIAL c where c.project.id = :projectid ");
 		query.setParameter("projectid", projectid);
 		query.executeUpdate();
+		// tx.commit();
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
 	}
 
 	public void removeCredentialForUser(String userid) {
-		Query query = getEntityManager().createQuery("DELETE FROM CREDENTIAL c where c.user.id = :userid ");
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		Query query = em.createQuery("DELETE FROM CREDENTIAL c where c.user.id = :userid ");
 		query.setParameter("userid", userid);
 		query.executeUpdate();
+		// tx.commit();
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
 	}
 }

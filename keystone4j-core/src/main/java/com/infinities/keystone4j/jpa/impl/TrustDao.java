@@ -3,6 +3,7 @@ package com.infinities.keystone4j.jpa.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,8 +21,9 @@ public class TrustDao extends AbstractDao<Trust> {
 		super(Trust.class);
 	}
 
-	public Trust getTrust(String trustid) {
-		Trust trust = this.findById(trustid);
+	@Override
+	public Trust findById(Object id) {
+		Trust trust = this.findById(id);
 		if (trust.getDeletedAt() == null) {
 			return null;
 		}
@@ -33,8 +35,14 @@ public class TrustDao extends AbstractDao<Trust> {
 		return trust;
 	}
 
-	public List<Trust> listTrusts() {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+	@Override
+	public List<Trust> findAll() {
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Trust> cq = cb.createQuery(getEntityType());
 		Root<Trust> root = cq.from(getEntityType());
 		List<Predicate> predicates = Lists.newArrayList();
@@ -43,13 +51,29 @@ public class TrustDao extends AbstractDao<Trust> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Trust> q = getEntityManager().createQuery(cq);
+		TypedQuery<Trust> q = em.createQuery(cq);
 		List<Trust> trusts = q.getResultList();
+		// tx.commit();
 		return trusts;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
-	public List<Trust> listTrustsForTrustee(String trusteeid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+	public List<Trust> listTrustsForTrustee(Object trusteeid) {
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Trust> cq = cb.createQuery(getEntityType());
 		Root<Trust> root = cq.from(getEntityType());
 		List<Predicate> predicates = Lists.newArrayList();
@@ -60,13 +84,30 @@ public class TrustDao extends AbstractDao<Trust> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Trust> q = getEntityManager().createQuery(cq);
+		TypedQuery<Trust> q = em.createQuery(cq);
 		List<Trust> trusts = q.getResultList();
+		// tx.commit();
 		return trusts;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	public List<Trust> listTrustsForTrustor(String trustorid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Trust> cq = cb.createQuery(getEntityType());
 		Root<Trust> root = cq.from(getEntityType());
 		List<Predicate> predicates = Lists.newArrayList();
@@ -77,12 +118,23 @@ public class TrustDao extends AbstractDao<Trust> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Trust> q = getEntityManager().createQuery(cq);
+		TypedQuery<Trust> q = em.createQuery(cq);
 		List<Trust> trusts = q.getResultList();
+		// tx.commit();
 		return trusts;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
-	public void deleteTrust(String trustid) {
+	public void remove(String trustid) {
 		Trust trust = this.findById(trustid);
 		if (trust == null) {
 			throw Exceptions.TrustNotFoundException.getInstance(null, trustid);

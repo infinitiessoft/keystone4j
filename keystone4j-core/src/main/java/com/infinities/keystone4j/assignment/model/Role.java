@@ -137,31 +137,38 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 	// this.assignments = assignments;
 	// }
 
-	@Column(name = "INHERITEDTO", nullable = false)
+	// @Column(name = "INHERITEDTO", nullable = false)
+	@Transient
+	@XmlTransient
 	public String getInheritedTo() {
 		return inheritedTo;
 	}
 
+	@Transient
 	@XmlTransient
 	public void setInheritedTo(String inheritedTo) {
 		this.inheritedTo = inheritedTo;
 	}
 
+	@Transient
 	@XmlTransient
 	public boolean isNameUpdated() {
 		return nameUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public void setNameUpdated(boolean nameUpdated) {
 		this.nameUpdated = nameUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public boolean isExtraUpdated() {
 		return extraUpdated;
 	}
 
+	@Transient
 	@XmlTransient
 	public void setExtraUpdated(boolean extraUpdated) {
 		this.extraUpdated = extraUpdated;

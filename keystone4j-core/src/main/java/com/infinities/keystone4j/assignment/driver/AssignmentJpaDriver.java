@@ -6,6 +6,9 @@ import java.util.Set;
 
 import javax.persistence.NoResultException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -24,6 +27,7 @@ import com.infinities.keystone4j.assignment.model.UserProjectGrant;
 import com.infinities.keystone4j.assignment.model.UserProjectGrantMetadata;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.jpa.impl.DomainDao;
 import com.infinities.keystone4j.jpa.impl.GroupDomainGrantDao;
@@ -40,6 +44,7 @@ import com.infinities.keystone4j.jpa.impl.UserProjectGrantMetadataDao;
 
 public class AssignmentJpaDriver implements AssignmentDriver {
 
+	private final Logger logger = LoggerFactory.getLogger(AssignmentJpaDriver.class);
 	private final ProjectDao projectDao;
 	private final UserDao userDao;
 	private final RoleDao roleDao;
@@ -80,7 +85,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 	@Override
 	public Project getProject(String projectid) {
 		Project project = projectDao.findById(projectid);
-		if (project != null) {
+		if (project == null) {
 			throw Exceptions.ProjectNotFoundException.getInstance(null, projectid);
 		}
 		return project;
@@ -177,15 +182,16 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			UserProjectGrantMetadata userProjectGrantMetadata = addRoleToUserProjectGrantMetadata(role, grant, false, false);
 			// TODO should we do this?
 			userProjectGrantMetadataDao.persist(userProjectGrantMetadata);
-
 		} catch (IllegalArgumentException e) {
 			String msg = MessageFormat.format(USER_ALREADY_HAS_ROLE, userid, roleid, projectid);
+			logger.error(msg, e);
 			throw Exceptions.ConflictException.getInstance(null, ROLE_GRANT, msg); // replace
 			// KeyError
 		}
 
 		if (isNew) {
 			userProjectGrantDao.persist(grant);
+
 		} else {
 			userProjectGrantDao.merge(grant);
 		}
@@ -386,7 +392,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 	@Override
 	public Role getRole(String roleid) {
 		Role role = roleDao.findById(roleid);
-		if (role != null) {
+		if (role == null) {
 			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
@@ -550,7 +556,11 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		}
 		// _roles_from_role_dicts
 		List<Role> roles = filterGroupDomainGrant(grant.getMetadatas(), inherited);
-		if (!roles.contains(role)) {
+		List<String> roleids = Lists.newArrayList();
+		for (Role r : roles) {
+			roleids.add(r.getId());
+		}
+		if (!roleids.contains(role.getId())) {
 			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
@@ -569,7 +579,11 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		}
 		// _roles_from_role_dicts
 		List<Role> roles = filterGroupProjectGrant(grant.getMetadatas(), inherited);
-		if (!roles.contains(role)) {
+		List<String> roleids = Lists.newArrayList();
+		for (Role r : roles) {
+			roleids.add(r.getId());
+		}
+		if (!roleids.contains(role.getId())) {
 			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
@@ -588,7 +602,11 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		}
 		// _roles_from_role_dicts
 		List<Role> roles = filterUserDomainGrant(grant.getMetadatas(), inherited);
-		if (!roles.contains(role)) {
+		List<String> roleids = Lists.newArrayList();
+		for (Role r : roles) {
+			roleids.add(r.getId());
+		}
+		if (!roleids.contains(role.getId())) {
 			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
@@ -607,7 +625,11 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		}
 		// _roles_from_role_dicts
 		List<Role> roles = filterUserProjectGrant(grant.getMetadatas(), inherited);
-		if (!roles.contains(role)) {
+		List<String> roleids = Lists.newArrayList();
+		for (Role r : roles) {
+			roleids.add(r.getId());
+		}
+		if (!roleids.contains(role.getId())) {
 			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 		}
 		return role;
@@ -616,7 +638,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 	@Override
 	public void createGrantByGroupDomain(String roleid, String groupid, String domainid, boolean inherited) {
 		Role role = getRole(roleid);
-		getDomain(domainid);
+		Domain domain = getDomain(domainid);
 		GroupDomainGrant grant = null;
 		boolean isNew = false;
 		try {
@@ -624,24 +646,29 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			grant = getGroupDomainGrant(groupid, domainid);
 		} catch (Exception e) {
 			grant = new GroupDomainGrant();
+			grant.setDomain(domain);
+			Group group = new Group();
+			group.setId(groupid);
+			grant.setGroup(group);
 			isNew = true;
 		}
 		// _add_role_to_role_dics
 		GroupDomainGrantMetadata groupDomainGrantMetadata = addRoleToGroupDomainGrantMetadata(role, grant, inherited, true);
-		// TODO should we do this?
-		groupDomainGrantMetadataDao.persist(groupDomainGrantMetadata);
 
 		if (isNew) {
 			groupDomainGrantDao.persist(grant);
 		} else {
 			groupDomainGrantDao.merge(grant);
 		}
+
+		// TODO should we do this?
+		groupDomainGrantMetadataDao.persist(groupDomainGrantMetadata);
 	}
 
 	@Override
 	public void createGrantByGroupProject(String roleid, String groupid, String projectid) {
 		Role role = getRole(roleid);
-		getProject(projectid);
+		Project project = getProject(projectid);
 		GroupProjectGrant grant = null;
 		boolean isNew = false;
 		try {
@@ -649,25 +676,31 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			grant = getGroupProjectGrant(groupid, projectid);
 		} catch (Exception e) {
 			grant = new GroupProjectGrant();
+			grant.setProject(project);
+			Group group = new Group();
+			group.setId(groupid);
+			grant.setGroup(group);
 			isNew = true;
 		}
 
 		// _add_role_to_role_dics
 		GroupProjectGrantMetadata groupProjectGrantMetadata = addRoleToGroupProjectGrantMetadata(role, grant, false, true);
-		// TODO should we do this?
-		groupProjectGrantMetadataDao.persist(groupProjectGrantMetadata);
 
 		if (isNew) {
 			groupProjectGrantDao.persist(grant);
 		} else {
 			groupProjectGrantDao.merge(grant);
 		}
+
+		// TODO should we do this?
+		groupProjectGrantMetadataDao.persist(groupProjectGrantMetadata);
+
 	}
 
 	@Override
 	public void createGrantByUserDomain(String roleid, String userid, String domainid, boolean inherited) {
 		Role role = getRole(roleid);
-		getDomain(domainid);
+		Domain domain = getDomain(domainid);
 		UserDomainGrant grant = null;
 		boolean isNew = false;
 		try {
@@ -675,25 +708,31 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			grant = getUserDomainGrant(userid, domainid);
 		} catch (Exception e) {
 			grant = new UserDomainGrant();
+			grant.setDomain(domain);
+			User user = new User();
+			user.setId(userid);
+			grant.setUser(user);
 			isNew = true;
 		}
 
 		// _add_role_to_role_dics
 		UserDomainGrantMetadata userDomainGrantMetadata = addRoleToUserDomainGrantMetadata(role, grant, inherited, true);
-		// TODO should we do this?
-		userDomainGrantMetadataDao.persist(userDomainGrantMetadata);
 
 		if (isNew) {
 			userDomainGrantDao.persist(grant);
 		} else {
 			userDomainGrantDao.merge(grant);
 		}
+
+		// TODO should we do this?
+		userDomainGrantMetadataDao.persist(userDomainGrantMetadata);
+
 	}
 
 	@Override
 	public void createGrantByUserProject(String roleid, String userid, String projectid) {
 		Role role = getRole(roleid);
-		getProject(projectid);
+		Project project = getProject(projectid);
 		UserProjectGrant grant = null;
 		boolean isNew = false;
 		try {
@@ -701,19 +740,25 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			grant = getUserProjectGrant(userid, projectid);
 		} catch (Exception e) {
 			grant = new UserProjectGrant();
+			grant.setProject(project);
+			User user = new User();
+			user.setId(userid);
+			grant.setUser(user);
 			isNew = true;
 		}
 
 		// _add_role_to_role_dics
 		UserProjectGrantMetadata userProjectGrantMetadata = addRoleToUserProjectGrantMetadata(role, grant, false, true);
-		// TODO should we do this?
-		userProjectGrantMetadataDao.persist(userProjectGrantMetadata);
 
 		if (isNew) {
 			userProjectGrantDao.persist(grant);
 		} else {
 			userProjectGrantDao.merge(grant);
 		}
+
+		// TODO should we do this?
+		userProjectGrantMetadataDao.persist(userProjectGrantMetadata);
+
 	}
 
 	@Override
@@ -928,7 +973,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		if (!allowExisting) {
 			for (UserProjectGrantMetadata metadata : grant.getMetadatas()) {
 				if (role.getId().equals(metadata.getRole().getId())) {
-					throw new IllegalArgumentException();
+					throw new IllegalArgumentException("duplicate role");
 				}
 			}
 		}

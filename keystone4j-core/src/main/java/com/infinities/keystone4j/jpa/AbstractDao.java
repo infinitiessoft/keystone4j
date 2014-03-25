@@ -31,45 +31,117 @@ public abstract class AbstractDao<T> implements GenericDao<T> {
 	// }
 
 	protected EntityManager getEntityManager() {
-		return EntityManagerListener.createEntityManager();
+		return EntityManagerHelper.getEntityManager();
 	}
 
 	@Override
 	public void persist(T transientInstance) {
-		getEntityManager().persist(transientInstance);
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		em.persist(transientInstance);
+		// tx.commit();
 		logger.debug("persisting {} instance", getEntityType().getSimpleName());
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
 	}
 
 	@Override
 	public void remove(T persistentInstance) {
-		getEntityManager().remove(persistentInstance);
-		logger.debug("removing {} instance", getEntityType().getSimpleName());
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		em.remove(em.merge(persistentInstance));
+		// tx.commit();
+		// logger.debug("removing {} instance",
+		// getEntityType().getSimpleName());
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
 	}
 
 	@Override
 	public T merge(T detachedInstance) {
-		T result = getEntityManager().merge(detachedInstance);
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		T result = em.merge(detachedInstance);
+		// tx.commit();
 		logger.debug("merging {} instance", getEntityType().getSimpleName());
 		return result;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 	@Override
 	public T findById(Object id) {
-		T instance = getEntityManager().find(getEntityType(), id);
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		T result = em.find(getEntityType(), id);
+		// tx.commit();
 		logger.debug("getting {} instance with id: {}", new Object[] { getEntityType().getSimpleName(), id });
-		return instance;
+		return result;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
 	}
 
 	@Override
 	public List<T> findAll() {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(getEntityType());
 		Root<T> taskEventRoot = cq.from(getEntityType());
 		cq.select(taskEventRoot);
-
-		TypedQuery<T> q = getEntityManager().createQuery(cq);
-		List<T> list = q.getResultList();
-		return list;
+		TypedQuery<T> q = em.createQuery(cq);
+		List<T> result = q.getResultList();
+		// tx.commit();
+		return result;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
 	}
 
 	protected Class<T> getEntityType() {

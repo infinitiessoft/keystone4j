@@ -34,12 +34,12 @@ public class TrustJpaDriver implements TrustDriver {
 
 	@Override
 	public Trust getTrust(String trustid) {
-		return trustDao.getTrust(trustid);
+		return trustDao.findById(trustid);
 	}
 
 	@Override
 	public List<Trust> listTrusts() {
-		return trustDao.listTrusts();
+		return trustDao.findAll();
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class TrustJpaDriver implements TrustDriver {
 
 	@Override
 	public void deleteTrust(String trustid) {
-		trustDao.deleteTrust(trustid);
+		trustDao.remove(trustid);
 	}
 
 }

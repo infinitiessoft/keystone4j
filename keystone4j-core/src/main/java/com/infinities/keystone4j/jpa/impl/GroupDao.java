@@ -2,6 +2,7 @@ package com.infinities.keystone4j.jpa.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,7 +22,12 @@ public class GroupDao extends AbstractDao<Group> {
 	}
 
 	public Group findByName(String name, String domainid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Group> cq = cb.createQuery(getEntityType());
 		Root<Group> root = cq.from(getEntityType());
 		Path<String> path = root.get("name");
@@ -34,14 +40,27 @@ public class GroupDao extends AbstractDao<Group> {
 		}
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
-
-		TypedQuery<Group> q = getEntityManager().createQuery(cq);
+		TypedQuery<Group> q = em.createQuery(cq);
 		Group group = q.getSingleResult();
+		// tx.commit();
 		return group;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
 	}
 
 	public List<Group> listGroup(String domainid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Group> cq = cb.createQuery(getEntityType());
 		Root<Group> root = cq.from(getEntityType());
 		List<Predicate> predicates = Lists.newArrayList();
@@ -52,8 +71,18 @@ public class GroupDao extends AbstractDao<Group> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<Group> q = getEntityManager().createQuery(cq);
+		TypedQuery<Group> q = em.createQuery(cq);
 		List<Group> groups = q.getResultList();
+		// tx.commit();
 		return groups;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 }

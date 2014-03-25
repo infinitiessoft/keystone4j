@@ -2,6 +2,7 @@ package com.infinities.keystone4j.jpa.impl;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,20 +20,41 @@ public class GroupDomainGrantDao extends AbstractDao<GroupDomainGrant> {
 	}
 
 	public List<GroupDomainGrant> listGroupDomainGrant(String groupid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<GroupDomainGrant> cq = cb.createQuery(GroupDomainGrant.class);
 		Root<GroupDomainGrant> root = cq.from(GroupDomainGrant.class);
 		Predicate predicate = cb.equal(root.get("group").get("id"), groupid);
 		cq.where(predicate);
 		cq.select(root);
 
-		TypedQuery<GroupDomainGrant> q = getEntityManager().createQuery(cq);
+		TypedQuery<GroupDomainGrant> q = em.createQuery(cq);
 		List<GroupDomainGrant> grants = q.getResultList();
+		// tx.commit();
 		return grants;
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
 	}
 
 	public GroupDomainGrant findByGroupidAndDomainid(String groupid, String domainid) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<GroupDomainGrant> cq = cb.createQuery(GroupDomainGrant.class);
 		Root<GroupDomainGrant> root = cq.from(GroupDomainGrant.class);
 		List<Predicate> predicates = Lists.newArrayList();
@@ -43,9 +65,20 @@ public class GroupDomainGrantDao extends AbstractDao<GroupDomainGrant> {
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
-		TypedQuery<GroupDomainGrant> q = getEntityManager().createQuery(cq);
+		TypedQuery<GroupDomainGrant> q = em.createQuery(cq);
 		GroupDomainGrant grant = q.getSingleResult();
+		// tx.commit();
 		return grant;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
 	}
 
 }
