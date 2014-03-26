@@ -20,8 +20,9 @@
 	<GROUP id="708bb4f9-9d3c-46af-b18c-7033dc022ffd" optlock="1"
 		name="demo_group" desc="demo group" domainid="default" />
 	<USER id="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" enabled="true"
-		password="admin" email="admin@keystone4j.com" optlock="1" name="admin"
-		desc="admin user" domainid="default" defaultprojectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
+		password="c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec"
+		email="admin@keystone4j.com" optlock="1" name="admin" desc="admin user"
+		domainid="default" defaultprojectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
 	<USER id="0f3328f8-a7e7-41b4-830d-be8fdd5186c8" enabled="true"
 		password="demo" email="demo@keystone4j.com" optlock="1" name="demo"
 		desc="demo user" domainid="default" defaultprojectid="79ea2c65-4679-441f-a596-8aec16752a20" />
@@ -41,4 +42,6 @@
 		optlock="1" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" domainid="default" />
 	<USER_DOMAIN_GRANT_METADATA id="b5a71165-3e27-4085-b7ed-143630e58893"
 		optlock="1" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" grantid="b5a71165-3e27-4085-b7ed-143630e58898" />
+	<USER_GROUP_MEMBERSHIP id="0f3328f8-a7e7-41b4-830d-be8fdd5186c8"
+		optlock="1" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c8" groupid="708bb4f9-9d3c-46af-b18c-7033dc022ffd" />
 </dataset>

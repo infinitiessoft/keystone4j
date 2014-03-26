@@ -24,7 +24,7 @@ public class PasswordUtils {
 	}
 
 	public static void main(String args[]) {
-		String p = hashPassword("5");
+		String p = hashPassword("demo");
 		System.out.println(p);
 		System.out.println(p.length());
 
@@ -62,7 +62,10 @@ public class PasswordUtils {
 
 		if (password.length() > length) {
 			logger.warn(TRUNCATE_USER_PASSWORD, length);
+		} else {
+			length = password.length();
 		}
+
 		return password.substring(0, length);
 	}
 }

@@ -346,6 +346,7 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 		throw new IllegalStateException("propert 'user' not exist");
 	}
 
+	@Transient
 	@XmlElement(name = "default_project_id")
 	public String getDefaultProjectId() {
 		if (getDefault_project() == null) {
@@ -355,6 +356,7 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 		}
 	}
 
+	@Transient
 	@XmlElement(name = "default_project_id")
 	public void setDefaultProjectId(String defaultProjectId) {
 		Project project = new Project();
