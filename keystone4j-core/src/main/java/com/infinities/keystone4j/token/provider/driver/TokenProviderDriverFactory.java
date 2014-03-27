@@ -1,12 +1,21 @@
 package com.infinities.keystone4j.token.provider.driver;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import javax.inject.Inject;
+
 import org.glassfish.hk2.api.Factory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 
 public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> {
@@ -14,9 +23,19 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 	private final Logger logger = LoggerFactory.getLogger(TokenProviderDriverFactory.class);
 	private final static String PKI_PROVIDER = "com.infinities.keystone4j.token.provider.driver.PkiProvider";
 	private final static String UUID_PROVIDER = "com.infinities.keystone4j.token.provider.driver.UuidProvider";
+	private final IdentityApi identityApi;
+	private final AssignmentApi assignmentApi;
+	private final CatalogApi catalogApi;
+	private final TokenApi tokenApi;
 
 
-	public TokenProviderDriverFactory() {
+	@Inject
+	public TokenProviderDriverFactory(IdentityApi identityApi, AssignmentApi assignmentApi, CatalogApi catalogApi,
+			TokenApi tokenApi) {
+		this.identityApi = identityApi;
+		this.assignmentApi = assignmentApi;
+		this.catalogApi = catalogApi;
+		this.tokenApi = tokenApi;
 	}
 
 	@Override
@@ -32,7 +51,7 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 			if (Strings.isNullOrEmpty(tokenFormat)) {
 				try {
 					Class<?> c = Class.forName(PKI_PROVIDER);
-					return (TokenProviderDriver) c.newInstance();
+					return (TokenProviderDriver) setUpInstance(c);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
@@ -43,7 +62,7 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 				logger.warn(msg);
 				try {
 					Class<?> c = Class.forName(PKI_PROVIDER);
-					return (TokenProviderDriver) c.newInstance();
+					return (TokenProviderDriver) setUpInstance(c);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
@@ -51,7 +70,7 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 				logger.warn(msg);
 				try {
 					Class<?> c = Class.forName(UUID_PROVIDER);
-					return (TokenProviderDriver) c.newInstance();
+					return (TokenProviderDriver) setUpInstance(c);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
@@ -70,11 +89,28 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 			}
 			try {
 				Class<?> c = Class.forName(provider);
-				return (TokenProviderDriver) c.newInstance();
+				return (TokenProviderDriver) setUpInstance(c);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 
+	}
+
+	private Object setUpInstance(Class<?> c) throws NoSuchMethodException, SecurityException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Class<?>[] oParam = new Class[4];
+		oParam[0] = IdentityApi.class;
+		oParam[1] = AssignmentApi.class;
+		oParam[2] = CatalogApi.class;
+		oParam[3] = TokenApi.class;
+
+		Constructor<?> constructor = c.getConstructor(oParam);
+		Object[] paramObjs = new Object[4];
+		paramObjs[0] = identityApi;
+		paramObjs[1] = assignmentApi;
+		paramObjs[2] = catalogApi;
+		paramObjs[3] = tokenApi;
+		return constructor.newInstance(paramObjs);
 	}
 }

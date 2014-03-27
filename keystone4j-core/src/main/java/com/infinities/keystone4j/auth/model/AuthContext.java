@@ -26,7 +26,7 @@ public class AuthContext {
 	@XmlElement(name = "extra")
 	private String extra;
 
-	private Bind bind;
+	private Bind bind = new Bind();
 	private String domainid;
 	private Set<Role> roles = new HashSet<Role>(0);
 

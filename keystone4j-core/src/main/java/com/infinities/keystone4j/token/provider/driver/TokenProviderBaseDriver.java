@@ -4,11 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
+import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDataHelper;
 import com.infinities.keystone4j.token.model.Token;
@@ -21,10 +24,16 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 	// private AssignmentApi assignmentApi;
 	// private CatalogApi catalogApi;
 	// private IdentityApi identityApi;
-	private TokenApi tokenApi;
+	private final TokenApi tokenApi;
 	// private TrustApi trustApi;
-	private TokenDataHelper helper;
+	private final TokenDataHelper helper;
 
+
+	public TokenProviderBaseDriver(IdentityApi identityApi, AssignmentApi assignmentApi, CatalogApi catalogApi,
+			TokenApi tokenApi) {
+		helper = new TokenDataHelper(identityApi, assignmentApi, catalogApi);
+		this.tokenApi = tokenApi;
+	}
 
 	@Override
 	public TokenMetadata issueV3Token(String userid, List<String> methodNames, Date expiresAt, String projectid,
@@ -57,6 +66,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 		token.setTokenData(tokenData);
 
 		token = this.tokenApi.createToken(token);
+		tokenData.getToken().setToken(token);
 
 		return new TokenMetadata(tokenid, tokenData);
 	}
@@ -92,9 +102,12 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 		methodNames.add("password");
 		methodNames.add("token");
 
-		return this.helper.getTokenData(token.getUser().getId(), methodNames, token.getExpires(), null, null,
+		String projectid = null;
+		if (token.getProject() != null) {
+			projectid = token.getProject().getId();
+		}
+		return this.helper.getTokenData(token.getUser().getId(), methodNames, token.getExpires(), projectid, null,
 				token.getBind(), null, null, true);
-
 	}
 
 	protected abstract String getTokenId(TokenDataWrapper tokenData);

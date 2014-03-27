@@ -66,7 +66,6 @@ public class TokenDataHelper {
 			populateServiceCatalog(tokenData, userid, domainid, projectid, trust);
 		}
 		populateTokenDates(tokenData, expiresAt, trust);
-
 		return new TokenDataWrapper(tokenData);
 	}
 
@@ -120,7 +119,6 @@ public class TokenDataHelper {
 		List<Role> roles = Lists.newArrayList();
 		if (!Strings.isNullOrEmpty(tokenDomainid) || !Strings.isNullOrEmpty(tokenProjectid)) {
 			roles = getRolesForUser(tokenUserid, tokenDomainid, tokenProjectid);
-
 			List<Role> filteredRoles = Lists.newArrayList();
 			if (enabled && trust != null) {
 				for (TrustRole trustRole : trust.getTrustRoles()) {
