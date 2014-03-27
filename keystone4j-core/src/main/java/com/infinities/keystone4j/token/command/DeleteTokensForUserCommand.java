@@ -30,12 +30,12 @@ public class DeleteTokensForUserCommand extends AbstractTokenCommand<List<Token>
 		this.getTokenDriver().deleteTokensForUser(userid, projectid);
 		List<Trust> trusts = this.getTrustApi().listTrustsForTrustee(userid);
 		for (Trust trust : trusts) {
-			this.getTokenDriver().deleteTokensForTrust(userid, projectid, trust.getId());
+			this.getTokenDriver().deleteTokensForTrust(userid, trust.getId());
 		}
 
 		trusts = this.getTrustApi().listTrustsForTrustor(userid);
 		for (Trust trust : trusts) {
-			this.getTokenDriver().deleteTokensForTrust(trust.getTrustee().getId(), projectid, trust.getId());
+			this.getTokenDriver().deleteTokensForTrust(trust.getTrustee().getId(), trust.getId());
 		}
 
 		return null;

@@ -121,7 +121,7 @@ public class PkiProviderTest extends AbstractDbUnitJpaTest {
 		context.assertIsSatisfied();
 	}
 
-	// @Test
+	@Test
 	public void testIssueV3Token() {
 		final List<Role> rolesDomain = new ArrayList<Role>();
 		rolesDomain.add(roleAdmin);

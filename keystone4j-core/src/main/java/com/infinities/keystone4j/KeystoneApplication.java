@@ -51,6 +51,7 @@ public class KeystoneApplication extends ResourceConfig {
 				//
 				// // token
 				// bindFactory(TokenApiFactory.class).to(TokenApi.class);
+				// bindFactory(TokenJpaDriverFactory.class).to(TokenDriver.class);
 				// bindFactory(TokenProviderApiFactory.class).to(TokenProviderApi.class);
 				// bindFactory(TokenProviderDriverFactory.class).to(TokenProviderDriver.class);
 				// bindFactory(TokenDataHelperFactory.class).to(TokenDataHelper.class);

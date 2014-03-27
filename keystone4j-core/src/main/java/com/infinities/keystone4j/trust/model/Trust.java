@@ -103,7 +103,7 @@ public class Trust extends BaseEntity implements java.io.Serializable {
 	}
 
 	@Lob
-	@Column(name = "EXTRA", nullable = false)
+	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;
 	}

@@ -14,9 +14,9 @@ public class TokenJpaDriver implements TokenDriver {
 	private final TokenDao tokenDao;
 
 
-	public TokenJpaDriver(TokenDao tokenDao) {
+	public TokenJpaDriver() {
 		super();
-		this.tokenDao = tokenDao;
+		tokenDao = new TokenDao();
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class TokenJpaDriver implements TokenDriver {
 	}
 
 	@Override
-	public void deleteTokensForTrust(String userid, String projectid, String trustid) {
-		tokenDao.deleteTokensForTrust(userid, projectid, trustid);
+	public void deleteTokensForTrust(String userid, String trustid) {
+		tokenDao.deleteTokensForTrust(userid, trustid);
 
 	}
 

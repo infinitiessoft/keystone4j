@@ -20,7 +20,7 @@ public interface TokenDriver {
 
 	void flushExpiredTokens();
 
-	void deleteTokensForTrust(String userid, String projectid, String trustid);
+	void deleteTokensForTrust(String userid, String trustid);
 
 	void deleteTokensForUser(String userid, String projectid);
 

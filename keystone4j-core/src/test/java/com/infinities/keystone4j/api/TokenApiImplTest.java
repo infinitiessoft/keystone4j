@@ -220,7 +220,7 @@ public class TokenApiImplTest {
 		context.checking(new Expectations() {
 
 			{
-				exactly(1).of(driver).deleteTokensForTrust(user.getId(), null, trust1.getId());
+				exactly(1).of(driver).deleteTokensForTrust(user.getId(), trust1.getId());
 			}
 		});
 		tokenApi.deleteTokensForTrust(user.getId(), trust1.getId());
@@ -241,10 +241,10 @@ public class TokenApiImplTest {
 			{
 				exactly(1).of(trustApi).listTrustsForTrustee(user.getId());
 				will(returnValue(trusts1));
-				exactly(1).of(driver).deleteTokensForTrust(user.getId(), project.getId(), trust1.getId());
+				exactly(1).of(driver).deleteTokensForTrust(user.getId(), trust1.getId());
 				exactly(1).of(trustApi).listTrustsForTrustor(user.getId());
 				will(returnValue(trusts2));
-				exactly(1).of(driver).deleteTokensForTrust(user.getId(), project.getId(), trust2.getId());
+				exactly(1).of(driver).deleteTokensForTrust(user.getId(), trust2.getId());
 				exactly(1).of(driver).deleteTokensForUser(user.getId(), project.getId());
 			}
 		});
@@ -278,10 +278,10 @@ public class TokenApiImplTest {
 
 				exactly(1).of(trustApi).listTrustsForTrustee(user.getId());
 				will(returnValue(trusts1));
-				exactly(1).of(driver).deleteTokensForTrust(user.getId(), project.getId(), trust1.getId());
+				exactly(1).of(driver).deleteTokensForTrust(user.getId(), trust1.getId());
 				exactly(1).of(trustApi).listTrustsForTrustor(user.getId());
 				will(returnValue(trusts2));
-				exactly(1).of(driver).deleteTokensForTrust(user.getId(), project.getId(), trust2.getId());
+				exactly(1).of(driver).deleteTokensForTrust(user.getId(), trust2.getId());
 			}
 		});
 		tokenApi.deleteTokensForDomain(domain.getId());

@@ -59,7 +59,7 @@ public class TokenDao extends AbstractDao<Token> {
 
 	}
 
-	public void deleteTokensForTrust(String userid, String projectid, String trustid) {
+	public void deleteTokensForTrust(String userid, String trustid) {
 
 		EntityManager em = getEntityManager();
 		// EntityTransaction tx = null;
@@ -87,11 +87,11 @@ public class TokenDao extends AbstractDao<Token> {
 		List<Token> tokens = q.getResultList();
 
 		for (Token token : tokens) {
-			if (!Strings.isNullOrEmpty(projectid)) {
-				if (!isTenantMatches(projectid, token)) {
-					continue;
-				}
-			}
+			// if (!Strings.isNullOrEmpty(projectid)) {
+			// if (!isTenantMatches(projectid, token)) {
+			// continue;
+			// }
+			// }
 
 			token.setValid(false);
 			em.merge(token);
@@ -194,7 +194,7 @@ public class TokenDao extends AbstractDao<Token> {
 	}
 
 	private boolean isTenantMatches(String tenantid, Token token) {
-		return (Strings.isNullOrEmpty(tenantid) || (token.getTrust().getProject() != null && token.getTrust().getProject()
-				.getId().equals(tenantid)));
+		return (Strings.isNullOrEmpty(tenantid) || (token.getProject() != null && token.getProject().getId()
+				.equals(tenantid)));
 	}
 }

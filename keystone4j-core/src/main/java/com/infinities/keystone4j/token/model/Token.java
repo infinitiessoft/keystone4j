@@ -101,7 +101,7 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 	}
 
 	@Lob
-	@Column(name = "EXTRA", nullable = false)
+	@Column(name = "EXTRA", nullable = true)
 	public String getExtra() {
 		return extra;
 	}
@@ -153,7 +153,7 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TRUSTID", nullable = false)
+	@JoinColumn(name = "TRUSTID", nullable = true)
 	public Trust getTrust() {
 		return trust;
 	}

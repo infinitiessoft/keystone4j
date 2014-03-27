@@ -28,7 +28,7 @@ public class DeleteTokensForTrustCommand extends AbstractTokenCommand<List<Token
 	public List<Token> execute() {
 		// List<Token> tokens = this.getTokenDriver().listTokensForTrust(userid,
 		// trustid);
-		this.getTokenDriver().deleteTokensForTrust(userid, null, trustid);
+		this.getTokenDriver().deleteTokensForTrust(userid, trustid);
 
 		// for (Token token : tokens) {
 		// String uniqueid = new Cms().uniqueid(token.getId());
