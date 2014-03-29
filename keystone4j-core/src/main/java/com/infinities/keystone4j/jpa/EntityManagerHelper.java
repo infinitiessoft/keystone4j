@@ -6,8 +6,12 @@ public class EntityManagerHelper {
 
 	private static final ThreadLocal<EntityManager> threadLocal;
 
+	private static final ThreadLocal<Boolean> lock;
+
 	static {
 		threadLocal = new ThreadLocal<EntityManager>();
+		lock = new ThreadLocal<Boolean>();
+		lock.set(true);
 	}
 
 
@@ -43,5 +47,13 @@ public class EntityManagerHelper {
 
 	public static void commit() {
 		getEntityManager().getTransaction().commit();
+	}
+
+	public static void setLock(boolean value) {
+		lock.set(value);
+	}
+
+	public static boolean getLock() {
+		return lock.get();
 	}
 }

@@ -4,19 +4,16 @@ import javax.inject.Inject;
 
 import org.glassfish.hk2.api.Factory;
 
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 
 public class TokenProviderApiFactory implements Factory<TokenProviderApi> {
 
-	private final TokenApi tokenApi;
 	private final TokenProviderDriver tokenProviderDriver;
 
 
 	@Inject
-	public TokenProviderApiFactory(TokenApi tokenApi, TokenProviderDriver tokenProviderDriver) {
-		this.tokenApi = tokenApi;
+	public TokenProviderApiFactory(TokenProviderDriver tokenProviderDriver) {
 		this.tokenProviderDriver = tokenProviderDriver;
 	}
 
@@ -27,7 +24,7 @@ public class TokenProviderApiFactory implements Factory<TokenProviderApi> {
 
 	@Override
 	public TokenProviderApi provide() {
-		TokenProviderApi tokenProviderApi = new TokenProviderApiImpl(tokenApi, tokenProviderDriver);
+		TokenProviderApi tokenProviderApi = new TokenProviderApiImpl(tokenProviderDriver);
 		return tokenProviderApi;
 	}
 

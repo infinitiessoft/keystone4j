@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.common.Config;
 
-@Priority(1002)
+@Priority(1003)
 public class AdminTokenAuthMiddleware implements Middleware {
 
 	private final String adminToken;

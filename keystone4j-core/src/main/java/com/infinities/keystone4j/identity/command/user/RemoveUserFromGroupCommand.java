@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.identity.command.user;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
@@ -19,9 +18,9 @@ public class RemoveUserFromGroupCommand extends AbstractIdentityCommand<User> {
 	private String domainid;
 
 
-	public RemoveUserFromGroupCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, TokenApi tokenApi,
-			IdentityApi identityApi, IdentityDriver identityDriver, String userid, String groupid, String domainid) {
-		super(assignmentApi, credentialApi, tokenApi, identityApi, identityDriver);
+	public RemoveUserFromGroupCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
+			IdentityDriver identityDriver, String userid, String groupid, String domainid) {
+		super(credentialApi, tokenApi, identityApi, identityDriver);
 		this.userid = userid;
 		this.groupid = groupid;
 		this.domainid = domainid;

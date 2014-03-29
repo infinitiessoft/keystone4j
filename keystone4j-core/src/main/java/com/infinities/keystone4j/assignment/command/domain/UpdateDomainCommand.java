@@ -1,11 +1,15 @@
 package com.infinities.keystone4j.assignment.command.domain;
 
+import java.util.List;
+
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
 import com.infinities.keystone4j.assignment.model.Domain;
+import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class UpdateDomainCommand extends AbstractAssignmentCommand<Domain> {
@@ -25,7 +29,16 @@ public class UpdateDomainCommand extends AbstractAssignmentCommand<Domain> {
 	public Domain execute() {
 		Domain ret = this.getAssignmentDriver().updateDomain(domainid, domain);
 		if (!domain.getEnabled()) {
-			this.getTokenApi().deleteTokensForDomain(domainid);
+			List<Project> projects = this.getAssignmentApi().listProjects();
+
+			for (Project project : projects) {
+				if (domainid.equals(project.getDomain().getId())) {
+					List<User> users = this.getAssignmentApi().listUsersForProject(project.getId());
+					for (User user : users) {
+						this.getTokenApi().deleteTokensForUser(user.getId(), project.getId());
+					}
+				}
+			}
 		}
 		// invalidate cache(getDomain, getDomainByName)
 

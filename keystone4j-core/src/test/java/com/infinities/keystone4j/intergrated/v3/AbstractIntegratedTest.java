@@ -1,0 +1,105 @@
+package com.infinities.keystone4j.intergrated.v3;
+
+import java.io.InputStream;
+import java.sql.SQLException;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.ws.rs.core.Application;
+
+import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory;
+import org.dbunit.operation.DatabaseOperation;
+import org.glassfish.jersey.test.JerseyTest;
+import org.glassfish.jersey.test.TestProperties;
+import org.hibernate.HibernateException;
+import org.hibernate.internal.SessionImpl;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+
+import com.infinities.keystone4j.KeystoneApplication;
+import com.infinities.keystone4j.jpa.EntityManagerListener;
+
+public class AbstractIntegratedTest extends JerseyTest {
+
+	private static EntityManagerFactory entityManagerFactory;
+	private static IDatabaseConnection connection;
+	private static IDataSet dataset;
+	protected static EntityManager entityManager;
+
+
+	@Override
+	protected Application configure() {
+		enable(TestProperties.LOG_TRAFFIC);
+		enable(TestProperties.DUMP_ENTITY);
+		return new KeystoneApplication();
+	}
+
+	@BeforeClass
+	public static void initEntityManager() throws HibernateException, DatabaseUnitException {
+		entityManagerFactory = Persistence.createEntityManagerFactory("com.infinities.keystone4j.jpa.test");
+		entityManager = entityManagerFactory.createEntityManager();
+		connection = new DatabaseConnection(((SessionImpl) (entityManager.getDelegate())).connection());
+		connection.getConfig().setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
+
+		FlatXmlDataSetBuilder flatXmlDataSetBuilder = new FlatXmlDataSetBuilder();
+		flatXmlDataSetBuilder.setColumnSensing(true);
+		InputStream dataSet = Thread.currentThread().getContextClassLoader().getResourceAsStream("test-data.xml");
+		dataset = flatXmlDataSetBuilder.build(dataSet);
+		EntityManagerListener.setEntityManagerFactory(entityManagerFactory);
+	}
+
+	@AfterClass
+	public static void closeEntityManager() {
+		entityManager.close();
+		entityManagerFactory.close();
+	}
+
+	/**
+	 * Will clean the dataBase before each test
+	 * 
+	 * @throws SQLException
+	 * @throws DatabaseUnitException
+	 */
+	@Before
+	public void cleanDB() throws DatabaseUnitException, SQLException {
+		// DatabaseOperation.TRUNCATE_TABLE.execute(connection, dataset);
+		DatabaseOperation.CLEAN_INSERT.execute(connection, dataset);
+		// try {
+		// EntityManagerHelper.beginTransaction();
+		// } catch (RuntimeException e) {
+		// e.printStackTrace();
+		// if (EntityManagerHelper.getEntityManager() != null &&
+		// EntityManagerHelper.getEntityManager().isOpen()) {
+		// EntityManagerHelper.rollback();
+		// }
+		// EntityManagerHelper.closeEntityManager();
+		// throw e;
+		// }
+	}
+
+	// @After
+	// public void closeEm() throws DatabaseUnitException, SQLException {
+	// try {
+	// EntityManagerHelper.commit();
+	// } catch (RuntimeException e) {
+	// e.printStackTrace();
+	// if (EntityManagerHelper.getEntityManager() != null &&
+	// EntityManagerHelper.getEntityManager().isOpen()) {
+	// EntityManagerHelper.rollback();
+	// }
+	// throw e;
+	// } finally {
+	// EntityManagerHelper.closeEntityManager();
+	// }
+	// DatabaseOperation.TRUNCATE_TABLE.execute(connection, dataset);
+	// DatabaseOperation.CLEAN_INSERT.execute(connection, dataset);
+	// }
+}

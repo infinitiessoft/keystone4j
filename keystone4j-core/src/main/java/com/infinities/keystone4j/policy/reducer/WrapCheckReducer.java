@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.policy.BaseCheck;
 import com.infinities.keystone4j.policy.BaseReducer;
 
@@ -42,7 +43,7 @@ public class WrapCheckReducer extends AbstractReducer {
 
 	@Override
 	protected Entry<String, BaseCheck> getEntry(List<Entry<String, BaseCheck>> entrys) {
-		return entrys.get(1);
+		return Maps.immutableEntry("check", entrys.get(1).getValue());
 	}
 
 	public static void main(String args[]) {
@@ -64,7 +65,7 @@ public class WrapCheckReducer extends AbstractReducer {
 		list3.add("444");
 		list3.add("333");
 
-		System.out.println(list1.retainAll(list2));
-		System.out.println(list1.retainAll(list3));
+		System.out.println(list1.containsAll(list2));
+		System.out.println(list1.containsAll(list3));
 	}
 }

@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
@@ -24,10 +23,10 @@ public class IssueV3TokenCommand extends AbstractTokenProviderCommand<TokenMetad
 	private final boolean includeCatalog;
 
 
-	public IssueV3TokenCommand(TokenApi tokenApi, TokenProviderApi tokenProviderApi,
-			TokenProviderDriver tokenProviderDriver, String userid, List<String> methodNames, Date expiresAt,
-			String projectid, String domainid, AuthContext authContext, Trust trust, Token token, boolean includeCatalog) {
-		super(tokenApi, tokenProviderApi, tokenProviderDriver);
+	public IssueV3TokenCommand(TokenProviderApi tokenProviderApi, TokenProviderDriver tokenProviderDriver, String userid,
+			List<String> methodNames, Date expiresAt, String projectid, String domainid, AuthContext authContext,
+			Trust trust, Token token, boolean includeCatalog) {
+		super(tokenProviderApi, tokenProviderDriver);
 		this.userid = userid;
 		this.methodNames = methodNames;
 		this.expiresAt = expiresAt;

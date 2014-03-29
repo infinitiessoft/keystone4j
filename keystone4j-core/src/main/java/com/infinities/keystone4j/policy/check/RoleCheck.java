@@ -3,6 +3,9 @@ package com.infinities.keystone4j.policy.check;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Sets;
 import com.infinities.keystone4j.policy.Enforcer;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
@@ -10,6 +13,9 @@ import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.token.model.TokenRole;
 
 public class RoleCheck extends Check {
+
+	private final static Logger logger = LoggerFactory.getLogger(RoleCheck.class);
+
 
 	@Override
 	public String getRule() {
@@ -29,6 +35,7 @@ public class RoleCheck extends Check {
 
 	@Override
 	public Check newInstance(String kind, String match) {
+		logger.debug("new role check: {}, {}", new Object[] { kind, match });
 		Check check = new RoleCheck();
 		check.setKind(kind);
 		check.setMatch(match);

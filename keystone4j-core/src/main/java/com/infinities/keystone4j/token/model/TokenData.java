@@ -8,8 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.codehaus.jackson.map.annotate.JsonView;
-
+import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.ISO8601DateAdapter;
 import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.model.Domain;
@@ -21,9 +20,9 @@ import com.infinities.keystone4j.trust.model.Trust;
 
 public class TokenData {
 
-	private List<String> methods = new ArrayList<String>();
+	private List<String> methods = new ArrayList<String>(0);
 	private String extras;
-	private List<Role> roles = new ArrayList<Role>();
+	private List<Role> roles = new ArrayList<Role>(0);
 	private User user;
 	private Catalog catalog;
 	private Project project;

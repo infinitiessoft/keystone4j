@@ -3,6 +3,9 @@ package com.infinities.keystone4j.policy;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.policy.reducer.ExtendAndExprReducer;
 import com.infinities.keystone4j.policy.reducer.ExtendOrExprReducer;
@@ -17,6 +20,7 @@ public class ParseState {
 	private final List<Entry<String, BaseCheck>> entrys;
 	private final BaseReducer reducer = new WrapCheckReducer(new MakeAndExprReducer(new ExtendAndExprReducer(
 			new MakeOrExprReducer(new ExtendOrExprReducer(new MakeNotExprReducer(null))))));
+	private final static Logger logger = LoggerFactory.getLogger(ParseState.class);
 
 
 	public ParseState() {
@@ -36,9 +40,13 @@ public class ParseState {
 	public Entry<String, BaseCheck> getResult() {
 		if (entrys.size() != 1) {
 			// ValueError
+			for (Entry<String, BaseCheck> entry : entrys) {
+				logger.debug("value error:{}, {}", new Object[] { entry.getKey(), entry.getValue().getRule() });
+
+			}
+
 			throw new IllegalStateException(CLOUD_NOT_PARSE);
 		}
 		return entrys.get(0);
 	}
-
 }

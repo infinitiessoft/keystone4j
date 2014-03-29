@@ -35,6 +35,12 @@
 				<version>${jacksonVersion}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				<artifactId>jackson-jaxrs-json-provider</artifactId>
+				<version>${jacksonVersion}</version>
+			</dependency>
+
 			<!-- <dependency> <groupId>com.google.code.gson</groupId> <artifactId>gson</artifactId> 
 				<version>2.2.4</version> </dependency> -->
 
@@ -75,11 +81,9 @@
 				<version>${jerseyVersion}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.glassfish.jersey.media</groupId>
-				<artifactId>jersey-media-json-jackson</artifactId>
-				<version>${jerseyVersion}</version>
-			</dependency>
+			<!-- <dependency> <groupId>org.glassfish.jersey.media</groupId> <artifactId>jersey-media-json-jackson</artifactId> 
+				<version>${jerseyVersion}</version> </dependency> -->
+
 
 			<dependency>
 				<groupId>org.apache.shiro</groupId>

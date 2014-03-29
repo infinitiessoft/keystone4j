@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
-@Priority(1003)
+@Priority(1004)
 public class RequestBodySizeLimiter implements Middleware {
 
 	private final static Logger logger = LoggerFactory.getLogger(RequestBodySizeLimiter.class);

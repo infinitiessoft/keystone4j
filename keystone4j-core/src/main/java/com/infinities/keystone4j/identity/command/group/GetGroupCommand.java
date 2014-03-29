@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.identity.command.group;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
@@ -19,9 +18,9 @@ public class GetGroupCommand extends AbstractIdentityCommand<Group> {
 	private String domainid;
 
 
-	public GetGroupCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, TokenApi tokenApi,
-			IdentityApi identityApi, IdentityDriver identityDriver, String groupid, String domainid) {
-		super(assignmentApi, credentialApi, tokenApi, identityApi, identityDriver);
+	public GetGroupCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
+			IdentityDriver identityDriver, String groupid, String domainid) {
+		super(credentialApi, tokenApi, identityApi, identityDriver);
 		this.groupid = groupid;
 		this.domainid = domainid;
 	}

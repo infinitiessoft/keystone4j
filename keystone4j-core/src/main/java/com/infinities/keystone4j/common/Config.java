@@ -67,7 +67,7 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "crypt_strength", Options.newIntOpt("crypt_strength", 40000));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "tcp_keepalive", Options.newBoolOpt("tcp_keepalive", false));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "tcp_keepidle", Options.newIntOpt("tcp_keepidle", 600));
-		FILE_OPTIONS.put(Config.Type.DEFAULT, "policy_file", Options.newStrOpt("policy_file", "/etc/policy.json"));
+		FILE_OPTIONS.put(Config.Type.DEFAULT, "policy_file", Options.newStrOpt("policy_file", "/policy.json"));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "domain_id_immutable", Options.newBoolOpt("domain_id_immutable", false));
 
 		FILE_OPTIONS.put(Config.Type.identity, "default_domain_id", Options.newStrOpt("default_domain_id", "default"));
@@ -89,7 +89,8 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.token, "bind", Options.newListOpt("bind", new ArrayList<String>()));
 		FILE_OPTIONS.put(Config.Type.token, "enforce_token_bind", Options.newStrOpt("enforce_token_bind", "permissive"));
 		FILE_OPTIONS.put(Config.Type.token, "expiration", Options.newIntOpt("expiration", 86400));
-		FILE_OPTIONS.put(Config.Type.token, "proviser", Options.newStrOpt("proviser", ""));
+		FILE_OPTIONS.put(Config.Type.token, "provider",
+				Options.newStrOpt("provider", "com.infinities.keystone4j.token.provider.driver.PkiProvider"));
 		FILE_OPTIONS.put(Config.Type.token, "driver",
 				Options.newStrOpt("driver", "com.infinities.keystone4j.token.driver.TokenJpaDriver"));
 		FILE_OPTIONS.put(Config.Type.token, "caching", Options.newBoolOpt("caching", true));
@@ -127,7 +128,8 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.signing, "cert_subject",
 				Options.newStrOpt("cert_subject", "/C=US/ST=Unset/L=Unset/O=Unset/CN=www.example.com"));
 
-		FILE_OPTIONS.put(Config.Type.assignment, "driver", Options.newStrOpt("driver", ""));
+		FILE_OPTIONS.put(Config.Type.assignment, "driver",
+				Options.newStrOpt("driver", "com.infinities.keystone4j.assignment.driver.AssignmentJpaDriver"));
 		FILE_OPTIONS.put(Config.Type.assignment, "caching", Options.newBoolOpt("caching", true));
 		FILE_OPTIONS.put(Config.Type.assignment, "cache_time", Options.newIntOpt("cache_time", -1));
 		FILE_OPTIONS.put(Config.Type.assignment, "list_limit", Options.newIntOpt("list_limit", -1));

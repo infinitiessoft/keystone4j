@@ -3,7 +3,6 @@ package com.infinities.keystone4j.identity.command.group;
 import java.util.List;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
@@ -21,9 +20,9 @@ public class DeleteGroupCommand extends AbstractIdentityCommand<Group> {
 	private String domainid;
 
 
-	public DeleteGroupCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, TokenApi tokenApi,
-			IdentityApi identityApi, IdentityDriver identityDriver, String groupid, String domainid) {
-		super(assignmentApi, credentialApi, tokenApi, identityApi, identityDriver);
+	public DeleteGroupCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
+			IdentityDriver identityDriver, String groupid, String domainid) {
+		super(credentialApi, tokenApi, identityApi, identityDriver);
 		this.groupid = groupid;
 		this.domainid = domainid;
 	}

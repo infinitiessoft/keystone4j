@@ -9,7 +9,6 @@ import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.JsonUtils;
 import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.exception.Exceptions;
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.TokenData;
 import com.infinities.keystone4j.token.model.TokenDataWrapper;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
@@ -23,9 +22,8 @@ public class ValidateV3TokenCommand extends AbstractTokenProviderCommand<TokenDa
 	private final static String FAILED_TO_VALIDATE_TOKEN = "Failed to validate token";
 
 
-	public ValidateV3TokenCommand(TokenApi tokenApi, TokenProviderApi tokenProviderApi,
-			TokenProviderDriver tokenProviderDriver, String tokenid) {
-		super(tokenApi, tokenProviderApi, tokenProviderDriver);
+	public ValidateV3TokenCommand(TokenProviderApi tokenProviderApi, TokenProviderDriver tokenProviderDriver, String tokenid) {
+		super(tokenProviderApi, tokenProviderDriver);
 		this.tokenid = tokenid;
 	}
 
@@ -43,7 +41,7 @@ public class ValidateV3TokenCommand extends AbstractTokenProviderCommand<TokenDa
 
 			TokenData tokenData = token.getToken();
 
-			Date expiresAt = tokenData.getToken().getExpires();
+			Date expiresAt = tokenData.getExpireAt();
 			if (expiresAt.after(currentTime)) {
 				return;
 			}

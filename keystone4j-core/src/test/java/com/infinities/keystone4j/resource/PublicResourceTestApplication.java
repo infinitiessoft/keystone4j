@@ -3,9 +3,9 @@ package com.infinities.keystone4j.resource;
 import javax.inject.Singleton;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.infinities.keystone4j.JacksonFeature;
 import com.infinities.keystone4j.common.api.VersionApi;
 import com.infinities.keystone4j.common.api.VersionApiFactory;
 import com.infinities.keystone4j.main.PublicResource;

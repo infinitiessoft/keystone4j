@@ -26,7 +26,6 @@ import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.token.model.TokenData;
 import com.infinities.keystone4j.token.model.TokenDataWrapper;
@@ -39,7 +38,7 @@ public class TokenProviderApiImplTest {
 
 	private Mockery context;
 	private TokenProviderApi tokenProviderApi;
-	private TokenApi tokenApi;
+	// private TokenApi tokenApi;
 	private TokenProviderDriver driver;
 	private Domain domain;
 	private Project project;
@@ -137,7 +136,7 @@ public class TokenProviderApiImplTest {
 		tokenData.setToken(token);
 		tokenDataWrapper.setToken(tokenData);
 
-		tokenProviderApi = new TokenProviderApiImpl(tokenApi, driver);
+		tokenProviderApi = new TokenProviderApiImpl(driver);
 	}
 
 	@After

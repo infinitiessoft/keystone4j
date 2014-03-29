@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.token.provider.command;
 
 import com.infinities.keystone4j.auth.model.TokenMetadata;
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 
@@ -10,9 +9,8 @@ public class RevokeTokenCommand extends AbstractTokenProviderCommand<TokenMetada
 	private final String tokenid;
 
 
-	public RevokeTokenCommand(TokenApi tokenApi, TokenProviderApi tokenProviderApi, TokenProviderDriver tokenProviderDriver,
-			String tokenid) {
-		super(tokenApi, tokenProviderApi, tokenProviderDriver);
+	public RevokeTokenCommand(TokenProviderApi tokenProviderApi, TokenProviderDriver tokenProviderDriver, String tokenid) {
+		super(tokenProviderApi, tokenProviderDriver);
 		this.tokenid = tokenid;
 	}
 

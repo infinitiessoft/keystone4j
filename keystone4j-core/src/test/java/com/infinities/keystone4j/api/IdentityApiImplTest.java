@@ -17,7 +17,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
@@ -35,7 +34,7 @@ import com.infinities.keystone4j.token.model.Token;
 public class IdentityApiImplTest {
 
 	private Mockery context;
-	private AssignmentApi assignmentApi;
+	// private AssignmentApi assignmentApi;
 	private CredentialApi credentialApi;
 	private IdentityApi identityApi;
 	private TokenApi tokenApi;
@@ -60,7 +59,7 @@ public class IdentityApiImplTest {
 			}
 		};
 
-		assignmentApi = context.mock(AssignmentApi.class);
+		// assignmentApi = context.mock(AssignmentApi.class);
 		tokenApi = context.mock(TokenApi.class);
 		credentialApi = context.mock(CredentialApi.class);
 		driver = context.mock(IdentityDriver.class);
@@ -110,7 +109,7 @@ public class IdentityApiImplTest {
 		endpoint.setName("the internal volume endpoint");
 		endpoint.setUrl("http://identity:35357/v3/endpoints/");
 		endpoint.setService(service);
-		identityApi = new IdentityApiImpl(assignmentApi, credentialApi, tokenApi, driver);
+		identityApi = new IdentityApiImpl(credentialApi, tokenApi, driver);
 	}
 
 	@After

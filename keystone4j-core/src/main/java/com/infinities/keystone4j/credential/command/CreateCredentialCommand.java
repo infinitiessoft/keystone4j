@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.credential.command;
 
-import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.credential.CredentialDriver;
 import com.infinities.keystone4j.credential.model.Credential;
 
@@ -9,8 +8,8 @@ public class CreateCredentialCommand extends AbstractCredentialCommand<Credentia
 	private final Credential credential;
 
 
-	public CreateCredentialCommand(CredentialApi credentialApi, CredentialDriver credentialDriver, Credential credential) {
-		super(credentialApi, credentialDriver);
+	public CreateCredentialCommand(CredentialDriver credentialDriver, Credential credential) {
+		super(credentialDriver);
 		this.credential = credential;
 	}
 

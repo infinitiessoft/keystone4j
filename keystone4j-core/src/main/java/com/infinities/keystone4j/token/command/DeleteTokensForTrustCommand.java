@@ -2,12 +2,9 @@ package com.infinities.keystone4j.token.command;
 
 import java.util.List;
 
-import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
 import com.infinities.keystone4j.token.model.Token;
-import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
 public class DeleteTokensForTrustCommand extends AbstractTokenCommand<List<Token>> {
@@ -16,10 +13,9 @@ public class DeleteTokensForTrustCommand extends AbstractTokenCommand<List<Token
 	private final String trustid;
 
 
-	public DeleteTokensForTrustCommand(AssignmentApi assignmentApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, TrustApi trustApi, TokenApi tokenApi, TokenDriver tokenDriver, String userid,
+	public DeleteTokensForTrustCommand(TokenApi tokenApi, TrustApi trustApi, TokenDriver tokenDriver, String userid,
 			String trustid) {
-		super(assignmentApi, identityApi, tokenProviderApi, trustApi, tokenApi, tokenDriver);
+		super(tokenApi, trustApi, tokenDriver);
 		this.userid = userid;
 		this.trustid = trustid;
 	}

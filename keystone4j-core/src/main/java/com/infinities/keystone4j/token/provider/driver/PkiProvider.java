@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.JsonUtils;
+import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.exception.Exceptions;
@@ -24,12 +25,12 @@ public class PkiProvider extends TokenProviderBaseDriver {
 	@Override
 	protected String getTokenId(TokenDataWrapper tokenData) {
 		try {
-			String jsonStr = JsonUtils.toJson(tokenData);
+			String jsonStr = JsonUtils.toJson(tokenData, Views.AuthenticateForToken.class);
 			String tokenid = Cms.Instance.signToken(jsonStr);
 
 			return tokenid;
 		} catch (Exception e) {
-			logger.error("Unable to sign token");
+			logger.error("Unable to sign token", e);
 			throw Exceptions.UnexpectedException.getInstance("Unable to sign token.");
 		}
 	}

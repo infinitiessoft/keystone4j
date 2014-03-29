@@ -3,7 +3,6 @@ package com.infinities.keystone4j.identity.command.group;
 import java.util.List;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
@@ -20,9 +19,9 @@ public class ListGroupsCommand extends AbstractIdentityCommand<List<Group>> {
 	private String domainid;
 
 
-	public ListGroupsCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, TokenApi tokenApi,
-			IdentityApi identityApi, IdentityDriver identityDriver, String domainid) {
-		super(assignmentApi, credentialApi, tokenApi, identityApi, identityDriver);
+	public ListGroupsCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
+			IdentityDriver identityDriver, String domainid) {
+		super(credentialApi, tokenApi, identityApi, identityDriver);
 		this.domainid = domainid;
 	}
 

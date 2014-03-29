@@ -2,20 +2,23 @@ package com.infinities.keystone4j.policy;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.JsonUtils;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.policy.check.Check;
@@ -35,9 +38,9 @@ public class Enforcer {
 	private final static String NO_HANDLER = "No handler for matches of kind {}";
 	private final static String FAIL_TO_UNDERSTAND_RULE = "Failed to understand rule {}";
 	private final static String RULE_ENFORCED = "Rule {} will be now enforced";
-	private final static String NONE = "None";
+	private final static String NONE = "none";
 	private final static String RULE_DOES_NOT_EXIST = "Rule [{}] doesn't exist";
-	private Map<String, BaseCheck> rules;
+	private final Map<String, BaseCheck> rules;
 	private final Map<String, Check> checks;
 	// private final List<String> checks = Lists.newArrayList();
 	// private final long lastModified;
@@ -50,13 +53,16 @@ public class Enforcer {
 	}
 
 
-	public Enforcer(String policyPath) throws JsonParseException, JsonMappingException, IOException {
+	public Enforcer(String policyPath) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		// File file = new File(policyPath);
 		// lastModified = file.lastModified();
-		Map<String, String> rules = JsonUtils.readJson(new File(policyPath));
+		URL url = Cms.class.getResource(policyPath);
+		this.rules = Maps.newHashMap();
+		Map<String, String> rules = JsonUtils.readJson(new File(url.toURI()));
+		logger.debug("policy map size:{}, {}", new Object[] { rules.size(), rules });
 		checks = Maps.newHashMap();
-		setRules(rules);
 		setChecks(checks);
+		setRules(rules);
 
 	}
 
@@ -72,6 +78,7 @@ public class Enforcer {
 	public void setRules(Map<String, String> rules) {
 		// this.rules = rules;
 		for (Entry<String, String> entry : rules.entrySet()) {
+			logger.debug("put rules key:{}, value:{} ", new Object[] { entry.getKey(), entry.getValue() });
 			this.getRules().put(entry.getKey(), parseRule(entry.getValue()));
 		}
 	}
@@ -84,11 +91,24 @@ public class Enforcer {
 
 		ParseState state = new ParseState();
 		List<Entry<String, BaseCheck>> entrys = parseTokenize(value);
+		// logger.debug("list entry begin");
+		// for (Entry<String, BaseCheck> entry : entrys) {
+		// logger.debug("entry key:{} , rule:{}", new Object[] { entry.getKey(),
+		// entry.getValue().getRule() });
+		// if (entry.getValue() instanceof Check) {
+		// Check b = (Check) entry.getValue();
+		// logger.debug("kind:{}, match:{}", new Object[] { b.getKind(),
+		// b.getMatch() });
+		// }
+		// }
+		// logger.debug("list entry end");
+
 		for (Entry<String, BaseCheck> entry : entrys) {
 			state.shift(entry);
 		}
 
 		try {
+			logger.debug("parse rule: {} --> {}", new Object[] { value, state.getResult().getValue().getRule() });
 			return state.getResult().getValue();
 		} catch (IllegalArgumentException e) {
 			logger.error(FAIL_TO_UNDERSTAND_RULE, value);
@@ -108,6 +128,8 @@ public class Enforcer {
 			}
 			String clean = lstrip(token, "(");
 			int range = token.length() - clean.length();
+			// logger.debug("lstrip: {}, range:{}", new Object[] { clean, range
+			// });
 			for (int i = 0; i < range; i++) {
 				BaseCheck check = new StringCheck("(");
 				entrys.add(Maps.immutableEntry("(", check));
@@ -121,6 +143,8 @@ public class Enforcer {
 
 			clean = rstrip(token, ")");
 			int trail = token.length() - clean.length();
+			// logger.debug("rstrip: {}, trail:{}", new Object[] { clean, trail
+			// });
 			String lowered = clean.toLowerCase();
 			if (logicOperators.contains(lowered)) {
 				BaseCheck check = new StringCheck(clean);

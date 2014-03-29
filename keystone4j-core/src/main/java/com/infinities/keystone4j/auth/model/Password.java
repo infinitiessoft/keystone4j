@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.auth.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.infinities.keystone4j.identity.model.User;
 
 public class Password implements AuthData {

@@ -62,10 +62,6 @@ public class TokenDao extends AbstractDao<Token> {
 	public void deleteTokensForTrust(String userid, String trustid) {
 
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
 		Root<Token> root = cq.from(getEntityType());
@@ -77,8 +73,8 @@ public class TokenDao extends AbstractDao<Token> {
 		Predicate validPredicate = cb.equal(root.get("valid"), true);
 		predicates.add(validPredicate);
 
-		Predicate trustPredicate = cb.equal(root.get("trust").get("id"), trustid);
-		predicates.add(trustPredicate);
+		Predicate userPredicate = cb.equal(root.get("user").get("id"), userid);
+		predicates.add(userPredicate);
 
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
@@ -87,34 +83,21 @@ public class TokenDao extends AbstractDao<Token> {
 		List<Token> tokens = q.getResultList();
 
 		for (Token token : tokens) {
-			// if (!Strings.isNullOrEmpty(projectid)) {
-			// if (!isTenantMatches(projectid, token)) {
-			// continue;
-			// }
-			// }
+			if (!Strings.isNullOrEmpty(trustid)) {
+				if (!isTrustMatches(trustid, token)) {
+					continue;
+				}
+			}
 
 			token.setValid(false);
 			em.merge(token);
 		}
-		// tx.commit();
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
 
 	}
 
 	public void deleteTokensForUser(String userid, String projectid) {
 
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
 		Root<Token> root = cq.from(getEntityType());
@@ -145,15 +128,6 @@ public class TokenDao extends AbstractDao<Token> {
 			token.setValid(false);
 			em.merge(token);
 		}
-		// tx.commit();
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
 
 	}
 
@@ -191,6 +165,10 @@ public class TokenDao extends AbstractDao<Token> {
 		// em.close();
 		// }
 
+	}
+
+	private boolean isTrustMatches(String trustid, Token token) {
+		return (Strings.isNullOrEmpty(trustid) || (token.getTrust() != null && token.getTrust().getId().equals(trustid)));
 	}
 
 	private boolean isTenantMatches(String tenantid, Token token) {

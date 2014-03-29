@@ -15,7 +15,7 @@ public interface TokenApi extends Api {
 
 	void deleteTokensForUser(String userid, String projectid);
 
-	void deleteTokensForDomain(String domainid);
+	// void deleteTokensForDomain(String domainid);
 
 	Token createToken(Token token);
 

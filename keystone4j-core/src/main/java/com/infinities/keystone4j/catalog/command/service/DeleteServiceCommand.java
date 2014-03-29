@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.catalog.command.service;
 
-import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.command.AbstractCatalogCommand;
 import com.infinities.keystone4j.catalog.model.Service;
@@ -11,8 +10,8 @@ public class DeleteServiceCommand extends AbstractCatalogCommand<Service> {
 	private final String serviceid;
 
 
-	public DeleteServiceCommand(CatalogApi catalogApi, CatalogDriver catalogDriver, String serviceid) {
-		super(catalogApi, catalogDriver);
+	public DeleteServiceCommand(CatalogDriver catalogDriver, String serviceid) {
+		super(catalogDriver);
 		this.serviceid = serviceid;
 	}
 

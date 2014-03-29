@@ -1,5 +1,8 @@
 package com.infinities.keystone4j.auth.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class AuthV3Wrapper {
 
 	private AuthV3 auth;

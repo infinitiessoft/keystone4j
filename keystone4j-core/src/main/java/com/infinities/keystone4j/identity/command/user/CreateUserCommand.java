@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.identity.command.user;
 
-import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
@@ -15,9 +14,9 @@ public class CreateUserCommand extends AbstractIdentityCommand<User> {
 	private final User user;
 
 
-	public CreateUserCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, TokenApi tokenApi,
-			IdentityApi identityApi, IdentityDriver identityDriver, User user) {
-		super(assignmentApi, credentialApi, tokenApi, identityApi, identityDriver);
+	public CreateUserCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
+			IdentityDriver identityDriver, User user) {
+		super(credentialApi, tokenApi, identityApi, identityDriver);
 		this.user = user;
 	}
 

@@ -11,8 +11,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.codehaus.jackson.map.annotate.JsonView;
-
+import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;

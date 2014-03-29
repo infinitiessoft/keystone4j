@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.KeystoneContext;
 
-@Priority(1001)
+@Priority(1002)
 public class TokenAuthMiddleware implements Middleware {
 
 	private final static String SUBJECT_TOKEN_HEADER = "X-Subject-Token";

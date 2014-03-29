@@ -64,7 +64,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 		}
 		token.setUser(tokenData.getToken().getUser());
 		token.setTokenData(tokenData);
-
+		token.setId(tokenid);
 		token = this.tokenApi.createToken(token);
 		tokenData.getToken().setToken(token);
 
@@ -80,6 +80,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 	public TokenDataWrapper validateV3Token(String uniqueid) {
 		Token token = this.verifyToken(uniqueid);
 		TokenDataWrapper tokenData = validateV3TokenRef(token);
+
 		return tokenData;
 	}
 

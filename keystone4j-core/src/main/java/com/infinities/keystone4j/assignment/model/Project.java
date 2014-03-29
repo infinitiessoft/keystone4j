@@ -18,9 +18,8 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.annotate.JsonView;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.BaseEntity;
 import com.infinities.keystone4j.Views;
@@ -29,6 +28,7 @@ import com.infinities.keystone4j.endpointfilter.model.ProjectEndpoint;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.trust.model.Trust;
 
 @Entity
 @Table(name = "PROJECT", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
@@ -49,6 +49,7 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 	private Set<Credential> credentials = new HashSet<Credential>(0);
 	private Set<Token> tokens = new HashSet<Token>(0);
 	private Set<User> users = new HashSet<User>(0);
+	private Set<Trust> trusts = new HashSet<Trust>(0);
 	private Set<ProjectEndpoint> projectEndpoints = new HashSet<ProjectEndpoint>(0);
 	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
 	private boolean nameUpdated = false;
@@ -261,6 +262,17 @@ public class Project extends BaseEntity implements java.io.Serializable, PolicyE
 	@JsonIgnore
 	public Project getProject() {
 		throw new IllegalStateException("propert 'project' not exist");
+	}
+
+	@JsonView(Views.All.class)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL)
+	public Set<Trust> getTrusts() {
+		return trusts;
+	}
+
+	@JsonView(Views.All.class)
+	public void setTrusts(Set<Trust> trusts) {
+		this.trusts = trusts;
 	}
 
 }

@@ -31,67 +31,67 @@ public class CatalogApiImpl implements CatalogApi {
 
 	@Override
 	public Endpoint createEndpoint(Endpoint endpoint) {
-		CreateEndpointCommand command = new CreateEndpointCommand(this, catalogDriver, endpoint);
+		CreateEndpointCommand command = new CreateEndpointCommand(catalogDriver, endpoint);
 		return command.execute();
 	}
 
 	@Override
 	public List<Endpoint> listEndpoints() {
-		ListEndpointsCommand command = new ListEndpointsCommand(this, catalogDriver);
+		ListEndpointsCommand command = new ListEndpointsCommand(catalogDriver);
 		return command.execute();
 	}
 
 	@Override
 	public Endpoint getEndpoint(String endpointid) {
-		GetEndpointCommand command = new GetEndpointCommand(this, catalogDriver, endpointid);
+		GetEndpointCommand command = new GetEndpointCommand(catalogDriver, endpointid);
 		return command.execute();
 	}
 
 	@Override
 	public Endpoint updateEndpoint(String endpointid, Endpoint endpoint) {
-		UpdateEndpointCommand command = new UpdateEndpointCommand(this, catalogDriver, endpointid, endpoint);
+		UpdateEndpointCommand command = new UpdateEndpointCommand(catalogDriver, endpointid, endpoint);
 		return command.execute();
 	}
 
 	@Override
 	public Endpoint deleteEndpoint(String endpointid) {
-		DeleteEndpointCommand command = new DeleteEndpointCommand(this, catalogDriver, endpointid);
+		DeleteEndpointCommand command = new DeleteEndpointCommand(catalogDriver, endpointid);
 		return command.execute();
 	}
 
 	@Override
 	public Service createService(Service service) {
-		CreateServiceCommand command = new CreateServiceCommand(this, catalogDriver, service);
+		CreateServiceCommand command = new CreateServiceCommand(catalogDriver, service);
 		return command.execute();
 	}
 
 	@Override
 	public List<Service> listServices() {
-		ListServicesCommand command = new ListServicesCommand(this, catalogDriver);
+		ListServicesCommand command = new ListServicesCommand(catalogDriver);
 		return command.execute();
 	}
 
 	@Override
 	public Service getService(String serviceid) {
-		GetServiceCommand command = new GetServiceCommand(this, catalogDriver, serviceid);
+		GetServiceCommand command = new GetServiceCommand(catalogDriver, serviceid);
 		return command.execute();
 	}
 
 	@Override
 	public Service updateService(String serviceid, Service service) {
-		UpdateServiceCommand command = new UpdateServiceCommand(this, catalogDriver, serviceid, service);
+		UpdateServiceCommand command = new UpdateServiceCommand(catalogDriver, serviceid, service);
 		return command.execute();
 	}
 
 	@Override
 	public Service deleteService(String serviceid) {
-		DeleteServiceCommand command = new DeleteServiceCommand(this, catalogDriver, serviceid);
+		DeleteServiceCommand command = new DeleteServiceCommand(catalogDriver, serviceid);
 		return command.execute();
 	}
 
 	@Override
 	public Catalog getV3Catalog(String userid, String projectid) {
-		GetV3CatalogCommand command = new GetV3CatalogCommand(this, catalogDriver, userid, projectid);
+		GetV3CatalogCommand command = new GetV3CatalogCommand(catalogDriver, userid, projectid);
 		return command.execute();
 	}
 

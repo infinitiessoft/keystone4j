@@ -1,14 +1,15 @@
 package com.infinities.keystone4j.policy.driver;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.PolicyDao;
@@ -27,7 +28,7 @@ public class PolicyJpaDriver implements PolicyDriver {
 	private final Enforcer enforcer;
 
 
-	public PolicyJpaDriver() throws JsonParseException, JsonMappingException, IOException {
+	public PolicyJpaDriver() throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		super();
 		this.policyDao = new PolicyDao();
 		String policyPath = Config.Instance.getOpt(Config.Type.DEFAULT, POLICY_FILE).asText();

@@ -59,7 +59,6 @@ public class ApiV3Resource {
 	// public Class<OSInheritResource> getOSInheritResource() {
 	// return OSInheritResource.class;
 	// }
-
 	@Path("/auth")
 	// auth
 	public Class<AuthResource> getAuthResource() {

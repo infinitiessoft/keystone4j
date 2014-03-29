@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.catalog.command.endpoint;
 
-import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.command.AbstractCatalogCommand;
 import com.infinities.keystone4j.catalog.model.Endpoint;
@@ -11,8 +10,8 @@ public class CreateEndpointCommand extends AbstractCatalogCommand<Endpoint> {
 	private final Endpoint endpoint;
 
 
-	public CreateEndpointCommand(CatalogApi catalogApi, CatalogDriver catalogDriver, Endpoint endpoint) {
-		super(catalogApi, catalogDriver);
+	public CreateEndpointCommand(CatalogDriver catalogDriver, Endpoint endpoint) {
+		super(catalogDriver);
 		this.endpoint = endpoint;
 	}
 

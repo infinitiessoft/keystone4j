@@ -5,9 +5,9 @@ import org.glassfish.hk2.api.Factory;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.token.TokenDriver;
 
-public class TokenJpaDriverFactory implements Factory<TokenDriver> {
+public class TokenDriverFactory implements Factory<TokenDriver> {
 
-	public TokenJpaDriverFactory() {
+	public TokenDriverFactory() {
 	}
 
 	@Override

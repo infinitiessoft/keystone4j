@@ -10,8 +10,9 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 @MappedSuperclass
 public class BaseEntity implements Serializable {

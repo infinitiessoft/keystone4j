@@ -1,7 +1,6 @@
 package com.infinities.keystone4j.identity.command.user;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
@@ -19,9 +18,9 @@ public class GetUserCommand extends AbstractIdentityCommand<User> {
 	private String domainid;
 
 
-	public GetUserCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, TokenApi tokenApi,
-			IdentityApi identityApi, IdentityDriver identityDriver, String userid, String domainid) {
-		super(assignmentApi, credentialApi, tokenApi, identityApi, identityDriver);
+	public GetUserCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
+			IdentityDriver identityDriver, String userid, String domainid) {
+		super(credentialApi, tokenApi, identityApi, identityDriver);
 		this.userid = userid;
 		this.domainid = domainid;
 	}

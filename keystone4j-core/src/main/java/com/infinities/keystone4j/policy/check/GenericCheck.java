@@ -18,7 +18,7 @@ public class GenericCheck extends Check {
 
 	@Override
 	public String getRule() {
-		return "None";
+		return "none";
 	}
 
 	@Override

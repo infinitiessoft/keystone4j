@@ -2,6 +2,8 @@
 <dataset>
 	<DOMAIN id="default" optlock="1" name="newdomain" enabled="true"
 		desc="my domain" />
+	<DOMAIN id="69ea2c65-4679-441f-a596-8aec16752a0f" optlock="1" name="newdomain2" enabled="false"
+		desc="my domain2" />
 	<SERVICE id="79ea2c65-4679-441f-a596-8aec16752a0f" optlock="1"
 		name="keystone" desc="identity service" type="identity" />
 	<ENDPOINT id="79ea2c65-4679-441f-a596-8aec16752a1f" optlock="1"
@@ -42,6 +44,9 @@
 	<TOKEN id="708bb4f9-9d3c-46af-b18c-7033dc022f31" optlock="1"
 		issueat="2014-03-20 00:00:00" expires="2014-03-25 00:00:00" valid="false"
 		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
+	<TOKEN_ROLE id="0f3318f8-a7e7-41b4-830d-be8fdd5486c8"
+		tokenid="708bb4f9-9d3c-46af-b18c-7033dc012f11" optlock="1"
+		roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" />
 	<TRUST_ROLE id="0f3328f8-a7e7-41b4-830d-be8fdd5486c8"
 		trustid="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" optlock="1"
 		roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" />

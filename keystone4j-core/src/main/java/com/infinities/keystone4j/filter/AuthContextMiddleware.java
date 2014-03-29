@@ -19,17 +19,21 @@ import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.model.Token;
 
-@Priority(1000)
+@Priority(1001)
 public class AuthContextMiddleware extends TokenBindValidator implements Middleware {
 
 	private final static Logger logger = LoggerFactory.getLogger(AuthContextMiddleware.class);
-	private final TokenApi tokenApi;
+	private TokenApi tokenApi;
 
 
-	@Inject
-	public AuthContextMiddleware(TokenApi tokenApi) {
-		this.tokenApi = tokenApi;
+	// @Inject
+	public AuthContextMiddleware() {
+
 	}
+
+	// TokenApi tokenApi) {
+	// this.tokenApi = tokenApi;
+	// }
 
 	// subject_token_head only use in token-related action
 	@Override
@@ -78,6 +82,11 @@ public class AuthContextMiddleware extends TokenBindValidator implements Middlew
 			throw Exceptions.UnauthorizedException.getInstance(null);
 		}
 
+	}
+
+	@Inject
+	public void setTokenApi(TokenApi tokenApi) {
+		this.tokenApi = tokenApi;
 	}
 
 }

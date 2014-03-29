@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.catalog.command.service;
 
-import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.command.AbstractCatalogCommand;
 import com.infinities.keystone4j.catalog.model.Service;
@@ -11,8 +10,8 @@ public class GetServiceCommand extends AbstractCatalogCommand<Service> {
 	private final String serviceid;
 
 
-	public GetServiceCommand(CatalogApi catalogApi, CatalogDriver catalogDriver, String serviceid) {
-		super(catalogApi, catalogDriver);
+	public GetServiceCommand(CatalogDriver catalogDriver, String serviceid) {
+		super(catalogDriver);
 		this.serviceid = serviceid;
 	}
 

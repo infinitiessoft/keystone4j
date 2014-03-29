@@ -1,6 +1,7 @@
 package com.infinities.keystone4j.token;
 
 import java.text.MessageFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -70,6 +71,13 @@ public class TokenDataHelper {
 	}
 
 	private void populateTokenDates(TokenData tokenData, Date expiresAt, Trust trust) {
+		if (expiresAt == null) {
+			int expireSec = Config.Instance.getOpt(Config.Type.token, "expiration").asInteger();
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.SECOND, expireSec);
+			expiresAt = calendar.getTime();
+		}
+
 		tokenData.setExpireAt(expiresAt);
 		tokenData.setIssuedAt(new Date());
 	}

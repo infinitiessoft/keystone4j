@@ -2,7 +2,6 @@ package com.infinities.keystone4j.token.provider.command;
 
 import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 
@@ -11,9 +10,8 @@ public class CheckV3TokenCommand extends AbstractTokenProviderCommand<TokenMetad
 	private final String tokenid;
 
 
-	public CheckV3TokenCommand(TokenApi tokenApi, TokenProviderApi tokenProviderApi,
-			TokenProviderDriver tokenProviderDriver, String tokenid) {
-		super(tokenApi, tokenProviderApi, tokenProviderDriver);
+	public CheckV3TokenCommand(TokenProviderApi tokenProviderApi, TokenProviderDriver tokenProviderDriver, String tokenid) {
+		super(tokenProviderApi, tokenProviderDriver);
 		this.tokenid = tokenid;
 	}
 

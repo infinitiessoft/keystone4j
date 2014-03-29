@@ -9,11 +9,11 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public abstract class AbstractAssignmentCommand<T> implements Command<T> {
 
-	private CredentialApi credentialApi;
-	private IdentityApi identityApi;
-	private TokenApi tokenApi;
-	private AssignmentApi assignmentApi;
-	private AssignmentDriver assignmentDriver;
+	private final CredentialApi credentialApi;
+	private final IdentityApi identityApi;
+	private final TokenApi tokenApi;
+	private final AssignmentApi assignmentApi;
+	private final AssignmentDriver assignmentDriver;
 
 
 	public AbstractAssignmentCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,
@@ -22,7 +22,7 @@ public abstract class AbstractAssignmentCommand<T> implements Command<T> {
 		this.credentialApi = credentialApi;
 		this.identityApi = identityApi;
 		this.tokenApi = tokenApi;
-		this.setAssignmentApi(assignmentApi);
+		this.assignmentApi = assignmentApi;
 		this.assignmentDriver = assignmentDriver;
 	}
 
@@ -30,40 +30,20 @@ public abstract class AbstractAssignmentCommand<T> implements Command<T> {
 		return credentialApi;
 	}
 
-	public void setCredentialApi(CredentialApi credentialApi) {
-		this.credentialApi = credentialApi;
-	}
-
 	public IdentityApi getIdentityApi() {
 		return identityApi;
-	}
-
-	public void setIdentityApi(IdentityApi identityApi) {
-		this.identityApi = identityApi;
 	}
 
 	public TokenApi getTokenApi() {
 		return tokenApi;
 	}
 
-	public void setTokenApi(TokenApi tokenApi) {
-		this.tokenApi = tokenApi;
-	}
-
-	public AssignmentDriver getAssignmentDriver() {
-		return assignmentDriver;
-	}
-
-	public void setAssignmentDriver(AssignmentDriver assignmentDriver) {
-		this.assignmentDriver = assignmentDriver;
-	}
-
 	public AssignmentApi getAssignmentApi() {
 		return assignmentApi;
 	}
 
-	public void setAssignmentApi(AssignmentApi assignmentApi) {
-		this.assignmentApi = assignmentApi;
+	public AssignmentDriver getAssignmentDriver() {
+		return assignmentDriver;
 	}
 
 }

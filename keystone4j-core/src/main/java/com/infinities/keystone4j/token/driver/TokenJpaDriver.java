@@ -53,7 +53,6 @@ public class TokenJpaDriver implements TokenDriver {
 	@Override
 	public void deleteTokensForTrust(String userid, String trustid) {
 		tokenDao.deleteTokensForTrust(userid, trustid);
-
 	}
 
 	@Override

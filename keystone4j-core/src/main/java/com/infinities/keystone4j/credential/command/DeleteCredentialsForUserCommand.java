@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.credential.command;
 
-import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.credential.CredentialDriver;
 import com.infinities.keystone4j.credential.model.Credential;
 
@@ -9,8 +8,8 @@ public class DeleteCredentialsForUserCommand extends AbstractCredentialCommand<C
 	private final String userid;
 
 
-	public DeleteCredentialsForUserCommand(CredentialApi credentialApi, CredentialDriver credentialDriver, String userid) {
-		super(credentialApi, credentialDriver);
+	public DeleteCredentialsForUserCommand(CredentialDriver credentialDriver, String userid) {
+		super(credentialDriver);
 		this.userid = userid;
 	}
 

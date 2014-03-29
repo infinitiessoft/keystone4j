@@ -25,44 +25,43 @@ public class CredentialApiImpl implements CredentialApi {
 
 	@Override
 	public Credential createCredential(Credential credential) {
-		CreateCredentialCommand command = new CreateCredentialCommand(this, credentialDriver, credential);
+		CreateCredentialCommand command = new CreateCredentialCommand(credentialDriver, credential);
 		return command.execute();
 	}
 
 	@Override
 	public List<Credential> listCredentials() {
-		ListCredentialsCommand command = new ListCredentialsCommand(this, credentialDriver);
+		ListCredentialsCommand command = new ListCredentialsCommand(credentialDriver);
 		return command.execute();
 	}
 
 	@Override
 	public Credential getCredential(String credentialid) {
-		GetCredentialCommand command = new GetCredentialCommand(this, credentialDriver, credentialid);
+		GetCredentialCommand command = new GetCredentialCommand(credentialDriver, credentialid);
 		return command.execute();
 	}
 
 	@Override
 	public Credential updateCredential(String credentialid, Credential credential) {
-		UpdateCredentialCommand command = new UpdateCredentialCommand(this, credentialDriver, credentialid, credential);
+		UpdateCredentialCommand command = new UpdateCredentialCommand(credentialDriver, credentialid, credential);
 		return command.execute();
 	}
 
 	@Override
 	public Credential deleteCredential(String credentialid) {
-		DeleteCredentialCommand command = new DeleteCredentialCommand(this, credentialDriver, credentialid);
+		DeleteCredentialCommand command = new DeleteCredentialCommand(credentialDriver, credentialid);
 		return command.execute();
 	}
 
 	@Override
 	public void deleteCredentialsForProject(String projectid) {
-		DeleteCredentialsForProjectCommand command = new DeleteCredentialsForProjectCommand(this, credentialDriver,
-				projectid);
+		DeleteCredentialsForProjectCommand command = new DeleteCredentialsForProjectCommand(credentialDriver, projectid);
 		command.execute();
 	}
 
 	@Override
 	public void deleteCredentialsForUser(String userid) {
-		DeleteCredentialsForUserCommand command = new DeleteCredentialsForUserCommand(this, credentialDriver, userid);
+		DeleteCredentialsForUserCommand command = new DeleteCredentialsForUserCommand(credentialDriver, userid);
 		command.execute();
 	}
 

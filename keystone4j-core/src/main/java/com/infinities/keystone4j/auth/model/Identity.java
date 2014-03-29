@@ -7,8 +7,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonAnyGetter;
-
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.infinities.keystone4j.token.model.Token;
 
 public class Identity {

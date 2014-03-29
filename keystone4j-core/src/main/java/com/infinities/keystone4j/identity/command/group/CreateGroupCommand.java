@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.identity.command.group;
 
-import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
@@ -15,9 +14,9 @@ public class CreateGroupCommand extends AbstractIdentityCommand<Group> {
 	private final Group group;
 
 
-	public CreateGroupCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, TokenApi tokenApi,
-			IdentityApi identityApi, IdentityDriver identityDriver, Group group) {
-		super(assignmentApi, credentialApi, tokenApi, identityApi, identityDriver);
+	public CreateGroupCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
+			IdentityDriver identityDriver, Group group) {
+		super(credentialApi, tokenApi, identityApi, identityDriver);
 		this.group = group;
 	}
 
