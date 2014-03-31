@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
-import com.google.common.collect.Lists;
 import com.infinities.keystone4j.PasswordUtils;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityDriver;
@@ -180,11 +179,11 @@ public class IdentityJpaDriver implements IdentityDriver {
 	@Override
 	public List<Group> listGroupsForUser(String userid) {
 		getUser(userid);
-		List<UserGroupMembership> memberships = userGroupMembershipDao.listByUser(userid);
-		List<Group> groups = Lists.newArrayList();
-		for (UserGroupMembership membership : memberships) {
-			groups.add(membership.getGroup());
-		}
+		List<Group> groups = userGroupMembershipDao.listGroupsByUser(userid);
+		// List<Group> groups = Lists.newArrayList();
+		// for (UserGroupMembership membership : memberships) {
+		// groups.add(membership.getGroup());
+		// }
 		return groups;
 	}
 

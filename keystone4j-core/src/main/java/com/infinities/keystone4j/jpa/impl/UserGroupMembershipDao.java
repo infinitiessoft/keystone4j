@@ -11,6 +11,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.identity.model.UserGroupMembership;
 import com.infinities.keystone4j.jpa.AbstractDao;
@@ -50,32 +51,17 @@ public class UserGroupMembershipDao extends AbstractDao<UserGroupMembership> {
 		return ret;
 	}
 
-	public List<UserGroupMembership> listByUser(String userid) {
+	public List<Group> listGroupsByUser(String userid) {
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<UserGroupMembership> cq = cb.createQuery(UserGroupMembership.class);
-		Root<UserGroupMembership> root = cq.from(UserGroupMembership.class);
-		Predicate predicate = cb.equal(root.get("user").get("id"), userid);
-		cq.where(predicate);
-		cq.select(root);
+		CriteriaQuery<Group> cq = cb.createQuery(Group.class);
+		Root<Group> root = cq.from(Group.class);
+		Join<Group, UserGroupMembership> join = root.join("userGroupMemberships");
+		cq.select(root).where(cb.equal(join.get("user").get("id"), userid));
+		TypedQuery<Group> q = em.createQuery(cq);
+		List<Group> groups = q.getResultList();
 
-		TypedQuery<UserGroupMembership> q = em.createQuery(cq);
-		List<UserGroupMembership> ret = q.getResultList();
-		// tx.commit();
-		return ret;
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
-
+		return groups;
 	}
 
 	public UserGroupMembership findByUserGroup(String userid, String groupid) {
