@@ -64,11 +64,11 @@ public class IdentityJpaDriver implements IdentityDriver {
 	@Override
 	public List<User> listUsersInGroup(String groupid) {
 		getGroup(groupid);
-		List<UserGroupMembership> memberships = userGroupMembershipDao.listByGroup(groupid);
-		List<User> users = Lists.newArrayList();
-		for (UserGroupMembership membership : memberships) {
-			users.add(membership.getUser());
-		}
+		List<User> users = userGroupMembershipDao.listUserByGroup(groupid);
+		// List<User> users = Lists.newArrayList();
+		// for (UserGroupMembership membership : memberships) {
+		// users.add(membership.getUser());
+		// }
 		return users;
 	}
 

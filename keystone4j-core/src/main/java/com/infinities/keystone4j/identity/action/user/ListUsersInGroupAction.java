@@ -40,7 +40,7 @@ public class ListUsersInGroupAction extends AbstractUserAction<List<User>> {
 	public List<User> execute(ContainerRequestContext request) {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		Domain domain = new KeystoneUtils().getDomainForRequest(assignmentApi, tokenApi, context);
-		Iterable<User> groups = this.getIdentityApi().listUsersInGroup(groupid, domain.getId());
+		Iterable<User> users = this.getIdentityApi().listUsersInGroup(groupid, domain.getId());
 
 		List<Predicate<User>> filters = Lists.newArrayList();
 
@@ -90,10 +90,10 @@ public class ListUsersInGroupAction extends AbstractUserAction<List<User>> {
 
 		if (filters.size() > 0) {
 			Predicate<User> filter = Predicates.and(filters);
-			groups = Iterables.filter(groups, filter);
+			users = Iterables.filter(users, filter);
 		}
 
-		return Lists.newArrayList(groups);
+		return Lists.newArrayList(users);
 	}
 
 	@Override

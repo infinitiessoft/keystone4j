@@ -71,7 +71,7 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 	@Id
 	// @GeneratedValue(generator = "system-uuid")
 	// @GenericGenerator(name = "system-uuid", strategy = "uuid")
-	@Column(name = "ID", unique = true, nullable = false)
+	@Column(name = "ID", unique = true, nullable = false, length = 65535)
 	public String getId() {
 		return this.id;
 	}

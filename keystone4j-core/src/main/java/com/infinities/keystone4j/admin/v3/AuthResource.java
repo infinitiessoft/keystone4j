@@ -24,6 +24,8 @@ import com.infinities.keystone4j.trust.model.SignedWrapper;
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthResource {
 
+	// private final static Logger logger =
+	// LoggerFactory.getLogger(AuthResource.class);
 	private final static String SUBJECT_TOKEN_HEADER = "X-Subject-Token";
 	private final AuthController authController;
 

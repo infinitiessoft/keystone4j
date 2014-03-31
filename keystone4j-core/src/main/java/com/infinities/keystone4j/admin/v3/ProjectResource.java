@@ -81,7 +81,7 @@ public class ProjectResource {
 	@GET
 	@Path("/{projectid}/users")
 	@JsonView(Views.Basic.class)
-	public List<User> getProject(@PathParam("projectid") String projectid, @QueryParam("name") String name,
+	public List<User> getProjectUsers(@PathParam("projectid") String projectid, @QueryParam("name") String name,
 			@QueryParam("enabled") Boolean enabled, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) {
 		return projectController.getProjectUsers(projectid, enabled, name, page, perPage);

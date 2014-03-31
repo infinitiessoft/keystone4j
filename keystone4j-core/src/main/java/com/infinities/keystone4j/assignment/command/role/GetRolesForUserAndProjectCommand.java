@@ -9,15 +9,11 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
 import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
-import com.infinities.keystone4j.assignment.model.GroupDomainGrantMetadata;
 import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
-import com.infinities.keystone4j.assignment.model.GroupProjectGrantMetadata;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.assignment.model.UserDomainGrant;
-import com.infinities.keystone4j.assignment.model.UserDomainGrantMetadata;
 import com.infinities.keystone4j.assignment.model.UserProjectGrant;
-import com.infinities.keystone4j.assignment.model.UserProjectGrantMetadata;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
@@ -57,10 +53,9 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 		for (Group group : groups) {
 			// _get_metadata
 			try {
-				GroupProjectGrant grant = this.getAssignmentDriver().getGroupProjectGrant(group.getId(), projectid);
-				Set<GroupProjectGrantMetadata> metadatas = grant.getMetadatas();
-				for (GroupProjectGrantMetadata metadata : metadatas) {
-					roles.add(metadata.getRole());
+				List<GroupProjectGrant> grants = this.getAssignmentDriver().getGroupProjectGrants(group.getId(), projectid);
+				for (GroupProjectGrant grant : grants) {
+					roles.add(grant.getRole());
 				}
 			} catch (Exception e) {
 				// no group grant, skip
@@ -68,11 +63,12 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 			boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
 			if (enabled) {
 				try {
-					GroupDomainGrant grant = this.getAssignmentDriver().getGroupDomainGrant(group.getId(),
+					List<GroupDomainGrant> grants = this.getAssignmentDriver().getGroupDomainGrants(group.getId(),
 							project.getDomain().getId());
-					Set<GroupDomainGrantMetadata> metadatas = grant.getMetadatas();
-					for (GroupDomainGrantMetadata metadata : metadatas) {
-						roles.add(metadata.getRole());
+					// Set<GroupDomainGrantMetadata> metadatas =
+					// grant.getGroupDomainGrantMetadatas();
+					for (GroupDomainGrant grant : grants) {
+						roles.add(grant.getRole());
 					}
 				} catch (Exception e) {
 					// ignore
@@ -87,10 +83,9 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 		List<Role> roles = Lists.newArrayList();
 		// _get_metadata
 		try {
-			UserProjectGrant grant = this.getAssignmentDriver().getUserProjectGrant(userid, projectid);
-			Set<UserProjectGrantMetadata> metadatas = grant.getMetadatas();
-			for (UserProjectGrantMetadata metadata : metadatas) {
-				roles.add(metadata.getRole());
+			List<UserProjectGrant> grants = this.getAssignmentDriver().getUserProjectGrants(userid, projectid);
+			for (UserProjectGrant grant : grants) {
+				roles.add(grant.getRole());
 			}
 		} catch (Exception e) {
 			// no group grant, skip
@@ -98,10 +93,10 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<
 		boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
 		if (enabled) {
 			try {
-				UserDomainGrant grant = this.getAssignmentDriver().getUserDomainGrant(userid, project.getDomain().getId());
-				Set<UserDomainGrantMetadata> metadatas = grant.getMetadatas();
-				for (UserDomainGrantMetadata metadata : metadatas) {
-					roles.add(metadata.getRole());
+				List<UserDomainGrant> grants = this.getAssignmentDriver().getUserDomainGrants(userid,
+						project.getDomain().getId());
+				for (UserDomainGrant grant : grants) {
+					roles.add(grant.getRole());
 				}
 			} catch (Exception e) {
 				// ignore

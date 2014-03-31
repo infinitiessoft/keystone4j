@@ -51,22 +51,9 @@ public class CredentialDao extends AbstractDao<Credential> {
 
 	public void removeCredentialForProject(String projectid) {
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
-		Query query = em.createQuery("DELETE FROM CREDENTIAL c where c.project.id = :projectid ");
+		Query query = em.createQuery("DELETE FROM Credential c WHERE c.project.id = :projectid ");
 		query.setParameter("projectid", projectid);
 		query.executeUpdate();
-		// tx.commit();
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
 	}
 
 	public void removeCredentialForUser(String userid) {
@@ -75,7 +62,7 @@ public class CredentialDao extends AbstractDao<Credential> {
 		// try {
 		// tx = em.getTransaction();
 		// tx.begin();
-		Query query = em.createQuery("DELETE FROM CREDENTIAL c where c.user.id = :userid ");
+		Query query = em.createQuery("DELETE FROM Credential c WHERE c.user.id = :userid ");
 		query.setParameter("userid", userid);
 		query.executeUpdate();
 		// tx.commit();

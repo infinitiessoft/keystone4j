@@ -47,7 +47,7 @@ public class GroupDomainGrantDao extends AbstractDao<GroupDomainGrant> {
 		// }
 	}
 
-	public GroupDomainGrant findByGroupidAndDomainid(String groupid, String domainid) {
+	public GroupDomainGrant getGrant(String groupid, String domainid, String roleid) {
 
 		EntityManager em = getEntityManager();
 		// EntityTransaction tx = null;
@@ -62,6 +62,8 @@ public class GroupDomainGrantDao extends AbstractDao<GroupDomainGrant> {
 		predicates.add(groupPredicate);
 		Predicate projectPredicate = cb.equal(root.get("domain").get("id"), domainid);
 		predicates.add(projectPredicate);
+		Predicate rolePredicate = cb.equal(root.get("role").get("id"), roleid);
+		predicates.add(rolePredicate);
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
@@ -69,6 +71,43 @@ public class GroupDomainGrantDao extends AbstractDao<GroupDomainGrant> {
 		GroupDomainGrant grant = q.getSingleResult();
 		// tx.commit();
 		return grant;
+
+		// } catch (RuntimeException e) {
+		// if (tx != null && tx.isActive()) {
+		// tx.rollback();
+		// }
+		// throw e;
+		// } finally {
+		// em.close();
+		// }
+
+	}
+
+	public List<GroupDomainGrant> findByGroupidAndDomainid(String groupid, String domainid) {
+
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<GroupDomainGrant> cq = cb.createQuery(GroupDomainGrant.class);
+		Root<GroupDomainGrant> root = cq.from(GroupDomainGrant.class);
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate groupPredicate = cb.equal(root.get("group").get("id"), groupid);
+		predicates.add(groupPredicate);
+		Predicate projectPredicate = cb.equal(root.get("domain").get("id"), domainid);
+		predicates.add(projectPredicate);
+		// Predicate rolePredicate = cb.equal(root.get("role").get("id"),
+		// domainid);
+		// predicates.add(rolePredicate);
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<GroupDomainGrant> q = em.createQuery(cq);
+		List<GroupDomainGrant> grants = q.getResultList();
+		// tx.commit();
+		return grants;
 
 		// } catch (RuntimeException e) {
 		// if (tx != null && tx.isActive()) {

@@ -31,13 +31,9 @@ import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.jpa.impl.GroupDomainGrantDao;
-import com.infinities.keystone4j.jpa.impl.GroupDomainGrantMetadataDao;
 import com.infinities.keystone4j.jpa.impl.GroupProjectGrantDao;
-import com.infinities.keystone4j.jpa.impl.GroupProjectGrantMetadataDao;
 import com.infinities.keystone4j.jpa.impl.UserDomainGrantDao;
-import com.infinities.keystone4j.jpa.impl.UserDomainGrantMetadataDao;
 import com.infinities.keystone4j.jpa.impl.UserProjectGrantDao;
-import com.infinities.keystone4j.jpa.impl.UserProjectGrantMetadataDao;
 import com.infinities.keystone4j.token.model.Token;
 
 public class AssignmentJpaDriverTest extends AbstractDbUnitJpaTest {
@@ -174,19 +170,30 @@ public class AssignmentJpaDriverTest extends AbstractDbUnitJpaTest {
 
 	@Test
 	public void testAddRoleToUserAndProject() {
-		assertEquals(1, new UserProjectGrantMetadataDao().findAll().size());
+		assertEquals(
+				1,
+				driver.listGrantsByUserProject("0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
+						"79ea2c65-4679-441f-a596-8aec16752a2f", false).size());
 		driver.addRoleToUserAndProject("0f3328f8-a7e7-41b4-830d-be8fdd5186c7", "79ea2c65-4679-441f-a596-8aec16752a2f",
 				"708bb4f9-9d3c-46af-b18c-7033dc022fff");
-		role = driver.getRole("708bb4f9-9d3c-46af-b18c-7033dc022fff");
-		assertEquals(2, new UserProjectGrantMetadataDao().findAll().size());
+		assertEquals(
+				2,
+				driver.listGrantsByUserProject("0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
+						"79ea2c65-4679-441f-a596-8aec16752a2f", false).size());
 	}
 
 	@Test
 	public void testRemoveRoleFromUserAndProject() {
-		assertEquals(1, new UserProjectGrantMetadataDao().findAll().size());
+		assertEquals(
+				1,
+				driver.listGrantsByUserProject("0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
+						"79ea2c65-4679-441f-a596-8aec16752a2f", false).size());
 		driver.removeRoleFromUserAndProject("0f3328f8-a7e7-41b4-830d-be8fdd5186c7", "79ea2c65-4679-441f-a596-8aec16752a2f",
 				"708bb4f9-9d3c-46af-b18c-7033dc022ffb");
-		assertEquals(0, new UserProjectGrantMetadataDao().findAll().size());
+		assertEquals(
+				0,
+				driver.listGrantsByUserProject("0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
+						"79ea2c65-4679-441f-a596-8aec16752a2f", false).size());
 	}
 
 	@Test
@@ -253,11 +260,12 @@ public class AssignmentJpaDriverTest extends AbstractDbUnitJpaTest {
 	@Test
 	public void testListDomains() {
 		List<Domain> ret = driver.listDomains();
-		assertEquals(1, ret.size());
-		Domain retDomain = ret.get(0);
-		assertEquals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), retDomain.getId());
-		assertEquals("newdomain", retDomain.getName());
-		assertEquals("my domain", retDomain.getDescription());
+		assertEquals(2, ret.size());
+		// Domain retDomain = ret.get(0);
+		// assertEquals(Config.Instance.getOpt(Config.Type.identity,
+		// "default_domain_id").asText(), retDomain.getId());
+		// assertEquals("newdomain", retDomain.getName());
+		// assertEquals("my domain", retDomain.getDescription());
 	}
 
 	@Test
@@ -292,10 +300,10 @@ public class AssignmentJpaDriverTest extends AbstractDbUnitJpaTest {
 	@Test
 	public void testDeleteDomain() {
 		List<Domain> ret = driver.listDomains();
-		assertEquals(1, ret.size());
+		assertEquals(2, ret.size());
 		driver.deleteDomain(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
 		ret = driver.listDomains();
-		assertEquals(0, ret.size());
+		assertEquals(1, ret.size());
 	}
 
 	@Test
@@ -349,43 +357,43 @@ public class AssignmentJpaDriverTest extends AbstractDbUnitJpaTest {
 
 	@Test
 	public void testGetGroupProjectGrant() {
-		GroupProjectGrant ret = driver.getGroupProjectGrant("708bb4f9-9d3c-46af-b18c-7033dc022ffd",
+		List<GroupProjectGrant> rets = driver.getGroupProjectGrants("708bb4f9-9d3c-46af-b18c-7033dc022ffd",
 				"79ea2c65-4679-441f-a596-8aec16752a2f");
-		assertNotNull(ret);
-		assertEquals("b5a71165-3e27-4085-b7ed-143630e58896", ret.getId());
+		assertEquals(1, rets.size());
+		assertEquals("b5a71165-3e27-4085-b7ed-143630e58896", rets.get(0).getId());
 	}
 
 	@Test
 	public void testGetGroupDomainGrant() {
-		GroupDomainGrant ret = driver.getGroupDomainGrant("708bb4f9-9d3c-46af-b18c-7033dc022ffd", "default");
-		assertNotNull(ret);
-		assertEquals("b5a71165-3e27-4085-b7ed-143630e58897", ret.getId());
+		List<GroupDomainGrant> rets = driver.getGroupDomainGrants("708bb4f9-9d3c-46af-b18c-7033dc022ffd", "default");
+		assertEquals(1, rets.size());
+		assertEquals("b5a71165-3e27-4085-b7ed-143630e58897", rets.get(0).getId());
 	}
 
 	@Test
 	public void testGetUserProjectGrant() {
-		UserProjectGrant ret = driver.getUserProjectGrant("0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
+		List<UserProjectGrant> rets = driver.getUserProjectGrants("0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
 				"79ea2c65-4679-441f-a596-8aec16752a2f");
-		assertNotNull(ret);
-		assertEquals("b5a71165-3e27-4085-b7ed-143630e58895", ret.getId());
+		assertEquals(1, rets.size());
+		assertEquals("b5a71165-3e27-4085-b7ed-143630e58895", rets.get(0).getId());
 	}
 
 	@Test
 	public void testGetUserDomainGrant() {
-		UserDomainGrant ret = driver.getUserDomainGrant("0f3328f8-a7e7-41b4-830d-be8fdd5186c7", "default");
-		assertNotNull(ret);
-		assertEquals("b5a71165-3e27-4085-b7ed-143630e58898", ret.getId());
+		List<UserDomainGrant> rets = driver.getUserDomainGrants("0f3328f8-a7e7-41b4-830d-be8fdd5186c7", "default");
+		assertEquals(1, rets.size());
+		assertEquals("b5a71165-3e27-4085-b7ed-143630e58898", rets.get(0).getId());
 	}
 
 	@Test
 	public void testDeleteGrantByGroupDomain() {
-		assertEquals(1, new GroupDomainGrantMetadataDao().findAll().size());
+		assertEquals(1, driver.listGrantsByGroupDomain("708bb4f9-9d3c-46af-b18c-7033dc022ffd", "default", false).size());
 		Role ret = driver.getGrantByGroupDomain("708bb4f9-9d3c-46af-b18c-7033dc022ffb",
 				"708bb4f9-9d3c-46af-b18c-7033dc022ffd", "default", false);
 		assertNotNull(ret);
 		driver.deleteGrantByGroupDomain("708bb4f9-9d3c-46af-b18c-7033dc022ffb", "708bb4f9-9d3c-46af-b18c-7033dc022ffd",
 				"default", false);
-		assertEquals(0, new GroupDomainGrantMetadataDao().findAll().size());
+		assertEquals(0, driver.listGrantsByGroupDomain("708bb4f9-9d3c-46af-b18c-7033dc022ffd", "default", false).size());
 		// ret =
 		// driver.getGrantByGroupDomain("708bb4f9-9d3c-46af-b18c-7033dc022ffb",
 		// "708bb4f9-9d3c-46af-b18c-7033dc022ffd",
@@ -395,14 +403,20 @@ public class AssignmentJpaDriverTest extends AbstractDbUnitJpaTest {
 
 	@Test
 	public void testDeleteGrantByGroupProject() {
-		assertEquals(1, new GroupProjectGrantMetadataDao().findAll().size());
+		assertEquals(
+				1,
+				driver.listGrantsByGroupProject("708bb4f9-9d3c-46af-b18c-7033dc022ffd",
+						"79ea2c65-4679-441f-a596-8aec16752a2f", false).size());
 		Role ret = driver.getGrantByGroupProject("708bb4f9-9d3c-46af-b18c-7033dc022ffb",
 				"708bb4f9-9d3c-46af-b18c-7033dc022ffd", "79ea2c65-4679-441f-a596-8aec16752a2f", false);
 		assertNotNull(ret);
 		assertEquals("708bb4f9-9d3c-46af-b18c-7033dc022ffb", ret.getId());
 		driver.deleteGrantByGroupProject("708bb4f9-9d3c-46af-b18c-7033dc022ffb", "708bb4f9-9d3c-46af-b18c-7033dc022ffd",
 				"79ea2c65-4679-441f-a596-8aec16752a2f", false);
-		assertEquals(0, new GroupProjectGrantMetadataDao().findAll().size());
+		assertEquals(
+				0,
+				driver.listGrantsByGroupProject("708bb4f9-9d3c-46af-b18c-7033dc022ffd",
+						"79ea2c65-4679-441f-a596-8aec16752a2f", false).size());
 		// ret =
 		// driver.getGrantByGroupProject("708bb4f9-9d3c-46af-b18c-7033dc022ffb",
 		// "708bb4f9-9d3c-46af-b18c-7033dc022ffd",
@@ -413,14 +427,14 @@ public class AssignmentJpaDriverTest extends AbstractDbUnitJpaTest {
 
 	@Test
 	public void testDeleteGrantByUserDomain() {
-		assertEquals(1, new UserDomainGrantMetadataDao().findAll().size());
+		assertEquals(1, driver.listGrantsByUserDomain("0f3328f8-a7e7-41b4-830d-be8fdd5186c7", "default", false).size());
 		Role ret = driver.getGrantByUserDomain("708bb4f9-9d3c-46af-b18c-7033dc022ffb",
 				"0f3328f8-a7e7-41b4-830d-be8fdd5186c7", "default", false);
 		assertNotNull(ret);
 		assertEquals("708bb4f9-9d3c-46af-b18c-7033dc022ffb", ret.getId());
 		driver.deleteGrantByUserDomain("708bb4f9-9d3c-46af-b18c-7033dc022ffb", "0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
 				"default", false);
-		assertEquals(0, new UserDomainGrantMetadataDao().findAll().size());
+		assertEquals(0, driver.listGrantsByUserDomain("0f3328f8-a7e7-41b4-830d-be8fdd5186c7", "default", false).size());
 		// ret =
 		// driver.getGrantByUserDomain("708bb4f9-9d3c-46af-b18c-7033dc022ffb",
 		// "0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
@@ -430,14 +444,20 @@ public class AssignmentJpaDriverTest extends AbstractDbUnitJpaTest {
 
 	@Test
 	public void testDeleteGrantByUserProject() {
-		assertEquals(1, new UserProjectGrantMetadataDao().findAll().size());
+		assertEquals(
+				1,
+				driver.listGrantsByUserProject("0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
+						"79ea2c65-4679-441f-a596-8aec16752a2f", false).size());
 		Role ret = driver.getGrantByUserProject("708bb4f9-9d3c-46af-b18c-7033dc022ffb",
 				"0f3328f8-a7e7-41b4-830d-be8fdd5186c7", "79ea2c65-4679-441f-a596-8aec16752a2f", false);
 		assertNotNull(ret);
 		assertEquals("708bb4f9-9d3c-46af-b18c-7033dc022ffb", ret.getId());
 		driver.deleteGrantByUserProject("708bb4f9-9d3c-46af-b18c-7033dc022ffb", "0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
 				"79ea2c65-4679-441f-a596-8aec16752a2f", false);
-		assertEquals(0, new UserProjectGrantMetadataDao().findAll().size());
+		assertEquals(
+				0,
+				driver.listGrantsByUserProject("0f3328f8-a7e7-41b4-830d-be8fdd5186c7",
+						"79ea2c65-4679-441f-a596-8aec16752a2f", false).size());
 		// ret =
 		// driver.getGrantByUserProject("708bb4f9-9d3c-46af-b18c-7033dc022ffb",
 		// "0f3328f8-a7e7-41b4-830d-be8fdd5186c7",

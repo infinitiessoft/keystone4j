@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.admin.v3;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -17,6 +19,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
@@ -79,7 +83,8 @@ public class GroupResource {
 	@JsonView(Views.Basic.class)
 	public UsersWrapper listUsersInGroup(@PathParam("groupid") String groupid, @QueryParam("domain_id") String domainid,
 			@QueryParam("email") String email, @QueryParam("enabled") Boolean enabled, @QueryParam("name") String name,
-			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws JsonGenerationException, JsonMappingException, IOException {
 		return userController.listUsersInGroup(groupid, domainid, email, enabled, name, page, perPage);
 	}
 

@@ -2,13 +2,17 @@ package com.infinities.keystone4j.identity.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.infinities.keystone4j.Views;
+
 public class UsersWrapper {
 
+	@JsonView(Views.Basic.class)
 	private List<User> users;
 
 
 	public UsersWrapper(List<User> users) {
-		super();
+		// super();
 		this.users = users;
 	}
 

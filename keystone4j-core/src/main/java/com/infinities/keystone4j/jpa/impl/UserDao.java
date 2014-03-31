@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -22,37 +23,16 @@ public class UserDao extends AbstractDao<User> {
 	}
 
 	public List<User> listUsersForProject(String projectid) {
-
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<UserProjectGrant> cq = cb.createQuery(UserProjectGrant.class);
-		Root<UserProjectGrant> root = cq.from(UserProjectGrant.class);
-		Predicate predicate = cb.equal(root.get("project").get("id"), projectid);
-		cq.where(predicate);
-		cq.select(root);
+		CriteriaQuery<User> cq = cb.createQuery(User.class);
+		Root<User> root = cq.from(User.class);
+		Join<User, UserProjectGrant> grant = root.join("userProjectGrants");
+		cq.select(root).where(cb.equal(grant.get("project").get("id"), projectid));
+		TypedQuery<User> q = em.createQuery(cq);
+		List<User> users = q.getResultList();
 
-		TypedQuery<UserProjectGrant> q = em.createQuery(cq);
-		List<UserProjectGrant> grants = q.getResultList();
-
-		List<User> users = Lists.newArrayList();
-		for (UserProjectGrant grant : grants) {
-			users.add(grant.getUser());
-		}
-
-		// tx.commit();
 		return users;
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
 
 	}
 

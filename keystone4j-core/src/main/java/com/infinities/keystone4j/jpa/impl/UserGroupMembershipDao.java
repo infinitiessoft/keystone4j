@@ -6,10 +6,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.identity.model.UserGroupMembership;
 import com.infinities.keystone4j.jpa.AbstractDao;
 
@@ -19,12 +21,22 @@ public class UserGroupMembershipDao extends AbstractDao<UserGroupMembership> {
 		super(UserGroupMembership.class);
 	}
 
+	public List<User> listUserByGroup(String groupid) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<User> cq = cb.createQuery(User.class);
+		Root<User> root = cq.from(User.class);
+		Join<User, UserGroupMembership> join = root.join("userGroupMemberships");
+		cq.select(root).where(cb.equal(join.get("group").get("id"), groupid));
+		TypedQuery<User> q = em.createQuery(cq);
+		List<User> users = q.getResultList();
+
+		return users;
+
+	}
+
 	public List<UserGroupMembership> listByGroup(String groupid) {
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<UserGroupMembership> cq = cb.createQuery(UserGroupMembership.class);
 		Root<UserGroupMembership> root = cq.from(UserGroupMembership.class);
@@ -35,16 +47,7 @@ public class UserGroupMembershipDao extends AbstractDao<UserGroupMembership> {
 		TypedQuery<UserGroupMembership> q = em.createQuery(cq);
 		List<UserGroupMembership> ret = q.getResultList();
 
-		// tx.commit();
 		return ret;
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
 	}
 
 	public List<UserGroupMembership> listByUser(String userid) {

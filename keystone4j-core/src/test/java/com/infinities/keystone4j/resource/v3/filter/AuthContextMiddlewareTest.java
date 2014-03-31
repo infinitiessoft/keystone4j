@@ -20,8 +20,7 @@ import com.infinities.keystone4j.token.TokenApi;
 
 public class AuthContextMiddlewareTest extends JerseyTest {
 
-	private final static String INVALID_TOKEN = "invalid_token";
-
+	// private final static String INVALID_TOKEN = "invalid_token";
 
 	@Override
 	protected Application configure() {
@@ -40,7 +39,7 @@ public class AuthContextMiddlewareTest extends JerseyTest {
 		context.checking(new Expectations() {
 
 			{
-				exactly(1).of(tokenApi).getToken(INVALID_TOKEN);
+				exactly(1).of(tokenApi).getToken("invalid");
 				will(returnValue(null));
 
 			}
@@ -64,7 +63,7 @@ public class AuthContextMiddlewareTest extends JerseyTest {
 
 	@Test
 	public void testWithInvalidToken() {
-		Response response = target("/").request().header(Middleware.AUTH_TOKEN_HEADER, INVALID_TOKEN).get();
+		Response response = target("/").request().header(Middleware.AUTH_TOKEN_HEADER, "invalid").get();
 		assertEquals(401, response.getStatus());
 	}
 

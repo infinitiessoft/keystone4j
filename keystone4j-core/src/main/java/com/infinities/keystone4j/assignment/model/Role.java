@@ -34,13 +34,14 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 	@NotNull(message = "name field is required and cannot be empty")
 	private String name;
 	private String extra;
+
+	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
+	private Set<GroupProjectGrant> groupProjectGrants = new HashSet<GroupProjectGrant>(0);
+	private Set<GroupDomainGrant> groupDomainGrants = new HashSet<GroupDomainGrant>(0);
+	private Set<UserProjectGrant> userProjectGrants = new HashSet<UserProjectGrant>(0);
+	private Set<UserDomainGrant> userDomainGrants = new HashSet<UserDomainGrant>(0);
 	private Set<TrustRole> trustRoles = new HashSet<TrustRole>(0);
 	private Set<TokenRole> tokenRoles = new HashSet<TokenRole>(0);
-	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
-	private Set<GroupProjectGrantMetadata> groupProjectMetadatas = new HashSet<GroupProjectGrantMetadata>(0);
-	private Set<GroupDomainGrantMetadata> groupDomainMetadatas = new HashSet<GroupDomainGrantMetadata>(0);
-	private Set<UserProjectGrantMetadata> userProjectMetadatas = new HashSet<UserProjectGrantMetadata>(0);
-	private Set<UserDomainGrantMetadata> userDomainMetadatas = new HashSet<UserDomainGrantMetadata>(0);
 
 	// transient property
 	private String inheritedTo;
@@ -84,46 +85,46 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 
 	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<GroupProjectGrantMetadata> getGroupProjectMetadatas() {
-		return groupProjectMetadatas;
+	public Set<GroupProjectGrant> getGroupProjectGrants() {
+		return groupProjectGrants;
 	}
 
 	@JsonView(Views.All.class)
-	public void setGroupProjectMetadatas(Set<GroupProjectGrantMetadata> groupProjectMetadatas) {
-		this.groupProjectMetadatas = groupProjectMetadatas;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<GroupDomainGrantMetadata> getGroupDomainMetadatas() {
-		return groupDomainMetadatas;
-	}
-
-	@JsonView(Views.All.class)
-	public void setGroupDomainMetadatas(Set<GroupDomainGrantMetadata> groupDomainMetadatas) {
-		this.groupDomainMetadatas = groupDomainMetadatas;
+	public void setGroupProjectGrants(Set<GroupProjectGrant> groupProjectGrants) {
+		this.groupProjectGrants = groupProjectGrants;
 	}
 
 	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<UserProjectGrantMetadata> getUserProjectMetadatas() {
-		return userProjectMetadatas;
+	public Set<GroupDomainGrant> getGroupDomainGrants() {
+		return groupDomainGrants;
 	}
 
 	@JsonView(Views.All.class)
-	public void setUserProjectMetadatas(Set<UserProjectGrantMetadata> userProjectMetadatas) {
-		this.userProjectMetadatas = userProjectMetadatas;
+	public void setGroupDomainGrants(Set<GroupDomainGrant> groupDomainGrants) {
+		this.groupDomainGrants = groupDomainGrants;
 	}
 
 	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<UserDomainGrantMetadata> getUserDomainMetadatas() {
-		return userDomainMetadatas;
+	public Set<UserProjectGrant> getUserProjectGrants() {
+		return userProjectGrants;
 	}
 
 	@JsonView(Views.All.class)
-	public void setUserDomainMetadatas(Set<UserDomainGrantMetadata> userDomainMetadatas) {
-		this.userDomainMetadatas = userDomainMetadatas;
+	public void setUserProjectGrants(Set<UserProjectGrant> userProjectGrants) {
+		this.userProjectGrants = userProjectGrants;
+	}
+
+	@JsonView(Views.All.class)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
+	public Set<UserDomainGrant> getUserDomainGrants() {
+		return userDomainGrants;
+	}
+
+	@JsonView(Views.All.class)
+	public void setUserDomainGrants(Set<UserDomainGrant> userDomainGrants) {
+		this.userDomainGrants = userDomainGrants;
 	}
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade =

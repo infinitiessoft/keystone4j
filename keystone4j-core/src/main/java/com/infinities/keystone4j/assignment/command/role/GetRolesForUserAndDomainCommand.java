@@ -9,10 +9,8 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
 import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
-import com.infinities.keystone4j.assignment.model.GroupDomainGrantMetadata;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.assignment.model.UserDomainGrant;
-import com.infinities.keystone4j.assignment.model.UserDomainGrantMetadata;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.Group;
@@ -51,10 +49,11 @@ public class GetRolesForUserAndDomainCommand extends AbstractAssignmentCommand<L
 		for (Group group : groups) {
 			// _get_metadata
 			try {
-				GroupDomainGrant grant = this.getAssignmentDriver().getGroupDomainGrant(group.getId(), domainid);
-				Set<GroupDomainGrantMetadata> metadatas = grant.getMetadatas();
-				for (GroupDomainGrantMetadata metadata : metadatas) {
-					roles.add(metadata.getRole());
+				List<GroupDomainGrant> grants = this.getAssignmentDriver().getGroupDomainGrants(group.getId(), domainid);
+				// Set<GroupDomainGrantMetadata> metadatas =
+				// grant.getGroupDomainGrantMetadatas();
+				for (GroupDomainGrant grant : grants) {
+					roles.add(grant.getRole());
 				}
 			} catch (Exception e) {
 				// no group grant, skip
@@ -67,10 +66,9 @@ public class GetRolesForUserAndDomainCommand extends AbstractAssignmentCommand<L
 		List<Role> roles = Lists.newArrayList();
 		// _get_metadata
 		try {
-			UserDomainGrant grant = this.getAssignmentDriver().getUserDomainGrant(userid, domainid);
-			Set<UserDomainGrantMetadata> metadatas = grant.getMetadatas();
-			for (UserDomainGrantMetadata metadata : metadatas) {
-				roles.add(metadata.getRole());
+			List<UserDomainGrant> grants = this.getAssignmentDriver().getUserDomainGrants(userid, domainid);
+			for (UserDomainGrant grant : grants) {
+				roles.add(grant.getRole());
 			}
 		} catch (Exception e) {
 			// no group grant, skip

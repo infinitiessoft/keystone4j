@@ -24,13 +24,8 @@ public class EntityManagerInterceptor implements ContainerRequestFilter, Contain
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		System.out.println("==========================================================request come");
 		try {
-			logger.debug("begin transaction");
 			EntityManagerHelper.beginTransaction();
-			logger.debug("transaction is start");
-			EntityManagerHelper.setLock(false);
-			System.out.println("==========================================================set closed false");
 		} catch (RuntimeException e) {
-			EntityManagerHelper.setLock(true);
 			EntityManagerHelper.closeEntityManager();
 			logger.debug("transaction is closed unexpected");
 			requestContext.abortWith(Response.serverError().build());
@@ -39,14 +34,14 @@ public class EntityManagerInterceptor implements ContainerRequestFilter, Contain
 
 	@Override
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-		System.out.println("==========================================================response come "
-				+ EntityManagerHelper.getLock());
+		System.out.println("==========================================================response come");
 		if (!EntityManagerHelper.getLock()) {
 			try {
 				EntityManagerHelper.commit();
 				logger.debug("transaction is commit");
 			} catch (RuntimeException e) {
-				if (EntityManagerHelper.getEntityManager() != null && EntityManagerHelper.getEntityManager().isOpen()) {
+				if (EntityManagerHelper.getEntityManager() != null && EntityManagerHelper.getEntityManager().isOpen()
+						&& EntityManagerHelper.getEntityManager().getTransaction().isActive()) {
 					EntityManagerHelper.rollback();
 					logger.debug("transaction is rollback");
 				}

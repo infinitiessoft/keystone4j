@@ -5,7 +5,8 @@ import javax.ws.rs.core.Response.StatusType;
 
 public enum CustomResponseStatus implements StatusType {
 	MULTIPLE_CHOICES(300, "Multiple Choices"), NO_CONTENT(204, "No Content"), CREATE_TOKEN(201, "Created"), VALIDATE_TOKEN(
-			200, "OK"), REQUEST_TOO_LARGE(413, "Request is too large.");
+			200, "OK"), REQUEST_TOO_LARGE(413, "Request is too large."), UNAUTHORIZED(401,
+			"The request you have made requires authentication.");
 
 	private final int code;
 	private final String reason;

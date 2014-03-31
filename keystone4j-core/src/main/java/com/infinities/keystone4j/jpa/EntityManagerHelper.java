@@ -26,6 +26,7 @@ public class EntityManagerHelper {
 	}
 
 	public static void closeEntityManager() {
+		setLock(true);
 		EntityManager em = threadLocal.get();
 		if (em != null) {
 			em.close();
@@ -39,6 +40,7 @@ public class EntityManagerHelper {
 
 	public static void beginTransaction() {
 		getEntityManager().getTransaction().begin();
+		setLock(false);
 	}
 
 	public static void rollback() {

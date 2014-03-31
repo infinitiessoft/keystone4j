@@ -71,13 +71,21 @@ public interface AssignmentDriver {
 	// void deleteGroup();
 
 	// _get_metadata
-	GroupProjectGrant getGroupProjectGrant(String groupid, String projectid);
+	GroupProjectGrant getGroupProjectGrant(String groupid, String projectid, String roleid);
 
-	GroupDomainGrant getGroupDomainGrant(String groupid, String domainid);
+	GroupDomainGrant getGroupDomainGrant(String groupid, String domainid, String roleid);
 
-	UserProjectGrant getUserProjectGrant(String userid, String projectid);
+	List<GroupDomainGrant> getGroupDomainGrants(String groupid, String domainid);
 
-	UserDomainGrant getUserDomainGrant(String userid, String domainid);
+	List<UserDomainGrant> getUserDomainGrants(String userid, String domainid);
+
+	List<GroupProjectGrant> getGroupProjectGrants(String groupid, String projectid);
+
+	List<UserProjectGrant> getUserProjectGrants(String userid, String projectid);
+
+	UserProjectGrant getUserProjectGrant(String userid, String projectid, String roleid);
+
+	UserDomainGrant getUserDomainGrant(String userid, String domainid, String roleid);
 
 	void deleteGrantByGroupDomain(String roleid, String groupid, String domainid, boolean inherited);
 

@@ -1,10 +1,9 @@
-package com.infinities.keystone4j.resource.v3.project;
+package com.infinities.keystone4j.intergrated.v3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
@@ -12,15 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.client.ClientProtocolException;
-import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.api.Invocation;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.action.CustomAction;
-import org.jmock.lib.concurrent.Synchroniser;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -29,9 +20,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.JacksonFeature;
 import com.infinities.keystone4j.JsonUtils;
+import com.infinities.keystone4j.KeystoneApplication;
 import com.infinities.keystone4j.ObjectMapperResolver;
 import com.infinities.keystone4j.PatchClient;
-import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
 import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
@@ -40,26 +31,12 @@ import com.infinities.keystone4j.assignment.model.ProjectWrapper;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.assignment.model.UserDomainGrant;
 import com.infinities.keystone4j.assignment.model.UserProjectGrant;
-import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.provider.TokenProviderApi;
-import com.infinities.keystone4j.trust.TrustApi;
 
-public class ProjectResourceTest extends JerseyTest {
+public class ProjectIntegratedTest extends AbstractIntegratedTest {
 
-	private Mockery context;
-	private TokenApi tokenApi;
-	private TokenProviderApi tokenProviderApi;
-	private AssignmentApi assignmentApi;
-	private IdentityApi identityApi;
-	private PolicyApi policyApi;
-	private TrustApi trustApi;
-	private CatalogApi catalogApi;
 	private Domain domain, domain2, defaultDomain;
 	private User user;
 	private Group group;
@@ -80,28 +57,13 @@ public class ProjectResourceTest extends JerseyTest {
 
 	@Override
 	protected Application configure() {
-		context = new JUnit4Mockery() {
-
-			{
-				setImposteriser(ClassImposteriser.INSTANCE);
-				setThreadingPolicy(new Synchroniser());
-			}
-		};
-
 		enable(TestProperties.LOG_TRAFFIC);
 		enable(TestProperties.DUMP_ENTITY);
-		tokenApi = context.mock(TokenApi.class);
-		tokenProviderApi = context.mock(TokenProviderApi.class);
-		assignmentApi = context.mock(AssignmentApi.class);
-		identityApi = context.mock(IdentityApi.class);
-		policyApi = context.mock(PolicyApi.class);
-		trustApi = context.mock(TrustApi.class);
-		catalogApi = context.mock(CatalogApi.class);
 
 		domain = new Domain();
-		domain.setId("domain1");
-		domain.setDescription("desc of Domain");
-		domain.setName("my domain");
+		domain.setId("default");
+		// domain.setDescription("desc of Domain");
+		// domain.setName("my domain");
 
 		domain2 = new Domain();
 		domain2.setId("domain2");
@@ -114,7 +76,7 @@ public class ProjectResourceTest extends JerseyTest {
 		defaultDomain.setName("my default domain");
 
 		project = new Project();
-		project.setId("project");
+		// project.setId("project");
 		project.setDescription("desc of Project");
 		project.setDomain(domain);
 		project.setName("my project");
@@ -237,34 +199,11 @@ public class ProjectResourceTest extends JerseyTest {
 		// groupDomainGrant2.getGroupDomainGrantMetadatas().add(groupDomainGrantMetadata2);
 		// group.getGroupDomainGrants().add(groupDomainGrant2);
 
-		return new ProjectResourceTestApplication(catalogApi, tokenApi, tokenProviderApi, assignmentApi, identityApi,
-				policyApi, trustApi);
-
+		return new KeystoneApplication();
 	}
 
 	@Test
 	public void testCreateProject() throws JsonGenerationException, JsonMappingException, IOException {
-		final String id = "newproject";
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(assignmentApi).getDomain(defaultDomain.getId());
-				will(returnValue(defaultDomain));
-
-				exactly(1).of(assignmentApi).createProject(project);
-				will(new CustomAction("add id to project") {
-
-					@Override
-					public Object invoke(Invocation invocation) throws Throwable {
-						Project project = (Project) invocation.getParameter(0);
-						project.setId(id);
-						return project;
-					}
-
-				});
-			}
-		});
-
 		ProjectWrapper wrapper = new ProjectWrapper(project);
 		String json = JsonUtils.toJson(wrapper);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
@@ -272,7 +211,6 @@ public class ProjectResourceTest extends JerseyTest {
 		assertEquals(project.getName(), projectJ.get("name").asText());
 		assertEquals(project.getDescription(), projectJ.get("description").asText());
 		assertEquals(project.getDomain().getId(), projectJ.get("domain_id").asText());
-		System.out.println(json);
 		Response response = target("/v3/projects").register(JacksonFeature.class).register(ObjectMapperResolver.class)
 				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
@@ -280,72 +218,42 @@ public class ProjectResourceTest extends JerseyTest {
 
 		node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		projectJ = node.get("project");
-		assertEquals(id, projectJ.get("id").asText());
+		assertNotNull(projectJ.get("id").asText());
 		assertEquals(project.getName(), projectJ.get("name").asText());
 		assertEquals(project.getDescription(), projectJ.get("description").asText());
 		assertEquals(project.getDomain().getId(), projectJ.get("domain_id").asText());
-
 	}
 
 	@Test
 	public void testListProject() throws JsonProcessingException, IOException {
-		final List<Project> projects = new ArrayList<Project>();
-		project.setId("project1");
-		projects.add(project);
-
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(assignmentApi).listProjects();
-				will(returnValue(projects));
-			}
-		});
 		Response response = target("/v3/projects").register(JacksonFeature.class).register(ObjectMapperResolver.class)
 				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		JsonNode projectsJ = node.get("projects");
-		assertEquals(1, projectsJ.size());
-		JsonNode projectJ = projectsJ.get(0);
-		assertEquals(project.getId(), projectJ.get("id").asText());
-		assertEquals(project.getName(), projectJ.get("name").asText());
-		assertEquals(project.getDescription(), projectJ.get("description").asText());
-		assertEquals(project.getDomainid(), projectJ.get("domain_id").asText());
+		assertEquals(2, projectsJ.size());
 	}
 
 	@Test
 	public void testGetProject() throws JsonProcessingException, IOException {
-		project.setId("project1");
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
 
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(assignmentApi).getProject(project.getId());
-				will(returnValue(project));
-			}
-		});
 		Response response = target("/v3/projects").path(project.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		JsonNode projectJ = node.get("project");
-		assertEquals(project.getId(), projectJ.get("id").asText());
-		assertEquals(project.getName(), projectJ.get("name").asText());
-		assertEquals(project.getDescription(), projectJ.get("description").asText());
-		assertEquals(project.getDomainid(), projectJ.get("domain_id").asText());
+		assertEquals("79ea2c65-4679-441f-a596-8aec16752a2f", projectJ.get("id").asText());
+		assertEquals("admin", projectJ.get("name").asText());
+		assertEquals("admin project", projectJ.get("description").asText());
+		assertEquals("default", projectJ.get("domain_id").asText());
 	}
 
 	@Test
 	public void testUpdateProject() throws ClientProtocolException, IOException {
-		project.setId("project1");
-		context.checking(new Expectations() {
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
 
-			{
-				exactly(1).of(assignmentApi).updateProject(project.getId(), project);
-				will(returnValue(project));
-			}
-		});
 		ProjectWrapper wrapper = new ProjectWrapper(project);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/projects/" + project.getId());
 		JsonNode node = client.connect(wrapper);
@@ -359,14 +267,8 @@ public class ProjectResourceTest extends JerseyTest {
 
 	@Test
 	public void testDeleteProject() {
-		project.setId("project1");
-		context.checking(new Expectations() {
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
 
-			{
-				exactly(1).of(assignmentApi).deleteProject(project.getId());
-				will(returnValue(project));
-			}
-		});
 		Response response = target("/v3").path("projects").path(project.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
@@ -375,17 +277,8 @@ public class ProjectResourceTest extends JerseyTest {
 
 	@Test
 	public void testGetProjectUsers() throws JsonProcessingException, IOException {
-		project.setId("project1");
-		final List<User> users = new ArrayList<User>();
-		users.add(user);
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
 
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(assignmentApi).listUsersForProject(project.getId());
-				will(returnValue(users));
-			}
-		});
 		Response response = target("/v3/projects").path(project.getId()).path("users").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
@@ -393,24 +286,19 @@ public class ProjectResourceTest extends JerseyTest {
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		assertEquals(1, node.size());
 		JsonNode userJ = node.get(0);
-		assertEquals(user.getId(), userJ.get("id").asText());
-		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
-		assertEquals(user.getName(), userJ.get("name").asText());
-		assertEquals(user.getEmail(), userJ.get("email").asText());
-		assertEquals(user.getDescription(), userJ.get("description").asText());
-		assertEquals(user.getDomainid(), userJ.get("domain_id").asText());
+		assertEquals("0f3328f8-a7e7-41b4-830d-be8fdd5186c7", userJ.get("id").asText());
+		assertEquals("79ea2c65-4679-441f-a596-8aec16752a2f", userJ.get("default_project_id").asText());
+		assertEquals("admin", userJ.get("name").asText());
+		assertEquals("admin@keystone4j.com", userJ.get("email").asText());
+		assertEquals("admin user", userJ.get("description").asText());
+		assertEquals("default", userJ.get("domain_id").asText());
 	}
 
 	@Test
 	public void testCreateGrantByUser() {
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(identityApi).getUser(user.getId(), null);
-				will(returnValue(user));
-				exactly(1).of(assignmentApi).createGrantByUserProject(role1.getId(), user.getId(), project.getId());
-			}
-		});
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
+		user.setId("0f3328f8-a7e7-41b4-830d-be8fdd5186c8");
+		role1.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffb");
 		Response response = target("/v3/projects").path(project.getId()).path("users").path(user.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
@@ -420,14 +308,9 @@ public class ProjectResourceTest extends JerseyTest {
 
 	@Test
 	public void testCreateGrantByGroup() {
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(identityApi).getGroup(group.getId(), null);
-				will(returnValue(group));
-				exactly(1).of(assignmentApi).createGrantByGroupProject(role1.getId(), group.getId(), project.getId());
-			}
-		});
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
+		group.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffd");
+		role1.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffb");
 		Response response = target("/v3/projects").path(project.getId()).path("groups").path(group.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
@@ -437,15 +320,9 @@ public class ProjectResourceTest extends JerseyTest {
 
 	@Test
 	public void testCheckGrantByUser() {
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(identityApi).getUser(user.getId(), null);
-				will(returnValue(user));
-				exactly(1).of(assignmentApi).getGrantByUserProject(role1.getId(), user.getId(), project.getId(),
-						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
-			}
-		});
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
+		user.setId("0f3328f8-a7e7-41b4-830d-be8fdd5186c7");
+		role1.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffb");
 		Response response = target("/v3/projects").path(project.getId()).path("users").path(user.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
@@ -454,15 +331,9 @@ public class ProjectResourceTest extends JerseyTest {
 
 	@Test
 	public void testCheckGrantByGroup() {
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(identityApi).getGroup(group.getId(), null);
-				will(returnValue(group));
-				exactly(1).of(assignmentApi).getGrantByGroupProject(role1.getId(), group.getId(), project.getId(),
-						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
-			}
-		});
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
+		group.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffd");
+		role1.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffb");
 		Response response = target("/v3/projects").path(project.getId()).path("groups").path(group.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
@@ -471,18 +342,9 @@ public class ProjectResourceTest extends JerseyTest {
 
 	@Test
 	public void testListGrantByUser() throws JsonProcessingException, IOException {
-		project.setId("project1");
-		final List<Role> roles = new ArrayList<Role>();
-		roles.add(role1);
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
+		user.setId("0f3328f8-a7e7-41b4-830d-be8fdd5186c7");
 
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(assignmentApi).listGrantsByUserProject(user.getId(), project.getId(),
-						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
-				will(returnValue(roles));
-			}
-		});
 		Response response = target("/v3/projects").path(project.getId()).path("users").path(user.getId()).path("roles")
 				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
@@ -490,25 +352,15 @@ public class ProjectResourceTest extends JerseyTest {
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		assertEquals(1, node.size());
 		JsonNode roleJ = node.get(0);
-		assertEquals(role1.getId(), roleJ.get("id").asText());
-		assertEquals(role1.getName(), roleJ.get("name").asText());
-		assertEquals(role1.getDescription(), roleJ.get("description").asText());
+		assertEquals("708bb4f9-9d3c-46af-b18c-7033dc022ffb", roleJ.get("id").asText());
+		assertEquals("admin", roleJ.get("name").asText());
+		assertEquals("admin role", roleJ.get("description").asText());
 	}
 
 	@Test
 	public void testListGrantByGroup() throws JsonProcessingException, IOException {
-		project.setId("project1");
-		final List<Role> roles = new ArrayList<Role>();
-		roles.add(role1);
-
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(assignmentApi).listGrantsByGroupProject(group.getId(), project.getId(),
-						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
-				will(returnValue(roles));
-			}
-		});
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
+		group.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffd");
 		Response response = target("/v3/projects").path(project.getId()).path("groups").path(group.getId()).path("roles")
 				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
@@ -516,22 +368,16 @@ public class ProjectResourceTest extends JerseyTest {
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		assertEquals(1, node.size());
 		JsonNode roleJ = node.get(0);
-		assertEquals(role1.getId(), roleJ.get("id").asText());
-		assertEquals(role1.getName(), roleJ.get("name").asText());
-		assertEquals(role1.getDescription(), roleJ.get("description").asText());
+		assertEquals("708bb4f9-9d3c-46af-b18c-7033dc022ffb", roleJ.get("id").asText());
+		assertEquals("admin", roleJ.get("name").asText());
+		assertEquals("admin role", roleJ.get("description").asText());
 	}
 
 	@Test
 	public void testRevokeGrantByUser() {
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(identityApi).getUser(user.getId(), null);
-				will(returnValue(user));
-				exactly(1).of(assignmentApi).deleteGrantByUserProject(role1.getId(), user.getId(), project.getId(),
-						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
-			}
-		});
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
+		user.setId("0f3328f8-a7e7-41b4-830d-be8fdd5186c7");
+		role1.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffb");
 		Response response = target("/v3/projects").path(project.getId()).path("users").path(user.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
@@ -540,15 +386,9 @@ public class ProjectResourceTest extends JerseyTest {
 
 	@Test
 	public void testRevokeGrantByGroup() {
-		context.checking(new Expectations() {
-
-			{
-				exactly(1).of(identityApi).getGroup(group.getId(), null);
-				will(returnValue(group));
-				exactly(1).of(assignmentApi).deleteGrantByGroupProject(role1.getId(), group.getId(), project.getId(),
-						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
-			}
-		});
+		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
+		group.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffd");
+		role1.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffb");
 		Response response = target("/v3/projects").path(project.getId()).path("groups").path(group.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();

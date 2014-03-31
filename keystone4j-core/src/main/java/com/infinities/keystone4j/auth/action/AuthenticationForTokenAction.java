@@ -106,14 +106,16 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 
 	@Override
 	public TokenMetadata execute(ContainerRequestContext request) {
+		// logger.debug("--------------------------2");
 		try {
 			loadAuthMethods();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		// logger.debug("--------------------------3");
 		boolean includeCatalog = !request.getUriInfo().getQueryParameters().containsKey(AuthController.NOCATALOG);
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-
+		// logger.debug("--------------------------4");
 		try {
 			AuthInfo authInfo = new AuthInfo(context, auth, AUTH_METHODS, this.getAssignmentApi(), this.getTrustApi());
 			AuthContext authContext = new AuthContext();
@@ -125,19 +127,17 @@ public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetad
 			String domainid = authInfo.getDomainid();
 			String projectid = authInfo.getProjectid();
 			Trust trust = authInfo.getTrust();
-
 			List<String> methodNames = authInfo.getMethodNames();
 			methodNames.addAll(authContext.getMethodNames());
 			// make sure the list is unique
 			methodNames = Lists.newArrayList(Sets.newHashSet(methodNames));
 			Date expiresAt = authContext.getExpiresAt();
-
+			// logger.debug("--------------------------5");
 			Token token = new Token();
-
 			String userid = authContext.getUserid();
 			TokenMetadata tokenMetadata = tokenProviderApi.issueV3Token(userid, methodNames, expiresAt, projectid, domainid,
 					authContext, trust, token, includeCatalog);
-
+			// logger.debug("--------------------------6");
 			return tokenMetadata;
 
 		} catch (Exception e) {

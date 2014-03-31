@@ -12,8 +12,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
 
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
@@ -22,7 +20,6 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.infinities.keystone4j.JacksonFeature;
 import com.infinities.keystone4j.JsonUtils;
 import com.infinities.keystone4j.KeystoneApplication;
@@ -48,6 +45,9 @@ public class AuthIntegratedTest extends AbstractIntegratedTest {
 	private Date date;
 	private Token token;
 
+
+	// private final static Logger logger =
+	// LoggerFactory.getLogger(AuthIntegratedTest.class);
 
 	@Override
 	protected Application configure() {
@@ -91,11 +91,6 @@ public class AuthIntegratedTest extends AbstractIntegratedTest {
 
 	@Test
 	public void testAuthenticateForToken() throws JsonGenerationException, JsonMappingException, IOException {
-		// SimpleDateFormat iso8601Format = new
-		// SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		// iso8601Format.setTimeZone(TimeZone.getTimeZone("GMT"));
-		// String iso8601Date = iso8601Format.format(date);
-
 		AuthV3 auth = new AuthV3();
 		auth.setIdentity(identity);
 		AuthV3Wrapper wrapper = new AuthV3Wrapper(auth);
@@ -114,11 +109,14 @@ public class AuthIntegratedTest extends AbstractIntegratedTest {
 		assertNotNull(userJson);
 		assertEquals("0f3328f8-a7e7-41b4-830d-be8fdd5186c7", userJson.get("id").asText());
 		assertEquals("admin", userJson.get("password").asText());
-
-		Response response = target("/v3/auth/tokens").register(JacksonFeature.class)
-				.register(JacksonJsonProvider.class, MessageBodyReader.class, MessageBodyWriter.class)
+		// logger.debug("----------------start test");
+		Response response = target("/v3/auth/tokens").register(JacksonFeature.class).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
+				// .header("X-Auth-Token",
+				// Config.Instance.getOpt(Config.Type.DEFAULT,
+				// "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
+		// logger.debug("----------------end test");
 		assertEquals(201, response.getStatus());
 		assertNotNull(response.getHeaderString("X-Subject-Token"));
 
