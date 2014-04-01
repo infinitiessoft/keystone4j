@@ -1,7 +1,7 @@
 package com.infinities.keystone4j.utils.jackson;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -52,8 +52,8 @@ public class JsonUtils {
 		return objectMapper.writerWithView(view).writeValueAsString(object);
 	}
 
-	public static Map<String, String> readJson(File file) throws JsonParseException, JsonMappingException, IOException {
-		Map<String, String> map = objectMapper.readValue(file, mapTypeRef);
+	public static Map<String, String> readJson(URL url) throws JsonParseException, JsonMappingException, IOException {
+		Map<String, String> map = objectMapper.readValue(url, mapTypeRef);
 		return map;
 	}
 

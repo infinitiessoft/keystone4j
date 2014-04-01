@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -19,6 +20,7 @@ import com.infinities.keystone4j.common.model.Link;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.extension.ExtensionApi;
 import com.infinities.keystone4j.extension.model.Extension;
+import com.infinities.keystone4j.utils.KeystoneUtils;
 
 public class SimpleCertV3ControllerImpl extends BaseController implements SimpleCertV3Controller {
 
@@ -56,16 +58,18 @@ public class SimpleCertV3ControllerImpl extends BaseController implements Simple
 	private Response getCertificate(String text) {
 		try {
 			// URL url = getClass().getResource(text);
-			File file = new File(text);
-			return Response.status(200).type("application/x-pem-file").entity(getBytesFromFile(file)).build();
+			// File file = new File(text);
+			URL url = new KeystoneUtils().getURL(text);
+			return Response.status(200).type("application/x-pem-file").entity(getBytesFromFile(url)).build();
 		} catch (Exception e) {
 			throw Exceptions.CertificateFilesUnavailableException.getInstance(null);
 		}
 	}
 
-	private byte[] getBytesFromFile(File file) throws IOException {
+	private byte[] getBytesFromFile(URL url) throws IOException {
 		InputStream is = null;
 		try {
+			File file = new File(url.getPath());
 			is = new FileInputStream(file);
 
 			long length = file.length();

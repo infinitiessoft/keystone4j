@@ -3,14 +3,28 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.infinities</groupId>
 	<artifactId>keystone4j</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<name>keystone4j</name>
 	<description>java version of openstack keystone component</description>
 
 	<dependencyManagement>
+
 		<dependencies>
-			<!-- Skyport Dependencies -->
+		
+			<dependency>
+				<groupId>com.infinities.keystone4j</groupId>
+				<artifactId>keystone4j-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.infinities.keystone4j</groupId>
+				<artifactId>keystone4j-war</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- Keyston4j Dependencies -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
@@ -226,6 +240,8 @@
 		<jerseyVersion>2.6</jerseyVersion>
 	</properties>
 	<modules>
+		<!-- <module>keystone4j-core</module> <module>keystone4j-war</module> -->
 		<module>keystone4j-core</module>
+		<module>keystone4j-web</module>
 	</modules>
 </project>

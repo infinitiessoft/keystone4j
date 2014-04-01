@@ -2,7 +2,6 @@ package com.infinities.keystone4j;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.After;
@@ -13,6 +12,7 @@ import com.google.common.collect.Table;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.common.Config.Type;
 import com.infinities.keystone4j.utils.FileScanner;
+import com.infinities.keystone4j.utils.KeystoneUtils;
 
 public class FileScannerTest {
 
@@ -23,9 +23,11 @@ public class FileScannerTest {
 	public void setUp() throws Exception {
 		// URL url = getClass().getResource(KeystoneApplication.CONF_DIR +
 		// "keystone.conf");
-		File file = new File(KeystoneApplication.CONF_DIR + "keystone.conf");
+		// File file = new File(KeystoneApplication.CONF_DIR + "keystone.conf");
 		// URL url = FileScannerTest.class.getResource("/keystone.conf");
-		scanner = new FileScanner(file.toURI().toURL());
+		System.out.println(new KeystoneUtils().getURL(KeystoneApplication.CONF_DIR + "keystone.conf"));
+
+		scanner = new FileScanner(new KeystoneUtils().getURL(KeystoneApplication.CONF_DIR + "keystone.conf"));
 	}
 
 	@After

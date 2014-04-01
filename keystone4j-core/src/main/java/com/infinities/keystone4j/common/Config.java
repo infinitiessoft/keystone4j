@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.common;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,6 +19,7 @@ import com.infinities.keystone4j.option.Option;
 import com.infinities.keystone4j.option.Options;
 import com.infinities.keystone4j.option.StringOption;
 import com.infinities.keystone4j.utils.FileScanner;
+import com.infinities.keystone4j.utils.KeystoneUtils;
 
 public enum Config {
 	Instance;
@@ -51,7 +51,7 @@ public enum Config {
 		// DEFAULT_CONFIG_FILENAME =
 		// getClass().getResource(KeystoneApplication.CONF_DIR +
 		// "keystone.conf");
-		DEFAULT_CONFIG_FILENAME = new File(KeystoneApplication.CONF_DIR + "keystone.conf").toURI().toURL();
+		DEFAULT_CONFIG_FILENAME = new KeystoneUtils().getURL(KeystoneApplication.CONF_DIR + "keystone.conf");
 
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "admin_token", Options.newStrOpt("admin_token", true, "ADMIN"));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "public_bind_host", Options.newStrOpt("public_bind_host", "0.0.0.0"));

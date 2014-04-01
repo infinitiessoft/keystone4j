@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.policy;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -28,6 +27,7 @@ import com.infinities.keystone4j.policy.check.StringCheck;
 import com.infinities.keystone4j.policy.check.TrueCheck;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.utils.KeystoneUtils;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 
 public class Enforcer {
@@ -52,13 +52,13 @@ public class Enforcer {
 
 
 	public Enforcer(String policyPath) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
-		File file = new File(policyPath);
+		// File file = new File(policyPath);
 		// lastModified = file.lastModified();
 		// URL url = getClass().getResource(policyPath);
 		// File file = new File(url.toURI());
 		// URL url = Cms.class.getResource(policyPath);
 		this.rules = Maps.newHashMap();
-		Map<String, String> rules = JsonUtils.readJson(file);
+		Map<String, String> rules = JsonUtils.readJson(new KeystoneUtils().getURL(policyPath));
 		logger.debug("policy map size:{}, {}", new Object[] { rules.size(), rules });
 		checks = Maps.newHashMap();
 		setChecks(checks);

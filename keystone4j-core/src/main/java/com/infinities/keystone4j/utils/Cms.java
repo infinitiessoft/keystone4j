@@ -1,11 +1,11 @@
 package com.infinities.keystone4j.utils;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.Security;
@@ -31,11 +31,12 @@ public enum Cms {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
 		String keyFile = Config.Instance.getOpt(Config.Type.signing, KEY_FILE).asText();
+		URL url = new KeystoneUtils().getURL(keyFile);
 		// URL url = Cms.class.getResource(keyFile);
-		File file = new File(keyFile);
+		// File file = new File(url);
 		FileReader fileReader;
 		try {
-			fileReader = new FileReader(file);
+			fileReader = new FileReader(url.getPath());
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}

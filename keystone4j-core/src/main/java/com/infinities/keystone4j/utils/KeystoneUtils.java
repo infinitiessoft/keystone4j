@@ -1,5 +1,8 @@
 package com.infinities.keystone4j.utils;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 
 import org.slf4j.Logger;
@@ -71,5 +74,14 @@ public class KeystoneUtils extends TokenBindValidator {
 			return token.getUser();
 		}
 		return null;
+	}
+
+	public URL getURL(String filePath) {
+		File file = new File(filePath);
+		try {
+			return file.toURI().toURL();
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

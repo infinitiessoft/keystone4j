@@ -2,8 +2,6 @@ package com.infinities.keystone4j.jpa;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import org.eclipse.jetty.util.component.LifeCycle;
@@ -11,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebListener
-public class EntityManagerListener implements LifeCycle.Listener, ServletContextListener {
+public class EntityManagerListener implements LifeCycle.Listener {
 
 	private static EntityManagerFactory emf;
 	private final static Logger logger = LoggerFactory.getLogger(EntityManagerListener.class);
@@ -65,7 +63,7 @@ public class EntityManagerListener implements LifeCycle.Listener, ServletContext
 	@Override
 	public void lifeCycleStarted(LifeCycle event) {
 		logger.debug("Application  was initialized.");
-		emf = Persistence.createEntityManagerFactory("com.infinities.keystone4j.jpa");
+		setupEntityManagerFactory();
 	}
 
 	@Override
@@ -82,6 +80,14 @@ public class EntityManagerListener implements LifeCycle.Listener, ServletContext
 	public void lifeCycleStopped(LifeCycle event) {
 		logger.debug("Application  was stopped.");
 		// EntityManagerHelper.closeEntityManagerFactory();
+		shutdownEntityManagerFactory();
+	}
+
+	public static void setupEntityManagerFactory() {
+		emf = Persistence.createEntityManagerFactory("com.infinities.keystone4j.jpa");
+	}
+
+	public static void shutdownEntityManagerFactory() {
 		if (emf != null) {
 			emf.close();
 		}
@@ -95,18 +101,4 @@ public class EntityManagerListener implements LifeCycle.Listener, ServletContext
 		return emf;
 	}
 
-	@Override
-	public void contextInitialized(ServletContextEvent sce) {
-		logger.debug("Application  was initialized.");
-		emf = Persistence.createEntityManagerFactory("com.infinities.keystone4j.jpa");
-	}
-
-	@Override
-	public void contextDestroyed(ServletContextEvent sce) {
-		logger.debug("Application  was stopped.");
-		// EntityManagerHelper.closeEntityManagerFactory();
-		if (emf != null) {
-			emf.close();
-		}
-	}
 }
