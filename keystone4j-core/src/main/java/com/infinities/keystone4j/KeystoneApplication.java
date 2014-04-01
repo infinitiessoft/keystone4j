@@ -72,7 +72,7 @@ import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
 public class KeystoneApplication extends ResourceConfig {
 
-	public final static String CONF_DIR = "conf/";
+	public static String CONF_DIR = "conf/";
 
 
 	public KeystoneApplication() {

@@ -7,12 +7,13 @@ import com.infinities.keystone4j.jpa.EntityManagerListener;
 
 public class KeystoneLifecycleListener implements ServletContextListener {
 
-	// @Override
+	@Override
 	public void contextInitialized(ServletContextEvent sce) {
+		KeystoneApplication.CONF_DIR = getClass().getResource("/conf").getPath();
 		EntityManagerListener.setupEntityManagerFactory();
 	}
 
-	// @Override
+	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 		EntityManagerListener.shutdownEntityManagerFactory();
 	}
