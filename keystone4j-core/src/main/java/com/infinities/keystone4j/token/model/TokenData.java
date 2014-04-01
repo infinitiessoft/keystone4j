@@ -9,14 +9,14 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.infinities.keystone4j.ISO8601DateAdapter;
-import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.catalog.model.Catalog;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.trust.model.Trust;
+import com.infinities.keystone4j.utils.jackson.ISO8601DateAdapter;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 public class TokenData {
 

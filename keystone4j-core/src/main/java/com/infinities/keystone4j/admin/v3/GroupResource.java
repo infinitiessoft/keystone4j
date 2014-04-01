@@ -22,13 +22,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.infinities.keystone4j.PATCH;
-import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
 import com.infinities.keystone4j.identity.model.GroupWrapper;
 import com.infinities.keystone4j.identity.model.GroupsWrapper;
 import com.infinities.keystone4j.identity.model.UsersWrapper;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

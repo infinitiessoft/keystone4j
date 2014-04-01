@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 @MappedSuperclass
 public class BaseEntity implements Serializable {

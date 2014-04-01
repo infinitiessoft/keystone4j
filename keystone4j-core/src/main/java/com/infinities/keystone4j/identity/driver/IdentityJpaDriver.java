@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
-import com.infinities.keystone4j.PasswordUtils;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityDriver;
 import com.infinities.keystone4j.identity.model.Group;
@@ -13,6 +12,7 @@ import com.infinities.keystone4j.identity.model.UserGroupMembership;
 import com.infinities.keystone4j.jpa.impl.GroupDao;
 import com.infinities.keystone4j.jpa.impl.UserDao;
 import com.infinities.keystone4j.jpa.impl.UserGroupMembershipDao;
+import com.infinities.keystone4j.utils.PasswordUtils;
 
 public class IdentityJpaDriver implements IdentityDriver {
 

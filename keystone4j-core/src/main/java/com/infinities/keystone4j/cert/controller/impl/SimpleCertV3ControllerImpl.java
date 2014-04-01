@@ -55,6 +55,7 @@ public class SimpleCertV3ControllerImpl extends BaseController implements Simple
 
 	private Response getCertificate(String text) {
 		try {
+			// URL url = getClass().getResource(text);
 			File file = new File(text);
 			return Response.status(200).type("application/x-pem-file").entity(getBytesFromFile(file)).build();
 		} catch (Exception e) {

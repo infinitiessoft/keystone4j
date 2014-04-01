@@ -3,7 +3,7 @@ package com.infinities.keystone4j.identity.model;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.infinities.keystone4j.Views;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 public class UsersWrapper {
 

@@ -1,4 +1,4 @@
-package com.infinities.keystone4j;
+package com.infinities.keystone4j.utils;
 
 import java.io.IOException;
 import java.net.URL;

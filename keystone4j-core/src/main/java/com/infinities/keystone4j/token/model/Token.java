@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.infinities.keystone4j.ISO8601DateAdapter;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
@@ -30,6 +29,7 @@ import com.infinities.keystone4j.auth.model.AuthData;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.trust.model.Trust;
+import com.infinities.keystone4j.utils.jackson.ISO8601DateAdapter;
 
 @Entity
 @Table(name = "TOKEN", schema = "PUBLIC", catalog = "PUBLIC")

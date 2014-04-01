@@ -13,12 +13,12 @@ import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
-import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.credential.controller.CredentialV3Controller;
 import com.infinities.keystone4j.credential.model.Credential;
 import com.infinities.keystone4j.credential.model.CredentialWrapper;
 import com.infinities.keystone4j.credential.model.CredentialsWrapper;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 public class CredentialResource {
 

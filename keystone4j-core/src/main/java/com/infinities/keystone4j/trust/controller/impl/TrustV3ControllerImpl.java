@@ -62,8 +62,8 @@ public class TrustV3ControllerImpl extends BaseController implements TrustV3Cont
 		parMap.put("trustorid", trustorid);
 		parMap.put("trusteeid", trusteeid);
 		Action<List<Trust>> command = new PolicyCheckDecorator<List<Trust>>(new PaginateDecorator<Trust>(
-				new ListTrustsAction(assignmentApi, identityApi, trustApi, tokenApi, trustorid, trusteeid), page, perPage),
-				null, tokenApi, policyApi, parMap);
+				new ListTrustsAction(assignmentApi, identityApi, trustApi, tokenApi, policyApi, trustorid, trusteeid), page,
+				perPage), null, tokenApi, policyApi, parMap);
 
 		List<Trust> ret = command.execute(getRequest());
 		return new TrustsWrapper(ret);

@@ -2,6 +2,8 @@ package com.infinities.keystone4j.jpa;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import org.eclipse.jetty.util.component.LifeCycle;
@@ -9,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebListener
-public class EntityManagerListener implements LifeCycle.Listener {
+public class EntityManagerListener implements LifeCycle.Listener, ServletContextListener {
 
 	private static EntityManagerFactory emf;
 	private final static Logger logger = LoggerFactory.getLogger(EntityManagerListener.class);
@@ -91,5 +93,20 @@ public class EntityManagerListener implements LifeCycle.Listener {
 
 	public static EntityManagerFactory getEntityManagerFactory() {
 		return emf;
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
+		logger.debug("Application  was initialized.");
+		emf = Persistence.createEntityManagerFactory("com.infinities.keystone4j.jpa");
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
+		logger.debug("Application  was stopped.");
+		// EntityManagerHelper.closeEntityManagerFactory();
+		if (emf != null) {
+			emf.close();
+		}
 	}
 }

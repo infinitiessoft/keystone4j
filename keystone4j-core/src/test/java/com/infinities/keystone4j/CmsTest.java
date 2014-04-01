@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.infinities.keystone4j.utils.Cms;
+
 public class CmsTest {
 
 	private final String text = "test_string";

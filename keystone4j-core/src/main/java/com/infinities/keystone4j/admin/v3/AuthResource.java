@@ -13,12 +13,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.auth.controller.AuthController;
 import com.infinities.keystone4j.auth.model.AuthV3Wrapper;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.trust.model.SignedWrapper;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

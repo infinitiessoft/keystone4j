@@ -18,7 +18,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
@@ -33,6 +32,7 @@ import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 import com.infinities.keystone4j.token.provider.api.TokenProviderApiImpl;
 import com.infinities.keystone4j.trust.model.Trust;
+import com.infinities.keystone4j.utils.Cms;
 
 public class TokenProviderApiImplTest {
 

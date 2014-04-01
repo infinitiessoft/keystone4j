@@ -1,9 +1,9 @@
 package com.infinities.keystone4j.token.provider.command;
 
-import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
+import com.infinities.keystone4j.utils.Cms;
 
 public class CheckV3TokenCommand extends AbstractTokenProviderCommand<TokenMetadata> {
 

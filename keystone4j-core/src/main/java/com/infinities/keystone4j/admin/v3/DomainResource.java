@@ -20,13 +20,13 @@ import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
-import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.controller.DomainV3Controller;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
 import com.infinities.keystone4j.assignment.model.DomainWrapper;
 import com.infinities.keystone4j.assignment.model.DomainsWrapper;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

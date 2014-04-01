@@ -1,4 +1,4 @@
-package com.infinities.keystone4j;
+package com.infinities.keystone4j.utils.jackson;
 
 import java.text.DateFormat;
 import java.text.ParseException;

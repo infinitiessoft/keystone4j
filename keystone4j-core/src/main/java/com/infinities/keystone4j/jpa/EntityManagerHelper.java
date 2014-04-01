@@ -6,7 +6,7 @@ public class EntityManagerHelper {
 
 	private static final ThreadLocal<EntityManager> threadLocal;
 
-	private static final ThreadLocal<Boolean> lock;
+	private static ThreadLocal<Boolean> lock;
 
 	static {
 		threadLocal = new ThreadLocal<EntityManager>();
@@ -52,10 +52,17 @@ public class EntityManagerHelper {
 	}
 
 	public static void setLock(boolean value) {
+		if (lock == null) {
+			lock = new ThreadLocal<Boolean>();
+		}
 		lock.set(value);
 	}
 
 	public static boolean getLock() {
+		if (lock == null) {
+			lock = new ThreadLocal<Boolean>();
+			lock.set(true);
+		}
 		return lock.get();
 	}
 }

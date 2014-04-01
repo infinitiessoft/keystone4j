@@ -1,7 +1,7 @@
 package com.infinities.keystone4j.token.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.infinities.keystone4j.Views;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 public class TokenDataWrapper {
 

@@ -6,7 +6,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.KeystoneContext;
-import com.infinities.keystone4j.KeystoneUtils;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.exception.Exceptions;
@@ -17,6 +16,7 @@ import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.trust.TrustUtils;
 import com.infinities.keystone4j.trust.model.Trust;
 import com.infinities.keystone4j.trust.model.TrustRole;
+import com.infinities.keystone4j.utils.KeystoneUtils;
 
 public class ListRolesForTrustAction extends AbstractTrustAction<List<Role>> {
 

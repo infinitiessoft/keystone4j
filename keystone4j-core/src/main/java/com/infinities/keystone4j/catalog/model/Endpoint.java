@@ -20,8 +20,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.BaseEntity;
-import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.endpointfilter.model.ProjectEndpoint;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 @Entity
 @Table(name = "ENDPOINT", schema = "PUBLIC", catalog = "PUBLIC")

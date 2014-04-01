@@ -3,12 +3,12 @@ package com.infinities.keystone4j.identity.action.user;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.KeystoneContext;
-import com.infinities.keystone4j.KeystoneUtils;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.utils.KeystoneUtils;
 
 public class GetUserAction extends AbstractUserAction<User> {
 

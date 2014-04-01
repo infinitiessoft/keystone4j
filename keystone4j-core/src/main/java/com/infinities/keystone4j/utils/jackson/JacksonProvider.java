@@ -1,4 +1,4 @@
-package com.infinities.keystone4j;
+package com.infinities.keystone4j.utils.jackson;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;

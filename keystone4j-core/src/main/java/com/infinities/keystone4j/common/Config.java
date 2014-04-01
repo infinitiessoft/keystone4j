@@ -1,6 +1,8 @@
 package com.infinities.keystone4j.common;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,10 +15,11 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Table.Cell;
-import com.infinities.keystone4j.FileScanner;
+import com.infinities.keystone4j.KeystoneApplication;
 import com.infinities.keystone4j.option.Option;
 import com.infinities.keystone4j.option.Options;
 import com.infinities.keystone4j.option.StringOption;
+import com.infinities.keystone4j.utils.FileScanner;
 
 public enum Config {
 	Instance;
@@ -44,8 +47,11 @@ public enum Config {
 		}
 	}
 
-	private void preSetup() {
-		DEFAULT_CONFIG_FILENAME = Config.class.getResource("/keystone.conf");
+	private void preSetup() throws MalformedURLException {
+		// DEFAULT_CONFIG_FILENAME =
+		// getClass().getResource(KeystoneApplication.CONF_DIR +
+		// "keystone.conf");
+		DEFAULT_CONFIG_FILENAME = new File(KeystoneApplication.CONF_DIR + "keystone.conf").toURI().toURL();
 
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "admin_token", Options.newStrOpt("admin_token", true, "ADMIN"));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "public_bind_host", Options.newStrOpt("public_bind_host", "0.0.0.0"));
@@ -67,14 +73,15 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "crypt_strength", Options.newIntOpt("crypt_strength", 40000));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "tcp_keepalive", Options.newBoolOpt("tcp_keepalive", false));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "tcp_keepidle", Options.newIntOpt("tcp_keepidle", 600));
-		FILE_OPTIONS.put(Config.Type.DEFAULT, "policy_file", Options.newStrOpt("policy_file", "/policy.json"));
+		FILE_OPTIONS.put(Config.Type.DEFAULT, "policy_file",
+				Options.newStrOpt("policy_file", KeystoneApplication.CONF_DIR + "policy.json"));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "domain_id_immutable", Options.newBoolOpt("domain_id_immutable", false));
 
 		FILE_OPTIONS.put(Config.Type.identity, "default_domain_id", Options.newStrOpt("default_domain_id", "default"));
 		FILE_OPTIONS.put(Config.Type.identity, "domain_specific_drivers_enabled",
 				Options.newBoolOpt("domain_specific_drivers_enabled", false));
 		FILE_OPTIONS.put(Config.Type.identity, "domain_config_dir",
-				Options.newStrOpt("domain_config_dir", "/etc/keystone/domains"));
+				Options.newStrOpt("domain_config_dir", KeystoneApplication.CONF_DIR + "domains"));
 		FILE_OPTIONS.put(Config.Type.identity, "driver",
 				Options.newStrOpt("driver", "com.infinities.keystone4j.identity.driver.IdentityJpaDriver"));
 		FILE_OPTIONS.put(Config.Type.identity, "max_password_length", Options.newIntOpt("max_password_length", 4096));
@@ -108,10 +115,13 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.cache, "debug_cache_backend", Options.newBoolOpt("debug_cache_backend", false));
 
 		FILE_OPTIONS.put(Config.Type.ssl, "enabled", Options.newBoolOpt("enabled", false));
-		FILE_OPTIONS.put(Config.Type.ssl, "cerfile", Options.newStrOpt("cerfile", "keystone.pem"));
-		FILE_OPTIONS.put(Config.Type.ssl, "keyfile", Options.newStrOpt("keyfile", "keystonekey.pem"));
-		FILE_OPTIONS.put(Config.Type.ssl, "ca_certs", Options.newStrOpt("ca_certs", "ca.pem"));
-		FILE_OPTIONS.put(Config.Type.ssl, "ca_key", Options.newStrOpt("ca_key", "cakey.pem"));
+		FILE_OPTIONS.put(Config.Type.ssl, "cerfile",
+				Options.newStrOpt("cerfile", KeystoneApplication.CONF_DIR + "keystone.pem"));
+		FILE_OPTIONS.put(Config.Type.ssl, "keyfile",
+				Options.newStrOpt("keyfile", KeystoneApplication.CONF_DIR + "keystonekey.pem"));
+		FILE_OPTIONS
+				.put(Config.Type.ssl, "ca_certs", Options.newStrOpt("ca_certs", KeystoneApplication.CONF_DIR + "ca.pem"));
+		FILE_OPTIONS.put(Config.Type.ssl, "ca_key", Options.newStrOpt("ca_key", KeystoneApplication.CONF_DIR + "cakey.pem"));
 		FILE_OPTIONS.put(Config.Type.ssl, "cert_required", Options.newBoolOpt("cert_required", false));
 		FILE_OPTIONS.put(Config.Type.ssl, "key_size", Options.newIntOpt("key_size", 1024));
 		FILE_OPTIONS.put(Config.Type.ssl, "valid_days", Options.newIntOpt("valid_days", 3650));
@@ -119,10 +129,14 @@ public enum Config {
 				Options.newStrOpt("cert_subject", "/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost"));
 
 		FILE_OPTIONS.put(Config.Type.signing, "token_format", Options.newStrOpt("token_format", ""));
-		FILE_OPTIONS.put(Config.Type.signing, "certfile", Options.newStrOpt("certfile", "/signing_cert_req.pem"));
-		FILE_OPTIONS.put(Config.Type.signing, "keyfile", Options.newStrOpt("keyfile", "/signing_key.pem"));
-		FILE_OPTIONS.put(Config.Type.signing, "ca_certs", Options.newStrOpt("ca_certs", "ca.pem"));
-		FILE_OPTIONS.put(Config.Type.signing, "ca_key", Options.newStrOpt("ca_key", "cakey.pem"));
+		FILE_OPTIONS.put(Config.Type.signing, "certfile",
+				Options.newStrOpt("certfile", KeystoneApplication.CONF_DIR + "signing_cert_req.pem"));
+		FILE_OPTIONS.put(Config.Type.signing, "keyfile",
+				Options.newStrOpt("keyfile", KeystoneApplication.CONF_DIR + "signing_key.pem"));
+		FILE_OPTIONS.put(Config.Type.signing, "ca_certs",
+				Options.newStrOpt("ca_certs", KeystoneApplication.CONF_DIR + "ca.pem"));
+		FILE_OPTIONS.put(Config.Type.signing, "ca_key",
+				Options.newStrOpt("ca_key", KeystoneApplication.CONF_DIR + "cakey.pem"));
 		FILE_OPTIONS.put(Config.Type.signing, "key_size", Options.newIntOpt("key_size", 2048));
 		FILE_OPTIONS.put(Config.Type.signing, "valid_days", Options.newIntOpt("valid_days", 3650));
 		FILE_OPTIONS.put(Config.Type.signing, "cert_subject",

@@ -1,4 +1,4 @@
-package com.infinities.keystone4j;
+package com.infinities.keystone4j.utils.jackson;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -24,19 +24,10 @@ public class ObjectMapperResolver implements ContextResolver<ObjectMapper> {
 	public ObjectMapperResolver() {
 		objectMapper = new ObjectMapper();
 		AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
-		// if using BOTH JAXB annotations AND Jackson annotations:
 		AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
 		objectMapper = objectMapper.setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
-		// make deserializer use JAXB annotations (only)
 		objectMapper = objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-		// objectMapper =
-		// objectMapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
-		// objectMapper =
-		// objectMapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS,
-		// false);
 		objectMapper.registerModule(new Hibernate4Module());
-
-		// mapper = mapper.setSerializationInclusion(Inclusion.NON_NULL);
 	}
 
 	@Override

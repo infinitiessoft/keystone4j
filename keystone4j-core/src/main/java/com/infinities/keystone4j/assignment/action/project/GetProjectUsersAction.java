@@ -10,10 +10,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.KeystoneContext;
-import com.infinities.keystone4j.KeystoneUtils;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.utils.KeystoneUtils;
 
 public class GetProjectUsersAction extends AbstractProjectAction<List<User>> {
 
@@ -21,22 +22,24 @@ public class GetProjectUsersAction extends AbstractProjectAction<List<User>> {
 	private final String name;
 	private final Boolean enabled;
 	private final TokenApi tokenApi;
+	private final PolicyApi policyApi;
 
 
-	public GetProjectUsersAction(AssignmentApi assignmentApi, TokenApi tokenApi, String projectid, String name,
-			Boolean enabled) {
+	public GetProjectUsersAction(AssignmentApi assignmentApi, TokenApi tokenApi, PolicyApi policyApi, String projectid,
+			String name, Boolean enabled) {
 		super(assignmentApi);
 		this.projectid = projectid;
 		this.name = name;
 		this.enabled = enabled;
 		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	@Override
 	public List<User> execute(ContainerRequestContext request) {
 
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		new KeystoneUtils().assertAdmin(tokenApi, context);
+		new KeystoneUtils().assertAdmin(policyApi, tokenApi, context);
 		Iterable<User> users = this.getAssignmentApi().listUsersForProject(projectid);
 
 		List<Predicate<User>> filters = Lists.newArrayList();

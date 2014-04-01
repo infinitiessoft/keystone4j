@@ -3,12 +3,12 @@ package com.infinities.keystone4j.token.command;
 import java.util.Date;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.Cms;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
 import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.trust.TrustApi;
+import com.infinities.keystone4j.utils.Cms;
 
 public class GetTokenCommand extends AbstractTokenCommand<Token> {
 

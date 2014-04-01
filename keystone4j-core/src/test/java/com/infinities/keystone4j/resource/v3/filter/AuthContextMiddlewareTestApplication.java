@@ -5,13 +5,13 @@ import javax.inject.Singleton;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import com.infinities.keystone4j.JacksonFeature;
 import com.infinities.keystone4j.common.api.VersionApi;
 import com.infinities.keystone4j.common.api.VersionApiFactory;
 import com.infinities.keystone4j.filter.AuthContextMiddleware;
 import com.infinities.keystone4j.main.PublicResource;
 import com.infinities.keystone4j.mock.MockTokenApiFactory;
 import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.utils.jackson.JacksonFeature;
 
 public class AuthContextMiddlewareTestApplication extends ResourceConfig {
 

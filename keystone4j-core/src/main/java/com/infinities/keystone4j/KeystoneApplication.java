@@ -67,8 +67,13 @@ import com.infinities.keystone4j.trust.api.TrustApiFactory;
 import com.infinities.keystone4j.trust.controller.TrustV3Controller;
 import com.infinities.keystone4j.trust.controller.impl.TrustV3ControllerFactory;
 import com.infinities.keystone4j.trust.driver.TrustDriverFactory;
+import com.infinities.keystone4j.utils.jackson.JacksonFeature;
+import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
 public class KeystoneApplication extends ResourceConfig {
+
+	public final static String CONF_DIR = "conf/";
+
 
 	public KeystoneApplication() {
 		this.register(new AbstractBinder() {

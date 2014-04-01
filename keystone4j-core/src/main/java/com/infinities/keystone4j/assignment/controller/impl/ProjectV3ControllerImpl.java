@@ -105,8 +105,8 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 		parMap.put("name", name);
 		parMap.put("enabled", enabled);
 		Action<List<User>> command = new FilterCheckDecorator<List<User>>(new PaginateDecorator<User>(
-				new GetProjectUsersAction(assignmentApi, tokenApi, projectid, name, enabled), page, perPage), tokenApi,
-				policyApi, parMap);
+				new GetProjectUsersAction(assignmentApi, tokenApi, policyApi, projectid, name, enabled), page, perPage),
+				tokenApi, policyApi, parMap);
 
 		List<User> ret = command.execute(getRequest());
 		return ret;

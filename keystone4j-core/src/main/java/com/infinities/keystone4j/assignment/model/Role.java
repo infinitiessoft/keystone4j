@@ -17,11 +17,11 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.BaseEntity;
-import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.TokenRole;
 import com.infinities.keystone4j.trust.model.TrustRole;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 @Entity
 @Table(name = "ROLE", schema = "PUBLIC", catalog = "PUBLIC")

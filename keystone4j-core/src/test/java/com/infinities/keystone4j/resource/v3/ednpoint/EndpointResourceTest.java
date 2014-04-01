@@ -25,9 +25,6 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.infinities.keystone4j.JacksonFeature;
-import com.infinities.keystone4j.JsonUtils;
-import com.infinities.keystone4j.ObjectMapperResolver;
 import com.infinities.keystone4j.PatchClient;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.catalog.CatalogApi;
@@ -40,6 +37,9 @@ import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
+import com.infinities.keystone4j.utils.jackson.JacksonFeature;
+import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
 public class EndpointResourceTest extends JerseyTest {
 

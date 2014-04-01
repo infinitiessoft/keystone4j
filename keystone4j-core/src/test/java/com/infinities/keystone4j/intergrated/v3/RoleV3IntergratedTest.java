@@ -18,12 +18,8 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.infinities.keystone4j.JacksonFeature;
-import com.infinities.keystone4j.JsonUtils;
 import com.infinities.keystone4j.KeystoneApplication;
-import com.infinities.keystone4j.ObjectMapperResolver;
 import com.infinities.keystone4j.PatchClient;
-import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.assignment.model.Role;
@@ -31,6 +27,10 @@ import com.infinities.keystone4j.assignment.model.RoleWrapper;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.utils.jackson.JacksonFeature;
+import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 public class RoleV3IntergratedTest extends AbstractIntegratedTest {
 

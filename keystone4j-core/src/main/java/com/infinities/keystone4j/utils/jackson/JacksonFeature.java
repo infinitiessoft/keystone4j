@@ -1,4 +1,4 @@
-package com.infinities.keystone4j;
+package com.infinities.keystone4j.utils.jackson;
 
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;

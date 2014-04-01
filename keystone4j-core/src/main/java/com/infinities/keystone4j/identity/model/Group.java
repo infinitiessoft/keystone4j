@@ -22,12 +22,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.BaseEntity;
-import com.infinities.keystone4j.Views;
 import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
 import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
 import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 @Entity
 @Table(name = "GROUP", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {

@@ -3,7 +3,6 @@ package com.infinities.keystone4j.policy;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,8 +17,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.infinities.keystone4j.Cms;
-import com.infinities.keystone4j.JsonUtils;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.policy.check.Check;
 import com.infinities.keystone4j.policy.check.FalseCheck;
@@ -31,6 +28,7 @@ import com.infinities.keystone4j.policy.check.StringCheck;
 import com.infinities.keystone4j.policy.check.TrueCheck;
 import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.utils.jackson.JsonUtils;
 
 public class Enforcer {
 
@@ -54,11 +52,13 @@ public class Enforcer {
 
 
 	public Enforcer(String policyPath) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
-		// File file = new File(policyPath);
+		File file = new File(policyPath);
 		// lastModified = file.lastModified();
-		URL url = Cms.class.getResource(policyPath);
+		// URL url = getClass().getResource(policyPath);
+		// File file = new File(url.toURI());
+		// URL url = Cms.class.getResource(policyPath);
 		this.rules = Maps.newHashMap();
-		Map<String, String> rules = JsonUtils.readJson(new File(url.toURI()));
+		Map<String, String> rules = JsonUtils.readJson(file);
 		logger.debug("policy map size:{}, {}", new Object[] { rules.size(), rules });
 		checks = Maps.newHashMap();
 		setChecks(checks);
