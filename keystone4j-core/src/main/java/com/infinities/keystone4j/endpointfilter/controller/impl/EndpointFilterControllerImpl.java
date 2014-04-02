@@ -52,7 +52,7 @@ public class EndpointFilterControllerImpl extends BaseController implements Endp
 				new ListProjectsForEndpointAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage),
 				null, tokenApi, policyApi, parMap);
 		List<Project> ret = command.execute(getRequest());
-		return new ProjectsWrapper(ret);
+		return new ProjectsWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class EndpointFilterControllerImpl extends BaseController implements Endp
 				new ListEndpointsForProjectAction(assignmentApi, catalogApi, endpointFilterApi, endpointid), page, perPage),
 				null, tokenApi, policyApi, parMap);
 		List<Endpoint> ret = command.execute(getRequest());
-		return new EndpointsWrapper(ret);
+		return new EndpointsWrapper(ret, getRequest());
 	}
 
 	@Override

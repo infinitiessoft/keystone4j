@@ -29,6 +29,7 @@ import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 public class ServiceIntegratedTest extends AbstractIntegratedTest {
 
 	private Service service;
+	private final String baseUrl = "http://localhost:8080/v3/services";
 
 
 	@Override
@@ -48,7 +49,7 @@ public class ServiceIntegratedTest extends AbstractIntegratedTest {
 	public void testCreateService() throws JsonGenerationException, JsonMappingException, IOException {
 		// final String id = "newservice";
 
-		ServiceWrapper wrapper = new ServiceWrapper(service);
+		ServiceWrapper wrapper = new ServiceWrapper(service, baseUrl);
 		String json = JsonUtils.toJson(wrapper);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode serviceJ = node.get("service");
@@ -104,7 +105,7 @@ public class ServiceIntegratedTest extends AbstractIntegratedTest {
 	@Test
 	public void testUpdateService() throws JsonProcessingException, IOException {
 		service.setId("79ea2c65-4679-441f-a596-8aec16752a0f");
-		ServiceWrapper wrapper = new ServiceWrapper(service);
+		ServiceWrapper wrapper = new ServiceWrapper(service, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/services/" + service.getId());
 		JsonNode node = client.connect(wrapper);
 

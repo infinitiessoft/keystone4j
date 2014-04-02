@@ -64,7 +64,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		Action<Role> command = new PolicyCheckDecorator<Role>(new CreateRoleAction(assignmentApi, role), null, tokenApi,
 				policyApi, parMap);
 		Role ret = command.execute(getRequest());
-		return new RoleWrapper(ret);
+		return new RoleWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 				assignmentApi, name), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Role> ret = command.execute(getRequest());
-		return new RolesWrapper(ret);
+		return new RolesWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		Action<Role> command = new PolicyCheckDecorator<Role>(new GetRoleAction(assignmentApi, roleid), null, tokenApi,
 				policyApi, parMap);
 		Role ret = command.execute(getRequest());
-		return new RoleWrapper(ret);
+		return new RoleWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		Action<Role> command = new PolicyCheckDecorator<Role>(new UpdateRoleAction(assignmentApi, roleid, role), null,
 				tokenApi, policyApi, parMap);
 		Role ret = command.execute(getRequest());
-		return new RoleWrapper(ret);
+		return new RoleWrapper(ret, getRequest());
 	}
 
 	@Override

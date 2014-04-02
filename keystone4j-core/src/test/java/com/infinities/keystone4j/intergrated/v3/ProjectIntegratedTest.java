@@ -51,6 +51,7 @@ public class ProjectIntegratedTest extends AbstractIntegratedTest {
 	// private GroupDomainGrantMetadata groupDomainGrantMetadata1,
 	// groupDomainGrantMetadata2;
 	private GroupProjectGrant groupProjectGrant;
+	private final String baseUrl = "http://localhost:8080/v3/projects";
 
 
 	// private GroupProjectGrantMetadata groupProjectGrantMetadata;
@@ -204,7 +205,7 @@ public class ProjectIntegratedTest extends AbstractIntegratedTest {
 
 	@Test
 	public void testCreateProject() throws JsonGenerationException, JsonMappingException, IOException {
-		ProjectWrapper wrapper = new ProjectWrapper(project);
+		ProjectWrapper wrapper = new ProjectWrapper(project, baseUrl);
 		String json = JsonUtils.toJson(wrapper);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode projectJ = node.get("project");
@@ -254,7 +255,7 @@ public class ProjectIntegratedTest extends AbstractIntegratedTest {
 	public void testUpdateProject() throws ClientProtocolException, IOException {
 		project.setId("79ea2c65-4679-441f-a596-8aec16752a2f");
 
-		ProjectWrapper wrapper = new ProjectWrapper(project);
+		ProjectWrapper wrapper = new ProjectWrapper(project, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/projects/" + project.getId());
 		JsonNode node = client.connect(wrapper);
 

@@ -77,6 +77,7 @@ public class GroupResourceTest extends JerseyTest {
 	private GroupProjectGrant groupProjectGrant;
 	// private GroupProjectGrantMetadata groupProjectGrantMetadata;
 	private UserGroupMembership userGroupMembership;
+	private final String baseUrl = "http://localhost:8080/v3/groups";
 
 
 	@Override
@@ -276,7 +277,7 @@ public class GroupResourceTest extends JerseyTest {
 			}
 		});
 
-		GroupWrapper wrapper = new GroupWrapper(group);
+		GroupWrapper wrapper = new GroupWrapper(group, baseUrl);
 		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode groupJ = node.get("group");
@@ -367,7 +368,7 @@ public class GroupResourceTest extends JerseyTest {
 				will(returnValue(group));
 			}
 		});
-		GroupWrapper wrapper = new GroupWrapper(group);
+		GroupWrapper wrapper = new GroupWrapper(group, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/groups/" + group.getId());
 		JsonNode node = client.connect(wrapper);
 		JsonNode groupJ = node.get("group");

@@ -32,6 +32,7 @@ public class EndpointIntegratedTest extends AbstractIntegratedTest {
 
 	private Endpoint endpoint;
 	private Service service;
+	private final String baseUrl = "http://localhost:8080/v3/endpoints";
 
 
 	@Override
@@ -52,7 +53,7 @@ public class EndpointIntegratedTest extends AbstractIntegratedTest {
 
 	@Test
 	public void testCreateEndpoint() throws JsonProcessingException, IOException {
-		EndpointWrapper wrapper = new EndpointWrapper(endpoint);
+		EndpointWrapper wrapper = new EndpointWrapper(endpoint, baseUrl);
 		String json = JsonUtils.toJson(wrapper);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode endpointJ = node.get("endpoint");
@@ -115,7 +116,7 @@ public class EndpointIntegratedTest extends AbstractIntegratedTest {
 	@Test
 	public void testUpdateEndpoint() throws ClientProtocolException, IOException {
 		endpoint.setId("79ea2c65-4679-441f-a596-8aec16752a1f");
-		EndpointWrapper wrapper = new EndpointWrapper(endpoint);
+		EndpointWrapper wrapper = new EndpointWrapper(endpoint, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/endpoints/" + endpoint.getId());
 		JsonNode node = client.connect(wrapper);
 

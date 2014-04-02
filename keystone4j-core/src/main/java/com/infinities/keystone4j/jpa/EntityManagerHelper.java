@@ -52,17 +52,14 @@ public class EntityManagerHelper {
 	}
 
 	public static void setLock(boolean value) {
-		if (lock == null) {
-			lock = new ThreadLocal<Boolean>();
-		}
 		lock.set(value);
 	}
 
 	public static boolean getLock() {
-		if (lock == null) {
-			lock = new ThreadLocal<Boolean>();
-			lock.set(true);
+		try {
+			return lock.get();
+		} catch (Exception e) {
+			return true;
 		}
-		return lock.get();
 	}
 }

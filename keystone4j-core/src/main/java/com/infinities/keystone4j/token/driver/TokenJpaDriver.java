@@ -3,6 +3,9 @@ package com.infinities.keystone4j.token.driver;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.TokenDao;
@@ -12,6 +15,7 @@ import com.infinities.keystone4j.token.model.Token;
 public class TokenJpaDriver implements TokenDriver {
 
 	private final TokenDao tokenDao;
+	private final static Logger logger = LoggerFactory.getLogger(TokenJpaDriver.class);
 
 
 	public TokenJpaDriver() {
@@ -24,7 +28,9 @@ public class TokenJpaDriver implements TokenDriver {
 		if (Strings.isNullOrEmpty(uniqueid)) {
 			throw Exceptions.TokenNotFoundException.getInstance(null, uniqueid);
 		}
+		logger.debug("find token: {}", uniqueid);
 		Token token = tokenDao.findById(uniqueid);
+		logger.debug("get token: {}", String.valueOf(token == null));
 		if (token == null) {
 			throw Exceptions.TokenNotFoundException.getInstance(null, uniqueid);
 		}

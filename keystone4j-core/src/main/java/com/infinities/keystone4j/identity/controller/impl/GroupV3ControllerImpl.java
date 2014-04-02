@@ -47,7 +47,7 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 		Action<Group> command = new PolicyCheckDecorator<Group>(new CreateGroupAction(assignmentApi, tokenApi, identityApi,
 				group), null, tokenApi, policyApi, parMap);
 		Group ret = command.execute(getRequest());
-		return new GroupWrapper(ret);
+		return new GroupWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 				policyApi, parMap);
 
 		List<Group> ret = command.execute(getRequest());
-		return new GroupsWrapper(ret);
+		return new GroupsWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 		Action<Group> command = new PolicyCheckDecorator<Group>(new GetGroupAction(assignmentApi, tokenApi, identityApi,
 				groupid), null, tokenApi, policyApi, parMap);
 		Group ret = command.execute(getRequest());
-		return new GroupWrapper(ret);
+		return new GroupWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 		Action<Group> command = new PolicyCheckDecorator<Group>(new UpdateGroupAction(assignmentApi, tokenApi, identityApi,
 				groupid, group), null, tokenApi, policyApi, parMap);
 		Group ret = command.execute(getRequest());
-		return new GroupWrapper(ret);
+		return new GroupWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 				policyApi, parMap);
 
 		List<Group> ret = command.execute(getRequest());
-		return new GroupsWrapper(ret);
+		return new GroupsWrapper(ret, getRequest());
 	}
 
 }

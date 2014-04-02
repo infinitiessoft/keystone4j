@@ -2,6 +2,8 @@ package com.infinities.keystone4j.api;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,6 +11,7 @@ import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
 
+import org.apache.commons.codec.DecoderException;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.api.Invocation;
@@ -31,6 +34,7 @@ import com.infinities.keystone4j.token.api.TokenApiImpl;
 import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.trust.model.Trust;
+import com.infinities.keystone4j.utils.Cms;
 
 public class TokenApiImplTest {
 
@@ -136,17 +140,18 @@ public class TokenApiImplTest {
 	}
 
 	@Test(expected = WebApplicationException.class)
-	public void testGetTokenWithExpireDate() {
+	public void testGetTokenWithExpireDate() throws UnsupportedEncodingException, NoSuchAlgorithmException, DecoderException {
 		token.setId("newtoken");
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MINUTE, -5);
 		Date date = calendar.getTime();
 		token.setExpires(date);
 		token.setIssueAt(date);
+		final String id = Cms.Instance.hashToken(token.getId());
 		context.checking(new Expectations() {
 
 			{
-				exactly(1).of(driver).getToken(token.getId());
+				exactly(1).of(driver).getToken(id);
 				will(returnValue(token));
 			}
 		});
@@ -159,17 +164,18 @@ public class TokenApiImplTest {
 	}
 
 	@Test
-	public void testGetToken() {
+	public void testGetToken() throws UnsupportedEncodingException, NoSuchAlgorithmException, DecoderException {
 		token.setId("newtoken");
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MINUTE, 5);
 		Date date = calendar.getTime();
 		token.setExpires(date);
 		token.setIssueAt(date);
+		final String id = Cms.Instance.hashToken(token.getId());
 		context.checking(new Expectations() {
 
 			{
-				exactly(1).of(driver).getToken(token.getId());
+				exactly(1).of(driver).getToken(id);
 				will(returnValue(token));
 			}
 		});
@@ -313,14 +319,15 @@ public class TokenApiImplTest {
 	}
 
 	@Test
-	public void testDeleteToken() {
+	public void testDeleteToken() throws UnsupportedEncodingException, NoSuchAlgorithmException, DecoderException {
 		token.setId("newtoken");
 		user.setId("newuser");
 		project.setId("newproject");
+		final String id = Cms.Instance.hashToken(token.getId());
 		context.checking(new Expectations() {
 
 			{
-				exactly(1).of(driver).deleteToken(token.getId());
+				exactly(1).of(driver).deleteToken(id);
 			}
 		});
 		tokenApi.deleteToken(token.getId());

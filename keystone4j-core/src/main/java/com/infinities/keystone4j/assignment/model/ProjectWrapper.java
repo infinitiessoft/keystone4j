@@ -1,16 +1,25 @@
 package com.infinities.keystone4j.assignment.model;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
+import com.infinities.keystone4j.ReferentialLinkUtils;
+
 public class ProjectWrapper {
 
 	private Project project;
 
 
+	public ProjectWrapper(Project project, ContainerRequestContext context) {
+		this(project, context.getUriInfo().getBaseUri().toASCIIString() + "v3/projects/");
+	}
+
 	public ProjectWrapper() {
 
 	}
 
-	public ProjectWrapper(Project project) {
+	public ProjectWrapper(Project project, String baseUrl) {
 		this.project = project;
+		ReferentialLinkUtils.instance.addSelfReferentialLink(project, baseUrl);
 	}
 
 	public Project getProject() {

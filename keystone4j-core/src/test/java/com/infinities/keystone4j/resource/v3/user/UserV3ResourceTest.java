@@ -81,6 +81,7 @@ public class UserV3ResourceTest extends JerseyTest {
 	private GroupProjectGrant groupProjectGrant;
 	// private GroupProjectGrantMetadata groupProjectGrantMetadata;
 	private UserGroupMembership userGroupMembership;
+	private final String baseUrl = "http://localhost:8080/v3/users";
 
 
 	@Override
@@ -309,7 +310,7 @@ public class UserV3ResourceTest extends JerseyTest {
 			}
 		});
 
-		UserWrapper wrapper = new UserWrapper(user);
+		UserWrapper wrapper = new UserWrapper(user, baseUrl);
 		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode userJ = node.get("user");
@@ -417,7 +418,7 @@ public class UserV3ResourceTest extends JerseyTest {
 				will(returnValue(user));
 			}
 		});
-		UserWrapper wrapper = new UserWrapper(user);
+		UserWrapper wrapper = new UserWrapper(user, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/users/" + user.getId());
 		JsonNode node = client.connect(wrapper);
 

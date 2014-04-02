@@ -43,7 +43,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new CreateDomainAction(assignmentApi, domain), null,
 				tokenApi, policyApi, parMap);
 		Domain ret = command.execute(getRequest());
-		return new DomainWrapper(ret);
+		return new DomainWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 				new ListDomainsAction(assignmentApi, name, enabled), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Domain> ret = command.execute(getRequest());
-		return new DomainsWrapper(ret);
+		return new DomainsWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new GetDomainAction(assignmentApi, domainid), null,
 				tokenApi, policyApi, parMap);
 		Domain ret = command.execute(getRequest());
-		return new DomainWrapper(ret);
+		return new DomainWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 		Action<Domain> command = new PolicyCheckDecorator<Domain>(new UpdateDomainAction(assignmentApi, domainid, domain),
 				null, tokenApi, policyApi, parMap);
 		Domain ret = command.execute(getRequest());
-		return new DomainWrapper(ret);
+		return new DomainWrapper(ret, getRequest());
 	}
 
 	@Override

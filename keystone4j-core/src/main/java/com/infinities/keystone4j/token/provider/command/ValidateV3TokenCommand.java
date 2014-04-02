@@ -10,7 +10,6 @@ import com.infinities.keystone4j.token.model.TokenData;
 import com.infinities.keystone4j.token.model.TokenDataWrapper;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
-import com.infinities.keystone4j.utils.Cms;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.Views;
 
@@ -29,8 +28,16 @@ public class ValidateV3TokenCommand extends AbstractTokenProviderCommand<TokenDa
 
 	@Override
 	public TokenDataWrapper execute() {
-		String uniqueid = Cms.Instance.hashToken(tokenid);
-		TokenDataWrapper token = this.getTokenProviderDriver().validateV3Token(uniqueid);
+		// String uniqueid = null;
+		// try {
+		// uniqueid = Cms.Instance.hashToken(tokenid);
+		// } catch (UnsupportedEncodingException | NoSuchAlgorithmException |
+		// DecoderException e) {
+		// logger.error("unexpected error", e);
+		// throw Exceptions.UnexpectedException.getInstance(null);
+		// }
+		TokenDataWrapper token = this.getTokenProviderDriver().validateV3Token(tokenid);
+		logger.debug("validate token uniqueid: {}", tokenid);
 		isValidToken(token);
 		return token;
 	}

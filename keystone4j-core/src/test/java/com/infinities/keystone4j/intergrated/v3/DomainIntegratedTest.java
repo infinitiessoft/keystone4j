@@ -36,6 +36,7 @@ public class DomainIntegratedTest extends AbstractIntegratedTest {
 	private Group group;
 	private Project project;
 	private Role role1, role2, role3;
+	private final String baseUrl = "http://localhost:8080/v3/domains";
 
 
 	@Override
@@ -93,7 +94,7 @@ public class DomainIntegratedTest extends AbstractIntegratedTest {
 	@Test
 	public void testCreateDomain() throws JsonProcessingException, IOException {
 
-		DomainWrapper wrapper = new DomainWrapper(domain);
+		DomainWrapper wrapper = new DomainWrapper(domain, baseUrl);
 		String json = JsonUtils.toJson(wrapper);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode domainJ = node.get("domain");
@@ -142,7 +143,7 @@ public class DomainIntegratedTest extends AbstractIntegratedTest {
 	public void testUpdateDomain() throws ClientProtocolException, IOException {
 		domain.setId("69ea2c65-4679-441f-a596-8aec16752a0f");
 
-		DomainWrapper wrapper = new DomainWrapper(domain);
+		DomainWrapper wrapper = new DomainWrapper(domain, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/domains/" + domain.getId());
 		JsonNode node = client.connect(wrapper);
 

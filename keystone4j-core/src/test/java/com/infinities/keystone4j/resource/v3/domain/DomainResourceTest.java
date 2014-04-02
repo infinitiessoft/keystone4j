@@ -72,6 +72,7 @@ public class DomainResourceTest extends JerseyTest {
 	// private GroupDomainGrantMetadata groupDomainGrantMetadata1,
 	// groupDomainGrantMetadata2;
 	private GroupProjectGrant groupProjectGrant;
+	private final String baseUrl = "http://localhost:8080/v3/domains";
 
 
 	// private GroupProjectGrantMetadata groupProjectGrantMetadata;
@@ -254,7 +255,7 @@ public class DomainResourceTest extends JerseyTest {
 			}
 		});
 
-		DomainWrapper wrapper = new DomainWrapper(domain);
+		DomainWrapper wrapper = new DomainWrapper(domain, baseUrl);
 		String json = JsonUtils.toJson(wrapper);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode domainJ = node.get("domain");
@@ -329,7 +330,7 @@ public class DomainResourceTest extends JerseyTest {
 				will(returnValue(domain));
 			}
 		});
-		DomainWrapper wrapper = new DomainWrapper(domain);
+		DomainWrapper wrapper = new DomainWrapper(domain, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/domains/" + domain.getId());
 		JsonNode node = client.connect(wrapper);
 

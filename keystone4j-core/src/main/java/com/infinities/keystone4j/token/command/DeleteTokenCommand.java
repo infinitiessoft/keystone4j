@@ -1,13 +1,23 @@
 package com.infinities.keystone4j.token.command;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
+import org.apache.commons.codec.DecoderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
 import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.trust.TrustApi;
+import com.infinities.keystone4j.utils.Cms;
 
 public class DeleteTokenCommand extends AbstractTokenCommand<Token> {
 
 	private final String tokenid;
+	private final static Logger logger = LoggerFactory.getLogger(DeleteTokenCommand.class);
 
 
 	public DeleteTokenCommand(TokenApi tokenApi, TrustApi trustApi, TokenDriver tokenDriver, String tokenid) {
@@ -17,7 +27,14 @@ public class DeleteTokenCommand extends AbstractTokenCommand<Token> {
 
 	@Override
 	public Token execute() {
-		this.getTokenDriver().deleteToken(tokenid);
+		String uniqueid = null;
+		try {
+			uniqueid = Cms.Instance.hashToken(tokenid);
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | DecoderException e) {
+			logger.error("unexpected error", e);
+			throw Exceptions.UnexpectedException.getInstance(null);
+		}
+		this.getTokenDriver().deleteToken(uniqueid);
 		return null;
 	}
 

@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.infinities.keystone4j.common.model.Links;
 import com.infinities.keystone4j.utils.jackson.Views;
 
 @MappedSuperclass
@@ -27,6 +28,7 @@ public class BaseEntity implements Serializable {
 	private String description;
 	private int version;
 	private boolean descriptionUpdated = false;
+	private Links links = new Links();
 
 
 	@JsonView(Views.Basic.class)
@@ -108,6 +110,16 @@ public class BaseEntity implements Serializable {
 	@XmlTransient
 	public void setDescriptionUpdated(boolean descriptionUpdated) {
 		this.descriptionUpdated = descriptionUpdated;
+	}
+
+	@Transient
+	public Links getLinks() {
+		return links;
+	}
+
+	@Transient
+	public void setLinks(Links links) {
+		this.links = links;
 	}
 
 }

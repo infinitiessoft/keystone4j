@@ -53,7 +53,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 		Action<User> command = new PolicyCheckDecorator<User>(new CreateUserAction(assignmentApi, tokenApi, identityApi,
 				user), null, tokenApi, policyApi, parMap);
 		User ret = command.execute(getRequest());
-		return new UserWrapper(ret);
+		return new UserWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 				parMap);
 
 		List<User> ret = command.execute(getRequest());
-		return new UsersWrapper(ret);
+		return new UsersWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 		Action<User> command = new PolicyCheckDecorator<User>(
 				new GetUserAction(assignmentApi, tokenApi, identityApi, userid), null, tokenApi, policyApi, parMap);
 		User ret = command.execute(getRequest());
-		return new UserWrapper(ret);
+		return new UserWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 		Action<User> command = new PolicyCheckDecorator<User>(new UpdateUserAction(assignmentApi, tokenApi, identityApi,
 				userid, user), null, tokenApi, policyApi, parMap);
 		User ret = command.execute(getRequest());
-		return new UserWrapper(ret);
+		return new UserWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 				page, perPage), tokenApi, policyApi, parMap);
 
 		List<User> ret = command.execute(getRequest());
-		return new UsersWrapper(ret);
+		return new UsersWrapper(ret, getRequest());
 	}
 
 	@Override

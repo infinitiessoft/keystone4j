@@ -20,6 +20,7 @@ public class RevokeTokenAction extends AbstractTokenAction<TokenMetadata> {
 	public TokenMetadata execute(ContainerRequestContext request) {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		String tokenid = context.getSubjectTokenid();
+
 		this.tokenProviderApi.revokeToken(tokenid);
 		// invalidate cache
 

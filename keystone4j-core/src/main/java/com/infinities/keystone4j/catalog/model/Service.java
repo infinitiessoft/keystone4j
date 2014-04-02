@@ -14,7 +14,9 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.BaseEntity;
+import com.infinities.keystone4j.utils.jackson.Views;
 
 @Entity
 @Table(name = "SERVICE", schema = "PUBLIC", catalog = "PUBLIC")
@@ -54,6 +56,7 @@ public class Service extends BaseEntity implements java.io.Serializable {
 		typeUpdated = true;
 	}
 
+	@XmlTransient
 	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
@@ -65,6 +68,7 @@ public class Service extends BaseEntity implements java.io.Serializable {
 		extraUpdated = true;
 	}
 
+	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "service", cascade = CascadeType.ALL)
 	public Set<Endpoint> getEndpoints() {
 		return endpoints;

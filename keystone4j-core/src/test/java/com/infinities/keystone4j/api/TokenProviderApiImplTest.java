@@ -32,7 +32,6 @@ import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 import com.infinities.keystone4j.token.provider.api.TokenProviderApiImpl;
 import com.infinities.keystone4j.trust.model.Trust;
-import com.infinities.keystone4j.utils.Cms;
 
 public class TokenProviderApiImplTest {
 
@@ -192,14 +191,15 @@ public class TokenProviderApiImplTest {
 		user.setId("newuser");
 		domain.setId("newdomain");
 		group.setId("newgroup");
-		final String uniqueid = Cms.Instance.hashToken(token.getId());
+
 		context.checking(new Expectations() {
 
 			{
-				exactly(1).of(driver).validateV3Token(uniqueid);
+				exactly(1).of(driver).validateV3Token(token.getId());
 				will(returnValue(tokenDataWrapper));
 			}
 		});
+
 		tokenProviderApi.checkV3Token(token.getId());
 	}
 
@@ -213,14 +213,19 @@ public class TokenProviderApiImplTest {
 		user.setId("newuser");
 		domain.setId("newdomain");
 		group.setId("newgroup");
-		final String uniqueid = Cms.Instance.hashToken(token.getId());
+		// String uniqueid = null;
+
+		// uniqueid = Cms.Instance.hashToken(tokenid);
+
+		// final String uniqueid = Cms.Instance.hashToken(token.getId());
 		context.checking(new Expectations() {
 
 			{
-				exactly(1).of(driver).validateV3Token(uniqueid);
+				exactly(1).of(driver).validateV3Token(token.getId());
 				will(returnValue(tokenDataWrapper));
 			}
 		});
+
 		tokenProviderApi.checkV3Token(token.getId());
 	}
 
@@ -253,14 +258,15 @@ public class TokenProviderApiImplTest {
 		user.setId("newuser");
 		domain.setId("newdomain");
 		group.setId("newgroup");
-		final String uniqueid = Cms.Instance.hashToken(token.getId());
+
 		context.checking(new Expectations() {
 
 			{
-				exactly(1).of(driver).validateV3Token(uniqueid);
+				exactly(1).of(driver).validateV3Token(token.getId());
 				will(returnValue(tokenDataWrapper));
 			}
 		});
+
 		TokenDataWrapper ret = tokenProviderApi.validateV3Token(token.getId());
 		assertEquals(tokenDataWrapper.getToken().getDomain(), ret.getToken().getDomain());
 		assertEquals(tokenDataWrapper.getToken().getExpireAt(), ret.getToken().getExpireAt());

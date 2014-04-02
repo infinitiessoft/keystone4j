@@ -52,6 +52,7 @@ public class ServiceResourceTest extends JerseyTest {
 	private TrustApi trustApi;
 	private CatalogApi catalogApi;
 	private Service service;
+	private final String baseUrl = "http://localhost:8080/v3/services";
 
 
 	@Override
@@ -104,7 +105,7 @@ public class ServiceResourceTest extends JerseyTest {
 			}
 		});
 
-		ServiceWrapper wrapper = new ServiceWrapper(service);
+		ServiceWrapper wrapper = new ServiceWrapper(service, baseUrl);
 		String json = JsonUtils.toJson(wrapper);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode serviceJ = node.get("service");
@@ -185,7 +186,7 @@ public class ServiceResourceTest extends JerseyTest {
 				will(returnValue(service));
 			}
 		});
-		ServiceWrapper wrapper = new ServiceWrapper(service);
+		ServiceWrapper wrapper = new ServiceWrapper(service, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/services/" + service.getId());
 		JsonNode node = client.connect(wrapper);
 

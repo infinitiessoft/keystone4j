@@ -53,6 +53,7 @@ public class EndpointResourceTest extends JerseyTest {
 	private CatalogApi catalogApi;
 	private Endpoint endpoint;
 	private Service service;
+	private final String baseUrl = "http://localhost:8080/v3/endpoints";
 
 
 	@Override
@@ -112,7 +113,7 @@ public class EndpointResourceTest extends JerseyTest {
 			}
 		});
 
-		EndpointWrapper wrapper = new EndpointWrapper(endpoint);
+		EndpointWrapper wrapper = new EndpointWrapper(endpoint, baseUrl);
 		String json = JsonUtils.toJson(wrapper);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode endpointJ = node.get("endpoint");
@@ -198,7 +199,7 @@ public class EndpointResourceTest extends JerseyTest {
 				will(returnValue(endpoint));
 			}
 		});
-		EndpointWrapper wrapper = new EndpointWrapper(endpoint);
+		EndpointWrapper wrapper = new EndpointWrapper(endpoint, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/endpoints/" + endpoint.getId());
 		JsonNode node = client.connect(wrapper);
 

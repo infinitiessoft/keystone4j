@@ -1,5 +1,8 @@
 package com.infinities.keystone4j.identity.model;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
+import com.infinities.keystone4j.ReferentialLinkUtils;
 
 public class GroupWrapper {
 
@@ -10,9 +13,14 @@ public class GroupWrapper {
 
 	}
 
-	public GroupWrapper(Group group) {
+	public GroupWrapper(Group group, ContainerRequestContext context) {
+		this(group, context.getUriInfo().getBaseUri().toASCIIString() + "v3/groups/");
+	}
+
+	public GroupWrapper(Group group, String baseUrl) {
 		super();
 		this.group = group;
+		ReferentialLinkUtils.instance.addSelfReferentialLink(group, baseUrl);
 	}
 
 	public Group getGroup() {

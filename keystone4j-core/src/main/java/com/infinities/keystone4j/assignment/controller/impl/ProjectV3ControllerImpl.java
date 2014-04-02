@@ -46,7 +46,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 		Action<Project> command = new PolicyCheckDecorator<Project>(
 				new CreateProjectAction(assignmentApi, tokenApi, project), null, tokenApi, policyApi, parMap);
 		Project ret = command.execute(getRequest());
-		return new ProjectWrapper(ret);
+		return new ProjectWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 				new ListProjectsAction(assignmentApi, domainid, name, enabled), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Project> ret = command.execute(getRequest());
-		return new ProjectsWrapper(ret);
+		return new ProjectsWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 				parMap);
 
 		List<Project> ret = command.execute(getRequest());
-		return new ProjectsWrapper(ret);
+		return new ProjectsWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 		Action<Project> command = new PolicyCheckDecorator<Project>(new GetProjectAction(assignmentApi, projectid), null,
 				tokenApi, policyApi, parMap);
 		Project ret = command.execute(getRequest());
-		return new ProjectWrapper(ret);
+		return new ProjectWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 		Action<Project> command = new PolicyCheckDecorator<Project>(new UpdateProjectAction(assignmentApi, projectid,
 				project), null, tokenApi, policyApi, parMap);
 		Project ret = command.execute(getRequest());
-		return new ProjectWrapper(ret);
+		return new ProjectWrapper(ret, getRequest());
 	}
 
 	@Override

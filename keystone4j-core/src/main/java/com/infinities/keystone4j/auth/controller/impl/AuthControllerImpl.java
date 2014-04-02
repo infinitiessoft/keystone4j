@@ -2,6 +2,9 @@ package com.infinities.keystone4j.auth.controller.impl;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.assignment.AssignmentApi;
@@ -24,6 +27,7 @@ import com.infinities.keystone4j.trust.model.SignedWrapper;
 
 public class AuthControllerImpl extends BaseController implements AuthController {
 
+	private final static Logger logger = LoggerFactory.getLogger(AuthControllerImpl.class);
 	private final AssignmentApi assignmentApi;
 	private final TokenProviderApi tokenProviderApi;
 	private final IdentityApi identityApi;
@@ -49,6 +53,7 @@ public class AuthControllerImpl extends BaseController implements AuthController
 		Action<TokenMetadata> command = new AuthenticationForTokenAction(assignmentApi, identityApi, tokenProviderApi,
 				tokenApi, trustApi, auth);
 		TokenMetadata ret = command.execute(getRequest());
+		logger.debug("generate token id: {}", ret.getTokenid());
 		return ret;
 	}
 

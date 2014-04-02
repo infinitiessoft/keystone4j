@@ -7,12 +7,18 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.security.KeyPair;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.openssl.PEMReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.common.Config;
 
@@ -21,7 +27,7 @@ public enum Cms {
 
 	// private final static String CERT_FILE = "certfile";
 	private final static String KEY_FILE = "keyfile";
-	// private final static Logger logger = LoggerFactory.getLogger(Cms.class);
+	private final static Logger logger = LoggerFactory.getLogger(Cms.class);
 
 	// private Certificate cert;
 	private final Signature rsaSigner;
@@ -96,12 +102,24 @@ public enum Cms {
 	}
 
 	private String signText(String text) throws SignatureException, UnsupportedEncodingException {
+		logger.debug("text before sign: {}", text);
 		rsaSigner.update(text.getBytes("UTF8"));
 		byte[] signaturesBytes = rsaSigner.sign();
-		return new String(signaturesBytes);
+		String hex = Hex.encodeHexString(signaturesBytes);
+		logger.debug("text after sign and hex: {}", hex);
+		return hex;
 	}
 
-	public String hashToken(String tokenid) {
-		return tokenid;
+	public String hashToken(String tokenid) throws UnsupportedEncodingException, NoSuchAlgorithmException, DecoderException {
+		logger.debug("text before hash: {}", tokenid);
+		byte[] input = tokenid.getBytes();//
+		// Hex.decodeHex(tokenid.toCharArray());//
+		// Base64.decode(tokenid.getBytes("UTF8"));
+		MessageDigest md = MessageDigest.getInstance("MD5");
+		byte[] output = md.digest(input);
+		String hex = Hex.encodeHexString(output);
+		logger.debug("text after hash and hex: {}", hex);
+		return hex;
+		// return tokenid;
 	}
 }

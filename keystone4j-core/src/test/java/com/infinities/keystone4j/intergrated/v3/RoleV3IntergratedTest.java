@@ -39,6 +39,7 @@ public class RoleV3IntergratedTest extends AbstractIntegratedTest {
 	private Group group;
 	private Project project;
 	private Role role1;
+	private final String baseUrl = "http://localhost:8080/v3/roles";
 
 
 	@Override
@@ -82,7 +83,7 @@ public class RoleV3IntergratedTest extends AbstractIntegratedTest {
 	@Test
 	public void testCreateRole() throws JsonGenerationException, JsonMappingException, IOException {
 
-		RoleWrapper wrapper = new RoleWrapper(role1);
+		RoleWrapper wrapper = new RoleWrapper(role1, baseUrl);
 		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode roleJ = node.get("role");
@@ -131,7 +132,7 @@ public class RoleV3IntergratedTest extends AbstractIntegratedTest {
 	public void testUpdateRole() throws ClientProtocolException, IOException {
 		final String id = "708bb4f9-9d3c-46af-b18c-7033dc022ffb";
 		role1.setId(id);
-		RoleWrapper wrapper = new RoleWrapper(role1);
+		RoleWrapper wrapper = new RoleWrapper(role1, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/roles/" + role1.getId());
 		JsonNode node = client.connect(wrapper);
 

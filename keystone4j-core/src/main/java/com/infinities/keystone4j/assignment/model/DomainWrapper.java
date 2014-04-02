@@ -1,5 +1,9 @@
 package com.infinities.keystone4j.assignment.model;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
+import com.infinities.keystone4j.ReferentialLinkUtils;
+
 public class DomainWrapper {
 
 	private Domain domain;
@@ -9,8 +13,13 @@ public class DomainWrapper {
 
 	}
 
-	public DomainWrapper(Domain domain) {
+	public DomainWrapper(Domain domain, ContainerRequestContext context) {
+		this(domain, context.getUriInfo().getBaseUri().toASCIIString() + "v3/domains/");
+	}
+
+	public DomainWrapper(Domain domain, String baseUrl) {
 		this.domain = domain;
+		ReferentialLinkUtils.instance.addSelfReferentialLink(domain, baseUrl);
 	}
 
 	public Domain getDomain() {

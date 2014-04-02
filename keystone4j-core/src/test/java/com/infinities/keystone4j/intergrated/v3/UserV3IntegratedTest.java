@@ -66,6 +66,7 @@ public class UserV3IntegratedTest extends AbstractIntegratedTest {
 	private GroupProjectGrant groupProjectGrant;
 	// private GroupProjectGrantMetadata groupProjectGrantMetadata;
 	private UserGroupMembership userGroupMembership;
+	private final String baseUrl = "http://localhost:8080/v3/users";
 
 
 	@Override
@@ -249,7 +250,7 @@ public class UserV3IntegratedTest extends AbstractIntegratedTest {
 		// final String id = "newuser";
 		// user.setId("");
 
-		UserWrapper wrapper = new UserWrapper(user);
+		UserWrapper wrapper = new UserWrapper(user, baseUrl);
 		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode userJ = node.get("user");
@@ -314,7 +315,7 @@ public class UserV3IntegratedTest extends AbstractIntegratedTest {
 		final String id = "0f3328f8-a7e7-41b4-830d-be8fdd5186c7";
 		user.setId(id);
 
-		UserWrapper wrapper = new UserWrapper(user);
+		UserWrapper wrapper = new UserWrapper(user, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/users/" + user.getId());
 		JsonNode node = client.connect(wrapper);
 

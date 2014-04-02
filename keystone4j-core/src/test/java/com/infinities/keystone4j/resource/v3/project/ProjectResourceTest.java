@@ -74,6 +74,7 @@ public class ProjectResourceTest extends JerseyTest {
 	// private GroupDomainGrantMetadata groupDomainGrantMetadata1,
 	// groupDomainGrantMetadata2;
 	private GroupProjectGrant groupProjectGrant;
+	private final String baseUrl = "http://localhost:8080/v3/projects";
 
 
 	// private GroupProjectGrantMetadata groupProjectGrantMetadata;
@@ -265,7 +266,7 @@ public class ProjectResourceTest extends JerseyTest {
 			}
 		});
 
-		ProjectWrapper wrapper = new ProjectWrapper(project);
+		ProjectWrapper wrapper = new ProjectWrapper(project, baseUrl);
 		String json = JsonUtils.toJson(wrapper);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode projectJ = node.get("project");
@@ -346,7 +347,7 @@ public class ProjectResourceTest extends JerseyTest {
 				will(returnValue(project));
 			}
 		});
-		ProjectWrapper wrapper = new ProjectWrapper(project);
+		ProjectWrapper wrapper = new ProjectWrapper(project, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/projects/" + project.getId());
 		JsonNode node = client.connect(wrapper);
 

@@ -43,7 +43,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 		Action<Service> command = new PolicyCheckDecorator<Service>(new CreateServiceAction(catalogApi, service), null,
 				tokenApi, policyApi, parMap);
 		Service ret = command.execute(getRequest());
-		return new ServiceWrapper(ret);
+		return new ServiceWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 		Action<List<Service>> command = new FilterCheckDecorator<List<Service>>(new PaginateDecorator<Service>(
 				new ListServicesAction(catalogApi, type), page, perPage), tokenApi, policyApi, parMap);
 		List<Service> ret = command.execute(getRequest());
-		return new ServicesWrapper(ret);
+		return new ServicesWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 		Action<Service> command = new PolicyCheckDecorator<Service>(new GetServiceAction(catalogApi, serviceid), null,
 				tokenApi, policyApi, parMap);
 		Service ret = command.execute(getRequest());
-		return new ServiceWrapper(ret);
+		return new ServiceWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 		Action<Service> command = new PolicyCheckDecorator<Service>(new UpdateServiceAction(catalogApi, serviceid, service),
 				null, tokenApi, policyApi, parMap);
 		Service ret = command.execute(getRequest());
-		return new ServiceWrapper(ret);
+		return new ServiceWrapper(ret, getRequest());
 	}
 
 	@Override

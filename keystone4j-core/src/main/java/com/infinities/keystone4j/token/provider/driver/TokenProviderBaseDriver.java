@@ -3,6 +3,9 @@ package com.infinities.keystone4j.token.provider.driver;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.model.Role;
@@ -21,6 +24,7 @@ import com.infinities.keystone4j.trust.model.Trust;
 
 public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 
+	private final static Logger logger = LoggerFactory.getLogger(TokenProviderBaseDriver.class);
 	// private AssignmentApi assignmentApi;
 	// private CatalogApi catalogApi;
 	// private IdentityApi identityApi;
@@ -79,6 +83,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 	@Override
 	public TokenDataWrapper validateV3Token(String uniqueid) {
 		Token token = this.verifyToken(uniqueid);
+		logger.debug("validate token uniqueid: {}", uniqueid);
 		TokenDataWrapper tokenData = validateV3TokenRef(token);
 
 		return tokenData;
@@ -107,6 +112,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 		if (token.getProject() != null) {
 			projectid = token.getProject().getId();
 		}
+		logger.debug("validate token");
 		return this.helper.getTokenData(token.getUser().getId(), methodNames, token.getExpires(), projectid, null,
 				token.getBind(), null, null, true);
 	}

@@ -31,11 +31,11 @@
 	<TRUST id="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" optlock="1"
 		trusteeid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" trustorid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7"
 		projectid="79ea2c65-4679-441f-a596-8aec16752a20" />
-	<TOKEN id="708bb4f9-9d3c-46af-b18c-7033dc012f11" optlock="1"
+	<TOKEN id="ecb51da13b5ed4e22378a7ac89b46c3c" optlock="1"
 		issueat="2014-03-27 00:00:00" expires="2015-03-27 00:00:00" valid="true"
 		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f"
 		trustid="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" />
-	<TOKEN id="708bb4f9-9d3c-46af-b18c-7033dc022f11" optlock="1"
+	<TOKEN id="c703579d683812020085f1804b423cac" optlock="1"
 		issueat="2014-03-27 00:00:00" expires="2015-03-27 00:00:00" valid="true"
 		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
 	<TOKEN id="708bb4f9-9d3c-46af-b18c-7033dc022f21" optlock="1"
@@ -45,7 +45,7 @@
 		issueat="2014-03-20 00:00:00" expires="2014-03-25 00:00:00" valid="false"
 		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
 	<TOKEN_ROLE id="0f3318f8-a7e7-41b4-830d-be8fdd5486c8"
-		tokenid="708bb4f9-9d3c-46af-b18c-7033dc012f11" optlock="1"
+		tokenid="ecb51da13b5ed4e22378a7ac89b46c3c" optlock="1"
 		roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" />
 	<TRUST_ROLE id="0f3328f8-a7e7-41b4-830d-be8fdd5486c8"
 		trustid="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" optlock="1"

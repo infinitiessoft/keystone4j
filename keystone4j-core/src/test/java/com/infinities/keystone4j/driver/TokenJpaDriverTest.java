@@ -89,17 +89,17 @@ public class TokenJpaDriverTest extends AbstractDbUnitJpaTest {
 
 	@Test
 	public void testGetToken() {
-		Token ret = driver.getToken("708bb4f9-9d3c-46af-b18c-7033dc022f11");
-		assertEquals("708bb4f9-9d3c-46af-b18c-7033dc022f11", ret.getId());
+		Token ret = driver.getToken("c703579d683812020085f1804b423cac");
+		assertEquals("c703579d683812020085f1804b423cac", ret.getId());
 		assertEquals("0f3328f8-a7e7-41b4-830d-be8fdd5186c7", ret.getUser().getId());
 	}
 
 	@Test
 	public void testDeleteToken() {
-		Token ret = driver.getToken("708bb4f9-9d3c-46af-b18c-7033dc022f11");
+		Token ret = driver.getToken("c703579d683812020085f1804b423cac");
 		assertTrue(ret.getValid());
-		driver.deleteToken("708bb4f9-9d3c-46af-b18c-7033dc022f11");
-		ret = driver.getToken("708bb4f9-9d3c-46af-b18c-7033dc022f11");
+		driver.deleteToken("c703579d683812020085f1804b423cac");
+		ret = driver.getToken("c703579d683812020085f1804b423cac");
 		assertFalse(ret.getValid());
 	}
 
@@ -120,19 +120,19 @@ public class TokenJpaDriverTest extends AbstractDbUnitJpaTest {
 
 	@Test
 	public void testDeleteTokensForTrust() {
-		Token ret = driver.getToken("708bb4f9-9d3c-46af-b18c-7033dc012f11");
+		Token ret = driver.getToken("ecb51da13b5ed4e22378a7ac89b46c3c");
 		assertTrue(ret.getValid());
 		driver.deleteTokensForTrust(user.getId(), "0f3328f8-a7e7-41b4-830d-be8fdd5086c8");
-		ret = driver.getToken("708bb4f9-9d3c-46af-b18c-7033dc012f11");
+		ret = driver.getToken("ecb51da13b5ed4e22378a7ac89b46c3c");
 		assertFalse(ret.getValid());
 	}
 
 	@Test
 	public void testDeleteTokensForUser() {
-		Token ret = driver.getToken("708bb4f9-9d3c-46af-b18c-7033dc022f11");
+		Token ret = driver.getToken("c703579d683812020085f1804b423cac");
 		assertTrue(ret.getValid());
 		driver.deleteTokensForUser(user.getId(), project.getId());
-		ret = driver.getToken("708bb4f9-9d3c-46af-b18c-7033dc022f11");
+		ret = driver.getToken("c703579d683812020085f1804b423cac");
 		assertFalse(ret.getValid());
 	}
 

@@ -43,7 +43,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new CreateEndpointAction(catalogApi, endpoint), null,
 				tokenApi, policyApi, parMap);
 		Endpoint ret = command.execute(getRequest());
-		return new EndpointWrapper(ret);
+		return new EndpointWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 				new ListEndpointsAction(catalogApi, interfaceType, serviceid), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Endpoint> ret = command.execute(getRequest());
-		return new EndpointsWrapper(ret);
+		return new EndpointsWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new GetEndpointAction(catalogApi, endpointid), null,
 				tokenApi, policyApi, parMap);
 		Endpoint ret = command.execute(getRequest());
-		return new EndpointWrapper(ret);
+		return new EndpointWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new UpdateEndpointAction(catalogApi, endpointid,
 				endpoint), null, tokenApi, policyApi, parMap);
 		Endpoint ret = command.execute(getRequest());
-		return new EndpointWrapper(ret);
+		return new EndpointWrapper(ret, getRequest());
 	}
 
 	@Override

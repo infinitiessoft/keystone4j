@@ -54,7 +54,7 @@ public class TrustV3ControllerImpl extends BaseController implements TrustV3Cont
 		Action<Trust> command = new PolicyCheckDecorator<Trust>(new CreateTrustAction(assignmentApi, identityApi, trustApi,
 				tokenApi, trust), null, tokenApi, policyApi, parMap);
 		Trust ret = command.execute(getRequest());
-		return new TrustWrapper(ret);
+		return new TrustWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class TrustV3ControllerImpl extends BaseController implements TrustV3Cont
 				perPage), null, tokenApi, policyApi, parMap);
 
 		List<Trust> ret = command.execute(getRequest());
-		return new TrustsWrapper(ret);
+		return new TrustsWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class TrustV3ControllerImpl extends BaseController implements TrustV3Cont
 		parMap.put("trustid", trustid);
 		Action<Trust> command = new GetTrustAction(assignmentApi, identityApi, trustApi, tokenApi, trustid);
 		Trust ret = command.execute(getRequest());
-		return new TrustWrapper(ret);
+		return new TrustWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class TrustV3ControllerImpl extends BaseController implements TrustV3Cont
 				tokenApi, policyApi, parMap);
 
 		List<Role> ret = command.execute(getRequest());
-		return new RolesWrapper(ret);
+		return new RolesWrapper(ret, getRequest());
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class TrustV3ControllerImpl extends BaseController implements TrustV3Cont
 		Action<Role> command = new PolicyCheckDecorator<Role>(new GetRoleForTrustAction(assignmentApi, identityApi,
 				trustApi, tokenApi, trustid, roleid), null, tokenApi, policyApi, parMap);
 		Role ret = command.execute(getRequest());
-		return new RoleWrapper(ret);
+		return new RoleWrapper(ret, getRequest().getUriInfo().getBaseUri().toASCIIString() + "v3/roles/");
 	}
 
 }

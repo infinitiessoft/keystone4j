@@ -2,14 +2,24 @@ package com.infinities.keystone4j.catalog.model;
 
 import java.util.List;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
+import com.infinities.keystone4j.ReferentialLinkUtils;
+import com.infinities.keystone4j.common.model.Links;
+
 public class EndpointsWrapper {
 
 	private List<Endpoint> endpoints;
+	private Links links = new Links();
 
 
-	public EndpointsWrapper(List<Endpoint> endpoints) {
-		super();
+	public EndpointsWrapper(List<Endpoint> endpoints, ContainerRequestContext context) {
+		String baseUrl = context.getUriInfo().getBaseUri().toASCIIString() + "v3/endpoints/";
 		this.endpoints = endpoints;
+		for (Endpoint endpoint : endpoints) {
+			ReferentialLinkUtils.instance.addSelfReferentialLink(endpoint, baseUrl);
+		}
+		links.setSelf(context.getUriInfo().getRequestUri().toASCIIString());
 	}
 
 	public List<Endpoint> getEndpoints() {
@@ -18,6 +28,14 @@ public class EndpointsWrapper {
 
 	public void setEndpoints(List<Endpoint> endpoints) {
 		this.endpoints = endpoints;
+	}
+
+	public Links getLinks() {
+		return links;
+	}
+
+	public void setLinks(Links links) {
+		this.links = links;
 	}
 
 }

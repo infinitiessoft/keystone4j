@@ -2,6 +2,9 @@ package com.infinities.keystone4j.token.api;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
 import com.infinities.keystone4j.token.command.CreateTokenCommand;
@@ -17,6 +20,7 @@ public class TokenApiImpl implements TokenApi {
 
 	private final TrustApi trustApi;
 	private final TokenDriver tokenDriver;
+	private final static Logger logger = LoggerFactory.getLogger(TokenApiImpl.class);
 
 
 	public TokenApiImpl(TrustApi trustApi, TokenDriver tokenDriver) {
@@ -59,6 +63,7 @@ public class TokenApiImpl implements TokenApi {
 
 	@Override
 	public Token createToken(Token token) {
+		logger.debug("create token");
 		CreateTokenCommand command = new CreateTokenCommand(this, trustApi, tokenDriver, token);
 		return command.execute();
 	}

@@ -38,6 +38,7 @@ public class GroupIntegratedTest extends AbstractIntegratedTest {
 	private Group group;
 	private Project project;
 	private Role role1;
+	private final String baseUrl = "http://localhost:8080/v3/groups";
 
 
 	@Override
@@ -88,7 +89,7 @@ public class GroupIntegratedTest extends AbstractIntegratedTest {
 
 	@Test
 	public void testCreateGroup() throws JsonProcessingException, IOException {
-		GroupWrapper wrapper = new GroupWrapper(group);
+		GroupWrapper wrapper = new GroupWrapper(group, baseUrl);
 		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode groupJ = node.get("group");
@@ -137,7 +138,7 @@ public class GroupIntegratedTest extends AbstractIntegratedTest {
 	public void testUpdateGroup() throws ClientProtocolException, IOException {
 		group.setId("708bb4f9-9d3c-46af-b18c-7033dc022ffc");
 
-		GroupWrapper wrapper = new GroupWrapper(group);
+		GroupWrapper wrapper = new GroupWrapper(group, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/groups/" + group.getId());
 		JsonNode node = client.connect(wrapper);
 		JsonNode groupJ = node.get("group");

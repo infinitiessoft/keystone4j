@@ -78,6 +78,7 @@ public class RoleV3ResourceTest extends JerseyTest {
 	private GroupProjectGrant groupProjectGrant;
 	// private GroupProjectGrantMetadata groupProjectGrantMetadata;
 	private UserGroupMembership userGroupMembership;
+	private final String baseUrl = "http://localhost:8080/v3/roles";
 
 
 	@Override
@@ -278,7 +279,7 @@ public class RoleV3ResourceTest extends JerseyTest {
 			}
 		});
 
-		RoleWrapper wrapper = new RoleWrapper(role1);
+		RoleWrapper wrapper = new RoleWrapper(role1, baseUrl);
 		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode roleJ = node.get("role");
@@ -366,7 +367,7 @@ public class RoleV3ResourceTest extends JerseyTest {
 				will(returnValue(role1));
 			}
 		});
-		RoleWrapper wrapper = new RoleWrapper(role1);
+		RoleWrapper wrapper = new RoleWrapper(role1, baseUrl);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/roles/" + role1.getId());
 		JsonNode node = client.connect(wrapper);
 
