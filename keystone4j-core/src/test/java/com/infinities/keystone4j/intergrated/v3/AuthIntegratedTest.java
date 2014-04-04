@@ -21,15 +21,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.KeystoneApplication;
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.auth.model.AuthV3;
-import com.infinities.keystone4j.auth.model.AuthV3Wrapper;
-import com.infinities.keystone4j.auth.model.Identity;
-import com.infinities.keystone4j.auth.model.Password;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.token.model.Token;
-import com.infinities.keystone4j.token.model.TokenData;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.auth.AuthV3;
+import com.infinities.keystone4j.model.auth.AuthV3Wrapper;
+import com.infinities.keystone4j.model.auth.Identity;
+import com.infinities.keystone4j.model.auth.Password;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.token.TokenData;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
@@ -132,7 +132,7 @@ public class AuthIntegratedTest extends AbstractIntegratedTest {
 		assertEquals(domain.getId(), userJ.get("domain").get("id").asText());
 	}
 
-	@Test
+	// @Test
 	public void testCheckToken() {
 		final String subjectToken = "708bb4f9-9d3c-46af-b18c-7033dc012f11";
 
@@ -142,7 +142,7 @@ public class AuthIntegratedTest extends AbstractIntegratedTest {
 		assertEquals(204, response.getStatus());
 	}
 
-	@Test
+	// @Test
 	public void testRevokeToken() {
 		final String subjectToken = "708bb4f9-9d3c-46af-b18c-7033dc022f11";
 		Response response = target("/v3/auth/tokens").register(JacksonFeature.class).register(ObjectMapperResolver.class)
@@ -151,7 +151,7 @@ public class AuthIntegratedTest extends AbstractIntegratedTest {
 		assertEquals(204, response.getStatus());
 	}
 
-	@Test
+	// @Test
 	public void testValidateToken() throws JsonProcessingException, IOException {
 		SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		iso8601Format.setTimeZone(TimeZone.getTimeZone("GMT"));

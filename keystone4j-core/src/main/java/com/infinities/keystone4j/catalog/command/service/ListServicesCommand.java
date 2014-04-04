@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.command.AbstractCatalogCommand;
-import com.infinities.keystone4j.catalog.model.Service;
+import com.infinities.keystone4j.model.catalog.Service;
 
 public class ListServicesCommand extends AbstractCatalogCommand<List<Service>> {
 

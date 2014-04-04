@@ -10,7 +10,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
+import com.infinities.keystone4j.model.assignment.Domain;
 
 public class ListDomainsAction extends AbstractDomainAction<List<Domain>> {
 

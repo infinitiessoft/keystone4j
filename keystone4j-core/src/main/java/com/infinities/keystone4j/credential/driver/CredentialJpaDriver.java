@@ -3,9 +3,9 @@ package com.infinities.keystone4j.credential.driver;
 import java.util.List;
 
 import com.infinities.keystone4j.credential.CredentialDriver;
-import com.infinities.keystone4j.credential.model.Credential;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.CredentialDao;
+import com.infinities.keystone4j.model.credential.Credential;
 
 public class CredentialJpaDriver implements CredentialDriver {
 

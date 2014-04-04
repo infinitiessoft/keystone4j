@@ -15,9 +15,9 @@ import com.infinities.keystone4j.catalog.command.service.DeleteServiceCommand;
 import com.infinities.keystone4j.catalog.command.service.GetServiceCommand;
 import com.infinities.keystone4j.catalog.command.service.ListServicesCommand;
 import com.infinities.keystone4j.catalog.command.service.UpdateServiceCommand;
-import com.infinities.keystone4j.catalog.model.Catalog;
-import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.catalog.model.Service;
+import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.catalog.Service;
 
 public class CatalogApiImpl implements CatalogApi {
 

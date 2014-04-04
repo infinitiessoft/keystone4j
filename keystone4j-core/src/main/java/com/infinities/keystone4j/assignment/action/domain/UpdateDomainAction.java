@@ -4,7 +4,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
+import com.infinities.keystone4j.model.assignment.Domain;
 
 public class UpdateDomainAction extends AbstractDomainAction<Domain> {
 

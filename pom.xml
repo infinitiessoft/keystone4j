@@ -24,6 +24,18 @@
 				<version>${project.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.infinities.keystone4j</groupId>
+				<artifactId>keystone4j-entity</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.infinities.keystone4j</groupId>
+				<artifactId>keystone4j-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
 			<!-- Keyston4j Dependencies -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
@@ -50,6 +62,12 @@
 			</dependency>
 
 			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jacksonVersion}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>com.fasterxml.jackson.jaxrs</groupId>
 				<artifactId>jackson-jaxrs-json-provider</artifactId>
 				<version>${jacksonVersion}</version>
@@ -57,6 +75,13 @@
 
 			<!-- <dependency> <groupId>com.google.code.gson</groupId> <artifactId>gson</artifactId> 
 				<version>2.2.4</version> </dependency> -->
+			<dependency>
+				<groupId>javax.ws.rs</groupId>
+				<artifactId>javax.ws.rs-api</artifactId>
+				<version>2.0</version>
+				<scope>provided</scope>
+			</dependency>
+
 
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -145,6 +170,18 @@
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
 				<version>1.0.9</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.0-api</artifactId>
+				<version>1.0.1.Final</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.validation</groupId>
+				<artifactId>validation-api</artifactId>
+				<version>1.1.0.Final</version>
 			</dependency>
 
 			<dependency>
@@ -248,5 +285,7 @@
 		<!-- <module>keystone4j-core</module> <module>keystone4j-war</module> -->
 		<module>keystone4j-core</module>
 		<module>keystone4j-web</module>
+		<module>keystone4j-entity</module>
+		<module>keystonr4j-client</module>
 	</modules>
 </project>

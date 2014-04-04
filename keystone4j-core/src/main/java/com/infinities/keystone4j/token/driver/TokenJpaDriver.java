@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.TokenDao;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.token.TokenDriver;
-import com.infinities.keystone4j.token.model.Token;
 
 public class TokenJpaDriver implements TokenDriver {
 

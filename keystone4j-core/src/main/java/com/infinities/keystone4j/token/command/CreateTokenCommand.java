@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
-import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.utils.Cms;
 

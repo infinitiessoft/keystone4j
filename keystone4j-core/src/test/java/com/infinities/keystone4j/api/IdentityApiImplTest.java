@@ -17,19 +17,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.catalog.model.Service;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
 import com.infinities.keystone4j.identity.api.IdentityApiImpl;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.catalog.Service;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.Token;
 
 public class IdentityApiImplTest {
 

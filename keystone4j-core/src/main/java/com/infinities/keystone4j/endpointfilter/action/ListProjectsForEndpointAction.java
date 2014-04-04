@@ -5,9 +5,9 @@ import java.util.List;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterApi;
+import com.infinities.keystone4j.model.assignment.Project;
 
 public class ListProjectsForEndpointAction extends AbstractEndpointFilterAction<List<Project>> {
 

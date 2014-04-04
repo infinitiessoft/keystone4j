@@ -3,6 +3,9 @@ package com.infinities.keystone4j.policy.api;
 import java.util.List;
 import java.util.Map;
 
+import com.infinities.keystone4j.model.policy.Policy;
+import com.infinities.keystone4j.model.policy.PolicyEntity;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.PolicyDriver;
 import com.infinities.keystone4j.policy.command.CreatePolicyCommand;
@@ -11,9 +14,6 @@ import com.infinities.keystone4j.policy.command.EnforceCommand;
 import com.infinities.keystone4j.policy.command.GetPolicyCommand;
 import com.infinities.keystone4j.policy.command.ListPoliciesCommand;
 import com.infinities.keystone4j.policy.command.UpdatePolicyCommand;
-import com.infinities.keystone4j.policy.model.Policy;
-import com.infinities.keystone4j.policy.model.PolicyEntity;
-import com.infinities.keystone4j.token.model.Token;
 
 public class PolicyApiImpl implements PolicyApi {
 

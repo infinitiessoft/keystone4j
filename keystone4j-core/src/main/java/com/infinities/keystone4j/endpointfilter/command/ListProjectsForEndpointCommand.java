@@ -2,8 +2,8 @@ package com.infinities.keystone4j.endpointfilter.command;
 
 import java.util.List;
 
-import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterDriver;
+import com.infinities.keystone4j.model.assignment.Project;
 
 public class ListProjectsForEndpointCommand extends AbstractEndpointFilterCommand<List<Project>> {
 

@@ -3,7 +3,7 @@ package com.infinities.keystone4j.assignment.action.domain;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
+import com.infinities.keystone4j.model.assignment.Domain;
 
 public class CreateDomainAction extends AbstractDomainAction<Domain> {
 

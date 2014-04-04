@@ -16,17 +16,17 @@ import org.junit.Test;
 
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.auth.driver.PasswordAuthDriver;
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.auth.model.AuthData;
 import com.infinities.keystone4j.auth.model.AuthInfo;
-import com.infinities.keystone4j.auth.model.AuthV3;
-import com.infinities.keystone4j.auth.model.Identity;
-import com.infinities.keystone4j.auth.model.Password;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.auth.AuthData;
+import com.infinities.keystone4j.model.auth.AuthV3;
+import com.infinities.keystone4j.model.auth.Identity;
+import com.infinities.keystone4j.model.auth.Password;
+import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 

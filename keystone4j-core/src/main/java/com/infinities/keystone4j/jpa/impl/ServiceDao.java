@@ -11,8 +11,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.catalog.model.Service;
 import com.infinities.keystone4j.jpa.AbstractDao;
+import com.infinities.keystone4j.model.catalog.Service;
 
 public class ServiceDao extends AbstractDao<Service> {
 

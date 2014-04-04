@@ -22,8 +22,8 @@ import com.infinities.keystone4j.identity.command.user.ListUsersCommand;
 import com.infinities.keystone4j.identity.command.user.ListUsersInGroupCommand;
 import com.infinities.keystone4j.identity.command.user.RemoveUserFromGroupCommand;
 import com.infinities.keystone4j.identity.command.user.UpdateUserCommand;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class IdentityApiImpl implements IdentityApi {

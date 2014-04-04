@@ -3,7 +3,7 @@ package com.infinities.keystone4j.catalog.action.endpoint;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.catalog.CatalogApi;
-import com.infinities.keystone4j.catalog.model.Endpoint;
+import com.infinities.keystone4j.model.catalog.Endpoint;
 
 public class CreateEndpointAction extends AbstractEndpointAction<Endpoint> {
 

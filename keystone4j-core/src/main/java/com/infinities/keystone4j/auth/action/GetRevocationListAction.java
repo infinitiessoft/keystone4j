@@ -5,12 +5,12 @@ import java.util.List;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.auth.model.RevokedWrapper;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.auth.RevokedWrapper;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.trust.SignedWrapper;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
-import com.infinities.keystone4j.trust.model.SignedWrapper;
 import com.infinities.keystone4j.utils.Cms;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 

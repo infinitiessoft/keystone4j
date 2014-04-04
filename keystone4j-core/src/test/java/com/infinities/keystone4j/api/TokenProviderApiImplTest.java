@@ -18,20 +18,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.auth.model.TokenMetadata;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.token.model.Token;
-import com.infinities.keystone4j.token.model.TokenData;
-import com.infinities.keystone4j.token.model.TokenDataWrapper;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.token.TokenData;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 import com.infinities.keystone4j.token.provider.api.TokenProviderApiImpl;
-import com.infinities.keystone4j.trust.model.Trust;
 
 public class TokenProviderApiImplTest {
 

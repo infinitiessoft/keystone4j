@@ -6,9 +6,9 @@ import com.google.common.collect.Lists;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
-import com.infinities.keystone4j.assignment.model.Assignment;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.assignment.Assignment;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class ListRoleAssignmentsForRoleCommand extends AbstractAssignmentCommand<List<Assignment>> {

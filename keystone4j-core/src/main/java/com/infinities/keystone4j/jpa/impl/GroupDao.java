@@ -12,8 +12,8 @@ import javax.persistence.criteria.Root;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.identity.model.Group;
 import com.infinities.keystone4j.jpa.AbstractDao;
+import com.infinities.keystone4j.model.identity.Group;
 
 public class GroupDao extends AbstractDao<Group> {
 

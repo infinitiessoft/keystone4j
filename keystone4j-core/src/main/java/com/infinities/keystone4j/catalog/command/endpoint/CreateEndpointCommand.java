@@ -2,8 +2,8 @@ package com.infinities.keystone4j.catalog.command.endpoint;
 
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.command.AbstractCatalogCommand;
-import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.model.catalog.Endpoint;
 
 public class CreateEndpointCommand extends AbstractCatalogCommand<Endpoint> {
 

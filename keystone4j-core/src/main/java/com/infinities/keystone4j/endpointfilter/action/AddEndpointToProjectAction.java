@@ -4,8 +4,8 @@ import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.catalog.CatalogApi;
-import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterApi;
+import com.infinities.keystone4j.model.catalog.Endpoint;
 
 public class AddEndpointToProjectAction extends AbstractEndpointFilterAction<Endpoint> {
 

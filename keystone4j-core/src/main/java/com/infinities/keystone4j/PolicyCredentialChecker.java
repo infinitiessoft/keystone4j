@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.model.policy.PolicyEntity;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.Token;
 
 public abstract class PolicyCredentialChecker extends TokenBindValidator {
 

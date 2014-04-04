@@ -7,7 +7,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.infinities.keystone4j.assignment.controller.TenantController;
-import com.infinities.keystone4j.assignment.model.TenantsWrapper;
+import com.infinities.keystone4j.model.assignment.TenantsWrapper;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

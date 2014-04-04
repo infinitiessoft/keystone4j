@@ -1,8 +1,8 @@
 package com.infinities.keystone4j.credential.controller;
 
-import com.infinities.keystone4j.credential.model.Credential;
-import com.infinities.keystone4j.credential.model.CredentialWrapper;
-import com.infinities.keystone4j.credential.model.CredentialsWrapper;
+import com.infinities.keystone4j.model.credential.Credential;
+import com.infinities.keystone4j.model.credential.CredentialWrapper;
+import com.infinities.keystone4j.model.credential.CredentialsWrapper;
 
 public interface CredentialV3Controller {
 

@@ -2,10 +2,10 @@ package com.infinities.keystone4j.assignment.controller;
 
 import java.util.List;
 
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.ProjectWrapper;
-import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.ProjectWrapper;
+import com.infinities.keystone4j.model.assignment.ProjectsWrapper;
+import com.infinities.keystone4j.model.identity.User;
 
 public interface ProjectV3Controller {
 

@@ -3,14 +3,14 @@ package com.infinities.keystone4j.identity.command.group;
 import java.util.List;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
 import com.infinities.keystone4j.identity.IdentityUtils;
 import com.infinities.keystone4j.identity.command.AbstractIdentityCommand;
-import com.infinities.keystone4j.identity.model.Group;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class ListGroupsForUserCommand extends AbstractIdentityCommand<List<Group>> {

@@ -12,13 +12,13 @@ import com.infinities.keystone4j.catalog.action.service.GetServiceAction;
 import com.infinities.keystone4j.catalog.action.service.ListServicesAction;
 import com.infinities.keystone4j.catalog.action.service.UpdateServiceAction;
 import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
-import com.infinities.keystone4j.catalog.model.Service;
-import com.infinities.keystone4j.catalog.model.ServiceWrapper;
-import com.infinities.keystone4j.catalog.model.ServicesWrapper;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.model.catalog.Service;
+import com.infinities.keystone4j.model.catalog.ServiceWrapper;
+import com.infinities.keystone4j.model.catalog.ServicesWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 

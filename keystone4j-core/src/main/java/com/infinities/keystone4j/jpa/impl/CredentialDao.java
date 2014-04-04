@@ -11,8 +11,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.credential.model.Credential;
 import com.infinities.keystone4j.jpa.AbstractDao;
+import com.infinities.keystone4j.model.credential.Credential;
 
 public class CredentialDao extends AbstractDao<Credential> {
 

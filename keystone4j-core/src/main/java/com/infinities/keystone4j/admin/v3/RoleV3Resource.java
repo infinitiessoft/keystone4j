@@ -17,10 +17,10 @@ import javax.ws.rs.core.Response.Status;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
-import com.infinities.keystone4j.assignment.model.RoleWrapper;
-import com.infinities.keystone4j.assignment.model.RolesWrapper;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.utils.jackson.Views;
+import com.infinities.keystone4j.model.assignment.RoleWrapper;
+import com.infinities.keystone4j.model.assignment.RolesWrapper;
+import com.infinities.keystone4j.model.utils.Views;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

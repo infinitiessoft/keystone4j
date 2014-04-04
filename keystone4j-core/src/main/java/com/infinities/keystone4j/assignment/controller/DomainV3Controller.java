@@ -1,8 +1,8 @@
 package com.infinities.keystone4j.assignment.controller;
 
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.DomainWrapper;
-import com.infinities.keystone4j.assignment.model.DomainsWrapper;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.DomainWrapper;
+import com.infinities.keystone4j.model.assignment.DomainsWrapper;
 
 public interface DomainV3Controller {
 

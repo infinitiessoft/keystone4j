@@ -2,8 +2,8 @@ package com.infinities.keystone4j.trust.command;
 
 import java.util.List;
 
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.trust.TrustDriver;
-import com.infinities.keystone4j.trust.model.Trust;
 
 public class ListTrustsCommand extends AbstractTrustCommand<List<Trust>> {
 

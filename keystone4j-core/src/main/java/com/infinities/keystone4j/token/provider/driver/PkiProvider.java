@@ -7,11 +7,11 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.utils.Views;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.TokenDataWrapper;
 import com.infinities.keystone4j.utils.Cms;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
-import com.infinities.keystone4j.utils.jackson.Views;
 
 public class PkiProvider extends TokenProviderBaseDriver {
 

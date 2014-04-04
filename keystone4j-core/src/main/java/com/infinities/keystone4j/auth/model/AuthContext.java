@@ -8,8 +8,8 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.token.model.Bind;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.token.Bind;
 
 public class AuthContext {
 

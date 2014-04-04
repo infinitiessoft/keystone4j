@@ -11,7 +11,7 @@ import com.infinities.keystone4j.credential.command.DeleteCredentialsForUserComm
 import com.infinities.keystone4j.credential.command.GetCredentialCommand;
 import com.infinities.keystone4j.credential.command.ListCredentialsCommand;
 import com.infinities.keystone4j.credential.command.UpdateCredentialCommand;
-import com.infinities.keystone4j.credential.model.Credential;
+import com.infinities.keystone4j.model.credential.Credential;
 
 public class CredentialApiImpl implements CredentialApi {
 

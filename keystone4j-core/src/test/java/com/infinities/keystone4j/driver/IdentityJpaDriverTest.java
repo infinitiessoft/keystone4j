@@ -15,12 +15,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.identity.IdentityDriver;
 import com.infinities.keystone4j.identity.driver.IdentityJpaDriver;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
 
 public class IdentityJpaDriverTest extends AbstractDbUnitJpaTest {
 

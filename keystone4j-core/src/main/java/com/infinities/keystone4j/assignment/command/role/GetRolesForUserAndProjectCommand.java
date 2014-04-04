@@ -8,16 +8,16 @@ import com.google.common.collect.Sets;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
-import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
-import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.assignment.model.UserDomainGrant;
-import com.infinities.keystone4j.assignment.model.UserProjectGrant;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.identity.model.Group;
+import com.infinities.keystone4j.model.assignment.GroupDomainGrant;
+import com.infinities.keystone4j.model.assignment.GroupProjectGrant;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.assignment.UserDomainGrant;
+import com.infinities.keystone4j.model.assignment.UserProjectGrant;
+import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand<List<Role>> {

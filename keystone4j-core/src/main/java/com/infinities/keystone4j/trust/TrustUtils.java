@@ -5,10 +5,10 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.infinities.keystone4j.KeystoneContext;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.exception.Exceptions;
-import com.infinities.keystone4j.trust.model.Trust;
-import com.infinities.keystone4j.trust.model.TrustRole;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.trust.Trust;
+import com.infinities.keystone4j.model.trust.TrustRole;
 
 public class TrustUtils {
 

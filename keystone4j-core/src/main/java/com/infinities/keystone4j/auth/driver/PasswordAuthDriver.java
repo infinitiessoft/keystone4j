@@ -5,11 +5,11 @@ import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.auth.model.AuthData;
 import com.infinities.keystone4j.auth.model.AuthInfo;
 import com.infinities.keystone4j.auth.model.UserAuthInfo;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.auth.AuthData;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class PasswordAuthDriver implements AuthDriver {

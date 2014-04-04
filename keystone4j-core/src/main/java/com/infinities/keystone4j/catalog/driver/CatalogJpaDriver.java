@@ -3,11 +3,11 @@ package com.infinities.keystone4j.catalog.driver;
 import java.util.List;
 
 import com.infinities.keystone4j.catalog.CatalogDriver;
-import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.catalog.model.Service;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.EndpointDao;
 import com.infinities.keystone4j.jpa.impl.ServiceDao;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.catalog.Service;
 
 public class CatalogJpaDriver implements CatalogDriver {
 

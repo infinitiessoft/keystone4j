@@ -4,14 +4,14 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterDriver;
-import com.infinities.keystone4j.endpointfilter.model.ProjectEndpoint;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.EndpointDao;
 import com.infinities.keystone4j.jpa.impl.ProjectDao;
 import com.infinities.keystone4j.jpa.impl.ProjectEndpointDao;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.endpointfilter.ProjectEndpoint;
 
 public class EndpointFilterJpaDriver implements EndpointFilterDriver {
 

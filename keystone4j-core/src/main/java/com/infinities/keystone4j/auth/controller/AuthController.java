@@ -1,8 +1,8 @@
 package com.infinities.keystone4j.auth.controller;
 
-import com.infinities.keystone4j.auth.model.AuthV3;
-import com.infinities.keystone4j.auth.model.TokenMetadata;
-import com.infinities.keystone4j.trust.model.SignedWrapper;
+import com.infinities.keystone4j.model.auth.AuthV3;
+import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.trust.SignedWrapper;
 
 public interface AuthController {
 

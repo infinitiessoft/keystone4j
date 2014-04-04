@@ -2,8 +2,8 @@ package com.infinities.keystone4j.policy.action;
 
 import javax.ws.rs.container.ContainerRequestContext;
 
+import com.infinities.keystone4j.model.policy.Policy;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.policy.model.Policy;
 
 public class CreatePolicyAction extends AbstractPolicyAction<Policy> {
 

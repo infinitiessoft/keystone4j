@@ -2,15 +2,15 @@ package com.infinities.keystone4j.assignment;
 
 import java.util.List;
 
-import com.infinities.keystone4j.assignment.model.Assignment;
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
-import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.assignment.model.UserDomainGrant;
-import com.infinities.keystone4j.assignment.model.UserProjectGrant;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Assignment;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.GroupDomainGrant;
+import com.infinities.keystone4j.model.assignment.GroupProjectGrant;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.assignment.UserDomainGrant;
+import com.infinities.keystone4j.model.assignment.UserProjectGrant;
+import com.infinities.keystone4j.model.identity.User;
 
 public interface AssignmentDriver {
 

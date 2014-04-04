@@ -7,10 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.auth.AuthData;
+import com.infinities.keystone4j.model.identity.User;
 
 public class UserAuthInfo {
 

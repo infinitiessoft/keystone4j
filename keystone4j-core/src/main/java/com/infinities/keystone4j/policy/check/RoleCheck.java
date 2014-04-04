@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
+import com.infinities.keystone4j.model.policy.PolicyEntity;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.token.TokenRole;
 import com.infinities.keystone4j.policy.Enforcer;
-import com.infinities.keystone4j.policy.model.PolicyEntity;
-import com.infinities.keystone4j.token.model.Token;
-import com.infinities.keystone4j.token.model.TokenRole;
 
 public class RoleCheck extends Check {
 

@@ -6,11 +6,11 @@ import com.google.common.base.Strings;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.utils.KeystoneUtils;
 

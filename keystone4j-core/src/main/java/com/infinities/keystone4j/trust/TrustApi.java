@@ -3,8 +3,8 @@ package com.infinities.keystone4j.trust;
 import java.util.List;
 
 import com.infinities.keystone4j.Api;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.trust.model.Trust;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.trust.Trust;
 
 public interface TrustApi extends Api {
 

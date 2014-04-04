@@ -4,7 +4,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.credential.model.Credential;
+import com.infinities.keystone4j.model.credential.Credential;
 
 public class UpdateCredentialAction extends AbstractCredentialAction<Credential> {
 

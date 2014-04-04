@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.auth.controller.AuthController;
-import com.infinities.keystone4j.auth.model.AuthV3Wrapper;
-import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.trust.model.SignedWrapper;
-import com.infinities.keystone4j.utils.jackson.Views;
+import com.infinities.keystone4j.model.auth.AuthV3Wrapper;
+import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.trust.SignedWrapper;
+import com.infinities.keystone4j.model.utils.Views;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

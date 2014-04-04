@@ -3,7 +3,7 @@ package com.infinities.keystone4j.assignment.action.role.v3;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Role;
+import com.infinities.keystone4j.model.assignment.Role;
 
 public class CreateRoleAction extends AbstractRoleAction<Role> {
 

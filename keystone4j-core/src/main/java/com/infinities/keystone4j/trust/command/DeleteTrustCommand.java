@@ -1,7 +1,7 @@
 package com.infinities.keystone4j.trust.command;
 
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.trust.TrustDriver;
-import com.infinities.keystone4j.trust.model.Trust;
 
 public class DeleteTrustCommand extends AbstractTrustCommand<Trust> {
 

@@ -6,11 +6,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
 import com.infinities.keystone4j.catalog.CatalogApi;
-import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.catalog.model.EndpointsWrapper;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
@@ -21,6 +17,10 @@ import com.infinities.keystone4j.endpointfilter.action.ListEndpointsForProjectAc
 import com.infinities.keystone4j.endpointfilter.action.ListProjectsForEndpointAction;
 import com.infinities.keystone4j.endpointfilter.action.RemoveEndpointToProjectAction;
 import com.infinities.keystone4j.endpointfilter.controller.EndpointFilterController;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.ProjectsWrapper;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 

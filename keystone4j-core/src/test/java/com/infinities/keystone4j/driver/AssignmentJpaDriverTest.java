@@ -19,22 +19,22 @@ import org.junit.Test;
 
 import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.driver.AssignmentJpaDriver;
-import com.infinities.keystone4j.assignment.model.Assignment;
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
-import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.assignment.model.UserDomainGrant;
-import com.infinities.keystone4j.assignment.model.UserProjectGrant;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.jpa.impl.GroupDomainGrantDao;
 import com.infinities.keystone4j.jpa.impl.GroupProjectGrantDao;
 import com.infinities.keystone4j.jpa.impl.UserDomainGrantDao;
 import com.infinities.keystone4j.jpa.impl.UserProjectGrantDao;
-import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.model.assignment.Assignment;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.GroupDomainGrant;
+import com.infinities.keystone4j.model.assignment.GroupProjectGrant;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.assignment.UserDomainGrant;
+import com.infinities.keystone4j.model.assignment.UserProjectGrant;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Token;
 
 public class AssignmentJpaDriverTest extends AbstractDbUnitJpaTest {
 

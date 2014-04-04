@@ -11,17 +11,17 @@ import com.infinities.keystone4j.Callback;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.PolicyCredentialChecker;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.policy.PolicyEntity;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.Token;
 
 public class CheckGrantCallback extends PolicyCredentialChecker implements Callback {
 

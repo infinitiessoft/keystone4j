@@ -6,12 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.exception.Exceptions;
-import com.infinities.keystone4j.token.model.TokenData;
-import com.infinities.keystone4j.token.model.TokenDataWrapper;
+import com.infinities.keystone4j.model.token.TokenData;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.utils.Views;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
-import com.infinities.keystone4j.utils.jackson.Views;
 
 public class ValidateV3TokenCommand extends AbstractTokenProviderCommand<TokenDataWrapper> {
 

@@ -2,9 +2,9 @@ package com.infinities.keystone4j.assignment.controller;
 
 import java.util.List;
 
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.assignment.model.RoleWrapper;
-import com.infinities.keystone4j.assignment.model.RolesWrapper;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.assignment.RoleWrapper;
+import com.infinities.keystone4j.model.assignment.RolesWrapper;
 
 public interface RoleV3Controller {
 

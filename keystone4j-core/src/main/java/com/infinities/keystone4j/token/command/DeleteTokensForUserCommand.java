@@ -2,11 +2,11 @@ package com.infinities.keystone4j.token.command;
 
 import java.util.List;
 
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
-import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.trust.TrustApi;
-import com.infinities.keystone4j.trust.model.Trust;
 
 public class DeleteTokensForUserCommand extends AbstractTokenCommand<List<Token>> {
 

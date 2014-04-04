@@ -9,13 +9,15 @@ import javax.ws.rs.ForbiddenException;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.auth.AuthData;
+import com.infinities.keystone4j.model.auth.AuthV3;
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.trust.TrustApi;
-import com.infinities.keystone4j.trust.model.Trust;
 
 public class AuthInfo {
 

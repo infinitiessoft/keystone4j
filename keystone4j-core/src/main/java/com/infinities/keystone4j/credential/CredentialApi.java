@@ -3,7 +3,7 @@ package com.infinities.keystone4j.credential;
 import java.util.List;
 
 import com.infinities.keystone4j.Api;
-import com.infinities.keystone4j.credential.model.Credential;
+import com.infinities.keystone4j.model.credential.Credential;
 
 public interface CredentialApi extends Api {
 

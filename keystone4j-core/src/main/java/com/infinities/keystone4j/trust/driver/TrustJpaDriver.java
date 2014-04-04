@@ -2,12 +2,12 @@ package com.infinities.keystone4j.trust.driver;
 
 import java.util.List;
 
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.jpa.impl.TrustDao;
 import com.infinities.keystone4j.jpa.impl.TrustRoleDao;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.trust.Trust;
+import com.infinities.keystone4j.model.trust.TrustRole;
 import com.infinities.keystone4j.trust.TrustDriver;
-import com.infinities.keystone4j.trust.model.Trust;
-import com.infinities.keystone4j.trust.model.TrustRole;
 
 public class TrustJpaDriver implements TrustDriver {
 

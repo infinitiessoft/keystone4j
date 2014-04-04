@@ -14,14 +14,14 @@ import com.infinities.keystone4j.assignment.action.project.ListProjectsAction;
 import com.infinities.keystone4j.assignment.action.project.ListUserProjectsAction;
 import com.infinities.keystone4j.assignment.action.project.UpdateProjectAction;
 import com.infinities.keystone4j.assignment.controller.ProjectV3Controller;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.ProjectWrapper;
-import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.ProjectWrapper;
+import com.infinities.keystone4j.model.assignment.ProjectsWrapper;
+import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 

@@ -12,13 +12,13 @@ import com.infinities.keystone4j.assignment.action.domain.GetDomainAction;
 import com.infinities.keystone4j.assignment.action.domain.ListDomainsAction;
 import com.infinities.keystone4j.assignment.action.domain.UpdateDomainAction;
 import com.infinities.keystone4j.assignment.controller.DomainV3Controller;
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.DomainWrapper;
-import com.infinities.keystone4j.assignment.model.DomainsWrapper;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.DomainWrapper;
+import com.infinities.keystone4j.model.assignment.DomainsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 

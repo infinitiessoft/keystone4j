@@ -10,7 +10,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.catalog.CatalogApi;
-import com.infinities.keystone4j.catalog.model.Endpoint;
+import com.infinities.keystone4j.model.catalog.Endpoint;
 
 public class ListEndpointsAction extends AbstractEndpointAction<List<Endpoint>> {
 

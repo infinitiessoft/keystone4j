@@ -2,7 +2,8 @@ package com.infinities.keystone4j.trust.api;
 
 import java.util.List;
 
-import com.infinities.keystone4j.assignment.model.Role;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.trust.TrustDriver;
 import com.infinities.keystone4j.trust.command.CreateTrustCommand;
@@ -11,7 +12,6 @@ import com.infinities.keystone4j.trust.command.GetTrustCommand;
 import com.infinities.keystone4j.trust.command.ListTrustsCommand;
 import com.infinities.keystone4j.trust.command.ListTrustsForTrusteeCommand;
 import com.infinities.keystone4j.trust.command.ListTrustsForTrustorCommand;
-import com.infinities.keystone4j.trust.model.Trust;
 
 public class TrustApiImpl implements TrustApi {
 

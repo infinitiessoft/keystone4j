@@ -17,18 +17,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.api.CatalogApiImpl;
-import com.infinities.keystone4j.catalog.model.Catalog;
-import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.catalog.model.Service;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.catalog.Service;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Token;
 
 public class CatalogApiImplTest {
 

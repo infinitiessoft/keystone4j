@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
-import com.infinities.keystone4j.token.model.Bind;
-import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.model.token.Bind;
+import com.infinities.keystone4j.model.token.Token;
 
 public abstract class TokenBindValidator {
 

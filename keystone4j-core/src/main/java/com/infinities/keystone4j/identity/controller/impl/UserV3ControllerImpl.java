@@ -23,10 +23,10 @@ import com.infinities.keystone4j.identity.action.user.RemoveUserFromGroupAction;
 import com.infinities.keystone4j.identity.action.user.UpdateUserAction;
 import com.infinities.keystone4j.identity.callback.CheckUserAndGroupProtection;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.identity.model.UserParam;
-import com.infinities.keystone4j.identity.model.UserWrapper;
-import com.infinities.keystone4j.identity.model.UsersWrapper;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.identity.UserParam;
+import com.infinities.keystone4j.model.identity.UserWrapper;
+import com.infinities.keystone4j.model.identity.UsersWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 

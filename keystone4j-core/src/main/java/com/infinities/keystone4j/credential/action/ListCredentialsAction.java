@@ -5,7 +5,7 @@ import java.util.List;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.credential.model.Credential;
+import com.infinities.keystone4j.model.credential.Credential;
 
 public class ListCredentialsAction extends AbstractCredentialAction<List<Credential>> {
 

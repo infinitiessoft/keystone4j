@@ -16,13 +16,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.token.TokenDriver;
 import com.infinities.keystone4j.token.driver.TokenJpaDriver;
-import com.infinities.keystone4j.token.model.Token;
 
 public class TokenJpaDriverTest extends AbstractDbUnitJpaTest {
 

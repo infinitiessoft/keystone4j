@@ -11,10 +11,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.identity.model.UserGroupMembership;
 import com.infinities.keystone4j.jpa.AbstractDao;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.identity.UserGroupMembership;
 
 public class UserGroupMembershipDao extends AbstractDao<UserGroupMembership> {
 

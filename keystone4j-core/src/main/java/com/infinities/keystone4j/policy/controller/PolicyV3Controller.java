@@ -1,8 +1,8 @@
 package com.infinities.keystone4j.policy.controller;
 
-import com.infinities.keystone4j.policy.model.PoliciesWrapper;
-import com.infinities.keystone4j.policy.model.Policy;
-import com.infinities.keystone4j.policy.model.PolicyWrapper;
+import com.infinities.keystone4j.model.policy.PoliciesWrapper;
+import com.infinities.keystone4j.model.policy.Policy;
+import com.infinities.keystone4j.model.policy.PolicyWrapper;
 
 public interface PolicyV3Controller {
 

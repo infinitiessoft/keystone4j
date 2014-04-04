@@ -3,9 +3,9 @@ package com.infinities.keystone4j.catalog;
 import java.util.List;
 
 import com.infinities.keystone4j.Api;
-import com.infinities.keystone4j.catalog.model.Catalog;
-import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.catalog.model.Service;
+import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.catalog.Service;
 
 public interface CatalogApi extends Api {
 

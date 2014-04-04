@@ -13,11 +13,11 @@ import com.infinities.keystone4j.credential.action.GetCredentialAction;
 import com.infinities.keystone4j.credential.action.ListCredentialsAction;
 import com.infinities.keystone4j.credential.action.UpdateCredentialAction;
 import com.infinities.keystone4j.credential.controller.CredentialV3Controller;
-import com.infinities.keystone4j.credential.model.Credential;
-import com.infinities.keystone4j.credential.model.CredentialWrapper;
-import com.infinities.keystone4j.credential.model.CredentialsWrapper;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.model.credential.Credential;
+import com.infinities.keystone4j.model.credential.CredentialWrapper;
+import com.infinities.keystone4j.model.credential.CredentialsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 

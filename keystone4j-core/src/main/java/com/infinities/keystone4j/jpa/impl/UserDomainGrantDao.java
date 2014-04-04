@@ -10,8 +10,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.assignment.model.UserDomainGrant;
 import com.infinities.keystone4j.jpa.AbstractDao;
+import com.infinities.keystone4j.model.assignment.UserDomainGrant;
 
 public class UserDomainGrantDao extends AbstractDao<UserDomainGrant> {
 

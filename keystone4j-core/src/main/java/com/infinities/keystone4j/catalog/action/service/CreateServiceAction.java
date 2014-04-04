@@ -3,7 +3,7 @@ package com.infinities.keystone4j.catalog.action.service;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.catalog.CatalogApi;
-import com.infinities.keystone4j.catalog.model.Service;
+import com.infinities.keystone4j.model.catalog.Service;
 
 public class CreateServiceAction extends AbstractServiceAction<Service> {
 

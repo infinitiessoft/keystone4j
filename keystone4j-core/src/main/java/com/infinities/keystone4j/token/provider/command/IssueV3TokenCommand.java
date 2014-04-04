@@ -4,11 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.auth.model.TokenMetadata;
-import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
-import com.infinities.keystone4j.trust.model.Trust;
 
 public class IssueV3TokenCommand extends AbstractTokenProviderCommand<TokenMetadata> {
 

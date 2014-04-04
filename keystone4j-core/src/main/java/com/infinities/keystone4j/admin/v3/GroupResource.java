@@ -25,10 +25,10 @@ import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
-import com.infinities.keystone4j.identity.model.GroupWrapper;
-import com.infinities.keystone4j.identity.model.GroupsWrapper;
-import com.infinities.keystone4j.identity.model.UsersWrapper;
-import com.infinities.keystone4j.utils.jackson.Views;
+import com.infinities.keystone4j.model.identity.GroupWrapper;
+import com.infinities.keystone4j.model.identity.GroupsWrapper;
+import com.infinities.keystone4j.model.identity.UsersWrapper;
+import com.infinities.keystone4j.model.utils.Views;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

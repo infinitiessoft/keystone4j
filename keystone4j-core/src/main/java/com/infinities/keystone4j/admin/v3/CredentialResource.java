@@ -15,10 +15,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.credential.controller.CredentialV3Controller;
-import com.infinities.keystone4j.credential.model.Credential;
-import com.infinities.keystone4j.credential.model.CredentialWrapper;
-import com.infinities.keystone4j.credential.model.CredentialsWrapper;
-import com.infinities.keystone4j.utils.jackson.Views;
+import com.infinities.keystone4j.model.credential.Credential;
+import com.infinities.keystone4j.model.credential.CredentialWrapper;
+import com.infinities.keystone4j.model.credential.CredentialsWrapper;
+import com.infinities.keystone4j.model.utils.Views;
 
 public class CredentialResource {
 

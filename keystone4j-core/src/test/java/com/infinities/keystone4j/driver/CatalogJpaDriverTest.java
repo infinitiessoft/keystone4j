@@ -15,8 +15,8 @@ import org.junit.Test;
 
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.driver.CatalogJpaDriver;
-import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.catalog.model.Service;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.catalog.Service;
 
 public class CatalogJpaDriverTest extends AbstractDbUnitJpaTest {
 

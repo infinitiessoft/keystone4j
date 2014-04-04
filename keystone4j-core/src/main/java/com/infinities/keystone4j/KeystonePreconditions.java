@@ -6,6 +6,7 @@ import javax.validation.ValidationException;
 import javax.ws.rs.BadRequestException;
 
 import com.google.common.base.Strings;
+import com.infinities.keystone4j.model.BaseEntity;
 
 public class KeystonePreconditions {
 

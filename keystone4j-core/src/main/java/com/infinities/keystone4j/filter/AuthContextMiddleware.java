@@ -18,8 +18,8 @@ import com.infinities.keystone4j.TokenBindValidator;
 import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.Token;
 
 @Priority(1001)
 public class AuthContextMiddleware extends TokenBindValidator implements Middleware {

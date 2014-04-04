@@ -29,14 +29,14 @@ import com.infinities.keystone4j.assignment.action.role.v3.ListRolesAction;
 import com.infinities.keystone4j.assignment.action.role.v3.UpdateRoleAction;
 import com.infinities.keystone4j.assignment.callback.CheckGrantCallback;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.assignment.model.RoleWrapper;
-import com.infinities.keystone4j.assignment.model.RolesWrapper;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.assignment.RoleWrapper;
+import com.infinities.keystone4j.model.assignment.RolesWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 

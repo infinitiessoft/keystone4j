@@ -12,13 +12,13 @@ import com.infinities.keystone4j.catalog.action.endpoint.GetEndpointAction;
 import com.infinities.keystone4j.catalog.action.endpoint.ListEndpointsAction;
 import com.infinities.keystone4j.catalog.action.endpoint.UpdateEndpointAction;
 import com.infinities.keystone4j.catalog.controller.EndpointV3Controller;
-import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.catalog.model.EndpointWrapper;
-import com.infinities.keystone4j.catalog.model.EndpointsWrapper;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.catalog.EndpointWrapper;
+import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 

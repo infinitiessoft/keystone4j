@@ -3,7 +3,7 @@ package com.infinities.keystone4j.credential.command;
 import java.util.List;
 
 import com.infinities.keystone4j.credential.CredentialDriver;
-import com.infinities.keystone4j.credential.model.Credential;
+import com.infinities.keystone4j.model.credential.Credential;
 
 public class ListCredentialsCommand extends AbstractCredentialCommand<List<Credential>> {
 

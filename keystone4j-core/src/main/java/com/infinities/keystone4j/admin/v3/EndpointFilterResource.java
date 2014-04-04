@@ -10,10 +10,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
-import com.infinities.keystone4j.catalog.model.EndpointsWrapper;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.endpointfilter.controller.EndpointFilterController;
+import com.infinities.keystone4j.model.assignment.ProjectsWrapper;
+import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
 
 public class EndpointFilterResource {
 

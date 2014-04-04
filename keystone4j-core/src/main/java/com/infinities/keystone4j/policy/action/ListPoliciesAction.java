@@ -9,8 +9,8 @@ import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.model.policy.Policy;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.policy.model.Policy;
 
 public class ListPoliciesAction extends AbstractPolicyAction<List<Policy>> {
 

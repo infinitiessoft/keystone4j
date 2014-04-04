@@ -22,12 +22,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.assignment.controller.ProjectV3Controller;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
-import com.infinities.keystone4j.assignment.model.ProjectWrapper;
-import com.infinities.keystone4j.assignment.model.ProjectsWrapper;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.utils.jackson.Views;
+import com.infinities.keystone4j.model.assignment.ProjectWrapper;
+import com.infinities.keystone4j.model.assignment.ProjectsWrapper;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.utils.Views;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

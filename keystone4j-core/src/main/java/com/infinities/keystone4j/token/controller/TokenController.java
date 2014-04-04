@@ -2,11 +2,11 @@ package com.infinities.keystone4j.token.controller;
 
 import java.io.OutputStream;
 
-import com.infinities.keystone4j.catalog.model.EndpointsWrapper;
-import com.infinities.keystone4j.token.model.Auth;
-import com.infinities.keystone4j.token.model.Token;
-import com.infinities.keystone4j.token.model.TokenWrapper;
-import com.infinities.keystone4j.trust.model.SignedWrapper;
+import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
+import com.infinities.keystone4j.model.token.Auth;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.token.TokenWrapper;
+import com.infinities.keystone4j.model.trust.SignedWrapper;
 
 public interface TokenController {
 

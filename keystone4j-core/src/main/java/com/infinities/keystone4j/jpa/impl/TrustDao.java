@@ -13,7 +13,7 @@ import javax.persistence.criteria.Root;
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.AbstractDao;
-import com.infinities.keystone4j.trust.model.Trust;
+import com.infinities.keystone4j.model.trust.Trust;
 
 public class TrustDao extends AbstractDao<Trust> {
 

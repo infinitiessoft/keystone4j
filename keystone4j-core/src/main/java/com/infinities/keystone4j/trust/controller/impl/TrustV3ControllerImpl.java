@@ -6,13 +6,16 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.assignment.model.RoleWrapper;
-import com.infinities.keystone4j.assignment.model.RolesWrapper;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.assignment.RoleWrapper;
+import com.infinities.keystone4j.model.assignment.RolesWrapper;
+import com.infinities.keystone4j.model.trust.Trust;
+import com.infinities.keystone4j.model.trust.TrustWrapper;
+import com.infinities.keystone4j.model.trust.TrustsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.trust.TrustApi;
@@ -24,9 +27,6 @@ import com.infinities.keystone4j.trust.action.GetTrustAction;
 import com.infinities.keystone4j.trust.action.ListRolesForTrustAction;
 import com.infinities.keystone4j.trust.action.ListTrustsAction;
 import com.infinities.keystone4j.trust.controller.TrustV3Controller;
-import com.infinities.keystone4j.trust.model.Trust;
-import com.infinities.keystone4j.trust.model.TrustWrapper;
-import com.infinities.keystone4j.trust.model.TrustsWrapper;
 
 public class TrustV3ControllerImpl extends BaseController implements TrustV3Controller {
 

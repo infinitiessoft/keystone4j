@@ -4,9 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.catalog.model.Endpoint;
-import com.infinities.keystone4j.common.model.Link;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterApi;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterDriver;
 import com.infinities.keystone4j.endpointfilter.command.AddEndpointToProjectCommand;
@@ -16,6 +13,9 @@ import com.infinities.keystone4j.endpointfilter.command.ListProjectsForEndpointC
 import com.infinities.keystone4j.endpointfilter.command.RemoveEndpointFromProjectCommand;
 import com.infinities.keystone4j.extension.ExtensionApi;
 import com.infinities.keystone4j.extension.model.Extension;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.model.common.Link;
 
 public class EndpointFilterApiImpl implements EndpointFilterApi {
 

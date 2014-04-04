@@ -17,6 +17,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.model.policy.PolicyEntity;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.policy.check.Check;
 import com.infinities.keystone4j.policy.check.FalseCheck;
 import com.infinities.keystone4j.policy.check.GenericCheck;
@@ -25,8 +27,6 @@ import com.infinities.keystone4j.policy.check.RoleCheck;
 import com.infinities.keystone4j.policy.check.RuleCheck;
 import com.infinities.keystone4j.policy.check.StringCheck;
 import com.infinities.keystone4j.policy.check.TrueCheck;
-import com.infinities.keystone4j.policy.model.PolicyEntity;
-import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.utils.KeystoneUtils;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 

@@ -14,10 +14,10 @@ import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.Callback;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.common.Authorization;
+import com.infinities.keystone4j.model.policy.PolicyEntity;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.Token;
 
 //take care of callback of grant 
 public class PolicyCheckDecorator<T> extends AbstractActionDecorator<T> {

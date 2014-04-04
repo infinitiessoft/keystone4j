@@ -11,11 +11,11 @@ import com.infinities.keystone4j.TokenBindValidator;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.auth.model.AuthData;
 import com.infinities.keystone4j.auth.model.AuthInfo;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.token.model.TokenDataWrapper;
+import com.infinities.keystone4j.model.auth.AuthData;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class TokenAuthDriver extends TokenBindValidator implements AuthDriver {

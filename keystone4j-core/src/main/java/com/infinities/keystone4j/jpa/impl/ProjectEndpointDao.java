@@ -11,8 +11,8 @@ import javax.persistence.criteria.Root;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.endpointfilter.model.ProjectEndpoint;
 import com.infinities.keystone4j.jpa.AbstractDao;
+import com.infinities.keystone4j.model.endpointfilter.ProjectEndpoint;
 
 public class ProjectEndpointDao extends AbstractDao<ProjectEndpoint> {
 

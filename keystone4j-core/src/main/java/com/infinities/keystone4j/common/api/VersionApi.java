@@ -15,12 +15,12 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.common.model.Link;
-import com.infinities.keystone4j.common.model.MediaType;
-import com.infinities.keystone4j.common.model.Version;
-import com.infinities.keystone4j.common.model.VersionWrapper;
-import com.infinities.keystone4j.common.model.VersionsWrapper;
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.model.common.Link;
+import com.infinities.keystone4j.model.common.MediaType;
+import com.infinities.keystone4j.model.common.Version;
+import com.infinities.keystone4j.model.common.VersionWrapper;
+import com.infinities.keystone4j.model.common.VersionsWrapper;
 
 @Singleton
 public class VersionApi {

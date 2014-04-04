@@ -2,8 +2,8 @@ package com.infinities.keystone4j.identity;
 
 import java.util.List;
 
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
 
 public interface IdentityDriver {
 

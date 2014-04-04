@@ -12,10 +12,10 @@ import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Action;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.common.Authorization;
+import com.infinities.keystone4j.model.policy.PolicyEntity;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.policy.model.PolicyEntity;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.Token;
 
 public class FilterCheckDecorator<T> extends AbstractActionDecorator<T> {
 

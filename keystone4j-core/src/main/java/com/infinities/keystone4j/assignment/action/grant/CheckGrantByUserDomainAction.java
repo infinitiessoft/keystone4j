@@ -4,8 +4,8 @@ import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.assignment.Role;
 
 public class CheckGrantByUserDomainAction extends AbstractGrantAction<Role> {
 

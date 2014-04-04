@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.infinities.keystone4j.common.api.VersionApi;
-import com.infinities.keystone4j.common.model.VersionWrapper;
+import com.infinities.keystone4j.model.common.VersionWrapper;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

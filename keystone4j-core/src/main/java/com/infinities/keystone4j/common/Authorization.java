@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.token.model.TokenData;
-import com.infinities.keystone4j.token.model.TokenDataWrapper;
-import com.infinities.keystone4j.trust.model.TrustRole;
+import com.infinities.keystone4j.model.token.TokenData;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.trust.TrustRole;
 
 public class Authorization {
 

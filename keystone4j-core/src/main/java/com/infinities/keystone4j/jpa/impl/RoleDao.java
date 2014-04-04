@@ -2,8 +2,8 @@ package com.infinities.keystone4j.jpa.impl;
 
 import javax.persistence.EntityManager;
 
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.jpa.AbstractDao;
+import com.infinities.keystone4j.model.assignment.Role;
 
 public class RoleDao extends AbstractDao<Role> {
 

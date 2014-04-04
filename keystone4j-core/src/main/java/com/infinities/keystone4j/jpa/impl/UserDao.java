@@ -12,9 +12,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.assignment.model.UserProjectGrant;
-import com.infinities.keystone4j.identity.model.User;
 import com.infinities.keystone4j.jpa.AbstractDao;
+import com.infinities.keystone4j.model.assignment.UserProjectGrant;
+import com.infinities.keystone4j.model.identity.User;
 
 public class UserDao extends AbstractDao<User> {
 

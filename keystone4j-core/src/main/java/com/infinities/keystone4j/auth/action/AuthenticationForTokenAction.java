@@ -16,25 +16,25 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.auth.AuthDriver;
 import com.infinities.keystone4j.auth.controller.AuthController;
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.auth.model.AuthData;
 import com.infinities.keystone4j.auth.model.AuthInfo;
-import com.infinities.keystone4j.auth.model.AuthV3;
-import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.auth.AuthData;
+import com.infinities.keystone4j.model.auth.AuthV3;
+import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
-import com.infinities.keystone4j.trust.model.Trust;
 
 public class AuthenticationForTokenAction extends AbstractTokenAction<TokenMetadata> {
 

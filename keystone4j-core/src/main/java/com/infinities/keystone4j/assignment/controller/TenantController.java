@@ -1,8 +1,8 @@
 package com.infinities.keystone4j.assignment.controller;
 
-import com.infinities.keystone4j.assignment.model.TenantWrapper;
-import com.infinities.keystone4j.assignment.model.TenantsWrapper;
-import com.infinities.keystone4j.identity.model.UsersWrapper;
+import com.infinities.keystone4j.model.assignment.TenantWrapper;
+import com.infinities.keystone4j.model.assignment.TenantsWrapper;
+import com.infinities.keystone4j.model.identity.UsersWrapper;
 
 public interface TenantController {
 

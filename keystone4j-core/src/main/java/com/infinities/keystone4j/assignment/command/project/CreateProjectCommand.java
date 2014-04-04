@@ -3,9 +3,9 @@ package com.infinities.keystone4j.assignment.command.project;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.command.AbstractAssignmentCommand;
-import com.infinities.keystone4j.assignment.model.Project;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class CreateProjectCommand extends AbstractAssignmentCommand<Project> {

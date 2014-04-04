@@ -23,17 +23,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
 import com.infinities.keystone4j.token.api.TokenApiImpl;
-import com.infinities.keystone4j.token.model.Token;
 import com.infinities.keystone4j.trust.TrustApi;
-import com.infinities.keystone4j.trust.model.Trust;
 import com.infinities.keystone4j.utils.Cms;
 
 public class TokenApiImplTest {

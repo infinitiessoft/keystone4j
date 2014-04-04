@@ -1,10 +1,10 @@
 package com.infinities.keystone4j.trust.controller;
 
-import com.infinities.keystone4j.assignment.model.RoleWrapper;
-import com.infinities.keystone4j.assignment.model.RolesWrapper;
-import com.infinities.keystone4j.trust.model.Trust;
-import com.infinities.keystone4j.trust.model.TrustWrapper;
-import com.infinities.keystone4j.trust.model.TrustsWrapper;
+import com.infinities.keystone4j.model.assignment.RoleWrapper;
+import com.infinities.keystone4j.model.assignment.RolesWrapper;
+import com.infinities.keystone4j.model.trust.Trust;
+import com.infinities.keystone4j.model.trust.TrustWrapper;
+import com.infinities.keystone4j.model.trust.TrustsWrapper;
 
 public interface TrustV3Controller {
 

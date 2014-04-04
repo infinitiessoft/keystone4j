@@ -11,10 +11,10 @@ import javax.ws.rs.core.Response;
 
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
+import com.infinities.keystone4j.model.policy.PoliciesWrapper;
+import com.infinities.keystone4j.model.policy.Policy;
+import com.infinities.keystone4j.model.policy.PolicyWrapper;
 import com.infinities.keystone4j.policy.controller.PolicyV3Controller;
-import com.infinities.keystone4j.policy.model.PoliciesWrapper;
-import com.infinities.keystone4j.policy.model.Policy;
-import com.infinities.keystone4j.policy.model.PolicyWrapper;
 
 public class PolicyResource {
 

@@ -3,9 +3,9 @@ package com.infinities.keystone4j.policy;
 import java.util.List;
 import java.util.Map;
 
-import com.infinities.keystone4j.policy.model.Policy;
-import com.infinities.keystone4j.policy.model.PolicyEntity;
-import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.model.policy.Policy;
+import com.infinities.keystone4j.model.policy.PolicyEntity;
+import com.infinities.keystone4j.model.token.Token;
 
 public interface PolicyDriver {
 

@@ -14,16 +14,16 @@ import com.infinities.keystone4j.auth.action.GetRevocationListAction;
 import com.infinities.keystone4j.auth.action.RevokeTokenAction;
 import com.infinities.keystone4j.auth.action.ValidateTokenAction;
 import com.infinities.keystone4j.auth.controller.AuthController;
-import com.infinities.keystone4j.auth.model.AuthV3;
-import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.auth.AuthV3;
+import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.trust.SignedWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
-import com.infinities.keystone4j.trust.model.SignedWrapper;
 
 public class AuthControllerImpl extends BaseController implements AuthController {
 

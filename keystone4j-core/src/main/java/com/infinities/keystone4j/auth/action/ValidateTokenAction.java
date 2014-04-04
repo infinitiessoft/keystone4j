@@ -5,10 +5,10 @@ import javax.ws.rs.container.ContainerRequestContext;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.controller.AuthController;
-import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.model.TokenDataWrapper;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ValidateTokenAction extends AbstractTokenAction<TokenMetadata> {

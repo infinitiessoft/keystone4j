@@ -13,11 +13,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.PolicyDao;
+import com.infinities.keystone4j.model.policy.Policy;
+import com.infinities.keystone4j.model.policy.PolicyEntity;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.policy.Enforcer;
 import com.infinities.keystone4j.policy.PolicyDriver;
-import com.infinities.keystone4j.policy.model.Policy;
-import com.infinities.keystone4j.policy.model.PolicyEntity;
-import com.infinities.keystone4j.token.model.Token;
 
 public class PolicyJpaDriver implements PolicyDriver {
 

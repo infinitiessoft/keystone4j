@@ -1,7 +1,7 @@
 package com.infinities.keystone4j.catalog.controller;
 
-import com.infinities.keystone4j.catalog.model.OSKSADMServiceWrapper;
-import com.infinities.keystone4j.catalog.model.OSKSADMServicesWrapper;
+import com.infinities.keystone4j.model.catalog.OSKSADMServiceWrapper;
+import com.infinities.keystone4j.model.catalog.OSKSADMServicesWrapper;
 
 public interface ServiceController {
 

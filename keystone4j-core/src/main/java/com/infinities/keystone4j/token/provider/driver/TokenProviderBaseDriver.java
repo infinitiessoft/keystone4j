@@ -8,19 +8,19 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.auth.model.TokenMetadata;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDataHelper;
-import com.infinities.keystone4j.token.model.Token;
-import com.infinities.keystone4j.token.model.TokenDataWrapper;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
-import com.infinities.keystone4j.trust.model.Trust;
 
 public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 

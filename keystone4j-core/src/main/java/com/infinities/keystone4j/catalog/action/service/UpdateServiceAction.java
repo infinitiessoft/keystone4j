@@ -4,7 +4,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.KeystonePreconditions;
 import com.infinities.keystone4j.catalog.CatalogApi;
-import com.infinities.keystone4j.catalog.model.Service;
+import com.infinities.keystone4j.model.catalog.Service;
 
 public class UpdateServiceAction extends AbstractServiceAction<Service> {
 

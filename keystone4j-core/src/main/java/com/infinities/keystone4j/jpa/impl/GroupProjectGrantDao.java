@@ -10,8 +10,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
 import com.infinities.keystone4j.jpa.AbstractDao;
+import com.infinities.keystone4j.model.assignment.GroupProjectGrant;
 
 public class GroupProjectGrantDao extends AbstractDao<GroupProjectGrant> {
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.infinities.keystone4j.common.model.Link;
+import com.infinities.keystone4j.model.common.Link;
 
 public class Extension {
 

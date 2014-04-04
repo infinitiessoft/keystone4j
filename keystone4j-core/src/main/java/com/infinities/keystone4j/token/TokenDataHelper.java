@@ -8,21 +8,21 @@ import java.util.List;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.catalog.CatalogApi;
-import com.infinities.keystone4j.catalog.model.Catalog;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.token.model.Bind;
-import com.infinities.keystone4j.token.model.Token;
-import com.infinities.keystone4j.token.model.TokenData;
-import com.infinities.keystone4j.token.model.TokenDataWrapper;
-import com.infinities.keystone4j.trust.model.Trust;
-import com.infinities.keystone4j.trust.model.TrustRole;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Bind;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.token.TokenData;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.trust.Trust;
+import com.infinities.keystone4j.model.trust.TrustRole;
 
 public class TokenDataHelper {
 

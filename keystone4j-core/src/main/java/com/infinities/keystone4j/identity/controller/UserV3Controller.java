@@ -1,9 +1,9 @@
 package com.infinities.keystone4j.identity.controller;
 
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.identity.model.UserParam;
-import com.infinities.keystone4j.identity.model.UserWrapper;
-import com.infinities.keystone4j.identity.model.UsersWrapper;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.identity.UserParam;
+import com.infinities.keystone4j.model.identity.UserWrapper;
+import com.infinities.keystone4j.model.identity.UsersWrapper;
 
 public interface UserV3Controller {
 

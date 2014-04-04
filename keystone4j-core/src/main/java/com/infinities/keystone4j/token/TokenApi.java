@@ -3,7 +3,7 @@ package com.infinities.keystone4j.token;
 import java.util.List;
 
 import com.infinities.keystone4j.Api;
-import com.infinities.keystone4j.token.model.Token;
+import com.infinities.keystone4j.model.token.Token;
 
 public interface TokenApi extends Api {
 

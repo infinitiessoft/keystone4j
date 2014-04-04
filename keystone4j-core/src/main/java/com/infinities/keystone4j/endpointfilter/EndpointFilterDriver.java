@@ -2,8 +2,8 @@ package com.infinities.keystone4j.endpointfilter;
 
 import java.util.List;
 
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.catalog.model.Endpoint;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.catalog.Endpoint;
 
 public interface EndpointFilterDriver {
 

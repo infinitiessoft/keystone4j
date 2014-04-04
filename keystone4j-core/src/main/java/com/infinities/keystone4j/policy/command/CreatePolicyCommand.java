@@ -1,7 +1,7 @@
 package com.infinities.keystone4j.policy.command;
 
+import com.infinities.keystone4j.model.policy.Policy;
 import com.infinities.keystone4j.policy.PolicyDriver;
-import com.infinities.keystone4j.policy.model.Policy;
 
 public class CreatePolicyCommand extends AbstractPolicyCommand<Policy> {
 

@@ -21,24 +21,24 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.KeystoneApplication;
 import com.infinities.keystone4j.PatchClient;
-import com.infinities.keystone4j.assignment.model.Domain;
-import com.infinities.keystone4j.assignment.model.GroupDomainGrant;
-import com.infinities.keystone4j.assignment.model.GroupProjectGrant;
-import com.infinities.keystone4j.assignment.model.Project;
-import com.infinities.keystone4j.assignment.model.Role;
-import com.infinities.keystone4j.assignment.model.UserDomainGrant;
-import com.infinities.keystone4j.assignment.model.UserProjectGrant;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.User;
-import com.infinities.keystone4j.identity.model.UserGroupMembership;
-import com.infinities.keystone4j.identity.model.UserParam;
-import com.infinities.keystone4j.identity.model.UserParamWrapper;
-import com.infinities.keystone4j.identity.model.UserWrapper;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.GroupDomainGrant;
+import com.infinities.keystone4j.model.assignment.GroupProjectGrant;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.assignment.UserDomainGrant;
+import com.infinities.keystone4j.model.assignment.UserProjectGrant;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.identity.UserGroupMembership;
+import com.infinities.keystone4j.model.identity.UserParam;
+import com.infinities.keystone4j.model.identity.UserParamWrapper;
+import com.infinities.keystone4j.model.identity.UserWrapper;
+import com.infinities.keystone4j.model.utils.Views;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
-import com.infinities.keystone4j.utils.jackson.Views;
 
 public class UserV3IntegratedTest extends AbstractIntegratedTest {
 

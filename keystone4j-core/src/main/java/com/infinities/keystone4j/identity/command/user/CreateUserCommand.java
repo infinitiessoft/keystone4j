@@ -1,12 +1,12 @@
 package com.infinities.keystone4j.identity.command.user;
 
-import com.infinities.keystone4j.assignment.model.Domain;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
 import com.infinities.keystone4j.identity.IdentityUtils;
 import com.infinities.keystone4j.identity.command.AbstractIdentityCommand;
-import com.infinities.keystone4j.identity.model.User;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class CreateUserCommand extends AbstractIdentityCommand<User> {

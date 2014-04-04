@@ -9,6 +9,9 @@ import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterCheckDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.model.policy.PoliciesWrapper;
+import com.infinities.keystone4j.model.policy.Policy;
+import com.infinities.keystone4j.model.policy.PolicyWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.action.CreatePolicyAction;
 import com.infinities.keystone4j.policy.action.DeletePolicyAction;
@@ -16,9 +19,6 @@ import com.infinities.keystone4j.policy.action.GetPolicyAction;
 import com.infinities.keystone4j.policy.action.ListPoliciesAction;
 import com.infinities.keystone4j.policy.action.UpdatePolicyAction;
 import com.infinities.keystone4j.policy.controller.PolicyV3Controller;
-import com.infinities.keystone4j.policy.model.PoliciesWrapper;
-import com.infinities.keystone4j.policy.model.Policy;
-import com.infinities.keystone4j.policy.model.PolicyWrapper;
 import com.infinities.keystone4j.token.TokenApi;
 
 public class PolicyV3ControllerImpl extends BaseController implements PolicyV3Controller {

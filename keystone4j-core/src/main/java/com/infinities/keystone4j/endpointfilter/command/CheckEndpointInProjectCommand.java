@@ -1,7 +1,7 @@
 package com.infinities.keystone4j.endpointfilter.command;
 
-import com.infinities.keystone4j.catalog.model.Endpoint;
 import com.infinities.keystone4j.endpointfilter.EndpointFilterDriver;
+import com.infinities.keystone4j.model.catalog.Endpoint;
 
 public class CheckEndpointInProjectCommand extends AbstractEndpointFilterCommand<Endpoint> {
 

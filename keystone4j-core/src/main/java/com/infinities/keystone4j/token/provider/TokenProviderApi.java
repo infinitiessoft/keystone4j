@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.infinities.keystone4j.Api;
 import com.infinities.keystone4j.auth.model.AuthContext;
-import com.infinities.keystone4j.auth.model.TokenMetadata;
-import com.infinities.keystone4j.token.model.Token;
-import com.infinities.keystone4j.token.model.TokenDataWrapper;
-import com.infinities.keystone4j.trust.model.Trust;
+import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.trust.Trust;
 
 public interface TokenProviderApi extends Api {
 

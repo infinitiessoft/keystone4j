@@ -13,8 +13,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
-import com.infinities.keystone4j.assignment.model.Role;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
+import com.infinities.keystone4j.model.assignment.Role;
 
 public class OSInheritResource {
 

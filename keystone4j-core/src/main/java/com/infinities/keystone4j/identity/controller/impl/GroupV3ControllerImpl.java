@@ -18,9 +18,9 @@ import com.infinities.keystone4j.identity.action.group.ListGroupsAction;
 import com.infinities.keystone4j.identity.action.group.ListGroupsForUserAction;
 import com.infinities.keystone4j.identity.action.group.UpdateGroupAction;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
-import com.infinities.keystone4j.identity.model.Group;
-import com.infinities.keystone4j.identity.model.GroupWrapper;
-import com.infinities.keystone4j.identity.model.GroupsWrapper;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.GroupWrapper;
+import com.infinities.keystone4j.model.identity.GroupsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 

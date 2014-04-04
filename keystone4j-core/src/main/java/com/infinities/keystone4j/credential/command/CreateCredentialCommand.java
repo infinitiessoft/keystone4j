@@ -1,7 +1,7 @@
 package com.infinities.keystone4j.credential.command;
 
 import com.infinities.keystone4j.credential.CredentialDriver;
-import com.infinities.keystone4j.credential.model.Credential;
+import com.infinities.keystone4j.model.credential.Credential;
 
 public class CreateCredentialCommand extends AbstractCredentialCommand<Credential> {
 

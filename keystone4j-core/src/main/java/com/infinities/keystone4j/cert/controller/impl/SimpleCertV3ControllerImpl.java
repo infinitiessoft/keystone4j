@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 import com.infinities.keystone4j.cert.controller.SimpleCertV3Controller;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.common.model.Link;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.extension.ExtensionApi;
 import com.infinities.keystone4j.extension.model.Extension;
+import com.infinities.keystone4j.model.common.Link;
 import com.infinities.keystone4j.utils.KeystoneUtils;
 
 public class SimpleCertV3ControllerImpl extends BaseController implements SimpleCertV3Controller {
