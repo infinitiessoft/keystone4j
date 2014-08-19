@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -55,6 +56,7 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 	private String id;
 	private int version;
 	private Set<TokenRole> tokenRoles = new HashSet<TokenRole>(0);
+	private Metadata metadata = new Metadata();
 
 
 	@Version
@@ -179,6 +181,16 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 
 	public void setTokenRoles(Set<TokenRole> tokenRoles) {
 		this.tokenRoles = tokenRoles;
+	}
+
+	@OneToOne(optional = false, cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "METADATA_ID", unique = true, nullable = false)
+	public Metadata getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Metadata metadata) {
+		this.metadata = metadata;
 	}
 
 	@XmlTransient

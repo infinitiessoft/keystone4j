@@ -147,7 +147,7 @@ public class TokenApiImplTest {
 		Date date = calendar.getTime();
 		token.setExpires(date);
 		token.setIssueAt(date);
-		final String id = Cms.Instance.hashToken(token.getId());
+		final String id = Cms.Instance.hashToken(token.getId(), null);
 		context.checking(new Expectations() {
 
 			{
@@ -171,7 +171,7 @@ public class TokenApiImplTest {
 		Date date = calendar.getTime();
 		token.setExpires(date);
 		token.setIssueAt(date);
-		final String id = Cms.Instance.hashToken(token.getId());
+		final String id = Cms.Instance.hashToken(token.getId(), null);
 		context.checking(new Expectations() {
 
 			{
@@ -323,7 +323,7 @@ public class TokenApiImplTest {
 		token.setId("newtoken");
 		user.setId("newuser");
 		project.setId("newproject");
-		final String id = Cms.Instance.hashToken(token.getId());
+		final String id = Cms.Instance.hashToken(token.getId(), null);
 		context.checking(new Expectations() {
 
 			{

@@ -49,7 +49,6 @@ public class PolicyCheckDecorator<T> extends AbstractActionDecorator<T> {
 			callback.execute(request, command, parMap);
 		} else {
 			String action = MessageFormat.format("identity:{0}", command.getName());
-
 			Token policyToken = buildPolicyCheckCredentials(action, context, token);
 			Map<String, PolicyEntity> target = Maps.newHashMap();
 			if (!Strings.isNullOrEmpty(context.getSubjectTokenid())) {
@@ -67,7 +66,7 @@ public class PolicyCheckDecorator<T> extends AbstractActionDecorator<T> {
 
 	@Override
 	public String getName() {
-		return "policy_check";
+		return command.getName();// "policy_check";
 	}
 
 }

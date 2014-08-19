@@ -18,16 +18,8 @@ public class CheckV3TokenCommand extends AbstractTokenProviderCommand<TokenMetad
 
 	@Override
 	public TokenMetadata execute() {
-		// String uniqueid = null;
-		// try {
-		// uniqueid = Cms.Instance.hashToken(tokenid);
-		// } catch (UnsupportedEncodingException | NoSuchAlgorithmException |
-		// DecoderException e) {
-		// logger.error("unexpected error", e);
-		// throw Exceptions.UnexpectedException.getInstance(null);
-		// }
-		// logger.debug("check token uniqueid: {}", uniqueid);
-		this.getTokenProviderApi().validateV3Token(tokenid);
+		String uniqueid = this.getUniqueId(tokenid);
+		this.getTokenProviderApi().validateV3Token(uniqueid);
 		return null;
 	}
 

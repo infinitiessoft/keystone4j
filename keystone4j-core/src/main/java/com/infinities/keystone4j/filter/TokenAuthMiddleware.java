@@ -25,7 +25,12 @@ public class TokenAuthMiddleware implements Middleware {
 		if (requestContext.getHeaders().containsKey(AUTH_TOKEN_HEADER)) {
 			tokenid = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER).replace("[null]", "");
 		}
-		KeystoneContext context = (KeystoneContext) requestContext.getProperty(KeystoneContext.CONTEXT_NAME);
+
+		KeystoneContext context = null;
+		if (requestContext.getPropertyNames().contains(KeystoneContext.CONTEXT_NAME)) {
+			context = (KeystoneContext) requestContext.getProperty(KeystoneContext.CONTEXT_NAME);
+		}
+
 		if (context == null) {
 			context = new KeystoneContext();
 		}
@@ -40,6 +45,6 @@ public class TokenAuthMiddleware implements Middleware {
 		}
 
 		requestContext.setProperty(KeystoneContext.CONTEXT_NAME, context);
-		logger.debug("leave TokenAuthMiddleware filter");
+		logger.debug("leave TokenAuthMiddleware filter ");
 	}
 }

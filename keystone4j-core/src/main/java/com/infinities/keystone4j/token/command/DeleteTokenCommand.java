@@ -29,7 +29,7 @@ public class DeleteTokenCommand extends AbstractTokenCommand<Token> {
 	public Token execute() {
 		String uniqueid = null;
 		try {
-			uniqueid = Cms.Instance.hashToken(tokenid);
+			uniqueid = Cms.Instance.hashToken(tokenid, null);
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | DecoderException e) {
 			logger.error("unexpected error", e);
 			throw Exceptions.UnexpectedException.getInstance(null);

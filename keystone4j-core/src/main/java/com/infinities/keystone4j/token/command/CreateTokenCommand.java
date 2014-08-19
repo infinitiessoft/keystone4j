@@ -28,17 +28,25 @@ public class CreateTokenCommand extends AbstractTokenCommand<Token> {
 	@Override
 	public Token execute() {
 		String uniqueid = null;
+		// String t = null;
 		try {
 			logger.debug("hash token");
-			uniqueid = Cms.Instance.hashToken(token.getId());
+			// t = token.getId();
+			uniqueid = Cms.Instance.hashToken(token.getId(), null);
 			logger.debug("set token uniqueid: {}", uniqueid);
 			token.setId(uniqueid);
+
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | DecoderException e) {
 			logger.error("unexpected error", e);
 			throw Exceptions.UnexpectedException.getInstance(null);
 		}
 		token.setValid(true);
 		Token ret = this.getTokenDriver().createToken(token);
+
+		// Token test = this.getTokenApi().getToken(t);
+
+		// logger.info("test == null? {}", String.valueOf(test == null));
+
 		return ret;
 	}
 

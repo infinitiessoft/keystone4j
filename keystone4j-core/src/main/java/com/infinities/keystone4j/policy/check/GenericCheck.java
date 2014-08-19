@@ -2,6 +2,8 @@ package com.infinities.keystone4j.policy.check;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,12 @@ public class GenericCheck extends Check {
 		try {
 			String match = this.getMatch();
 			String targetid = null;
+			Pattern pattern = Pattern.compile("%\\((.+?)\\)s");
+			Matcher matcher = pattern.matcher(match);
+			if (matcher.matches()) {
+				match = matcher.group(1);
+			}
+
 			if (match.startsWith("target")) {
 				String replaced = match.replace("_", ".");
 				String split[] = replaced.split(".");

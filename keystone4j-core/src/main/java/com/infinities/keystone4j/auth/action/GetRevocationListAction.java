@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.auth.RevokedWrapper;
 import com.infinities.keystone4j.model.token.Token;
@@ -29,8 +30,11 @@ public class GetRevocationListAction extends AbstractTokenAction<SignedWrapper> 
 		String jsonStr = null;
 		String signedText = null;
 		try {
+			String certfile = Config.Instance.getOpt(Config.Type.signing, "certfile").asText();
+			String keyfile = Config.Instance.getOpt(Config.Type.signing, "keyfile").asText();
+
 			jsonStr = JsonUtils.toJson(revoked);
-			signedText = Cms.Instance.signToken(jsonStr);
+			signedText = Cms.Instance.signText(jsonStr, certfile, keyfile);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

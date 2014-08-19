@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.common;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -115,13 +116,26 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.cache, "debug_cache_backend", Options.newBoolOpt("debug_cache_backend", false));
 
 		FILE_OPTIONS.put(Config.Type.ssl, "enabled", Options.newBoolOpt("enabled", false));
-		FILE_OPTIONS.put(Config.Type.ssl, "cerfile",
-				Options.newStrOpt("cerfile", KeystoneApplication.CONF_DIR + "keystone.pem"));
-		FILE_OPTIONS.put(Config.Type.ssl, "keyfile",
-				Options.newStrOpt("keyfile", KeystoneApplication.CONF_DIR + "keystonekey.pem"));
-		FILE_OPTIONS
-				.put(Config.Type.ssl, "ca_certs", Options.newStrOpt("ca_certs", KeystoneApplication.CONF_DIR + "ca.pem"));
-		FILE_OPTIONS.put(Config.Type.ssl, "ca_key", Options.newStrOpt("ca_key", KeystoneApplication.CONF_DIR + "cakey.pem"));
+		FILE_OPTIONS.put(
+				Config.Type.ssl,
+				"cerfile",
+				Options.newStrOpt("cerfile", KeystoneApplication.CONF_DIR + "ssl" + File.separator + "certs"
+						+ File.separator + "keystone.pem"));
+		FILE_OPTIONS.put(
+				Config.Type.ssl,
+				"keyfile",
+				Options.newStrOpt("keyfile", KeystoneApplication.CONF_DIR + "ssl" + File.separator + "certs"
+						+ File.separator + "keystonekey.pem"));
+		FILE_OPTIONS.put(
+				Config.Type.ssl,
+				"ca_certs",
+				Options.newStrOpt("ca_certs", KeystoneApplication.CONF_DIR + "ssl" + File.separator + "private"
+						+ File.separator + "ca.pem"));
+		FILE_OPTIONS.put(
+				Config.Type.ssl,
+				"ca_key",
+				Options.newStrOpt("ca_key", KeystoneApplication.CONF_DIR + "ssl" + File.separator + "private"
+						+ File.separator + "cakey.pem"));
 		FILE_OPTIONS.put(Config.Type.ssl, "cert_required", Options.newBoolOpt("cert_required", false));
 		FILE_OPTIONS.put(Config.Type.ssl, "key_size", Options.newIntOpt("key_size", 1024));
 		FILE_OPTIONS.put(Config.Type.ssl, "valid_days", Options.newIntOpt("valid_days", 3650));
@@ -129,14 +143,26 @@ public enum Config {
 				Options.newStrOpt("cert_subject", "/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost"));
 
 		FILE_OPTIONS.put(Config.Type.signing, "token_format", Options.newStrOpt("token_format", ""));
-		FILE_OPTIONS.put(Config.Type.signing, "certfile",
-				Options.newStrOpt("certfile", KeystoneApplication.CONF_DIR + "signing_cert_req.pem"));
-		FILE_OPTIONS.put(Config.Type.signing, "keyfile",
-				Options.newStrOpt("keyfile", KeystoneApplication.CONF_DIR + "signing_key.pem"));
-		FILE_OPTIONS.put(Config.Type.signing, "ca_certs",
-				Options.newStrOpt("ca_certs", KeystoneApplication.CONF_DIR + "ca.pem"));
-		FILE_OPTIONS.put(Config.Type.signing, "ca_key",
-				Options.newStrOpt("ca_key", KeystoneApplication.CONF_DIR + "cakey.pem"));
+		FILE_OPTIONS.put(
+				Config.Type.signing,
+				"certfile",
+				Options.newStrOpt("cerfile", KeystoneApplication.CONF_DIR + "ssl" + File.separator + "certs"
+						+ File.separator + "signing_cert.pem"));
+		FILE_OPTIONS.put(
+				Config.Type.signing,
+				"keyfile",
+				Options.newStrOpt("keyfile", KeystoneApplication.CONF_DIR + "ssl" + File.separator + "private"
+						+ File.separator + "signing_key.pem"));
+		FILE_OPTIONS.put(
+				Config.Type.signing,
+				"ca_certs",
+				Options.newStrOpt("ca_certs", KeystoneApplication.CONF_DIR + "ssl" + File.separator + "certs"
+						+ File.separator + "ca.pem"));
+		FILE_OPTIONS.put(
+				Config.Type.signing,
+				"ca_key",
+				Options.newStrOpt("ca_key", KeystoneApplication.CONF_DIR + "ssl" + File.separator + "certs" + File.separator
+						+ "cakey.pem"));
 		FILE_OPTIONS.put(Config.Type.signing, "key_size", Options.newIntOpt("key_size", 2048));
 		FILE_OPTIONS.put(Config.Type.signing, "valid_days", Options.newIntOpt("valid_days", 3650));
 		FILE_OPTIONS.put(Config.Type.signing, "cert_subject",

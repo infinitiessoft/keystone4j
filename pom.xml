@@ -12,6 +12,15 @@
 
 		<dependencies>
 
+			<!-- <dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-server</artifactId> 
+				<version>${jetty-version}</version> </dependency> <dependency> <groupId>org.eclipse.jetty</groupId> 
+				<artifactId>jetty-servlet</artifactId> <version>${jetty-version}</version> 
+				</dependency> <dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-servlets</artifactId> 
+				<version>${jetty-version}</version> </dependency> <dependency> <groupId>org.eclipse.jetty</groupId> 
+				<artifactId>jetty-webapp</artifactId> <version>${jetty-version}</version> 
+				</dependency> <dependency> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-websocket</artifactId> 
+				<version>${jetty-version}</version> </dependency> -->
+
 			<dependency>
 				<groupId>com.infinities.keystone4j</groupId>
 				<artifactId>keystone4j-core</artifactId>
@@ -32,9 +41,12 @@
 
 			<dependency>
 				<groupId>com.infinities.keystone4j</groupId>
-				<artifactId>keystone4j-client</artifactId>
+				<artifactId>keystone4j-commons</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+
+			<!-- <dependency> <groupId>com.infinities.keystone4j</groupId> <artifactId>keystone4j-client</artifactId> 
+				<version>${project.version}</version> </dependency> -->
 
 			<!-- Keyston4j Dependencies -->
 			<dependency>
@@ -79,7 +91,6 @@
 				<groupId>javax.ws.rs</groupId>
 				<artifactId>javax.ws.rs-api</artifactId>
 				<version>2.0</version>
-				<scope>provided</scope>
 			</dependency>
 
 
@@ -125,6 +136,19 @@
 				<artifactId>commons-codec</artifactId>
 				<version>1.9</version>
 			</dependency>
+
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk16</artifactId>
+				<version>1.46</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcmail-jdk16</artifactId>
+				<version>1.46</version>
+			</dependency>
+
 			<!-- <dependency> <groupId>org.glassfish.jersey.media</groupId> <artifactId>jersey-media-json-jackson</artifactId> 
 				<version>${jerseyVersion}</version> </dependency> -->
 
@@ -151,12 +175,6 @@
 				<groupId>org.apache.shiro</groupId>
 				<artifactId>shiro-ehcache</artifactId>
 				<version>${shiroVersion}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcprov-jdk16</artifactId>
-				<version>1.46</version>
 			</dependency>
 
 			<!-- Logging (slf4j with log4j as an implementation -->
@@ -275,6 +293,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<javaCompilerVersion>1.7</javaCompilerVersion>
+		<jetty-version>8.1.0.RC1</jetty-version>
 		<shiroVersion>1.2.1</shiroVersion>
 		<slf4jVersion>1.6.6</slf4jVersion>
 		<tomcatVersion>7.0.34</tomcatVersion>
@@ -283,9 +302,10 @@
 	</properties>
 	<modules>
 		<!-- <module>keystone4j-core</module> <module>keystone4j-war</module> -->
+		<module>keystone4j-commons</module>
+		<module>keystone4j-entity</module>
+		<!-- <module>keystonr4j-client</module> -->
 		<module>keystone4j-core</module>
 		<module>keystone4j-web</module>
-		<module>keystone4j-entity</module>
-		<module>keystonr4j-client</module>
 	</modules>
 </project>

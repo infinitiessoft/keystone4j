@@ -1,6 +1,5 @@
 package com.infinities.keystone4j.option;
 
-import java.net.URL;
 import java.util.List;
 
 public abstract class Option {
@@ -40,10 +39,6 @@ public abstract class Option {
 
 	public List<String> asList() {
 		throw new IllegalArgumentException("value is not a list");
-	}
-
-	public URL asURL() {
-		throw new IllegalArgumentException("value is not a url");
 	}
 
 	public abstract void resetValue(String value);

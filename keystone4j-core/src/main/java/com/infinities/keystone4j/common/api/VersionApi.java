@@ -29,6 +29,7 @@ public class VersionApi {
 	private final static String MEDIA_TYPE_JSON = "application/vnd.openstack.identity-{0}+json";
 	private final static String MEDIA_TYPE_XML = "application/vnd.openstack.identity-{0}+xml";
 	private final static String V3 = "v3";
+	private final static String V2 = "v2.0";
 	private String type;
 	private final static String URL_POSTFIX = "{0}_endpoint";
 	// private final static String PORT_POSTFIX = "{0}_port";
@@ -67,6 +68,7 @@ public class VersionApi {
 	protected List<Version> getVersionList() throws MalformedURLException {
 		List<Version> versionMetadatas = Lists.newArrayList();
 		// if (versions.contains(V3)) {
+		versionMetadatas.add(newV2Metadata());
 		versionMetadatas.add(newV3Metadata());
 		// }
 		return versionMetadatas;
@@ -101,6 +103,27 @@ public class VersionApi {
 		return metadata;
 	}
 
+	private Version newV2Metadata() throws MalformedURLException {
+		Version metadata = new Version();
+		metadata.setId("v2.0");
+		metadata.setStatus("stable");
+		metadata.setUpdated("2013-03-06T00:00:00Z");
+		URL identityUrlV3 = getIdentityURL(V2);
+		Link identity_link = new Link();
+		identity_link.setRel("self");
+		identity_link.setHref(identityUrlV3.toExternalForm());
+		metadata.getLinks().add(identity_link);
+		MediaType jsonType = new MediaType();
+		jsonType.setBase("application/json");
+		jsonType.setType(MessageFormat.format(MEDIA_TYPE_JSON, V2));
+		metadata.getMediaTypes().add(jsonType);
+		MediaType xmlType = new MediaType();
+		xmlType.setBase("application/xml");
+		xmlType.setType(MessageFormat.format(MEDIA_TYPE_XML, V2));
+		metadata.getMediaTypes().add(xmlType);
+		return metadata;
+	}
+
 	public Response getVersions() throws MalformedURLException {
 		List<Version> versions = getVersionList();
 		VersionsWrapper versionsWrapper = new VersionsWrapper(new HashSet<Version>(versions));
@@ -115,5 +138,15 @@ public class VersionApi {
 			}
 		}
 		throw Exceptions.VersionNotFoundException.getInstance(null, V3);
+	}
+
+	public VersionWrapper getVersionV2() throws MalformedURLException {
+		List<Version> versions = getVersionList();
+		for (Version version : versions) {
+			if ("v2.0".equals(version.getId())) {
+				return new VersionWrapper(version);
+			}
+		}
+		throw Exceptions.VersionNotFoundException.getInstance(null, V2);
 	}
 }

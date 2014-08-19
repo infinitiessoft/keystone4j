@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.utils.jackson;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -27,6 +28,7 @@ public class JsonUtils {
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private final static TypeReference<LinkedHashMap<String, String>> mapTypeRef = new TypeReference<LinkedHashMap<String, String>>() {
 	};
+
 	static {
 		AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
 		// if using BOTH JAXB annotations AND Jackson annotations:
@@ -65,6 +67,10 @@ public class JsonUtils {
 		JsonParser jp = factory.createParser(text);
 		JsonNode node = mapper.readTree(jp);
 		return node;
+	}
+
+	public <T> T readFile(String fileName, Class<T> valueType) throws JsonParseException, JsonMappingException, IOException {
+		return objectMapper.readValue(new File(fileName), valueType);
 	}
 
 }

@@ -35,6 +35,6 @@ public class PaginateDecorator<V> implements Action<List<V>> {
 
 	@Override
 	public String getName() {
-		return "paginate";
+		return command.getName();// "paginate";
 	}
 }

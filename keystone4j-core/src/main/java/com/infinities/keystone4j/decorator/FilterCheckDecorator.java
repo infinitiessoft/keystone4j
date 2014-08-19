@@ -50,6 +50,6 @@ public class FilterCheckDecorator<T> extends AbstractActionDecorator<T> {
 
 	@Override
 	public String getName() {
-		return "filter_check";
+		return command.getName();// "filter_check";
 	}
 }

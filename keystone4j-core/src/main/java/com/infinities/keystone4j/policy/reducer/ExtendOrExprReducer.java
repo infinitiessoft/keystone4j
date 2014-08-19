@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.infinities.keystone4j.policy.BaseCheck;
 import com.infinities.keystone4j.policy.BaseReducer;
-import com.infinities.keystone4j.policy.check.AndCheck;
+import com.infinities.keystone4j.policy.check.OrCheck;
 
 public class ExtendOrExprReducer extends AbstractReducer {
 
@@ -15,7 +15,7 @@ public class ExtendOrExprReducer extends AbstractReducer {
 	static {
 		List<String> reducer1 = Lists.newArrayList();
 		reducer1.add("or_expr");
-		reducer1.add("and");
+		reducer1.add("or");
 		reducer1.add("check");
 		reducers.add(reducer1);
 	}
@@ -32,7 +32,7 @@ public class ExtendOrExprReducer extends AbstractReducer {
 
 	@Override
 	public Entry<String, BaseCheck> getEntry(List<Entry<String, BaseCheck>> entrys) {
-		((AndCheck) entrys.get(0).getValue()).addCheck(entrys.get(1).getValue());
-		return Maps.immutableEntry("and_expr", entrys.get(0).getValue());
+		((OrCheck) entrys.get(0).getValue()).addCheck(entrys.get(2).getValue());
+		return Maps.immutableEntry("or_expr", entrys.get(0).getValue());
 	}
 }

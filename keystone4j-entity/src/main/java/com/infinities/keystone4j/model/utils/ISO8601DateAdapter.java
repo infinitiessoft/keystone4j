@@ -24,11 +24,9 @@ public class ISO8601DateAdapter extends XmlAdapter<String, Date> {
 
 	@Override
 	public Date unmarshal(String v) throws Exception {
-
 		if (v == null) {
 			return null;
 		}
-
 		try {
 			DateFormat format = (DateFormat) iso8601Format.clone();
 			return format.parse(v);

@@ -17,6 +17,7 @@ import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
+import com.infinities.keystone4j.trust.TrustApi;
 
 public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> {
 
@@ -27,15 +28,17 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 	private final AssignmentApi assignmentApi;
 	private final CatalogApi catalogApi;
 	private final TokenApi tokenApi;
+	private final TrustApi trustApi;
 
 
 	@Inject
 	public TokenProviderDriverFactory(IdentityApi identityApi, AssignmentApi assignmentApi, CatalogApi catalogApi,
-			TokenApi tokenApi) {
+			TokenApi tokenApi, TrustApi trustApi) {
 		this.identityApi = identityApi;
 		this.assignmentApi = assignmentApi;
 		this.catalogApi = catalogApi;
 		this.tokenApi = tokenApi;
+		this.trustApi = trustApi;
 	}
 
 	@Override
@@ -104,6 +107,7 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 		oParam[1] = AssignmentApi.class;
 		oParam[2] = CatalogApi.class;
 		oParam[3] = TokenApi.class;
+		oParam[4] = TrustApi.class;
 
 		Constructor<?> constructor = c.getConstructor(oParam);
 		Object[] paramObjs = new Object[4];
@@ -111,6 +115,7 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 		paramObjs[1] = assignmentApi;
 		paramObjs[2] = catalogApi;
 		paramObjs[3] = tokenApi;
+		paramObjs[4] = trustApi;
 		return constructor.newInstance(paramObjs);
 	}
 }

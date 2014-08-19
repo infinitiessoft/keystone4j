@@ -33,5 +33,6 @@ public class AdminTokenAuthMiddleware implements Middleware {
 
 		context.setAdmin(adminToken.equals(tokenid));
 		requestContext.setProperty(KeystoneContext.CONTEXT_NAME, context);
+		logger.debug("leave AdminTokenAuthMiddleware filter");
 	}
 }

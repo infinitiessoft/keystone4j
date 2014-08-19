@@ -1,255 +1,317 @@
 package com.infinities.keystone4j.utils;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.MessageDigest;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.Security;
-import java.security.SignatureException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import java.security.cert.CertPathBuilderException;
+import java.security.cert.CertStoreException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-import org.bouncycastle.jce.PKCS10CertificationRequest;
-import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.cert.jcajce.JcaCertStore;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSProcessableByteArray;
+import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSSignedDataGenerator;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
+import org.bouncycastle.util.Store;
+import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.infinities.keystone4j.common.Config;
+import com.google.common.base.Strings;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
+import com.google.common.io.BaseEncoding;
 
 public enum Cms {
 	Instance;
 
-	private final static String CERT_FILE = "certfile";
-	private final static String KEY_FILE = "keyfile";
+	public enum Algorithm {
+		md5, sha1, sha256, sha512;
+	}
+
+
 	private final static Logger logger = LoggerFactory.getLogger(Cms.class);
-	private final static String ALGORITHM = "RSA/ECB/PKCS1Padding";
+	// private final static String ALGORITHM = "RSA/ECB/PKCS1Padding";
+	public final static String PKI_ASN1_PREFIX = "MII";
+	public final static String PKIZ_PREFIX = "PKIZ";
+	public final static String PKIZ_CMS_FORM = "DER";
+	public final static String PKI_ASN1_FORM = "PEM";
+	private final static String BEGIN_CMS = "-----BEGIN CMS-----";
+	private final static String END_CMS = "-----END CMS-----";
 	// private Certificate cert;
 	// private final Signature rsaSigner;
-	private RSAPublicKey publicKey;
-	private RSAPrivateKey privateKey;
+	private final static ConcurrentHashMap<String, X509Certificate> certMap = new ConcurrentHashMap<String, X509Certificate>();
+	private final static ConcurrentHashMap<String, PrivateKey> keyMap = new ConcurrentHashMap<String, PrivateKey>();
 
 
 	private Cms() {
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-		readPrivateKey();
-		readPublicKey();
-	}
-
-	private void readPrivateKey() {
-		// String keyFile = Config.Instance.getOpt(Config.Type.signing,
-		// "certfile").asText();
-		String keyFile = Config.Instance.getOpt(Config.Type.signing, KEY_FILE).asText();
-		URL url = new KeystoneUtils().getURL(keyFile);
-		// URL url = Cms.class.getResource(keyFile);
-		// File file = new File(url);
-		FileReader fileReader;
-		try {
-			fileReader = new FileReader(url.getPath());
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-		BufferedReader bufferedReader = new BufferedReader(fileReader);
-		PEMReader pr = new PEMReader(bufferedReader);
-		try {
-			Object obj = pr.readObject();
-			if (obj instanceof KeyPair) {
-				KeyPair keyPair = (KeyPair) obj;
-				privateKey = (RSAPrivateKey) keyPair.getPrivate();
-				System.out.println("this is a keypair");
-			} else if (obj instanceof PrivateKey) {
-				privateKey = (RSAPrivateKey) obj;
-				System.out.println("this is a private key");
-			} else {
-				throw new RuntimeException("invalid key format");
-			}
-		} catch (Exception e) {
-			throw new RuntimeException("setup cerfile or keyfile fail", e);
-		} finally {
-			if (pr != null) {
-				try {
-					pr.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-
-			if (fileReader != null) {
-				try {
-					fileReader.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-		}
-	}
-
-	private void readPublicKey() {
-		String keyFile = Config.Instance.getOpt(Config.Type.signing, CERT_FILE).asText();
-		URL url = new KeystoneUtils().getURL(keyFile);
-		// URL url = Cms.class.getResource(keyFile);
-		// File file = new File(url);
-		FileReader fileReader;
-		try {
-			fileReader = new FileReader(url.getPath());
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-		BufferedReader bufferedReader = new BufferedReader(fileReader);
-		PEMReader pr = new PEMReader(bufferedReader);
-		try {
-			Object obj = pr.readObject();
-			if (obj instanceof PKCS10CertificationRequest) {
-				PKCS10CertificationRequest request = (PKCS10CertificationRequest) obj;
-				publicKey = (RSAPublicKey) request.getPublicKey();
-				System.out.println("this is a PKCS10Certification");
-			} else {
-				throw new RuntimeException("invalid cer format");
-			}
-		} catch (Exception e) {
-			throw new RuntimeException("setup cerfile or keyfile fail", e);
-		} finally {
-			if (pr != null) {
-				try {
-					pr.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-
-			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-
-			if (fileReader != null) {
-				try {
-					fileReader.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-		}
+		// readPrivateKey();
+		// readPublicKey();
 	}
 
 	// certFile public_key & keyFile private_key
-	public String signToken(String text) throws SignatureException, UnsupportedEncodingException, InvalidKeyException,
-			NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
-		String output = signText(text);
+	public String signToken(String text, String signingCertFileName, String signingKeyFile) throws CertificateException,
+			NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException, IOException, CMSException,
+			CertStoreException {
+		String output = cmsSignData(text, signingCertFileName, signingKeyFile, null);
 		return toToken(output);
 	}
 
 	private String toToken(String output) {
+		output = output.replace('/', '-');
+		output = output.replace(BEGIN_CMS, "");
+		output = output.replace(END_CMS, "");
+		output = output.replace("\n", "");
 		return output;
 	}
 
-	private String signText(String text) throws SignatureException, UnsupportedEncodingException, InvalidKeyException,
-			NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
-		logger.debug("key format: {}, {}", new Object[] { privateKey.getFormat(), privateKey.getAlgorithm() });
-		logger.debug("text before sign: {}", text);
-		return encrypt(text);
-		// rsaSigner.update(text.getBytes("UTF8"));
-		// byte[] signaturesBytes = rsaSigner.sign();
-		// String hex = Hex.encodeHexString(signaturesBytes);
-		// logger.debug("text after sign and hex: {}", hex);
-		// return hex;
+	public String signText(String text, String signingCertFileName, String signingKeyFile) throws CertificateException,
+			NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException, IOException, CMSException,
+			CertStoreException {
+		return cmsSignData(text, signingCertFileName, signingKeyFile, null);
 	}
 
-	// public String toCms(String signedText) throws DecoderException {
-	// byte[] dehex = Hex.decodeHex(signedText.toCharArray());
-	//
-	// }
+	private String cmsSignData(String data, String signingCertFileName, String signingKeyFile, String outform)
+			throws CertificateException, IOException, NoSuchAlgorithmException, NoSuchProviderException, CMSException,
+			OperatorCreationException, CertStoreException {
+		if (Strings.isNullOrEmpty(outform)) {
+			outform = PKI_ASN1_FORM;
+		}
 
-	public String hashToken(String tokenid) throws UnsupportedEncodingException, NoSuchAlgorithmException, DecoderException {
-		logger.debug("text before hash: {}", tokenid);
-		byte[] input = tokenid.getBytes();//
-		// Hex.decodeHex(tokenid.toCharArray());//
-		// Base64.decode(tokenid.getBytes("UTF8"));
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		byte[] output = md.digest(input);
-		String hex = Hex.encodeHexString(output);
-		logger.debug("text after hash and hex: {}", hex);
-		return hex;
-		// return tokenid;
+		Security.addProvider(new BouncyCastleProvider());
+		CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
+		logger.debug("signingCertFile: {}, caFile:{}", new Object[] { signingCertFileName, signingKeyFile });
+		X509Certificate signercert = generateCertificate(signingCertFileName);
+		// X509Certificate cacert = generateCertificate(caFileName);
+		PrivateKey key = generatePrivateKey(signingKeyFile);
+		ContentSigner sha1Signer = new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(key);
+		gen.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider(
+				"BC").build()).build(sha1Signer, signercert));
+		List<X509Certificate> certList = new ArrayList<X509Certificate>();
+		certList.add(signercert);
+		Store certs = new JcaCertStore(certList);
+		gen.addCertificates(certs);
+
+		CMSProcessableByteArray b = new CMSProcessableByteArray(data.getBytes());
+		CMSSignedData signed = gen.generate(b, true);
+		String signedContent = new String(DERtoPEM(signed.getContentInfo().getDEREncoded(), "CMS"));
+		return signedContent;
 	}
 
-	private String encrypt(String text) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException {
-		Cipher cipher = Cipher.getInstance(ALGORITHM);
-		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-		byte[] input = text.getBytes();
-		byte[] output = blockCipher(cipher, input, Cipher.ENCRYPT_MODE);
-		String toReturn = Base64.encodeBase64String(output);
-		return toReturn;
-	}
+	@SuppressWarnings("rawtypes")
+	public String verifySignature(byte[] sigbytes, String signingCertFileName, String caFileName) throws CMSException,
+			CertificateException, OperatorCreationException, NoSuchAlgorithmException, NoSuchProviderException,
+			CertPathBuilderException, InvalidAlgorithmParameterException, IOException {
+		logger.debug("signingCertFile: {}, caFile:{}", new Object[] { signingCertFileName, caFileName });
+		Security.addProvider(new BouncyCastleProvider());
+		X509Certificate signercert = generateCertificate(signingCertFileName);
+		X509Certificate cacert = generateCertificate(caFileName);
+		Set<X509Certificate> additionalCerts = new HashSet<X509Certificate>();
+		additionalCerts.add(cacert);
 
-	public String decrypt(String text) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, DecoderException {
-		Cipher cipher = Cipher.getInstance(ALGORITHM);
-		cipher.init(Cipher.DECRYPT_MODE, privateKey);
-		byte[] input = Base64.decodeBase64(text);
-		byte[] output = blockCipher(cipher, input, Cipher.DECRYPT_MODE);
-		return new String(output);
-	}
+		sigbytes = Base64.decode(sigbytes);
 
-	public byte[] blockCipher(Cipher cipher, byte[] bytes, int mode) throws IllegalBlockSizeException, BadPaddingException {
-		byte[] scrambled = new byte[0];
-		byte[] toReturn = new byte[0];
+		// --- Use Bouncy Castle provider to verify included-content CSM/PKCS#7
+		// signature ---
+		try {
+			logger.debug("sigbytes size: {}", sigbytes.length);
+			CMSSignedData s = new CMSSignedData(sigbytes);
+			Store store = s.getCertificates();
+			SignerInformationStore signers = s.getSignerInfos();
+			Collection c = signers.getSigners();
+			Iterator it = c.iterator();
+			int verified = 0;
 
-		int length = (mode == Cipher.ENCRYPT_MODE) ? 100 : privateKey.getModulus().bitLength() / 8;
-
-		byte[] buffer = new byte[length];
-		for (int i = 0; i < bytes.length; i++) {
-			if ((i > 0) && (i % length == 0)) {
-				scrambled = cipher.doFinal(buffer);
-				toReturn = append(toReturn, scrambled);
-				int newlength = length;
-				if (i + length > bytes.length) {
-					newlength = bytes.length - i;
+			while (it.hasNext()) {
+				X509Certificate cert = null;
+				SignerInformation signer = (SignerInformation) it.next();
+				Collection certCollection = store.getMatches(signer.getSID());
+				if (certCollection.isEmpty() && signercert == null)
+					continue;
+				else if (signercert != null) // use a signer cert file for
+												// verification, if it was
+												// provided
+					cert = signercert;
+				else { // use the certificates included in the signature for
+						// verification
+					Iterator certIt = certCollection.iterator();
+					cert = (X509Certificate) certIt.next();
 				}
-				buffer = new byte[newlength];
+
+				if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BC").build(cert)))
+					verified++;
 			}
-			buffer[i % length] = bytes[i];
+
+			if (verified == 0) {
+				logger.warn(" No signers' signatures could be verified !");
+			} else if (signercert != null)
+				logger.info("Verified a signature using signer certificate file  {}", signingCertFileName);
+			else
+				logger.info("Verified a signature using a certificate in the signature data");
+
+			CMSProcessableByteArray cpb = (CMSProcessableByteArray) s.getSignedContent();
+			byte[] rawcontent = (byte[]) cpb.getContent();
+
+			return new String(rawcontent);
+		} catch (Exception ex) {
+			logger.error("Couldn't verify included-content CMS signature", ex);
+			throw new RuntimeException("Couldn't verify included-content CMS signature", ex);
 		}
-		scrambled = cipher.doFinal(buffer);
-		toReturn = append(toReturn, scrambled);
-		return toReturn;
 	}
 
-	private byte[] append(byte[] prefix, byte[] suffix) {
+	public static byte[] DERtoPEM(byte[] bytes, String headfoot) {
+		ByteArrayOutputStream pemStream = new ByteArrayOutputStream();
+		PrintWriter writer = new PrintWriter(pemStream);
 
-		byte[] toReturn = new byte[prefix.length + suffix.length];
-		for (int i = 0; i < prefix.length; i++) {
-			toReturn[i] = prefix[i];
+		byte[] stringBytes = BaseEncoding.base64().encode(bytes).getBytes();
+
+		String encoded = new String(stringBytes);
+
+		if (headfoot != null) {
+			writer.print("-----BEGIN " + headfoot + "-----\n");
 		}
-		for (int i = 0; i < suffix.length; i++) {
-			toReturn[i + prefix.length] = suffix[i];
+
+		// write 64 chars per line till done
+		int i = 0;
+		while ((i + 1) * 64 < encoded.length()) {
+			writer.print(encoded.substring(i * 64, (i + 1) * 64));
+			writer.print("\n");
+			i++;
 		}
-		return toReturn;
+		if (encoded.length() % 64 != 0) {
+			writer.print(encoded.substring(i * 64)); // write remainder
+			writer.print("\n");
+		}
+		if (headfoot != null) {
+			writer.print("-----END " + headfoot + "-----\n");
+		}
+		writer.flush();
+		return pemStream.toByteArray();
+	}
+
+	private static X509Certificate generateCertificate(String certFilePath) throws CertificateException, IOException {
+		X509Certificate cert = certMap.get(certFilePath);
+		if (cert != null) {
+			return cert;
+		} else {
+			synchronized (certMap) {
+				cert = certMap.get(certFilePath);
+				if (cert != null) {
+					return cert;
+				}
+				File f = new File(certFilePath);
+				logger.debug("cert file {} exist? {}", new Object[] { certFilePath, f.exists() });
+				cert = X509CertificateParser.parse(f);
+				certMap.put(certFilePath, cert);
+				return cert;
+			}
+		}
+	}
+
+	private static PrivateKey generatePrivateKey(String signingKeyFile) throws CertificateException, IOException {
+		PrivateKey key = keyMap.get(signingKeyFile);
+		if (key != null) {
+			return key;
+		} else {
+			synchronized (keyMap) {
+				key = keyMap.get(signingKeyFile);
+				if (key != null) {
+					return key;
+				}
+				key = X509CertificateParser.parseKey(new File(signingKeyFile));
+				keyMap.put(signingKeyFile, key);
+				return key;
+			}
+		}
+	}
+
+	public static boolean isPkiz(String userToken) {
+		return userToken.startsWith(PKIZ_PREFIX);
+	}
+
+	public static boolean isAsn1Token(String userToken) {
+		return userToken.startsWith(PKI_ASN1_PREFIX);
+	}
+
+	public String hashToken(String tokenid, Algorithm mode) throws UnsupportedEncodingException, NoSuchAlgorithmException,
+			DecoderException {
+		if (mode == null) {
+			mode = Algorithm.md5;
+		}
+
+		if (Strings.isNullOrEmpty(tokenid)) {
+			throw new NullPointerException("invalid tokenid");
+		}
+
+		if (isAsn1Token(tokenid) || isPkiz(tokenid)) {
+			HashFunction hf = Hashing.md5();
+			if (mode == Algorithm.sha1) {
+				hf = Hashing.sha1();
+			} else if (mode == Algorithm.sha256) {
+				hf = Hashing.sha256();
+			} else if (mode == Algorithm.sha512) {
+				hf = Hashing.sha512();
+			}
+			HashCode hc = hf.newHasher().putString(tokenid).hash();
+			return toHex(hc.asBytes());
+
+		} else {
+			return tokenid;
+		}
+	}
+
+	private static String toHex(byte[] digest) {
+		StringBuilder sb = new StringBuilder();
+		for (byte b : digest) {
+			sb.append(String.format("%1$02X", b));
+		}
+
+		return sb.toString();
+	}
+
+	public String tokenToCms(String signedText) {
+		String copyOfText = signedText.replace('-', '/');
+		String formatted = "-----BEGIN CMS-----\n";
+		int lineLength = 64;
+		while (copyOfText.length() > 0) {
+			if (copyOfText.length() > lineLength) {
+				formatted += copyOfText.substring(0, lineLength);
+				copyOfText = copyOfText.substring(lineLength);
+			} else {
+				formatted += copyOfText;
+				copyOfText = "";
+			}
+			formatted += "\n";
+		}
+		formatted += "-----END CMS-----\n";
+
+		return formatted;
 	}
 }

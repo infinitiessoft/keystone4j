@@ -29,6 +29,13 @@ public class TokenJpaDriver implements TokenDriver {
 			throw Exceptions.TokenNotFoundException.getInstance(null, uniqueid);
 		}
 		logger.debug("find token: {}", uniqueid);
+
+		List<Token> rets = tokenDao.findAll();
+		logger.debug("find token size: {}", rets.size());
+		for (Token t : rets) {
+			logger.debug("list token: {}", t.getId());
+		}
+
 		Token token = tokenDao.findById(uniqueid);
 		logger.debug("get token: {}", String.valueOf(token == null));
 		if (token == null) {

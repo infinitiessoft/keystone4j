@@ -33,6 +33,7 @@ import com.infinities.keystone4j.model.token.TokenRole;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 import com.infinities.keystone4j.token.provider.driver.PkiProvider;
+import com.infinities.keystone4j.trust.TrustApi;
 
 public class PkiProviderTest extends AbstractDbUnitJpaTest {
 
@@ -54,6 +55,7 @@ public class PkiProviderTest extends AbstractDbUnitJpaTest {
 	private CatalogApi catalogApi;
 	private Role roleAdmin, roleDemo;
 	private Catalog catalog;
+	private TrustApi trustApi;
 
 
 	@Before
@@ -69,7 +71,8 @@ public class PkiProviderTest extends AbstractDbUnitJpaTest {
 		assignmentApi = context.mock(AssignmentApi.class);
 		tokenApi = context.mock(TokenApi.class);
 		catalogApi = context.mock(CatalogApi.class);
-		driver = new PkiProvider(identityApi, assignmentApi, catalogApi, tokenApi);
+		trustApi = context.mock(TrustApi.class);
+		driver = new PkiProvider(identityApi, assignmentApi, catalogApi, tokenApi, trustApi);
 		token = new Token();
 		token.setId("newtoken");
 		domain = new Domain();

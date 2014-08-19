@@ -1,29 +1,28 @@
 package com.infinities.keystone4j.token.controller;
 
-import java.io.OutputStream;
+import javax.ws.rs.core.Response;
 
-import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
 import com.infinities.keystone4j.model.token.Auth;
-import com.infinities.keystone4j.model.token.Token;
-import com.infinities.keystone4j.model.token.TokenWrapper;
+import com.infinities.keystone4j.model.token.v2.EndpointsV2Wrapper;
+import com.infinities.keystone4j.model.token.v2.TokenV2DataWrapper;
 import com.infinities.keystone4j.model.trust.SignedWrapper;
 
 public interface TokenController {
 
-	OutputStream getCaCert();
+	Response getCaCert();
 
-	OutputStream getSigningCert();
+	Response getSigningCert();
 
-	TokenWrapper authenticate(Auth auth);
+	TokenV2DataWrapper authenticate(Auth auth);
 
-	Token validateTokenHead();
+	void validateTokenHead(String tokenid, String belongsTo);
 
-	Token validateToken();
+	TokenV2DataWrapper validateToken(String tokenid, String belongsTo);
 
-	void deleteToken();
+	void deleteToken(String tokenid);
 
 	SignedWrapper getRevocationList();
 
-	EndpointsWrapper getEndpoints();
+	EndpointsV2Wrapper getEndpoints(String tokenid);
 
 }
