@@ -6,21 +6,22 @@ import java.util.Map.Entry;
 
 import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.auth.TokenIdAndData;
 import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.token.IToken;
 import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.model.token.TokenDataWrapper;
 import com.infinities.keystone4j.model.token.v2.TokenV2DataWrapper;
 import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
-import com.infinities.keystone4j.token.provider.command.CheckV2TokenCommand;
-import com.infinities.keystone4j.token.provider.command.CheckV3TokenCommand;
-import com.infinities.keystone4j.token.provider.command.IssueV2TokenCommand;
-import com.infinities.keystone4j.token.provider.command.IssueV3TokenCommand;
-import com.infinities.keystone4j.token.provider.command.RevokeTokenCommand;
-import com.infinities.keystone4j.token.provider.command.ValidateV2TokenCommand;
-import com.infinities.keystone4j.token.provider.command.ValidateV3TokenCommand;
+import com.infinities.keystone4j.token.provider.api.command.CheckV2TokenCommand;
+import com.infinities.keystone4j.token.provider.api.command.CheckV3TokenCommand;
+import com.infinities.keystone4j.token.provider.api.command.IssueV2TokenCommand;
+import com.infinities.keystone4j.token.provider.api.command.IssueV3TokenCommand;
+import com.infinities.keystone4j.token.provider.api.command.RevokeTokenCommand;
+import com.infinities.keystone4j.token.provider.api.command.ValidateV2TokenCommand;
+import com.infinities.keystone4j.token.provider.api.command.ValidateV3TokenCommand;
 
 public class TokenProviderApiImpl implements TokenProviderApi {
 
@@ -34,7 +35,7 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 	}
 
 	@Override
-	public TokenMetadata issueV3Token(String userid, List<String> methodNames, Date expiresAt, String projectid,
+	public TokenIdAndData issueV3Token(String userid, List<String> methodNames, Date expiresAt, String projectid,
 			String domainid, AuthContext authContext, Trust trust, Token token, boolean includeCatalog) {
 		IssueV3TokenCommand command = new IssueV3TokenCommand(this, tokenProviderDriver, userid, methodNames, expiresAt,
 				projectid, domainid, authContext, trust, token, includeCatalog);
@@ -75,5 +76,11 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 	public TokenV2DataWrapper checkV2Token(String tokenid, String belongsTo) {
 		CheckV2TokenCommand command = new CheckV2TokenCommand(this, tokenProviderDriver, tokenid, belongsTo);
 		return command.execute();
+	}
+
+	@Override
+	public IToken validToken(String tokenid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

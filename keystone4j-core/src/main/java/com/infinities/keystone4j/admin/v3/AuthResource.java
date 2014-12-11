@@ -10,25 +10,26 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.auth.controller.AuthController;
-import com.infinities.keystone4j.common.model.CustomResponseStatus;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.auth.AuthV3Wrapper;
-import com.infinities.keystone4j.model.auth.TokenMetadata;
-import com.infinities.keystone4j.model.trust.SignedWrapper;
+import com.infinities.keystone4j.model.catalog.Catalog;
 import com.infinities.keystone4j.model.utils.Views;
+
+//keystone.auth.routers 20141210
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthResource {
 
-	private final static Logger logger = LoggerFactory.getLogger(AuthResource.class);
-	private final static String SUBJECT_TOKEN_HEADER = "X-Subject-Token";
+	// private final static Logger logger =
+	// LoggerFactory.getLogger(AuthResource.class);
+	// private final static String SUBJECT_TOKEN_HEADER = "X-Subject-Token";
 	private final AuthController authController;
 
 
@@ -40,24 +41,19 @@ public class AuthResource {
 	@POST
 	@Path("/tokens")
 	@JsonView(Views.AuthenticateForToken.class)
-	public Response authenticateForToken(AuthV3Wrapper authWrapper) {
-		TokenMetadata token = authController.authenticateForToken(authWrapper.getAuth());
-		logger.debug("assign X-Subjecj-Token: {}", token.getTokenid());
-		return Response.status(Status.CREATED).entity(token.getTokenData()).header(SUBJECT_TOKEN_HEADER, token.getTokenid())
-				.build();
+	public Response authenticateForToken(AuthV3Wrapper authWrapper) throws Exception {
+		return authController.authenticateForToken(authWrapper.getAuth());
 	}
 
 	@HEAD
 	@Path("/tokens")
-	public Response checkToken() {
-		authController.checkToken();
-		// return Response.ok().build();
-		return Response.noContent().build();
+	public Response checkToken() throws Exception {
+		return authController.checkToken();
 	}
 
 	@DELETE
 	@Path("/tokens")
-	public Response revokeToken() {
+	public Response revokeToken() throws Exception {
 		authController.revokeToken();
 		return Response.noContent().build();
 	}
@@ -65,16 +61,32 @@ public class AuthResource {
 	@GET
 	@Path("/tokens")
 	@JsonView(Views.AuthenticateForToken.class)
-	public Response validateToken() {
-		TokenMetadata token = authController.validateToken();
-		return Response.status(CustomResponseStatus.VALIDATE_TOKEN).entity(token.getTokenData())
-				.header(SUBJECT_TOKEN_HEADER, token.getTokenid()).build();
+	public Response validateToken() throws Exception {
+		return authController.validateToken();
 	}
 
 	@GET
 	@Path("/tokens/OS-PKI/revoked")
-	public SignedWrapper getRevocationList() {
+	public MemberWrapper<String> getRevocationList() throws Exception {
 		return authController.getRevocationList();
+	}
+
+	@GET
+	@Path("/catalog")
+	public MemberWrapper<Catalog> getAuthCatalog() throws Exception {
+		return authController.getAuthCatalog();
+	}
+
+	@GET
+	@Path("/projects")
+	public CollectionWrapper<Project> getAuthProjects() throws Exception {
+		return authController.getAuthProjects();
+	}
+
+	@GET
+	@Path("/domains")
+	public CollectionWrapper<Domain> getAuthDomains() throws Exception {
+		return authController.getAuthDomains();
 	}
 
 }

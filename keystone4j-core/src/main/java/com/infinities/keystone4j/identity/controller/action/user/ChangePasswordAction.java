@@ -1,0 +1,58 @@
+package com.infinities.keystone4j.identity.controller.action.user;
+
+import javax.ws.rs.container.ContainerRequestContext;
+
+import com.google.common.base.Strings;
+import com.infinities.keystone4j.KeystoneContext;
+import com.infinities.keystone4j.ProtectedAction;
+import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.identity.UserParam;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+public class ChangePasswordAction extends AbstractUserAction implements ProtectedAction<User> {
+
+	private final static String ORIGINAL_PASSWORD = "original_password";
+	private final static String USER = "user";
+	private final static String PASSWORD = "password";
+	private final String userid;
+	private final UserParam param;
+
+
+	// private final Logger logger =
+	// LoggerFactory.getLogger(ChangePasswordAction.class);
+
+	public ChangePasswordAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, String userid, UserParam param) {
+		super(identityApi, tokenProviderApi);
+		this.param = param;
+		this.userid = userid;
+	}
+
+	@Override
+	public MemberWrapper<User> execute(ContainerRequestContext request) {
+		String originalPassword = param.getOriginalPassword();
+		if (Strings.isNullOrEmpty(originalPassword)) {
+			throw Exceptions.ValidationException.getInstance(null, ORIGINAL_PASSWORD, USER);
+		}
+		String password = param.getPassword();
+		if (Strings.isNullOrEmpty(password)) {
+			throw Exceptions.ValidationException.getInstance(null, PASSWORD, USER);
+		}
+
+		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
+
+		try {
+			this.getIdentityApi().changePassword(context, userid, originalPassword, password);
+		} catch (Exception e) {
+			throw Exceptions.UnauthorizedException.getInstance(e);
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return "change_password";
+	}
+}

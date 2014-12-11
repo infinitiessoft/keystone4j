@@ -1,85 +1,84 @@
 package com.infinities.keystone4j.catalog.controller.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
-import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.FilterProtectedAction;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.catalog.CatalogApi;
-import com.infinities.keystone4j.catalog.action.service.CreateServiceAction;
-import com.infinities.keystone4j.catalog.action.service.DeleteServiceAction;
-import com.infinities.keystone4j.catalog.action.service.GetServiceAction;
-import com.infinities.keystone4j.catalog.action.service.ListServicesAction;
-import com.infinities.keystone4j.catalog.action.service.UpdateServiceAction;
 import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
+import com.infinities.keystone4j.catalog.controller.action.service.CreateServiceAction;
+import com.infinities.keystone4j.catalog.controller.action.service.DeleteServiceAction;
+import com.infinities.keystone4j.catalog.controller.action.service.GetServiceAction;
+import com.infinities.keystone4j.catalog.controller.action.service.ListServicesAction;
+import com.infinities.keystone4j.catalog.controller.action.service.UpdateServiceAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterCheckDecorator;
-import com.infinities.keystone4j.decorator.PaginateDecorator;
-import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Service;
-import com.infinities.keystone4j.model.catalog.ServiceWrapper;
-import com.infinities.keystone4j.model.catalog.ServicesWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.catalog.controllers.ServiceV3 20141211
 
 public class ServiceV3ControllerImpl extends BaseController implements ServiceV3Controller {
 
 	private final CatalogApi catalogApi;
-	private final TokenApi tokenApi;
+	private final TokenProviderApi tokenProviderApi;
 	private final PolicyApi policyApi;
-	private final Map<String, Object> parMap;
 
 
-	public ServiceV3ControllerImpl(CatalogApi catalogApi, TokenApi tokenApi, PolicyApi policyApi) {
+	public ServiceV3ControllerImpl(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.catalogApi = catalogApi;
-		this.tokenApi = tokenApi;
+		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
-		parMap = Maps.newHashMap();
+	}
+
+	// TODO Ignore validation.validated(schema.service_create,'service')
+	@Override
+	public MemberWrapper<Service> createService(Service service) throws Exception {
+		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new CreateServiceAction(catalogApi,
+				tokenProviderApi, service), tokenProviderApi, policyApi);
+		MemberWrapper<Service> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public ServiceWrapper createService(Service service) {
-		parMap.put("service", service);
-		Action<Service> command = new PolicyCheckDecorator<Service>(new CreateServiceAction(catalogApi, service), null,
-				tokenApi, policyApi, parMap);
-		Service ret = command.execute(getRequest());
-		return new ServiceWrapper(ret, getRequest());
+	public CollectionWrapper<Service> listServices() throws Exception {
+		FilterProtectedAction<Service> command = new FilterProtectedDecorator<Service>(new ListServicesAction(catalogApi,
+				tokenProviderApi), tokenProviderApi, policyApi);
+		CollectionWrapper<Service> ret = command.execute(getRequest(), "type", "name");
+		return ret;
 	}
 
 	@Override
-	public ServicesWrapper listServices(String type, int page, int perPage) {
-		parMap.put("type", type);
-		Action<List<Service>> command = new FilterCheckDecorator<List<Service>>(new PaginateDecorator<Service>(
-				new ListServicesAction(catalogApi, type), page, perPage), tokenApi, policyApi, parMap);
-		List<Service> ret = command.execute(getRequest());
-		return new ServicesWrapper(ret, getRequest());
+	public MemberWrapper<Service> getService(String serviceid) {
+		Service ref = getMemberFromDriver(serviceid);
+		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new GetServiceAction(catalogApi,
+				tokenProviderApi, serviceid), tokenProviderApi, policyApi, ref);
+		MemberWrapper<Service> ret = command.execute(getRequest());
+		return ret;
 	}
 
+	// TODO Ignore validation.validated(schema.service_update,'service')
 	@Override
-	public ServiceWrapper getService(String serviceid) {
-		parMap.put("serviceid", serviceid);
-		Action<Service> command = new PolicyCheckDecorator<Service>(new GetServiceAction(catalogApi, serviceid), null,
-				tokenApi, policyApi, parMap);
-		Service ret = command.execute(getRequest());
-		return new ServiceWrapper(ret, getRequest());
-	}
-
-	@Override
-	public ServiceWrapper updateService(String serviceid, Service service) {
-		parMap.put("serviceid", serviceid);
-		parMap.put("service", service);
-		Action<Service> command = new PolicyCheckDecorator<Service>(new UpdateServiceAction(catalogApi, serviceid, service),
-				null, tokenApi, policyApi, parMap);
-		Service ret = command.execute(getRequest());
-		return new ServiceWrapper(ret, getRequest());
+	public MemberWrapper<Service> updateService(String serviceid, Service service) {
+		Service ref = getMemberFromDriver(serviceid);
+		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new UpdateServiceAction(catalogApi,
+				tokenProviderApi, serviceid, service), tokenProviderApi, policyApi, ref);
+		MemberWrapper<Service> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
 	public void deleteService(String serviceid) {
-		parMap.put("serviceid", serviceid);
-		Action<Service> command = new PolicyCheckDecorator<Service>(new DeleteServiceAction(catalogApi, serviceid), null,
-				tokenApi, policyApi, parMap);
+		Service ref = getMemberFromDriver(serviceid);
+		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new DeleteServiceAction(catalogApi,
+				tokenProviderApi, serviceid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
+	}
+
+	public Service getMemberFromDriver(String serviceid) {
+		return catalogApi.getService(serviceid);
 	}
 
 }

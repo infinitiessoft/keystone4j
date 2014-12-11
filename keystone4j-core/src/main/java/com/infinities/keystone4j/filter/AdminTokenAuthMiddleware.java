@@ -27,7 +27,7 @@ public class AdminTokenAuthMiddleware implements Middleware {
 		logger.debug("enter AdminTokenAuthMiddleware filter");
 		String tokenid = null;
 		if (requestContext.getHeaders().containsKey(AUTH_TOKEN_HEADER)) {
-			tokenid = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER).replace("[null]", "");
+			tokenid = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER).replace("[null]", "").trim();
 		}
 		KeystoneContext context = (KeystoneContext) requestContext.getProperty(KeystoneContext.CONTEXT_NAME);
 

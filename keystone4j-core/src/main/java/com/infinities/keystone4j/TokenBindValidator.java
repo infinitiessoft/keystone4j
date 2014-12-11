@@ -9,11 +9,14 @@ import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.token.Bind;
 import com.infinities.keystone4j.model.token.Token;
 
+@Deprecated
 public abstract class TokenBindValidator {
 
 	private final static Logger logger = LoggerFactory.getLogger(TokenBindValidator.class);
 
 
+	@Deprecated
+	// replace with Wsgi.validateTokenBind
 	// wsgi.validate_token_bind
 	protected void validateTokenBind(KeystoneContext context, Token token) {
 

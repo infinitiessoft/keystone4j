@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.model.BaseEntity;
+import com.infinities.keystone4j.model.DomainScoped;
 import com.infinities.keystone4j.model.credential.Credential;
 import com.infinities.keystone4j.model.endpointfilter.ProjectEndpoint;
 import com.infinities.keystone4j.model.identity.User;
@@ -32,7 +33,7 @@ import com.infinities.keystone4j.model.utils.Views;
 @Entity
 @Table(name = "PROJECT", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"DOMAINID", "NAME" }) })
-public class Project extends BaseEntity implements java.io.Serializable, PolicyEntity {
+public class Project extends BaseEntity implements java.io.Serializable, PolicyEntity, DomainScoped {
 
 	/**
 	 * 

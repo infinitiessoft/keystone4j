@@ -22,7 +22,7 @@ import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
 import com.infinities.keystone4j.identity.controller.impl.GroupV3ControllerFactory;
 import com.infinities.keystone4j.identity.controller.impl.UserV3ControllerFactory;
-import com.infinities.keystone4j.main.PublicResource;
+import com.infinities.keystone4j.main.AdminResource;
 import com.infinities.keystone4j.mock.MockAssignmentApiFactory;
 import com.infinities.keystone4j.mock.MockCatalogApiFactory;
 import com.infinities.keystone4j.mock.MockIdentityApiFactory;
@@ -122,7 +122,7 @@ public class RoleResourceTestApplication extends ResourceConfig {
 		this.register(TokenAuthMiddleware.class);
 		this.register(AdminTokenAuthMiddleware.class);
 		this.register(RequestBodySizeLimiter.class);
-		this.register(PublicResource.class);
+		this.register(AdminResource.class);
 		this.register(ObjectMapperResolver.class);
 		this.register(JacksonFeature.class);
 	}

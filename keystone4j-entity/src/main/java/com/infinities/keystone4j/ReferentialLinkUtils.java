@@ -3,6 +3,8 @@ package com.infinities.keystone4j;
 import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.common.Links;
 
+@Deprecated
+// replace by AbstractAction
 public enum ReferentialLinkUtils {
 	instance;
 

@@ -6,12 +6,12 @@ import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.trust.TrustDriver;
-import com.infinities.keystone4j.trust.command.CreateTrustCommand;
-import com.infinities.keystone4j.trust.command.DeleteTrustCommand;
-import com.infinities.keystone4j.trust.command.GetTrustCommand;
-import com.infinities.keystone4j.trust.command.ListTrustsCommand;
-import com.infinities.keystone4j.trust.command.ListTrustsForTrusteeCommand;
-import com.infinities.keystone4j.trust.command.ListTrustsForTrustorCommand;
+import com.infinities.keystone4j.trust.api.command.CreateTrustCommand;
+import com.infinities.keystone4j.trust.api.command.DeleteTrustCommand;
+import com.infinities.keystone4j.trust.api.command.GetTrustCommand;
+import com.infinities.keystone4j.trust.api.command.ListTrustsCommand;
+import com.infinities.keystone4j.trust.api.command.ListTrustsForTrusteeCommand;
+import com.infinities.keystone4j.trust.api.command.ListTrustsForTrustorCommand;
 
 public class TrustApiImpl implements TrustApi {
 

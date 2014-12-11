@@ -8,19 +8,21 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
 import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.catalog.controllers.ServiceV3 20141211
 
 public class ServiceV3ControllerFactory extends BaseControllerFactory implements Factory<ServiceV3Controller> {
 
 	private final CatalogApi catalogApi;
-	private final TokenApi tokenApi;
+	private final TokenProviderApi tokenProviderApi;
 	private final PolicyApi policyApi;
 
 
 	@Inject
-	public ServiceV3ControllerFactory(CatalogApi catalogApi, TokenApi tokenApi, PolicyApi policyApi) {
+	public ServiceV3ControllerFactory(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.catalogApi = catalogApi;
-		this.tokenApi = tokenApi;
+		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
 	}
 
@@ -31,7 +33,7 @@ public class ServiceV3ControllerFactory extends BaseControllerFactory implements
 
 	@Override
 	public ServiceV3Controller provide() {
-		ServiceV3ControllerImpl controller = new ServiceV3ControllerImpl(catalogApi, tokenApi, policyApi);
+		ServiceV3ControllerImpl controller = new ServiceV3ControllerImpl(catalogApi, tokenProviderApi, policyApi);
 		controller.setRequest(getRequest());
 		return controller;
 	}

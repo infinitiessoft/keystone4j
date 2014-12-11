@@ -3,7 +3,7 @@ package com.infinities.keystone4j.model.token;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.model.utils.Views;
 
-public class TokenDataWrapper {
+public class TokenDataWrapper implements IToken {
 
 	@JsonView(Views.AuthenticateForToken.class)
 	private TokenData token;

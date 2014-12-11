@@ -1,25 +1,26 @@
 package com.infinities.keystone4j.decorator;
 
-import com.infinities.keystone4j.Action;
-import com.infinities.keystone4j.PolicyCredentialChecker;
+import com.infinities.keystone4j.ProtectedAction;
+import com.infinities.keystone4j.ControllerAction;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
-public abstract class AbstractActionDecorator<T> extends PolicyCredentialChecker implements Action<T> {
+@Deprecated
+public abstract class AbstractActionDecorator<T> extends ControllerAction implements ProtectedAction<T> {
 
-	protected Action<T> command;
+	protected ProtectedAction<T> command;
 
 
-	public AbstractActionDecorator(Action<T> command, TokenApi tokenApi, PolicyApi policyApi) {
-		super(tokenApi, policyApi);
+	public AbstractActionDecorator(ProtectedAction<T> command, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(tokenProviderApi, policyApi);
 		this.command = command;
 	}
 
-	public Action<T> getAction() {
+	public ProtectedAction<T> getAction() {
 		return command;
 	}
 
-	public void setAction(Action<T> command) {
+	public void setAction(ProtectedAction<T> command) {
 		this.command = command;
 	}
 

@@ -1,87 +1,84 @@
 package com.infinities.keystone4j.assignment.controller.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
-import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.FilterProtectedAction;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.assignment.action.domain.CreateDomainAction;
-import com.infinities.keystone4j.assignment.action.domain.DeleteDomainAction;
-import com.infinities.keystone4j.assignment.action.domain.GetDomainAction;
-import com.infinities.keystone4j.assignment.action.domain.ListDomainsAction;
-import com.infinities.keystone4j.assignment.action.domain.UpdateDomainAction;
 import com.infinities.keystone4j.assignment.controller.DomainV3Controller;
+import com.infinities.keystone4j.assignment.controller.action.domain.CreateDomainAction;
+import com.infinities.keystone4j.assignment.controller.action.domain.DeleteDomainAction;
+import com.infinities.keystone4j.assignment.controller.action.domain.GetDomainAction;
+import com.infinities.keystone4j.assignment.controller.action.domain.ListDomainsAction;
+import com.infinities.keystone4j.assignment.controller.action.domain.UpdateDomainAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterCheckDecorator;
-import com.infinities.keystone4j.decorator.PaginateDecorator;
-import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.assignment.DomainWrapper;
-import com.infinities.keystone4j.model.assignment.DomainsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.assignment.controllers.DomainV3 20141208
 
 public class DomainV3ControllerImpl extends BaseController implements DomainV3Controller {
 
 	private final AssignmentApi assignmentApi;
-	private final TokenApi tokenApi;
+	private final TokenProviderApi tokenProviderApi;
 	private final PolicyApi policyApi;
-	private final Map<String, Object> parMap;
 
 
-	public DomainV3ControllerImpl(AssignmentApi assignmentApi, TokenApi tokenApi, PolicyApi policyApi) {
+	public DomainV3ControllerImpl(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
-		this.tokenApi = tokenApi;
+		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
-		parMap = Maps.newHashMap();
+	}
+
+	// TODO Ignore validation.validated(schema.domain_create,'domain')
+	@Override
+	public MemberWrapper<Domain> createDomain(Domain domain) throws Exception {
+		// parMap.put("domain", domain);
+		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new CreateDomainAction(assignmentApi,
+				tokenProviderApi, domain), tokenProviderApi, policyApi);
+		MemberWrapper<Domain> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public DomainWrapper createDomain(Domain domain) {
-		parMap.put("domain", domain);
-		Action<Domain> command = new PolicyCheckDecorator<Domain>(new CreateDomainAction(assignmentApi, domain), null,
-				tokenApi, policyApi, parMap);
-		Domain ret = command.execute(getRequest());
-		return new DomainWrapper(ret, getRequest());
+	public CollectionWrapper<Domain> listDomains() throws Exception {
+		FilterProtectedAction<Domain> command = new FilterProtectedDecorator<Domain>(new ListDomainsAction(assignmentApi,
+				tokenProviderApi), tokenProviderApi, policyApi);
+		CollectionWrapper<Domain> ret = command.execute(getRequest(), "name", "enabled");
+		return ret;
 	}
 
 	@Override
-	public DomainsWrapper listDomains(String name, Boolean enabled, int page, int perPage) {
-		parMap.put("name", name);
-		parMap.put("enabled", enabled);
-		Action<List<Domain>> command = new FilterCheckDecorator<List<Domain>>(new PaginateDecorator<Domain>(
-				new ListDomainsAction(assignmentApi, name, enabled), page, perPage), tokenApi, policyApi, parMap);
-
-		List<Domain> ret = command.execute(getRequest());
-		return new DomainsWrapper(ret, getRequest());
+	public MemberWrapper<Domain> getDomain(String domainid) throws Exception {
+		Domain ref = getMemberFromDriver(domainid);
+		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new GetDomainAction(assignmentApi,
+				tokenProviderApi, domainid), tokenProviderApi, policyApi, ref);
+		MemberWrapper<Domain> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public DomainWrapper getDomain(String domainid) {
-		parMap.put("domainid", domainid);
-		Action<Domain> command = new PolicyCheckDecorator<Domain>(new GetDomainAction(assignmentApi, domainid), null,
-				tokenApi, policyApi, parMap);
-		Domain ret = command.execute(getRequest());
-		return new DomainWrapper(ret, getRequest());
+	public MemberWrapper<Domain> updateDomain(String domainid, Domain domain) throws Exception {
+		Domain ref = getMemberFromDriver(domainid);
+		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new UpdateDomainAction(assignmentApi,
+				tokenProviderApi, domainid, domain), tokenProviderApi, policyApi, ref);
+		MemberWrapper<Domain> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public DomainWrapper updateDomain(String domainid, Domain domain) {
-		parMap.put("domainid", domainid);
-		parMap.put("domain", domain);
-		Action<Domain> command = new PolicyCheckDecorator<Domain>(new UpdateDomainAction(assignmentApi, domainid, domain),
-				null, tokenApi, policyApi, parMap);
-		Domain ret = command.execute(getRequest());
-		return new DomainWrapper(ret, getRequest());
-	}
-
-	@Override
-	public void deleteDomain(String domainid) {
-		parMap.put("domainid", domainid);
-		Action<Domain> command = new PolicyCheckDecorator<Domain>(new DeleteDomainAction(assignmentApi, domainid), null,
-				tokenApi, policyApi, parMap);
+	public void deleteDomain(String domainid) throws Exception {
+		Domain ref = getMemberFromDriver(domainid);
+		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new DeleteDomainAction(assignmentApi,
+				tokenProviderApi, domainid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
+	}
+
+	public Domain getMemberFromDriver(String domainid) {
+		return assignmentApi.getDomain(domainid);
 	}
 
 }

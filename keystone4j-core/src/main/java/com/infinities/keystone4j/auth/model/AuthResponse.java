@@ -19,11 +19,13 @@ public class AuthResponse implements Serializable {
 	private Map<String, Object> extras;
 	@XmlElement(name = "user_id")
 	private String userid;
+	private final Map<String, Exception> authResponse;
 
 
 	public AuthResponse() {
 		methods = Lists.newArrayList();
 		extras = Maps.newHashMap();
+		authResponse = Maps.newHashMap();
 	}
 
 	public List<String> getMethods() {
@@ -48,6 +50,19 @@ public class AuthResponse implements Serializable {
 
 	public void setUserid(String userid) {
 		this.userid = userid;
+	}
+
+	public void set(String key, Exception value) {
+		authResponse.put(key, value);
+	}
+
+	public Exception get(String key) {
+		return authResponse.get(key);
+	}
+
+	@Override
+	public String toString() {
+		return "AuthResponse [methods=" + methods + ", extras=" + extras + ", userid=" + userid + "]";
 	}
 
 }

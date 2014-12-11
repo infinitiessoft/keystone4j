@@ -1,6 +1,8 @@
 package com.infinities.keystone4j.model.policy;
 
-public class PolicyWrapper {
+import com.infinities.keystone4j.model.MemberWrapper;
+
+public class PolicyWrapper implements MemberWrapper<Policy> {
 
 	private Policy policy;
 
@@ -10,8 +12,9 @@ public class PolicyWrapper {
 	}
 
 	public PolicyWrapper(Policy policy) {
-		super();
 		this.policy = policy;
+		// ReferentialLinkUtils.instance.addSelfReferentialLink(policy,
+		// baseUrl);
 	}
 
 	public Policy getPolicy() {
@@ -22,4 +25,8 @@ public class PolicyWrapper {
 		this.policy = policy;
 	}
 
+	@Override
+	public void setRef(Policy ref) {
+		this.policy = ref;
+	}
 }

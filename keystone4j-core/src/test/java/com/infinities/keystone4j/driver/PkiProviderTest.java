@@ -23,7 +23,7 @@ import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.auth.TokenIdAndData;
 import com.infinities.keystone4j.model.catalog.Catalog;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.token.Token;
@@ -150,7 +150,7 @@ public class PkiProviderTest extends AbstractDbUnitJpaTest {
 				will(returnValue(token));
 			}
 		});
-		TokenMetadata ret = driver.issueV3Token(user.getId(), methodNames, expiresAt, project.getId(), domain.getId(),
+		TokenIdAndData ret = driver.issueV3Token(user.getId(), methodNames, expiresAt, project.getId(), domain.getId(),
 				userContext, null, token, false);
 
 		assertNotNull(ret.getTokenid());

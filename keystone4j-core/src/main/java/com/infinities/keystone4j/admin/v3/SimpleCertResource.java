@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 
 import com.infinities.keystone4j.cert.controller.SimpleCertV3Controller;
 
+//keystone.contrib.simple_cert.routers 20141129
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class SimpleCertResource {

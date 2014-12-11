@@ -1,18 +1,18 @@
 package com.infinities.keystone4j.policy;
 
 import java.util.List;
-import java.util.Map;
 
 import com.infinities.keystone4j.Api;
+import com.infinities.keystone4j.common.Authorization.AuthContext;
+import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.model.policy.Policy;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.policy.TargetWrapper;
 
 public interface PolicyApi extends Api {
 
 	Policy createPolicy(Policy policy);
 
-	List<Policy> listPolicies();
+	List<Policy> listPolicies(Hints hints);
 
 	Policy getPolicy(String policyid);
 
@@ -20,6 +20,6 @@ public interface PolicyApi extends Api {
 
 	Policy deletePolicy(String policyid);
 
-	void enforce(Token token, String action, Map<String, PolicyEntity> target, Map<String, Object> parMap, boolean doRaise);
+	void enforce(AuthContext creds, String action, TargetWrapper target, boolean doRaise);
 
 }

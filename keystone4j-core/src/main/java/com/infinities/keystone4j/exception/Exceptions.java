@@ -34,7 +34,9 @@ public enum Exceptions {
 			"You are not authorized to perform the request action, {0}."), ForbiddenException(403,
 			"You are not authorized to perform the request action."), NotFoundException(404, "Could not find, {0}."), UnauthorizedException(
 			401, "The request you have made requires authentication."), UnexpectedException(500,
-			"An unexpected error prevented the server from fulfilling your request. {0}");
+			"An unexpected error prevented the server from fulfilling your request. {0}"), UnsupportedTokenVersionException(
+			500, "Unsupported token version."), Gone(410,
+			"The service you have requested is no longer available on this server.");
 
 	private String messageFormat;
 	private int status;

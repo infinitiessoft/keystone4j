@@ -1,10 +1,8 @@
 package com.infinities.keystone4j.model.catalog;
 
-import javax.ws.rs.container.ContainerRequestContext;
+import com.infinities.keystone4j.model.MemberWrapper;
 
-import com.infinities.keystone4j.ReferentialLinkUtils;
-
-public class EndpointWrapper {
+public class EndpointWrapper implements MemberWrapper<Endpoint> {
 
 	private Endpoint endpoint;
 
@@ -13,14 +11,10 @@ public class EndpointWrapper {
 
 	}
 
-	public EndpointWrapper(Endpoint endpoint, ContainerRequestContext context) {
-		this(endpoint, context.getUriInfo().getBaseUri().toASCIIString() + "v3/endpoints/");
-	}
-
-	public EndpointWrapper(Endpoint endpoint, String baseUrl) {
-		super();
+	public EndpointWrapper(Endpoint endpoint) {
 		this.endpoint = endpoint;
-		ReferentialLinkUtils.instance.addSelfReferentialLink(endpoint, baseUrl);
+		// ReferentialLinkUtils.instance.addSelfReferentialLink(endpoint,
+		// baseUrl);
 	}
 
 	public Endpoint getEndpoint() {
@@ -31,4 +25,8 @@ public class EndpointWrapper {
 		this.endpoint = endpoint;
 	}
 
+	@Override
+	public void setRef(Endpoint ref) {
+		this.endpoint = ref;
+	}
 }

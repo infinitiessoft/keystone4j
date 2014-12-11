@@ -1,21 +1,25 @@
 package com.infinities.keystone4j.assignment.controller;
 
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.assignment.DomainWrapper;
-import com.infinities.keystone4j.model.assignment.DomainsWrapper;
 
 public interface DomainV3Controller {
 
-	DomainWrapper createDomain(Domain domain);
+	public final static String collectionName = "domains";
+	public final static String memberName = "domain";
 
-	DomainsWrapper listDomains(String name, Boolean enabled, int page, int perPage);
 
-	DomainWrapper getDomain(String domainid);
+	MemberWrapper<Domain> createDomain(Domain domain) throws Exception;
 
-	DomainWrapper updateDomain(String domainid, Domain domain);
+	CollectionWrapper<Domain> listDomains() throws Exception;
+
+	MemberWrapper<Domain> getDomain(String domainid) throws Exception;
+
+	MemberWrapper<Domain> updateDomain(String domainid, Domain domain) throws Exception;
 
 	// void deleteDomainContents();
 
-	void deleteDomain(String domainid);
+	void deleteDomain(String domainid) throws Exception;
 
 }

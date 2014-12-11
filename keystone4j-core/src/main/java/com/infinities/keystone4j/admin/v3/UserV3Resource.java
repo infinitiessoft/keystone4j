@@ -20,12 +20,17 @@ import com.infinities.keystone4j.assignment.controller.ProjectV3Controller;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
-import com.infinities.keystone4j.model.assignment.ProjectsWrapper;
-import com.infinities.keystone4j.model.identity.GroupsWrapper;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.identity.UserParamWrapper;
 import com.infinities.keystone4j.model.identity.UserWrapper;
-import com.infinities.keystone4j.model.identity.UsersWrapper;
 import com.infinities.keystone4j.model.utils.Views;
+
+//keystone.assignment.routers 20141209
+//keystone.identity.routers 20141211
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -47,50 +52,51 @@ public class UserV3Resource {
 	@GET
 	@Path("/{userid}/projects")
 	@JsonView(Views.Basic.class)
-	public ProjectsWrapper listUserProjects(@PathParam("userid") String userid, @QueryParam("name") String name,
+	public CollectionWrapper<Project> listUserProjects(@PathParam("userid") String userid, @QueryParam("name") String name,
 			@QueryParam("enabled") Boolean enabled, @DefaultValue("1") @QueryParam("page") int page,
-			@DefaultValue("30") @QueryParam("per_page") int perPage) {
-		return projectController.listUserProjects(userid, enabled, name, page, perPage);
+			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
+		return projectController.listUserProjects(userid);
 	}
 
 	@POST
 	@JsonView(Views.Basic.class)
-	public Response createUser(UserWrapper userWrapper) {
+	public Response createUser(UserWrapper userWrapper) throws Exception {
 		return Response.status(Status.CREATED).entity(userController.createUser(userWrapper.getUser())).build();
 	}
 
 	@GET
 	@JsonView(Views.Basic.class)
-	public UsersWrapper listUsers(@QueryParam("domain_id") String domainid, @QueryParam("email") String email,
+	public CollectionWrapper<User> listUsers(@QueryParam("domain_id") String domainid, @QueryParam("email") String email,
 			@QueryParam("enabled") Boolean enabled, @QueryParam("name") String name,
-			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
-		return userController.listUsers(domainid, email, enabled, name, page, perPage);
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws Exception {
+		return userController.listUsers();
 	}
 
 	@GET
 	@Path("/{userid}")
 	@JsonView(Views.Basic.class)
-	public UserWrapper getUser(@PathParam("userid") String userid) {
+	public MemberWrapper<User> getUser(@PathParam("userid") String userid) throws Exception {
 		return userController.getUser(userid);
 	}
 
 	@PATCH
 	@Path("/{userid}")
 	@JsonView(Views.Basic.class)
-	public UserWrapper updateUser(@PathParam("userid") String userid, UserWrapper userWrapper) {
+	public MemberWrapper<User> updateUser(@PathParam("userid") String userid, UserWrapper userWrapper) throws Exception {
 		return userController.updateUser(userid, userWrapper.getUser());
 	}
 
 	@DELETE
 	@Path("/{userid}")
-	public Response deleteUser(@PathParam("userid") String userid) {
+	public Response deleteUser(@PathParam("userid") String userid) throws Exception {
 		userController.deleteUser(userid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
 	@POST
 	@Path("/{userid}/password")
-	public Response changePassword(@PathParam("userid") String userid, UserParamWrapper userWrapper) {
+	public Response changePassword(@PathParam("userid") String userid, UserParamWrapper userWrapper) throws Exception {
 		userController.changePassword(userid, userWrapper.getUser());
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
@@ -98,9 +104,10 @@ public class UserV3Resource {
 	@GET
 	@Path("/{userid}/groups")
 	@JsonView(Views.Basic.class)
-	public GroupsWrapper listGroupsForUser(@PathParam("userid") String userid, @QueryParam("name") String name,
-			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
-		return groupController.listGroupsForUser(userid, name, page, perPage);
+	public CollectionWrapper<Group> listGroupsForUser(@PathParam("userid") String userid, @QueryParam("name") String name,
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws Exception {
+		return groupController.listGroupsForUser(userid);
 	}
 
 }

@@ -1,57 +1,55 @@
 package com.infinities.keystone4j.assignment.controller;
 
-import java.util.List;
-
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.assignment.RoleWrapper;
-import com.infinities.keystone4j.model.assignment.RolesWrapper;
 
 public interface RoleV3Controller {
 
-	RoleWrapper createRole(Role role);
+	MemberWrapper<Role> createRole(Role role) throws Exception;
 
-	RolesWrapper listRoles(String name, int page, int perPage);
+	CollectionWrapper<Role> listRoles() throws Exception;
 
-	RoleWrapper getRole(String roleid);
+	MemberWrapper<Role> getRole(String roleid) throws Exception;
 
-	RoleWrapper updateRole(String roleid, Role role);
+	MemberWrapper<Role> updateRole(String roleid, Role role) throws Exception;
 
-	void deleteRole(String roleid);
+	void deleteRole(String roleid) throws Exception;
 
 	// void requireDomainXorProject();
 
 	// void requireUserXorGroup();
 
-	void createGrantByUserDomain(String roleid, String userid, String domainid);
+	void createGrantByUserDomain(String roleid, String userid, String domainid) throws Exception;
 
-	void createGrantByGroupDomain(String roleid, String groupid, String domainid);
+	void createGrantByGroupDomain(String roleid, String groupid, String domainid) throws Exception;
 
-	List<Role> listGrantsByUserDomain(String userid, String domainid, int page, int perPage);
+	CollectionWrapper<Role> listGrantsByUserDomain(String userid, String domainid) throws Exception;
 
-	List<Role> listGrantsByGroupDomain(String groupid, String domainid, int page, int perPage);
+	CollectionWrapper<Role> listGrantsByGroupDomain(String groupid, String domainid) throws Exception;
 
-	void checkGrantByUserDomain(String roleid, String userid, String domainid);
+	void checkGrantByUserDomain(String roleid, String userid, String domainid) throws Exception;
 
-	void checkGrantByGroupDomain(String roleid, String groupid, String domainid);
+	void checkGrantByGroupDomain(String roleid, String groupid, String domainid) throws Exception;
 
-	void revokeGrantByUserDomain(String roleid, String userid, String domainid);
+	void revokeGrantByUserDomain(String roleid, String userid, String domainid) throws Exception;
 
-	void revokeGrantByGroupDomain(String roleid, String groupid, String domainid);
+	void revokeGrantByGroupDomain(String roleid, String groupid, String domainid) throws Exception;
 
-	void createGrantByUserProject(String roleid, String userid, String projectid);
+	void createGrantByUserProject(String roleid, String userid, String projectid) throws Exception;
 
-	void createGrantByGroupProject(String roleid, String groupid, String projectid);
+	void createGrantByGroupProject(String roleid, String groupid, String projectid) throws Exception;
 
-	List<Role> listGrantsByUserProject(String userid, String projectid, int page, int perPage);
+	CollectionWrapper<Role> listGrantsByUserProject(String userid, String projectid) throws Exception;
 
-	List<Role> listGrantsByGroupProject(String groupid, String projectid, int page, int perPage);
+	CollectionWrapper<Role> listGrantsByGroupProject(String groupid, String projectid) throws Exception;
 
-	void checkGrantByUserProject(String roleid, String userid, String projectid);
+	void checkGrantByUserProject(String roleid, String userid, String projectid) throws Exception;
 
-	void checkGrantByGroupProject(String roleid, String groupid, String projectid);
+	void checkGrantByGroupProject(String roleid, String groupid, String projectid) throws Exception;
 
-	void revokeGrantByUserProject(String roleid, String userid, String projectid);
+	void revokeGrantByUserProject(String roleid, String userid, String projectid) throws Exception;
 
-	void revokeGrantByGroupProject(String roleid, String groupid, String projectid);
+	void revokeGrantByGroupProject(String roleid, String groupid, String projectid) throws Exception;
 
 }

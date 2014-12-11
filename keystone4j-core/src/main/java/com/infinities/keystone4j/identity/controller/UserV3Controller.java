@@ -1,30 +1,29 @@
 package com.infinities.keystone4j.identity.controller;
 
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.identity.UserParam;
-import com.infinities.keystone4j.model.identity.UserWrapper;
-import com.infinities.keystone4j.model.identity.UsersWrapper;
 
 public interface UserV3Controller {
 
-	UserWrapper createUser(User user);
+	MemberWrapper<User> createUser(User user) throws Exception;
 
-	UsersWrapper listUsers(String domainid, String email, Boolean enabled, String name, int page, int perPage);
+	CollectionWrapper<User> listUsers() throws Exception;
 
-	UsersWrapper listUsersInGroup(String groupid, String domainid, String email, Boolean enabled, String name, int page,
-			int perPage);
+	CollectionWrapper<User> listUsersInGroup(String groupid) throws Exception;
 
-	UserWrapper getUser(String userid);
+	MemberWrapper<User> getUser(String userid) throws Exception;
 
-	UserWrapper updateUser(String userid, User user);
+	MemberWrapper<User> updateUser(String userid, User user) throws Exception;
 
-	void addUserToGroup(String groupid, String userid);
+	void addUserToGroup(String groupid, String userid) throws Exception;
 
-	void checkUserInGroup(String groupid, String userid);
+	void checkUserInGroup(String groupid, String userid) throws Exception;
 
-	void removeUserFromGroup(String groupid, String userid);
+	void removeUserFromGroup(String groupid, String userid) throws Exception;
 
-	void deleteUser(String userid);
+	void deleteUser(String userid) throws Exception;
 
-	void changePassword(String userid, UserParam user);
+	void changePassword(String userid, UserParam user) throws Exception;
 }

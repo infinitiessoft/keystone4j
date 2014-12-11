@@ -18,9 +18,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.catalog.Service;
 import com.infinities.keystone4j.model.catalog.ServiceWrapper;
-import com.infinities.keystone4j.model.catalog.ServicesWrapper;
 import com.infinities.keystone4j.model.utils.Views;
+
+//keystone.catalog.routers 20141211
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -36,34 +40,36 @@ public class ServiceResource {
 
 	@POST
 	@JsonView(Views.Basic.class)
-	public Response createService(ServiceWrapper serviceWrapper) {
+	public Response createService(ServiceWrapper serviceWrapper) throws Exception {
 		return Response.status(Status.CREATED).entity(serviceController.createService(serviceWrapper.getService())).build();
 	}
 
 	@GET
 	@JsonView(Views.Basic.class)
-	public ServicesWrapper listServices(@QueryParam("type") String type, @DefaultValue("1") @QueryParam("page") int page,
-			@DefaultValue("30") @QueryParam("per_page") int perPage) {
-		return serviceController.listServices(type, page, perPage);
+	public CollectionWrapper<Service> listServices(@QueryParam("type") String type,
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws Exception {
+		return serviceController.listServices();
 	}
 
 	@GET
 	@Path("/{serviceid}")
 	@JsonView(Views.Basic.class)
-	public ServiceWrapper getService(@PathParam("serviceid") String serviceid) {
+	public MemberWrapper<Service> getService(@PathParam("serviceid") String serviceid) throws Exception {
 		return serviceController.getService(serviceid);
 	}
 
 	@PATCH
 	@Path("/{serviceid}")
 	@JsonView(Views.Basic.class)
-	public ServiceWrapper updateService(@PathParam("serviceid") String serviceid, ServiceWrapper serviceWrapper) {
+	public MemberWrapper<Service> updateService(@PathParam("serviceid") String serviceid, ServiceWrapper serviceWrapper)
+			throws Exception {
 		return serviceController.updateService(serviceid, serviceWrapper.getService());
 	}
 
 	@DELETE
 	@Path("/{serviceid}")
-	public Response deleteService(@PathParam("serviceid") String serviceid) {
+	public Response deleteService(@PathParam("serviceid") String serviceid) throws Exception {
 		serviceController.deleteService(serviceid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}

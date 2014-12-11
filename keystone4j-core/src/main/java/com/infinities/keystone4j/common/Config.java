@@ -104,6 +104,7 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.token, "caching", Options.newBoolOpt("caching", true));
 		FILE_OPTIONS.put(Config.Type.token, "revocation_cache_time", Options.newIntOpt("revocation_cache_time", 3600));
 		FILE_OPTIONS.put(Config.Type.token, "cache_time", Options.newIntOpt("cache_time", 0));
+		FILE_OPTIONS.put(Config.Type.token, "revoke_by_id", Options.newBoolOpt("revoke_by_id", true));
 
 		FILE_OPTIONS.put(Config.Type.cache, "config_prefix", Options.newStrOpt("config_prefix", "cache.keystone"));
 		FILE_OPTIONS.put(Config.Type.cache, "expiration_time", Options.newIntOpt("expiration_time", 600));
@@ -349,5 +350,19 @@ public enum Config {
 		} else {
 			return option;
 		}
+	}
+
+	public static String replaceVarWithConf(String original) {
+		Pattern pattern = Pattern.compile("%\\((.+?)\\)s");
+		Matcher matcher = pattern.matcher(original);
+		StringBuffer replace = new StringBuffer(original);
+		while (matcher.find()) {
+			String match = matcher.group(1);
+			int start = matcher.start(1);
+			int end = matcher.end(1);
+			String value = Config.Instance.getOpt(Config.Type.DEFAULT, match).asText();
+			replace.replace(start, end, value);
+		}
+		return replace.toString();
 	}
 }

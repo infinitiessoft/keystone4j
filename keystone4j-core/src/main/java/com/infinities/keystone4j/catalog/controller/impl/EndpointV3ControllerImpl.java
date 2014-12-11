@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.catalog.CatalogApi;
-import com.infinities.keystone4j.catalog.action.endpoint.CreateEndpointAction;
-import com.infinities.keystone4j.catalog.action.endpoint.DeleteEndpointAction;
-import com.infinities.keystone4j.catalog.action.endpoint.GetEndpointAction;
-import com.infinities.keystone4j.catalog.action.endpoint.ListEndpointsAction;
-import com.infinities.keystone4j.catalog.action.endpoint.UpdateEndpointAction;
 import com.infinities.keystone4j.catalog.controller.EndpointV3Controller;
+import com.infinities.keystone4j.catalog.controller.action.endpoint.CreateEndpointAction;
+import com.infinities.keystone4j.catalog.controller.action.endpoint.DeleteEndpointAction;
+import com.infinities.keystone4j.catalog.controller.action.endpoint.GetEndpointAction;
+import com.infinities.keystone4j.catalog.controller.action.endpoint.ListEndpointsAction;
+import com.infinities.keystone4j.catalog.controller.action.endpoint.UpdateEndpointAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterCheckDecorator;
+import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
-import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.model.catalog.Endpoint;
 import com.infinities.keystone4j.model.catalog.EndpointWrapper;
 import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
@@ -40,7 +40,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 	@Override
 	public EndpointWrapper createEndpoint(Endpoint endpoint) {
 		parMap.put("endpoint", endpoint);
-		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new CreateEndpointAction(catalogApi, endpoint), null,
+		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new CreateEndpointAction(catalogApi, endpoint), null,
 				tokenApi, policyApi, parMap);
 		Endpoint ret = command.execute(getRequest());
 		return new EndpointWrapper(ret, getRequest());
@@ -50,7 +50,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 	public EndpointsWrapper listEndpoints(String interfaceType, String serviceid, int page, int perPage) {
 		parMap.put("serviceid", serviceid);
 		parMap.put("interfaceType", interfaceType);
-		Action<List<Endpoint>> command = new FilterCheckDecorator<List<Endpoint>>(new PaginateDecorator<Endpoint>(
+		ProtectedAction<List<Endpoint>> command = new FilterProtectedDecorator<List<Endpoint>>(new PaginateDecorator<Endpoint>(
 				new ListEndpointsAction(catalogApi, interfaceType, serviceid), page, perPage), tokenApi, policyApi, parMap);
 
 		List<Endpoint> ret = command.execute(getRequest());
@@ -60,7 +60,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 	@Override
 	public EndpointWrapper getEndpoint(String endpointid) {
 		parMap.put("endpointid", endpointid);
-		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new GetEndpointAction(catalogApi, endpointid), null,
+		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new GetEndpointAction(catalogApi, endpointid), null,
 				tokenApi, policyApi, parMap);
 		Endpoint ret = command.execute(getRequest());
 		return new EndpointWrapper(ret, getRequest());
@@ -70,7 +70,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 	public EndpointWrapper updateEndpoint(String endpointid, Endpoint endpoint) {
 		parMap.put("endpoint", endpoint);
 		parMap.put("endpointid", endpointid);
-		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new UpdateEndpointAction(catalogApi, endpointid,
+		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new UpdateEndpointAction(catalogApi, endpointid,
 				endpoint), null, tokenApi, policyApi, parMap);
 		Endpoint ret = command.execute(getRequest());
 		return new EndpointWrapper(ret, getRequest());
@@ -79,7 +79,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 	@Override
 	public void deleteEndpoint(String endpointid) {
 		parMap.put("endpointid", endpointid);
-		Action<Endpoint> command = new PolicyCheckDecorator<Endpoint>(new DeleteEndpointAction(catalogApi, endpointid),
+		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new DeleteEndpointAction(catalogApi, endpointid),
 				null, tokenApi, policyApi, parMap);
 		command.execute(getRequest());
 	}

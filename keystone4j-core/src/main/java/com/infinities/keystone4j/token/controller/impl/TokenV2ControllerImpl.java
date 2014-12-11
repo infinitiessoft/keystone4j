@@ -14,12 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
-import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.token.Auth;
@@ -28,14 +28,14 @@ import com.infinities.keystone4j.model.token.v2.TokenV2DataWrapper;
 import com.infinities.keystone4j.model.trust.SignedWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
-import com.infinities.keystone4j.token.action.AbstractTokenAction;
-import com.infinities.keystone4j.token.action.AuthenticateAction;
-import com.infinities.keystone4j.token.action.DeleteTokenAction;
-import com.infinities.keystone4j.token.action.GetRevocationListAction;
-import com.infinities.keystone4j.token.action.ListEndpointsAction;
-import com.infinities.keystone4j.token.action.ValidateTokenAction;
-import com.infinities.keystone4j.token.action.ValidateTokenHeadAction;
 import com.infinities.keystone4j.token.controller.TokenController;
+import com.infinities.keystone4j.token.controller.action.AbstractTokenAction;
+import com.infinities.keystone4j.token.controller.action.AuthenticateAction;
+import com.infinities.keystone4j.token.controller.action.DeleteTokenAction;
+import com.infinities.keystone4j.token.controller.action.GetRevocationListAction;
+import com.infinities.keystone4j.token.controller.action.ListEndpointsAction;
+import com.infinities.keystone4j.token.controller.action.ValidateTokenAction;
+import com.infinities.keystone4j.token.controller.action.ValidateTokenHeadAction;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.utils.KeystoneUtils;
@@ -87,7 +87,7 @@ public class TokenV2ControllerImpl extends BaseController implements TokenContro
 
 	@Override
 	public void validateTokenHead(String tokenid, String belongsTo) {
-		Action<TokenV2DataWrapper> command = new PolicyCheckDecorator<TokenV2DataWrapper>(new ValidateTokenHeadAction(
+		ProtectedAction<TokenV2DataWrapper> command = new ProtectedDecorator<TokenV2DataWrapper>(new ValidateTokenHeadAction(
 				assignmentApi, catalogApi, identityApi, tokenApi, tokenProviderApi, trustApi, tokenid, belongsTo), null,
 				tokenApi, policyApi, parMap);
 		command.execute(getRequest());
@@ -95,7 +95,7 @@ public class TokenV2ControllerImpl extends BaseController implements TokenContro
 
 	@Override
 	public TokenV2DataWrapper validateToken(String tokenid, String belongsTo) {
-		Action<TokenV2DataWrapper> command = new PolicyCheckDecorator<TokenV2DataWrapper>(new ValidateTokenAction(
+		ProtectedAction<TokenV2DataWrapper> command = new ProtectedDecorator<TokenV2DataWrapper>(new ValidateTokenAction(
 				assignmentApi, catalogApi, identityApi, tokenApi, tokenProviderApi, trustApi, tokenid, belongsTo), null,
 				tokenApi, policyApi, parMap);
 		return command.execute(getRequest());
@@ -110,7 +110,7 @@ public class TokenV2ControllerImpl extends BaseController implements TokenContro
 
 	@Override
 	public SignedWrapper getRevocationList() {
-		Action<SignedWrapper> command = new PolicyCheckDecorator<SignedWrapper>(new GetRevocationListAction(assignmentApi,
+		ProtectedAction<SignedWrapper> command = new ProtectedDecorator<SignedWrapper>(new GetRevocationListAction(assignmentApi,
 				catalogApi, identityApi, tokenApi, tokenProviderApi, trustApi), null, tokenApi, policyApi, parMap);
 		return command.execute(getRequest());
 	}

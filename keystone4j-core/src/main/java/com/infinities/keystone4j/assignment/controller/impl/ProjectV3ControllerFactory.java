@@ -8,19 +8,21 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.controller.ProjectV3Controller;
 import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.assignment.controllers.ProjectV3 20141209
 
 public class ProjectV3ControllerFactory extends BaseControllerFactory implements Factory<ProjectV3Controller> {
 
 	private final AssignmentApi assignmentApi;
-	private final TokenApi tokenApi;
+	private final TokenProviderApi tokenProviderApi;
 	private final PolicyApi policyApi;
 
 
 	@Inject
-	public ProjectV3ControllerFactory(AssignmentApi assignmentApi, TokenApi tokenApi, PolicyApi policyApi) {
+	public ProjectV3ControllerFactory(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
-		this.tokenApi = tokenApi;
+		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
 	}
 
@@ -31,7 +33,7 @@ public class ProjectV3ControllerFactory extends BaseControllerFactory implements
 
 	@Override
 	public ProjectV3Controller provide() {
-		ProjectV3ControllerImpl controller = new ProjectV3ControllerImpl(assignmentApi, tokenApi, policyApi);
+		ProjectV3ControllerImpl controller = new ProjectV3ControllerImpl(assignmentApi, tokenProviderApi, policyApi);
 		controller.setRequest(getRequest());
 		return controller;
 	}

@@ -9,9 +9,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinities.keystone4j.model.common.Link;
+import com.infinities.keystone4j.model.identity.IUser;
+import com.infinities.keystone4j.model.token.ITokenData;
 
 @XmlRootElement(name = "access")
-public class Access implements Serializable {
+public class Access implements Serializable, ITokenData {
 
 	/**
 	 * 
@@ -159,7 +161,7 @@ public class Access implements Serializable {
 	}
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static final class User {
+	public static final class User implements IUser {
 
 		@JsonIgnoreProperties(ignoreUnknown = true)
 		public static final class Role {
@@ -221,6 +223,7 @@ public class Access implements Serializable {
 		/**
 		 * @return the id
 		 */
+		@Override
 		public String getId() {
 			return id;
 		}
@@ -228,6 +231,7 @@ public class Access implements Serializable {
 		/**
 		 * @return the name
 		 */
+		@Override
 		public String getName() {
 			return name;
 		}
@@ -301,6 +305,11 @@ public class Access implements Serializable {
 		@XmlElement(name = "trustee_user_id")
 		private String trusteeUserId;
 
+		@XmlElement(name = "trustor_user_id")
+		private String trustorUserId;
+
+		private Boolean impersonation;
+
 
 		public String getId() {
 			return id;
@@ -316,6 +325,22 @@ public class Access implements Serializable {
 
 		public void setTrusteeUserId(String trusteeUserId) {
 			this.trusteeUserId = trusteeUserId;
+		}
+
+		public String getTrustorUserId() {
+			return trustorUserId;
+		}
+
+		public void setTrustorUserId(String trustorUserId) {
+			this.trustorUserId = trustorUserId;
+		}
+
+		public Boolean getImpersonation() {
+			return impersonation;
+		}
+
+		public void setImpersonation(Boolean impersonation) {
+			this.impersonation = impersonation;
 		}
 
 	}
@@ -351,6 +376,7 @@ public class Access implements Serializable {
 	/**
 	 * @return the user
 	 */
+	@Override
 	public User getUser() {
 		return user;
 	}

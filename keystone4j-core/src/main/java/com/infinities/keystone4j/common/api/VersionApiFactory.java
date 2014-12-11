@@ -11,7 +11,7 @@ public class VersionApiFactory implements Factory<VersionApi> {
 
 	@Override
 	public VersionApi provide() {
-		return new VersionApi();
+		return new VersionApi("admin");
 	}
 
 }

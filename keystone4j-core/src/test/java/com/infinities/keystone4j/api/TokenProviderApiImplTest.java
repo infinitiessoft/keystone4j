@@ -22,7 +22,7 @@ import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.auth.TokenIdAndData;
 import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.token.Token;
@@ -164,7 +164,7 @@ public class TokenProviderApiImplTest {
 		authContext.setMethodNames(methodNames);
 		authContext.setProjectid(project.getId());
 		authContext.setUserid(user.getId());
-		final TokenMetadata metadata = new TokenMetadata(token.getId(), tokenDataWrapper);
+		final TokenIdAndData metadata = new TokenIdAndData(token.getId(), tokenDataWrapper);
 
 		context.checking(new Expectations() {
 
@@ -174,7 +174,7 @@ public class TokenProviderApiImplTest {
 				will(returnValue(metadata));
 			}
 		});
-		TokenMetadata retMetadata = tokenProviderApi.issueV3Token(user.getId(), methodNames, date, project.getId(),
+		TokenIdAndData retMetadata = tokenProviderApi.issueV3Token(user.getId(), methodNames, date, project.getId(),
 				domain.getId(), authContext, trust1, token, false);
 		TokenDataWrapper ret = retMetadata.getTokenData();
 		assertEquals(tokenDataWrapper.getToken().getDomain(), ret.getToken().getDomain());

@@ -1,104 +1,91 @@
 package com.infinities.keystone4j.identity.controller.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
-import com.infinities.keystone4j.Action;
-import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.FilterProtectedAction;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterCheckDecorator;
-import com.infinities.keystone4j.decorator.PaginateDecorator;
-import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.identity.action.group.CreateGroupAction;
-import com.infinities.keystone4j.identity.action.group.DeleteGroupAction;
-import com.infinities.keystone4j.identity.action.group.GetGroupAction;
-import com.infinities.keystone4j.identity.action.group.ListGroupsAction;
-import com.infinities.keystone4j.identity.action.group.ListGroupsForUserAction;
-import com.infinities.keystone4j.identity.action.group.UpdateGroupAction;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
+import com.infinities.keystone4j.identity.controller.action.group.CreateGroupAction;
+import com.infinities.keystone4j.identity.controller.action.group.DeleteGroupAction;
+import com.infinities.keystone4j.identity.controller.action.group.GetGroupAction;
+import com.infinities.keystone4j.identity.controller.action.group.ListGroupsAction;
+import com.infinities.keystone4j.identity.controller.action.group.ListGroupsForUserAction;
+import com.infinities.keystone4j.identity.controller.action.group.UpdateGroupAction;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.model.identity.GroupWrapper;
-import com.infinities.keystone4j.model.identity.GroupsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.identity.controllers.GroupV3 20141211
 
 public class GroupV3ControllerImpl extends BaseController implements GroupV3Controller {
 
-	private final AssignmentApi assignmentApi;
 	private final IdentityApi identityApi;
-	private final TokenApi tokenApi;
+	private final TokenProviderApi tokenProviderApi;
 	private final PolicyApi policyApi;
-	private final Map<String, Object> parMap;
 
 
-	public GroupV3ControllerImpl(AssignmentApi assignmentApi, IdentityApi identityApi, TokenApi tokenApi, PolicyApi policyApi) {
-		this.assignmentApi = assignmentApi;
+	public GroupV3ControllerImpl(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.identityApi = identityApi;
-		this.tokenApi = tokenApi;
+		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
-		parMap = Maps.newHashMap();
 	}
 
 	@Override
-	public GroupWrapper createGroup(Group group) {
-		parMap.put("group", group);
-		Action<Group> command = new PolicyCheckDecorator<Group>(new CreateGroupAction(assignmentApi, tokenApi, identityApi,
-				group), null, tokenApi, policyApi, parMap);
-		Group ret = command.execute(getRequest());
-		return new GroupWrapper(ret, getRequest());
+	public MemberWrapper<Group> createGroup(Group group) throws Exception {
+		ProtectedAction<Group> command = new ProtectedDecorator<Group>(new CreateGroupAction(identityApi, tokenProviderApi,
+				group), tokenProviderApi, policyApi);
+		MemberWrapper<Group> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public GroupsWrapper listGroups(String domainid, String name, int page, int perPage) {
-		parMap.put("domainid", domainid);
-		parMap.put("name", name);
-		Action<List<Group>> command = new FilterCheckDecorator<List<Group>>(new PaginateDecorator<Group>(
-				new ListGroupsAction(assignmentApi, tokenApi, identityApi, domainid, name), page, perPage), tokenApi,
-				policyApi, parMap);
-
-		List<Group> ret = command.execute(getRequest());
-		return new GroupsWrapper(ret, getRequest());
+	public CollectionWrapper<Group> listGroups() throws Exception {
+		FilterProtectedAction<Group> command = new FilterProtectedDecorator<Group>(new ListGroupsAction(identityApi,
+				tokenProviderApi), tokenProviderApi, policyApi);
+		CollectionWrapper<Group> ret = command.execute(getRequest(), "domain_id", "name");
+		return ret;
 	}
 
 	@Override
-	public GroupWrapper getGroup(String groupid) {
-		parMap.put("groupid", groupid);
-		Action<Group> command = new PolicyCheckDecorator<Group>(new GetGroupAction(assignmentApi, tokenApi, identityApi,
-				groupid), null, tokenApi, policyApi, parMap);
-		Group ret = command.execute(getRequest());
-		return new GroupWrapper(ret, getRequest());
+	public MemberWrapper<Group> getGroup(String groupid) throws Exception {
+		Group ref = getMemberFromDriver(groupid);
+		ProtectedAction<Group> command = new ProtectedDecorator<Group>(new GetGroupAction(identityApi, tokenProviderApi,
+				groupid), tokenProviderApi, policyApi, ref);
+		MemberWrapper<Group> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public GroupWrapper updateGroup(String groupid, Group group) {
-		parMap.put("groupid", groupid);
-		parMap.put("group", group);
-		Action<Group> command = new PolicyCheckDecorator<Group>(new UpdateGroupAction(assignmentApi, tokenApi, identityApi,
-				groupid, group), null, tokenApi, policyApi, parMap);
-		Group ret = command.execute(getRequest());
-		return new GroupWrapper(ret, getRequest());
+	public MemberWrapper<Group> updateGroup(String groupid, Group group) throws Exception {
+		Group ref = getMemberFromDriver(groupid);
+		ProtectedAction<Group> command = new ProtectedDecorator<Group>(new UpdateGroupAction(identityApi, tokenProviderApi,
+				groupid, group), tokenProviderApi, policyApi, ref);
+		MemberWrapper<Group> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public void deleteGroup(String groupid) {
-		parMap.put("groupid", groupid);
-		Action<Group> command = new PolicyCheckDecorator<Group>(new DeleteGroupAction(assignmentApi, tokenApi, identityApi,
-				groupid), null, tokenApi, policyApi, parMap);
+	public void deleteGroup(String groupid) throws Exception {
+		Group ref = getMemberFromDriver(groupid);
+		ProtectedAction<Group> command = new ProtectedDecorator<Group>(new DeleteGroupAction(identityApi, tokenProviderApi,
+				groupid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
 	}
 
 	@Override
-	public GroupsWrapper listGroupsForUser(String userid, String name, int page, int perPage) {
-		parMap.put("userid", userid);
-		parMap.put("name", name);
-		Action<List<Group>> command = new FilterCheckDecorator<List<Group>>(new PaginateDecorator<Group>(
-				new ListGroupsForUserAction(assignmentApi, tokenApi, identityApi, userid, name), page, perPage), tokenApi,
-				policyApi, parMap);
+	public CollectionWrapper<Group> listGroupsForUser(String groupid) throws Exception {
+		FilterProtectedAction<Group> command = new FilterProtectedDecorator<Group>(new ListGroupsForUserAction(identityApi,
+				tokenProviderApi, groupid), tokenProviderApi, policyApi);
+		CollectionWrapper<Group> ret = command.execute(getRequest(), "name");
+		return ret;
+	}
 
-		List<Group> ret = command.execute(getRequest());
-		return new GroupsWrapper(ret, getRequest());
+	public Group getMemberFromDriver(String groupid) {
+		return identityApi.getGroup(groupid);
 	}
 
 }

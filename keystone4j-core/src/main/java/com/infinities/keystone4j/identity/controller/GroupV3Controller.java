@@ -1,21 +1,21 @@
 package com.infinities.keystone4j.identity.controller;
 
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.model.identity.GroupWrapper;
-import com.infinities.keystone4j.model.identity.GroupsWrapper;
 
 public interface GroupV3Controller {
 
-	GroupWrapper createGroup(Group group);
+	MemberWrapper<Group> createGroup(Group group) throws Exception;
 
-	GroupsWrapper listGroups(String domainid, String name, int page, int perPage);
+	CollectionWrapper<Group> listGroups() throws Exception;
 
-	GroupsWrapper listGroupsForUser(String userid, String name, int page, int perPage);
+	CollectionWrapper<Group> listGroupsForUser(String userid) throws Exception;
 
-	GroupWrapper getGroup(String groupid);
+	MemberWrapper<Group> getGroup(String groupid) throws Exception;
 
-	GroupWrapper updateGroup(String groupid, Group group);
+	MemberWrapper<Group> updateGroup(String groupid, Group group) throws Exception;
 
-	void deleteGroup(String groupid);
+	void deleteGroup(String groupid) throws Exception;
 
 }

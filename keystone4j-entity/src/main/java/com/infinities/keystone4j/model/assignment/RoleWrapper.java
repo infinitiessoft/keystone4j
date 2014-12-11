@@ -1,10 +1,8 @@
 package com.infinities.keystone4j.model.assignment;
 
-import javax.ws.rs.container.ContainerRequestContext;
+import com.infinities.keystone4j.model.MemberWrapper;
 
-import com.infinities.keystone4j.ReferentialLinkUtils;
-
-public class RoleWrapper {
+public class RoleWrapper implements MemberWrapper<Role> {
 
 	private Role role;
 
@@ -13,13 +11,10 @@ public class RoleWrapper {
 
 	}
 
-	public RoleWrapper(Role role, ContainerRequestContext context) {
-		this(role, context.getUriInfo().getBaseUri().toASCIIString() + "v3/roles/");
-	}
-
-	public RoleWrapper(Role role, String baseUrl) {
+	public RoleWrapper(Role role) {
 		this.role = role;
-		ReferentialLinkUtils.instance.addSelfReferentialLink(role, baseUrl);
+		// ReferentialLinkUtils.instance.addSelfReferentialLink(role,
+		// baseUrl);
 	}
 
 	public Role getRole() {
@@ -30,4 +25,8 @@ public class RoleWrapper {
 		this.role = role;
 	}
 
+	@Override
+	public void setRef(Role ref) {
+		this.role = ref;
+	}
 }

@@ -29,6 +29,7 @@ public class KeystoneUtils extends TokenBindValidator {
 
 
 	// used as _normalize_domain_id
+	@Deprecated
 	public Domain getDomainForRequest(AssignmentApi assignmentApi, TokenApi tokenApi, KeystoneContext context) {
 		if (context.isAdmin()) {
 			return assignmentApi.getDomain(Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText());

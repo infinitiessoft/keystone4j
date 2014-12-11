@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 
+//keystone.middleware.core.RequestBodySizeLimiter 20141126
 @Priority(1004)
 public class RequestBodySizeLimiter implements Middleware {
 
@@ -31,6 +32,7 @@ public class RequestBodySizeLimiter implements Middleware {
 			requestContext.abortWith(Response.status(CustomResponseStatus.REQUEST_TOO_LARGE).build());
 		}
 
+		// keystone.common.utils.LimitingReader
 		if (requestContext.getEntityStream().available() > size) {
 			requestContext.abortWith(Response.status(CustomResponseStatus.REQUEST_TOO_LARGE).build());
 		}

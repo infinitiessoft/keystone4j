@@ -7,6 +7,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.infinities.keystone4j.common.api.VersionApi;
@@ -37,8 +39,8 @@ public class ApiV2Resource {
 	}
 
 	@GET
-	public VersionWrapper getVersions() throws MalformedURLException {
-		return versionApi.getVersionV2();
+	public VersionWrapper getVersions(@Context ContainerRequestContext context) throws MalformedURLException {
+		return versionApi.getVersionV2(context);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.infinities.keystone4j.assignment;
 import java.util.List;
 
 import com.infinities.keystone4j.Api;
+import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.model.assignment.Assignment;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
@@ -11,9 +12,9 @@ import com.infinities.keystone4j.model.identity.User;
 
 public interface AssignmentApi extends Api {
 
-	Domain createDomain(Domain domain);
+	Domain createDomain(String id, Domain domain);
 
-	List<Domain> listDomains();
+	List<Domain> listDomains(Hints hints);
 
 	Domain getDomain(String domainid);
 
@@ -21,9 +22,9 @@ public interface AssignmentApi extends Api {
 
 	Domain deleteDomain(String domainid);
 
-	Project createProject(Project project);
+	Project createProject(String id, Project project);
 
-	List<Project> listProjects();
+	List<Project> listProjects(Hints hints);
 
 	Project getProject(String projectid);
 
@@ -31,11 +32,11 @@ public interface AssignmentApi extends Api {
 
 	Project deleteProject(String projectid);
 
-	List<Project> listProjectsForUser(String userid);
+	List<Project> listProjectsForUser(String userid, Hints hints);
 
-	Role createRole(Role role);
+	Role createRole(String id, Role role);
 
-	List<Role> listRoles();
+	List<Role> listRoles(Hints hints);
 
 	Role getRole(String roleid);
 
@@ -65,6 +66,8 @@ public interface AssignmentApi extends Api {
 
 	List<Assignment> listRoleAssignmentsForRole(String roleid);
 
+	List<Assignment> listRoleAssignments();
+
 	Role getGrantByGroupProject(String roleid, String groupid, String projectid, boolean inherited);
 
 	Role getGrantByUserProject(String roleid, String userid, String projectid, boolean inherited);
@@ -86,6 +89,18 @@ public interface AssignmentApi extends Api {
 	Domain getDomainByName(String domainName);
 
 	Project getProjectByName(String projectName, String domainid);
+
+	List<Project> listProjectsInDomain(String domainid);
+
+	void assertDomainEnabled(String id, Domain domain);
+
+	void assertProjectEnabled(String id, Project project);
+
+	List<Project> listProjectsForGroups(List<String> groupids);
+
+	List<Domain> listDomainsForUser(String userid);
+
+	List<Domain> listDomainsForGroups(List<String> groupids);
 
 	// replace with createGrant
 	// addUserToProject(String projectid, String userid);

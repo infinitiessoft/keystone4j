@@ -18,9 +18,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.assignment.RoleWrapper;
-import com.infinities.keystone4j.model.assignment.RolesWrapper;
 import com.infinities.keystone4j.model.utils.Views;
+
+//keystone.assignment.routers 20141209
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -36,34 +40,35 @@ public class RoleV3Resource {
 
 	@POST
 	@JsonView(Views.Basic.class)
-	public Response createRole(RoleWrapper roleWrapper) {
+	public Response createRole(RoleWrapper roleWrapper) throws Exception {
 		return Response.status(Status.CREATED).entity(roleController.createRole(roleWrapper.getRole())).build();
 	}
 
 	@GET
 	@JsonView(Views.Basic.class)
-	public RolesWrapper listRoles(@QueryParam("name") String name, @DefaultValue("1") @QueryParam("page") int page,
-			@DefaultValue("30") @QueryParam("per_page") int perPage) {
-		return roleController.listRoles(name, page, perPage);
+	public CollectionWrapper<Role> listRoles(@QueryParam("name") String name,
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws Exception {
+		return roleController.listRoles();
 	}
 
 	@GET
 	@Path("/{roleid}")
 	@JsonView(Views.Basic.class)
-	public RoleWrapper getRole(@PathParam("roleid") String roleid) {
+	public MemberWrapper<Role> getRole(@PathParam("roleid") String roleid) throws Exception {
 		return roleController.getRole(roleid);
 	}
 
 	@PATCH
 	@Path("/{roleid}")
 	@JsonView(Views.Basic.class)
-	public RoleWrapper updateRole(@PathParam("roleid") String roleid, RoleWrapper roleWrapper) {
+	public MemberWrapper<Role> updateRole(@PathParam("roleid") String roleid, RoleWrapper roleWrapper) throws Exception {
 		return roleController.updateRole(roleid, roleWrapper.getRole());
 	}
 
 	@DELETE
 	@Path("/{roleid}")
-	public Response deleteRole(@PathParam("roleid") String roleid) {
+	public Response deleteRole(@PathParam("roleid") String roleid) throws Exception {
 		roleController.deleteRole(roleid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}

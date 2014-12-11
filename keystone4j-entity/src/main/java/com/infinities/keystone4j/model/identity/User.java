@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.model.BaseEntity;
+import com.infinities.keystone4j.model.DomainScoped;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.UserDomainGrant;
@@ -34,7 +35,7 @@ import com.infinities.keystone4j.model.utils.Views;
 @Entity
 @Table(name = "USER", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"DOMAINID", "NAME" }) })
-public class User extends BaseEntity implements java.io.Serializable, PolicyEntity {
+public class User extends BaseEntity implements java.io.Serializable, PolicyEntity, IUser, DomainScoped {
 
 	/**
 	 * 
@@ -72,6 +73,7 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 
 	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
 
+	@Override
 	@Column(name = "NAME", length = 255, nullable = false)
 	@JsonView(Views.Basic.class)
 	public String getName() {

@@ -1,11 +1,14 @@
 package com.infinities.keystone4j;
 
-import javax.ws.rs.container.ContainerRequestContext;
+public interface Action {
 
-public interface Action<T> {
-
-	T execute(ContainerRequestContext context);
+	// T execute(ContainerRequestContext context, String... filters) throws
+	// Exception;
 
 	String getName();
+
+	String getCollectionName();
+
+	String getMemberName();
 
 }

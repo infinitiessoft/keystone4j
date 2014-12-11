@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.credential.action.CreateCredentialAction;
-import com.infinities.keystone4j.credential.action.DeleteCredentialAction;
-import com.infinities.keystone4j.credential.action.GetCredentialAction;
-import com.infinities.keystone4j.credential.action.ListCredentialsAction;
-import com.infinities.keystone4j.credential.action.UpdateCredentialAction;
 import com.infinities.keystone4j.credential.controller.CredentialV3Controller;
+import com.infinities.keystone4j.credential.controller.action.CreateCredentialAction;
+import com.infinities.keystone4j.credential.controller.action.DeleteCredentialAction;
+import com.infinities.keystone4j.credential.controller.action.GetCredentialAction;
+import com.infinities.keystone4j.credential.controller.action.ListCredentialsAction;
+import com.infinities.keystone4j.credential.controller.action.UpdateCredentialAction;
 import com.infinities.keystone4j.decorator.PaginateDecorator;
-import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.model.credential.Credential;
 import com.infinities.keystone4j.model.credential.CredentialWrapper;
 import com.infinities.keystone4j.model.credential.CredentialsWrapper;
@@ -39,7 +39,7 @@ public class CredentialV3ControllerImpl extends BaseController implements Creden
 	@Override
 	public CredentialWrapper createCredential(Credential credential) {
 		parMap.put("credential", credential);
-		Action<Credential> command = new PolicyCheckDecorator<Credential>(new CreateCredentialAction(credentialApi,
+		ProtectedAction<Credential> command = new ProtectedDecorator<Credential>(new CreateCredentialAction(credentialApi,
 				credential), null, tokenApi, policyApi, parMap);
 		Credential ret = command.execute(getRequest());
 		return new CredentialWrapper(ret);
@@ -47,7 +47,7 @@ public class CredentialV3ControllerImpl extends BaseController implements Creden
 
 	@Override
 	public CredentialsWrapper listCredentials(int page, int perPage) {
-		Action<List<Credential>> command = new PolicyCheckDecorator<List<Credential>>(new PaginateDecorator<Credential>(
+		ProtectedAction<List<Credential>> command = new ProtectedDecorator<List<Credential>>(new PaginateDecorator<Credential>(
 				new ListCredentialsAction(credentialApi), page, perPage), null, tokenApi, policyApi, parMap);
 
 		List<Credential> ret = command.execute(getRequest());
@@ -57,7 +57,7 @@ public class CredentialV3ControllerImpl extends BaseController implements Creden
 	@Override
 	public CredentialWrapper getCredential(String credentialid) {
 		parMap.put("credentialid", credentialid);
-		Action<Credential> command = new PolicyCheckDecorator<Credential>(new GetCredentialAction(credentialApi,
+		ProtectedAction<Credential> command = new ProtectedDecorator<Credential>(new GetCredentialAction(credentialApi,
 				credentialid), null, tokenApi, policyApi, parMap);
 		Credential ret = command.execute(getRequest());
 		return new CredentialWrapper(ret);
@@ -67,7 +67,7 @@ public class CredentialV3ControllerImpl extends BaseController implements Creden
 	public CredentialWrapper updateCredential(String credentialid, Credential credential) {
 		parMap.put("credentialid", credentialid);
 		parMap.put("credential", credential);
-		Action<Credential> command = new PolicyCheckDecorator<Credential>(new UpdateCredentialAction(credentialApi,
+		ProtectedAction<Credential> command = new ProtectedDecorator<Credential>(new UpdateCredentialAction(credentialApi,
 				credentialid, credential), null, tokenApi, policyApi, parMap);
 		Credential ret = command.execute(getRequest());
 		return new CredentialWrapper(ret);
@@ -76,7 +76,7 @@ public class CredentialV3ControllerImpl extends BaseController implements Creden
 	@Override
 	public void deleteCredential(String credentialid) {
 		parMap.put("credentialid", credentialid);
-		Action<Credential> command = new PolicyCheckDecorator<Credential>(new DeleteCredentialAction(credentialApi,
+		ProtectedAction<Credential> command = new ProtectedDecorator<Credential>(new DeleteCredentialAction(credentialApi,
 				credentialid), null, tokenApi, policyApi, parMap);
 		command.execute(getRequest());
 	}

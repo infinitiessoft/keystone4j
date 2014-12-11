@@ -1,10 +1,8 @@
 package com.infinities.keystone4j.model.catalog;
 
-import javax.ws.rs.container.ContainerRequestContext;
+import com.infinities.keystone4j.model.MemberWrapper;
 
-import com.infinities.keystone4j.ReferentialLinkUtils;
-
-public class ServiceWrapper {
+public class ServiceWrapper implements MemberWrapper<Service> {
 
 	private Service service;
 
@@ -13,14 +11,10 @@ public class ServiceWrapper {
 
 	}
 
-	public ServiceWrapper(Service service, ContainerRequestContext context) {
-		this(service, context.getUriInfo().getBaseUri().toASCIIString() + "v3/services/");
-	}
-
-	public ServiceWrapper(Service service, String baseUrl) {
-		super();
+	public ServiceWrapper(Service service) {
 		this.service = service;
-		ReferentialLinkUtils.instance.addSelfReferentialLink(service, baseUrl);
+		// ReferentialLinkUtils.instance.addSelfReferentialLink(service,
+		// baseUrl);
 	}
 
 	public Service getService() {
@@ -31,4 +25,8 @@ public class ServiceWrapper {
 		this.service = service;
 	}
 
+	@Override
+	public void setRef(Service ref) {
+		this.service = ref;
+	}
 }

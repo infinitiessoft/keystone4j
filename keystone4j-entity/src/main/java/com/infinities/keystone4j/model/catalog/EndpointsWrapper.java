@@ -2,24 +2,23 @@ package com.infinities.keystone4j.model.catalog;
 
 import java.util.List;
 
-import javax.ws.rs.container.ContainerRequestContext;
-
-import com.infinities.keystone4j.ReferentialLinkUtils;
+import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.common.Links;
 
-public class EndpointsWrapper {
+public class EndpointsWrapper implements CollectionWrapper<Endpoint> {
 
 	private List<Endpoint> endpoints;
+	private boolean truncated;
+
 	private Links links = new Links();
 
 
-	public EndpointsWrapper(List<Endpoint> endpoints, ContainerRequestContext context) {
-		String baseUrl = context.getUriInfo().getBaseUri().toASCIIString() + "v3/endpoints/";
+	public EndpointsWrapper() {
+
+	}
+
+	public EndpointsWrapper(List<Endpoint> endpoints) {
 		this.endpoints = endpoints;
-		for (Endpoint endpoint : endpoints) {
-			ReferentialLinkUtils.instance.addSelfReferentialLink(endpoint, baseUrl);
-		}
-		links.setSelf(context.getUriInfo().getRequestUri().toASCIIString());
 	}
 
 	public List<Endpoint> getEndpoints() {
@@ -30,12 +29,29 @@ public class EndpointsWrapper {
 		this.endpoints = endpoints;
 	}
 
+	@Override
 	public Links getLinks() {
 		return links;
 	}
 
+	@Override
 	public void setLinks(Links links) {
 		this.links = links;
+	}
+
+	@Override
+	public boolean isTruncated() {
+		return truncated;
+	}
+
+	@Override
+	public void setTruncated(boolean truncated) {
+		this.truncated = truncated;
+	}
+
+	@Override
+	public void setRefs(List<Endpoint> refs) {
+		this.endpoints = refs;
 	}
 
 }

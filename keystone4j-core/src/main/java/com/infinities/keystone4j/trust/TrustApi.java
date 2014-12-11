@@ -20,4 +20,6 @@ public interface TrustApi extends Api {
 
 	void deleteTrust(String trustid);
 
+	void consumeUse(String id);
+
 }

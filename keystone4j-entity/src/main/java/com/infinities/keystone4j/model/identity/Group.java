@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.model.BaseEntity;
+import com.infinities.keystone4j.model.DomainScoped;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.GroupDomainGrant;
 import com.infinities.keystone4j.model.assignment.GroupProjectGrant;
@@ -31,7 +32,7 @@ import com.infinities.keystone4j.model.utils.Views;
 @Entity
 @Table(name = "GROUP", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"DOMAINID", "NAME" }) })
-public class Group extends BaseEntity implements java.io.Serializable, PolicyEntity {
+public class Group extends BaseEntity implements java.io.Serializable, PolicyEntity, DomainScoped {
 
 	/**
 	 * 

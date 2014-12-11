@@ -15,7 +15,7 @@ import com.infinities.keystone4j.filter.AuthContextMiddleware;
 import com.infinities.keystone4j.filter.RequestBodySizeLimiter;
 import com.infinities.keystone4j.filter.TokenAuthMiddleware;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.main.PublicResource;
+import com.infinities.keystone4j.main.AdminResource;
 import com.infinities.keystone4j.mock.MockAssignmentApiFactory;
 import com.infinities.keystone4j.mock.MockIdentityApiFactory;
 import com.infinities.keystone4j.mock.MockPolicyApiFactory;
@@ -113,7 +113,7 @@ public class AuthResourceTestApplication extends ResourceConfig {
 		this.register(TokenAuthMiddleware.class);
 		this.register(AdminTokenAuthMiddleware.class);
 		this.register(RequestBodySizeLimiter.class);
-		this.register(PublicResource.class);
+		this.register(AdminResource.class);
 		this.register(ObjectMapperResolver.class);
 		this.register(JacksonFeature.class);
 		// this.register(ObjectMapperResolver.class);

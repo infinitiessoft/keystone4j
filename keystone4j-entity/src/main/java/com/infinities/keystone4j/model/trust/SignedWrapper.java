@@ -1,8 +1,10 @@
 package com.infinities.keystone4j.model.trust;
 
-public class SignedWrapper {
+import com.infinities.keystone4j.model.MemberWrapper;
 
-	String signed;
+public class SignedWrapper implements MemberWrapper<String> {
+
+	private String signed;
 
 
 	public SignedWrapper() {
@@ -20,6 +22,11 @@ public class SignedWrapper {
 
 	public void setSigned(String signed) {
 		this.signed = signed;
+	}
+
+	@Override
+	public void setRef(String ref) {
+		this.signed = ref;
 	}
 
 }

@@ -3,6 +3,7 @@ package com.infinities.keystone4j.catalog;
 import java.util.List;
 
 import com.infinities.keystone4j.Api;
+import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.model.catalog.Catalog;
 import com.infinities.keystone4j.model.catalog.Endpoint;
 import com.infinities.keystone4j.model.catalog.Service;
@@ -19,9 +20,9 @@ public interface CatalogApi extends Api {
 
 	Endpoint deleteEndpoint(String endpointid);
 
-	Service createService(Service service);
+	Service createService(String id, Service service);
 
-	List<Service> listServices();
+	List<Service> listServices(Hints hints);
 
 	Service getService(String serviceid);
 

@@ -1,87 +1,133 @@
 package com.infinities.keystone4j.auth.controller.impl;
 
-import java.util.Map;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Maps;
-import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.FilterProtectedAction;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.auth.action.AuthenticationForTokenAction;
-import com.infinities.keystone4j.auth.action.CheckTokenAction;
-import com.infinities.keystone4j.auth.action.GetRevocationListAction;
-import com.infinities.keystone4j.auth.action.RevokeTokenAction;
-import com.infinities.keystone4j.auth.action.ValidateTokenAction;
 import com.infinities.keystone4j.auth.controller.AuthController;
+import com.infinities.keystone4j.auth.controller.action.AuthenticationForTokenAction;
+import com.infinities.keystone4j.auth.controller.action.CheckTokenAction;
+import com.infinities.keystone4j.auth.controller.action.GetAuthCatalogAction;
+import com.infinities.keystone4j.auth.controller.action.GetAuthDomainsAction;
+import com.infinities.keystone4j.auth.controller.action.GetAuthProjectsAction;
+import com.infinities.keystone4j.auth.controller.action.GetRevocationListAction;
+import com.infinities.keystone4j.auth.controller.action.RevokeTokenAction;
+import com.infinities.keystone4j.auth.controller.action.ValidateTokenAction;
+import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.decorator.ProtectedCollectionDecorator;
+import com.infinities.keystone4j.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.auth.AuthV3;
-import com.infinities.keystone4j.model.auth.TokenMetadata;
-import com.infinities.keystone4j.model.trust.SignedWrapper;
+import com.infinities.keystone4j.model.auth.TokenIdAndData;
+import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.token.TokenDataWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
+//keystone.auth.controllers 20141210
+
 public class AuthControllerImpl extends BaseController implements AuthController {
 
-	private final static Logger logger = LoggerFactory.getLogger(AuthControllerImpl.class);
+	// private final static Logger logger =
+	// LoggerFactory.getLogger(AuthControllerImpl.class);
+	private final static String SUBJECT_TOKEN_HEADER = "X-Subject-Token";
 	private final AssignmentApi assignmentApi;
+	private final CatalogApi catalogApi;
 	private final TokenProviderApi tokenProviderApi;
 	private final IdentityApi identityApi;
 	private final TokenApi tokenApi;
 	private final TrustApi trustApi;
 	private final PolicyApi policyApi;
-	private final Map<String, Object> parMap;
 
 
-	public AuthControllerImpl(AssignmentApi assignmentApi, IdentityApi identityApi, TokenProviderApi tokenProviderApi,
-			TokenApi tokenApi, TrustApi trustApi, PolicyApi policyApi) {
+	public AuthControllerImpl(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
+			TokenProviderApi tokenProviderApi, TokenApi tokenApi, TrustApi trustApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
+		this.catalogApi = catalogApi;
 		this.identityApi = identityApi;
 		this.tokenProviderApi = tokenProviderApi;
 		this.tokenApi = tokenApi;
 		this.trustApi = trustApi;
 		this.policyApi = policyApi;
-		parMap = Maps.newHashMap();
 	}
 
 	@Override
-	public TokenMetadata authenticateForToken(AuthV3 auth) {
-		Action<TokenMetadata> command = new AuthenticationForTokenAction(assignmentApi, identityApi, tokenProviderApi,
-				tokenApi, trustApi, auth);
-		TokenMetadata ret = command.execute(getRequest());
-		logger.debug("generate token id: {}", ret.getTokenid());
-		return ret;
+	public Response authenticateForToken(AuthV3 auth) throws Exception {
+		AuthenticationForTokenAction command = new AuthenticationForTokenAction(assignmentApi, catalogApi, identityApi,
+				tokenProviderApi, tokenApi, trustApi, auth);
+		TokenIdAndData res = command.execute(getRequest());
+		return renderTokenDataResponse(res.getTokenid(), res.getTokenData(), true);
 	}
 
 	@Override
-	public void checkToken() {
-		Action<TokenMetadata> command = new PolicyCheckDecorator<TokenMetadata>(new CheckTokenAction(assignmentApi,
-				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
+	public Response checkToken() throws Exception {
+		ProtectedAction<TokenDataWrapper> command = new ProtectedDecorator<TokenDataWrapper>(new CheckTokenAction(
+				assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi), tokenProviderApi, policyApi);
+		TokenIdAndData res = (TokenIdAndData) command.execute(getRequest());
+		return renderTokenDataResponse(res.getTokenid(), res.getTokenData());
+	}
+
+	@Override
+	public void revokeToken() throws Exception {
+		ProtectedAction<TokenDataWrapper> command = new ProtectedDecorator<TokenDataWrapper>(new RevokeTokenAction(
+				assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi), tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
 	@Override
-	public void revokeToken() {
-		Action<TokenMetadata> command = new PolicyCheckDecorator<TokenMetadata>(new RevokeTokenAction(assignmentApi,
-				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
-		command.execute(getRequest());
+	public Response validateToken() throws Exception {
+		ProtectedAction<TokenDataWrapper> command = new ProtectedDecorator<TokenDataWrapper>(new ValidateTokenAction(
+				assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi), tokenProviderApi, policyApi);
+		TokenIdAndData res = (TokenIdAndData) command.execute(getRequest());
+		return renderTokenDataResponse(res.getTokenid(), res.getTokenData());
 	}
 
 	@Override
-	public TokenMetadata validateToken() {
-		Action<TokenMetadata> command = new PolicyCheckDecorator<TokenMetadata>(new ValidateTokenAction(assignmentApi,
-				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
+	public MemberWrapper<String> getRevocationList() throws Exception {
+		ProtectedAction<String> command = new ProtectedDecorator<String>(new GetRevocationListAction(assignmentApi,
+				catalogApi, identityApi, tokenProviderApi, tokenApi), tokenProviderApi, policyApi);
+		return command.execute(getRequest());
+	}
+
+	protected Response renderTokenDataResponse(String tokenid, TokenDataWrapper tokenData) {
+		return renderTokenDataResponse(tokenid, tokenData, false);
+	}
+
+	protected Response renderTokenDataResponse(String tokenid, TokenDataWrapper tokenData, boolean created) {
+		if (created) {
+			return Response.status(Status.CREATED).entity(tokenData).header(SUBJECT_TOKEN_HEADER, tokenid).build();
+		} else {
+			return Response.status(Status.OK).entity(tokenData).header(SUBJECT_TOKEN_HEADER, tokenid).build();
+		}
+	}
+
+	@Override
+	public MemberWrapper<Catalog> getAuthCatalog() throws Exception {
+		ProtectedAction<Catalog> command = new ProtectedDecorator<Catalog>(new GetAuthCatalogAction(assignmentApi,
+				catalogApi, identityApi, tokenProviderApi, tokenApi), tokenProviderApi, policyApi);
 		return command.execute(getRequest());
 	}
 
 	@Override
-	public SignedWrapper getRevocationList() {
-		Action<SignedWrapper> command = new PolicyCheckDecorator<SignedWrapper>(new GetRevocationListAction(assignmentApi,
-				identityApi, tokenProviderApi, tokenApi), null, tokenApi, policyApi, parMap);
+	public CollectionWrapper<Project> getAuthProjects() throws Exception {
+		FilterProtectedAction<Project> command = new ProtectedCollectionDecorator<Project>(new GetAuthProjectsAction(
+				assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi), tokenProviderApi, policyApi);
+		return command.execute(getRequest());
+	}
+
+	@Override
+	public CollectionWrapper<Domain> getAuthDomains() throws Exception {
+		FilterProtectedAction<Domain> command = new ProtectedCollectionDecorator<Domain>(new GetAuthDomainsAction(
+				assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi), tokenProviderApi, policyApi);
 		return command.execute(getRequest());
 	}
 }

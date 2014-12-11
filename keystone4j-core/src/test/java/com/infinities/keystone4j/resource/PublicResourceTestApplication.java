@@ -7,7 +7,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import com.infinities.keystone4j.common.api.VersionApi;
 import com.infinities.keystone4j.common.api.VersionApiFactory;
-import com.infinities.keystone4j.main.PublicResource;
+import com.infinities.keystone4j.main.AdminResource;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
 
 public class PublicResourceTestApplication extends ResourceConfig {
@@ -82,6 +82,6 @@ public class PublicResourceTestApplication extends ResourceConfig {
 		// register(TokenAuthMiddleware.class);
 		// register(AdminTokenAuthMiddleware.class);
 		// register(RequestBodySizeLimiter.class);
-		register(PublicResource.class);
+		register(AdminResource.class);
 	}
 }

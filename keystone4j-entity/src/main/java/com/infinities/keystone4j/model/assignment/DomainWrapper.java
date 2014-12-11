@@ -1,10 +1,8 @@
 package com.infinities.keystone4j.model.assignment;
 
-import javax.ws.rs.container.ContainerRequestContext;
+import com.infinities.keystone4j.model.MemberWrapper;
 
-import com.infinities.keystone4j.ReferentialLinkUtils;
-
-public class DomainWrapper {
+public class DomainWrapper implements MemberWrapper<Domain> {
 
 	private Domain domain;
 
@@ -13,13 +11,10 @@ public class DomainWrapper {
 
 	}
 
-	public DomainWrapper(Domain domain, ContainerRequestContext context) {
-		this(domain, context.getUriInfo().getBaseUri().toASCIIString() + "v3/domains/");
-	}
-
-	public DomainWrapper(Domain domain, String baseUrl) {
+	public DomainWrapper(Domain domain) {
 		this.domain = domain;
-		ReferentialLinkUtils.instance.addSelfReferentialLink(domain, baseUrl);
+		// ReferentialLinkUtils.instance.addSelfReferentialLink(domain,
+		// baseUrl);
 	}
 
 	public Domain getDomain() {
@@ -30,4 +25,8 @@ public class DomainWrapper {
 		this.domain = domain;
 	}
 
+	@Override
+	public void setRef(Domain ref) {
+		this.domain = ref;
+	}
 }

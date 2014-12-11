@@ -1,26 +1,25 @@
 package com.infinities.keystone4j.assignment.controller;
 
-import java.util.List;
-
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.assignment.ProjectWrapper;
-import com.infinities.keystone4j.model.assignment.ProjectsWrapper;
-import com.infinities.keystone4j.model.identity.User;
 
 public interface ProjectV3Controller {
 
-	ProjectWrapper createProject(Project project);
+	MemberWrapper<Project> createProject(Project project) throws Exception;
 
-	ProjectsWrapper listProjects(String domainid, String name, Boolean enabled, int page, int perPage);
+	CollectionWrapper<Project> listProjects() throws Exception;
 
-	ProjectsWrapper listUserProjects(String userid, Boolean enabled, String name, int page, int perPage);
+	CollectionWrapper<Project> listUserProjects(String userid) throws Exception;
 
-	ProjectWrapper getProject(String projectid);
+	MemberWrapper<Project> getProject(String projectid) throws Exception;
 
-	ProjectWrapper updateProject(String projectid, Project project);
+	MemberWrapper<Project> updateProject(String projectid, Project project) throws Exception;
 
-	void deleteProject(String projectid);
+	void deleteProject(String projectid) throws Exception;
 
-	List<User> getProjectUsers(String projectid, Boolean enabled, String name, int page, int perPage);
+	// CollectionWrapper<Project> getProjectUsers(String projectid, Boolean
+	// enabled, String name, int page, int perPage)
+	// throws Exception;
 
 }

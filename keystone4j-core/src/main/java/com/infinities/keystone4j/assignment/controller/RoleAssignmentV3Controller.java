@@ -1,11 +1,12 @@
 package com.infinities.keystone4j.assignment.controller;
 
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.assignment.RoleAssignment;
 import com.infinities.keystone4j.model.assignment.RoleAssignmentWrapper;
-import com.infinities.keystone4j.model.assignment.RoleAssignmentsWrapper;
 
 public interface RoleAssignmentV3Controller {
 
-	RoleAssignmentsWrapper listRoleAssignments();
+	CollectionWrapper<RoleAssignment> listRoleAssignments() throws Exception;
 
 	RoleAssignmentWrapper getRoleAssignment();
 

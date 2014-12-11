@@ -1,15 +1,16 @@
 package com.infinities.keystone4j.auth.model;
 
-import java.text.MessageFormat;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.ForbiddenException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
-import com.infinities.keystone4j.auth.AuthDriver;
+import com.infinities.keystone4j.auth.controller.action.AbstractControllerAction;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.assignment.Domain;
@@ -19,26 +20,25 @@ import com.infinities.keystone4j.model.auth.AuthV3;
 import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.trust.TrustApi;
 
-public class AuthInfo {
+public class AuthInfo extends AbstractControllerAction {
 
+	private final static Logger logger = LoggerFactory.getLogger(AuthInfo.class);
 	private final static String IDENTITY = "identity";
 	private KeystoneContext context;
 	private AuthV3 auth;
-	private String domainid;
-	private String projectid;
-	private Trust trust;
-	private final Map<String, AuthDriver> AUTH_METHODS;
 	private final TrustApi trustApi;
 	private final AssignmentApi assignmentApi;
+	private Scope scope;
 
 
-	public AuthInfo(KeystoneContext context, AuthV3 auth, Map<String, AuthDriver> authMethods, AssignmentApi assignmentApi,
-			TrustApi trustApi) {
+	public AuthInfo(KeystoneContext context, AuthV3 auth, AssignmentApi assignmentApi, TrustApi trustApi)
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		super();
 		this.setContext(context);
 		this.auth = auth;
-		this.AUTH_METHODS = authMethods;
 		this.trustApi = trustApi;
 		this.assignmentApi = assignmentApi;
+		this.scope = new Scope();
 		validateAndNormalizeAuthData();
 	}
 
@@ -48,30 +48,6 @@ public class AuthInfo {
 
 	public void setAuth(AuthV3 auth) {
 		this.auth = auth;
-	}
-
-	public String getDomainid() {
-		return domainid;
-	}
-
-	public void setDomainid(String domainid) {
-		this.domainid = domainid;
-	}
-
-	public String getProjectid() {
-		return projectid;
-	}
-
-	public void setProjectid(String projectid) {
-		this.projectid = projectid;
-	}
-
-	public Trust getTrust() {
-		return trust;
-	}
-
-	public void setTrust(Trust trust) {
-		this.trust = trust;
 	}
 
 	public KeystoneContext getContext() {
@@ -125,10 +101,14 @@ public class AuthInfo {
 
 		if (auth.getScope().getProject() != null) {
 			Project project = lookupProject(auth.getScope().getProject());
-			this.setProjectid(project.getId());
+			Scope scopeData = new Scope();
+			scopeData.setProjectid(project.getId());
+			this.setScope(scopeData);
 		} else if (auth.getScope().getDomain() != null) {
 			Domain domain = lookupDomain(auth.getScope().getDomain());
-			this.setDomainid(domain.getId());
+			Scope scopeData = new Scope();
+			scopeData.setDomainid(domain.getId());
+			this.setScope(scopeData);
 		} else if (auth.getScope().getTrust() != null) {
 			boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
 			if (!enabled) {
@@ -137,10 +117,14 @@ public class AuthInfo {
 			Trust trust = lookupTrust(auth.getScope().getTrust());
 			if (trust.getProject() != null) {
 				Project project = lookupProject(trust.getProject());
-				this.setProjectid(project.getId());
-				this.setTrust(trust);
+				Scope scopeData = new Scope();
+				scopeData.setProjectid(project.getId());
+				scopeData.setTrustRef(trust);
+				this.setScope(scopeData);
 			} else {
-				this.setTrust(trust);
+				Scope scopeData = new Scope();
+				scopeData.setTrustRef(trust);
+				this.setScope(scopeData);
 			}
 		}
 	}
@@ -173,6 +157,7 @@ public class AuthInfo {
 				ret = assignmentApi.getDomain(domainid);
 			}
 		} catch (Exception e) {
+			logger.error("Lookup domain failed", e);
 			throw Exceptions.UnauthorizedException.getInstance();
 		}
 		assertDomainIsEnabled(domain);
@@ -181,9 +166,10 @@ public class AuthInfo {
 	}
 
 	private void assertDomainIsEnabled(Domain domain) {
-		if (!domain.getEnabled()) {
-			String msg = MessageFormat.format("Domain is disabled: {}", domain.getId());
-			throw Exceptions.UnauthorizedException.getInstance(msg);
+		try {
+			this.assignmentApi.assertDomainEnabled(domain.getId(), domain);
+		} catch (Exception e) {
+			throw Exceptions.UnauthorizedException.getInstance(e);
 		}
 	}
 
@@ -205,20 +191,22 @@ public class AuthInfo {
 				ret = assignmentApi.getProjectByName(projectName, domain.getId());
 			} else {
 				ret = assignmentApi.getProject(projectid);
+				lookupDomain(ret.getDomain());
 			}
 
 		} catch (Exception e) {
-			throw Exceptions.UnauthorizedException.getInstance();
+			logger.error("Lookup project failed", e);
+			throw Exceptions.UnauthorizedException.getInstance(e);
 		}
 		assertProjectIsEnabled(project);
-
 		return ret;
 	}
 
 	private void assertProjectIsEnabled(Project project) {
-		if (!project.getEnabled()) {
-			String msg = MessageFormat.format("Project is disabled: {}", project.getId());
-			throw Exceptions.UnauthorizedException.getInstance(msg);
+		try {
+			this.assignmentApi.assertProjectEnabled(project.getId(), project);
+		} catch (Exception e) {
+			throw Exceptions.UnauthorizedException.getInstance(e);
 		}
 	}
 
@@ -242,5 +230,47 @@ public class AuthInfo {
 				throw Exceptions.AuthMethodNotSupportedException.getInstance();
 			}
 		}
+	}
+
+	public Scope getScope() {
+		return scope;
+	}
+
+	public void setScope(Scope scope) {
+		this.scope = scope;
+	}
+
+
+	public static class Scope {
+
+		private String domainid;
+		private String projectid;
+		private Trust trustRef;
+
+
+		public String getDomainid() {
+			return domainid;
+		}
+
+		public void setDomainid(String domainid) {
+			this.domainid = domainid;
+		}
+
+		public String getProjectid() {
+			return projectid;
+		}
+
+		public void setProjectid(String projectid) {
+			this.projectid = projectid;
+		}
+
+		public Trust getTrustRef() {
+			return trustRef;
+		}
+
+		public void setTrustRef(Trust trustRef) {
+			this.trustRef = trustRef;
+		}
+
 	}
 }

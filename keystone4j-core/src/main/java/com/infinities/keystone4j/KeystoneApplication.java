@@ -50,7 +50,7 @@ import com.infinities.keystone4j.identity.controller.impl.GroupV3ControllerFacto
 import com.infinities.keystone4j.identity.controller.impl.UserV3ControllerFactory;
 import com.infinities.keystone4j.identity.driver.IdentityDriverFactory;
 import com.infinities.keystone4j.jpa.EntityManagerInterceptor;
-import com.infinities.keystone4j.main.PublicResource;
+import com.infinities.keystone4j.main.AdminResource;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.PolicyDriver;
 import com.infinities.keystone4j.policy.api.PolicyApiFactory;
@@ -151,6 +151,6 @@ public class KeystoneApplication extends ResourceConfig {
 		this.register(RequestBodySizeLimiter.class);
 		this.register(ObjectMapperResolver.class);
 		this.register(JacksonFeature.class);
-		this.register(PublicResource.class);
+		this.register(AdminResource.class);
 	}
 }

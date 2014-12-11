@@ -1,16 +1,18 @@
 package com.infinities.keystone4j.model.assignment;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.model.identity.User;
 
-//@Entity
-//@Table(name = "ASSIGNMENT", schema = "PUBLIC", catalog = "PUBLIC")
+@Entity
+@Table(name = "ASSIGNMENT", schema = "PUBLIC", catalog = "PUBLIC")
 public class Assignment extends BaseEntity implements java.io.Serializable {
 
 	/**

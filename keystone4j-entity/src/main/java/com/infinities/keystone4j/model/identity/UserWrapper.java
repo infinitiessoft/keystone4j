@@ -1,10 +1,8 @@
 package com.infinities.keystone4j.model.identity;
 
-import javax.ws.rs.container.ContainerRequestContext;
+import com.infinities.keystone4j.model.MemberWrapper;
 
-import com.infinities.keystone4j.ReferentialLinkUtils;
-
-public class UserWrapper {
+public class UserWrapper implements MemberWrapper<User> {
 
 	private User user;
 
@@ -13,13 +11,10 @@ public class UserWrapper {
 
 	}
 
-	public UserWrapper(User user, ContainerRequestContext context) {
-		this(user, context.getUriInfo().getBaseUri().toASCIIString() + "v3/users/");
-	}
-
-	public UserWrapper(User user, String baseUrl) {
+	public UserWrapper(User user) {
 		this.user = user;
-		ReferentialLinkUtils.instance.addSelfReferentialLink(user, baseUrl);
+		// ReferentialLinkUtils.instance.addSelfReferentialLink(user,
+		// baseUrl);
 	}
 
 	public User getUser() {
@@ -30,4 +25,8 @@ public class UserWrapper {
 		this.user = user;
 	}
 
+	@Override
+	public void setRef(User ref) {
+		this.user = ref;
+	}
 }

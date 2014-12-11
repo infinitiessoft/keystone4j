@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.KeystoneContext;
 
+//keystone.middleware.core.TokenAuthMiddleware 20141128
 @Priority(1002)
 public class TokenAuthMiddleware implements Middleware {
 
@@ -21,9 +22,9 @@ public class TokenAuthMiddleware implements Middleware {
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
 		logger.debug("enter TokenAuthMiddleware filter");
-		String tokenid = null;
+		String token = null;
 		if (requestContext.getHeaders().containsKey(AUTH_TOKEN_HEADER)) {
-			tokenid = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER).replace("[null]", "");
+			token = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER).replace("[null]", "").trim();
 		}
 
 		KeystoneContext context = null;
@@ -35,10 +36,10 @@ public class TokenAuthMiddleware implements Middleware {
 			context = new KeystoneContext();
 		}
 
-		context.setTokenid(tokenid);
+		context.setTokenid(token);
 		String subjectTokenid = null;
 		if (requestContext.getHeaders().containsKey(SUBJECT_TOKEN_HEADER)) {
-			subjectTokenid = requestContext.getHeaders().getFirst(SUBJECT_TOKEN_HEADER).replace("[null]", "");
+			subjectTokenid = requestContext.getHeaders().getFirst(SUBJECT_TOKEN_HEADER).replace("[null]", "").trim();
 		}
 		if (!Strings.isNullOrEmpty(subjectTokenid)) {
 			context.setSubjectTokenid(subjectTokenid);

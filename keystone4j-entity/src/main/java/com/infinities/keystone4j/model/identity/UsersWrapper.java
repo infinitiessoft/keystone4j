@@ -2,27 +2,23 @@ package com.infinities.keystone4j.model.identity;
 
 import java.util.List;
 
-import javax.ws.rs.container.ContainerRequestContext;
-
-import com.fasterxml.jackson.annotation.JsonView;
-import com.infinities.keystone4j.ReferentialLinkUtils;
+import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.common.Links;
-import com.infinities.keystone4j.model.utils.Views;
 
-public class UsersWrapper {
+public class UsersWrapper implements CollectionWrapper<User> {
 
-	@JsonView(Views.Basic.class)
 	private List<User> users;
+	private boolean truncated;
+
 	private Links links = new Links();
 
 
-	public UsersWrapper(List<User> users, ContainerRequestContext context) {
-		String baseUrl = context.getUriInfo().getBaseUri().toASCIIString() + "v3/users/";
+	public UsersWrapper() {
+
+	}
+
+	public UsersWrapper(List<User> users) {
 		this.users = users;
-		for (User user : users) {
-			ReferentialLinkUtils.instance.addSelfReferentialLink(user, baseUrl);
-		}
-		links.setSelf(context.getUriInfo().getRequestUri().toASCIIString());
 	}
 
 	public List<User> getUsers() {
@@ -33,12 +29,29 @@ public class UsersWrapper {
 		this.users = users;
 	}
 
+	@Override
 	public Links getLinks() {
 		return links;
 	}
 
+	@Override
 	public void setLinks(Links links) {
 		this.links = links;
+	}
+
+	@Override
+	public boolean isTruncated() {
+		return truncated;
+	}
+
+	@Override
+	public void setTruncated(boolean truncated) {
+		this.truncated = truncated;
+	}
+
+	@Override
+	public void setRefs(List<User> refs) {
+		this.users = refs;
 	}
 
 }

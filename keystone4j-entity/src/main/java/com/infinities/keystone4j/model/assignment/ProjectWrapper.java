@@ -1,25 +1,20 @@
 package com.infinities.keystone4j.model.assignment;
 
-import javax.ws.rs.container.ContainerRequestContext;
+import com.infinities.keystone4j.model.MemberWrapper;
 
-import com.infinities.keystone4j.ReferentialLinkUtils;
-
-public class ProjectWrapper {
+public class ProjectWrapper implements MemberWrapper<Project> {
 
 	private Project project;
 
-
-	public ProjectWrapper(Project project, ContainerRequestContext context) {
-		this(project, context.getUriInfo().getBaseUri().toASCIIString() + "v3/projects/");
-	}
 
 	public ProjectWrapper() {
 
 	}
 
-	public ProjectWrapper(Project project, String baseUrl) {
+	public ProjectWrapper(Project project) {
 		this.project = project;
-		ReferentialLinkUtils.instance.addSelfReferentialLink(project, baseUrl);
+		// ReferentialLinkUtils.instance.addSelfReferentialLink(project,
+		// baseUrl);
 	}
 
 	public Project getProject() {
@@ -30,4 +25,8 @@ public class ProjectWrapper {
 		this.project = project;
 	}
 
+	@Override
+	public void setRef(Project ref) {
+		this.project = ref;
+	}
 }

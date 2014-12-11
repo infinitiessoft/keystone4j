@@ -1,19 +1,19 @@
 package com.infinities.keystone4j.catalog.controller;
 
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Service;
-import com.infinities.keystone4j.model.catalog.ServiceWrapper;
-import com.infinities.keystone4j.model.catalog.ServicesWrapper;
 
 public interface ServiceV3Controller {
 
-	ServiceWrapper createService(Service service);
+	MemberWrapper<Service> createService(Service service) throws Exception;
 
-	ServicesWrapper listServices(String type, int page, int perPage);
+	CollectionWrapper<Service> listServices() throws Exception;
 
-	ServiceWrapper getService(String serviceid);
+	MemberWrapper<Service> getService(String serviceid) throws Exception;
 
-	ServiceWrapper updateService(String serviceid, Service service);
+	MemberWrapper<Service> updateService(String serviceid, Service service) throws Exception;
 
-	void deleteService(String serviceid);
+	void deleteService(String serviceid) throws Exception;
 
 }

@@ -18,7 +18,7 @@ import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.auth.TokenIdAndData;
 import com.infinities.keystone4j.model.catalog.Catalog;
 import com.infinities.keystone4j.model.catalog.Endpoint;
 import com.infinities.keystone4j.model.common.Link;
@@ -57,7 +57,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 	}
 
 	@Override
-	public TokenMetadata issueV3Token(String userid, List<String> methodNames, Date expiresAt, String projectid,
+	public TokenIdAndData issueV3Token(String userid, List<String> methodNames, Date expiresAt, String projectid,
 			String domainid, AuthContext authContext, Trust trust, Token token, boolean includeCatalog) {
 		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
 		if (enabled && trust == null && token != null && token.getTrust() != null) {
@@ -89,7 +89,7 @@ public abstract class TokenProviderBaseDriver implements TokenProviderDriver {
 		token = this.tokenApi.createToken(token);
 		tokenData.getToken().setToken(token);
 
-		return new TokenMetadata(tokenid, tokenData);
+		return new TokenIdAndData(tokenid, tokenData);
 	}
 
 	@Override

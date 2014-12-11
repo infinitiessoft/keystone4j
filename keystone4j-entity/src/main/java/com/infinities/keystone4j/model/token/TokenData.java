@@ -1,6 +1,7 @@
 package com.infinities.keystone4j.model.token;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.model.utils.ISO8601DateAdapter;
 import com.infinities.keystone4j.model.utils.Views;
 
-public class TokenData {
+public class TokenData implements ITokenData {
 
 	private List<String> methods = new ArrayList<String>(0);
 	private String extras;
@@ -31,10 +32,10 @@ public class TokenData {
 	private Trust trust;
 	@XmlJavaTypeAdapter(value = ISO8601DateAdapter.class, type = Date.class)
 	@XmlElement(name = "expires_at")
-	private Date expireAt;
+	private Calendar expireAt;
 	@XmlJavaTypeAdapter(value = ISO8601DateAdapter.class, type = Date.class)
 	@XmlElement(name = "issued_at")
-	private Date issuedAt;
+	private Calendar issuedAt;
 	private Token token;
 	private Bind bind;
 
@@ -133,20 +134,20 @@ public class TokenData {
 	}
 
 	@JsonView(Views.AuthenticateForToken.class)
-	public Date getExpireAt() {
+	public Calendar getExpireAt() {
 		return expireAt;
 	}
 
-	public void setExpireAt(Date expireAt) {
+	public void setExpireAt(Calendar expireAt) {
 		this.expireAt = expireAt;
 	}
 
 	@JsonView(Views.AuthenticateForToken.class)
-	public Date getIssuedAt() {
+	public Calendar getIssuedAt() {
 		return issuedAt;
 	}
 
-	public void setIssuedAt(Date issuedAt) {
+	public void setIssuedAt(Calendar issuedAt) {
 		this.issuedAt = issuedAt;
 	}
 

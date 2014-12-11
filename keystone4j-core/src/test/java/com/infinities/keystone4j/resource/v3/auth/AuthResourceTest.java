@@ -35,7 +35,7 @@ import com.infinities.keystone4j.model.auth.AuthV3;
 import com.infinities.keystone4j.model.auth.AuthV3Wrapper;
 import com.infinities.keystone4j.model.auth.Identity;
 import com.infinities.keystone4j.model.auth.Password;
-import com.infinities.keystone4j.model.auth.TokenMetadata;
+import com.infinities.keystone4j.model.auth.TokenIdAndData;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.model.token.TokenData;
@@ -55,7 +55,7 @@ public class AuthResourceTest extends JerseyTest {
 	private Domain domain;
 	private Identity identity;
 	private Password password;
-	private TokenMetadata tokenMetadata;
+	private TokenIdAndData tokenMetadata;
 	private String tokenid = "newtokenid";
 	private TokenData tokenData;
 	private Date date;
@@ -115,7 +115,7 @@ public class AuthResourceTest extends JerseyTest {
 		returnUser.setPassword("secrete");
 		returnUser.setDomain(domain);
 		tokenData.setUser(returnUser);
-		tokenMetadata = new TokenMetadata(tokenid, new TokenDataWrapper(tokenData));
+		tokenMetadata = new TokenIdAndData(tokenid, new TokenDataWrapper(tokenData));
 
 		return new AuthResourceTestApplication(tokenApi, tokenProviderApi, assignmentApi, identityApi, policyApi, trustApi);
 

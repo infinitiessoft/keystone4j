@@ -1,19 +1,19 @@
 package com.infinities.keystone4j.policy.controller;
 
-import com.infinities.keystone4j.model.policy.PoliciesWrapper;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.policy.Policy;
-import com.infinities.keystone4j.model.policy.PolicyWrapper;
 
 public interface PolicyV3Controller {
 
-	PolicyWrapper createPolicy(Policy policy);
+	MemberWrapper<Policy> createPolicy(Policy policy) throws Exception;
 
-	PoliciesWrapper listPolicies(String type, int page, int perPage);
+	CollectionWrapper<Policy> listPolicies() throws Exception;
 
-	PolicyWrapper getPolicy(String policyid);
+	MemberWrapper<Policy> getPolicy(String policyid) throws Exception;
 
-	PolicyWrapper updatePolicy(String policyid, Policy policy);
+	MemberWrapper<Policy> updatePolicy(String policyid, Policy policy) throws Exception;
 
-	void deletePolicy(String policyid);
+	void deletePolicy(String policyid) throws Exception;
 
 }

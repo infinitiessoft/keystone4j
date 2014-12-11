@@ -1,6 +1,8 @@
 package com.infinities.keystone4j.model.token.v2;
 
-public class TokenV2DataWrapper {
+import com.infinities.keystone4j.model.token.IToken;
+
+public class TokenV2DataWrapper implements IToken {
 
 	private Access access;
 

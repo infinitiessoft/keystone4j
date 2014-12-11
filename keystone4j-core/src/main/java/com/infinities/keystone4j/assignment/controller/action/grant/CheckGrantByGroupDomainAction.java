@@ -1,0 +1,37 @@
+package com.infinities.keystone4j.assignment.controller.action.grant;
+
+import javax.ws.rs.container.ContainerRequestContext;
+
+import com.infinities.keystone4j.ProtectedAction;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+public class CheckGrantByGroupDomainAction extends AbstractGrantAction implements ProtectedAction<Role> {
+
+	private final String roleid;
+	private final String groupid;
+	private final String domainid;
+
+
+	public CheckGrantByGroupDomainAction(AssignmentApi assignmentApi, IdentityApi identityApi,
+			TokenProviderApi tokenProviderApi, String roleid, String groupid, String domainid) {
+		super(assignmentApi, identityApi, tokenProviderApi);
+		this.roleid = roleid;
+		this.groupid = groupid;
+		this.domainid = domainid;
+	}
+
+	@Override
+	public MemberWrapper<Role> execute(ContainerRequestContext request) {
+		assignmentApi.getGrantByGroupDomain(roleid, groupid, domainid, checkIfInherited(request));
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return "check_grant";
+	}
+}

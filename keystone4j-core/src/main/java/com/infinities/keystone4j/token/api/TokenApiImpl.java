@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
-import com.infinities.keystone4j.token.command.CreateTokenCommand;
-import com.infinities.keystone4j.token.command.DeleteTokenCommand;
-import com.infinities.keystone4j.token.command.DeleteTokensForTrustCommand;
-import com.infinities.keystone4j.token.command.DeleteTokensForUserCommand;
-import com.infinities.keystone4j.token.command.GetTokenCommand;
-import com.infinities.keystone4j.token.command.ListRevokedTokensCommand;
+import com.infinities.keystone4j.token.api.command.CreateTokenCommand;
+import com.infinities.keystone4j.token.api.command.DeleteTokenCommand;
+import com.infinities.keystone4j.token.api.command.DeleteTokensForTrustCommand;
+import com.infinities.keystone4j.token.api.command.DeleteTokensForUserCommand;
+import com.infinities.keystone4j.token.api.command.GetTokenCommand;
+import com.infinities.keystone4j.token.api.command.ListRevokedTokensCommand;
 import com.infinities.keystone4j.trust.TrustApi;
 
 public class TokenApiImpl implements TokenApi {

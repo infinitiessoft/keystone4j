@@ -1,158 +1,131 @@
 package com.infinities.keystone4j.identity.controller.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
-import com.infinities.keystone4j.Action;
-import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.FilterProtectedAction;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterCheckDecorator;
-import com.infinities.keystone4j.decorator.PaginateDecorator;
-import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
+import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.identity.action.user.AddUserToGroupAction;
-import com.infinities.keystone4j.identity.action.user.ChangePasswordAction;
-import com.infinities.keystone4j.identity.action.user.CheckUserInGroupAction;
-import com.infinities.keystone4j.identity.action.user.CreateUserAction;
-import com.infinities.keystone4j.identity.action.user.DeleteUserAction;
-import com.infinities.keystone4j.identity.action.user.GetUserAction;
-import com.infinities.keystone4j.identity.action.user.ListUsersAction;
-import com.infinities.keystone4j.identity.action.user.ListUsersInGroupAction;
-import com.infinities.keystone4j.identity.action.user.RemoveUserFromGroupAction;
-import com.infinities.keystone4j.identity.action.user.UpdateUserAction;
-import com.infinities.keystone4j.identity.callback.CheckUserAndGroupProtection;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
+import com.infinities.keystone4j.identity.controller.action.user.AddUserToGroupAction;
+import com.infinities.keystone4j.identity.controller.action.user.ChangePasswordAction;
+import com.infinities.keystone4j.identity.controller.action.user.CheckUserInGroupAction;
+import com.infinities.keystone4j.identity.controller.action.user.CreateUserAction;
+import com.infinities.keystone4j.identity.controller.action.user.DeleteUserAction;
+import com.infinities.keystone4j.identity.controller.action.user.GetUserAction;
+import com.infinities.keystone4j.identity.controller.action.user.ListUsersAction;
+import com.infinities.keystone4j.identity.controller.action.user.ListUsersInGroupAction;
+import com.infinities.keystone4j.identity.controller.action.user.RemoveUserFromGroupAction;
+import com.infinities.keystone4j.identity.controller.action.user.UpdateUserAction;
+import com.infinities.keystone4j.identity.controller.callback.CheckUserAndGroupProtection;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.identity.UserParam;
-import com.infinities.keystone4j.model.identity.UserWrapper;
-import com.infinities.keystone4j.model.identity.UsersWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.identity.controllers.UserV3 20141211
 
 public class UserV3ControllerImpl extends BaseController implements UserV3Controller {
 
-	private final AssignmentApi assignmentApi;
 	private final IdentityApi identityApi;
-	private final TokenApi tokenApi;
+	private final TokenProviderApi tokenProviderApi;
 	private final PolicyApi policyApi;
-	private final Map<String, Object> parMap;
 
 
-	public UserV3ControllerImpl(AssignmentApi assignmentApi, IdentityApi identityApi, TokenApi tokenApi, PolicyApi policyApi) {
-		this.assignmentApi = assignmentApi;
+	public UserV3ControllerImpl(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.identityApi = identityApi;
-		this.tokenApi = tokenApi;
+		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
-		parMap = Maps.newHashMap();
 	}
 
 	@Override
-	public UserWrapper createUser(User user) {
-		parMap.put("user", user);
-		Action<User> command = new PolicyCheckDecorator<User>(new CreateUserAction(assignmentApi, tokenApi, identityApi,
-				user), null, tokenApi, policyApi, parMap);
-		User ret = command.execute(getRequest());
-		return new UserWrapper(ret, getRequest());
+	public MemberWrapper<User> createUser(User user) throws Exception {
+		ProtectedAction<User> command = new ProtectedDecorator<User>(new CreateUserAction(identityApi, tokenProviderApi,
+				user), tokenProviderApi, policyApi);
+		MemberWrapper<User> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public UsersWrapper listUsers(String domainid, String email, Boolean enabled, String name, int page, int perPage) {
-		parMap.put("domainid", domainid);
-		parMap.put("email", email);
-		parMap.put("enabled", enabled);
-		parMap.put("name", name);
-		Action<List<User>> command = new FilterCheckDecorator<List<User>>(new PaginateDecorator<User>(new ListUsersAction(
-				assignmentApi, tokenApi, identityApi, domainid, email, enabled, name), page, perPage), tokenApi, policyApi,
-				parMap);
-
-		List<User> ret = command.execute(getRequest());
-		return new UsersWrapper(ret, getRequest());
+	public CollectionWrapper<User> listUsers() throws Exception {
+		FilterProtectedAction<User> command = new FilterProtectedDecorator<User>(new ListUsersAction(identityApi,
+				tokenProviderApi), tokenProviderApi, policyApi);
+		CollectionWrapper<User> ret = command.execute(getRequest(), "domain_id", "enabled", "name");
+		return ret;
 	}
 
 	@Override
-	public UserWrapper getUser(String userid) {
-		parMap.put("userid", userid);
-		Action<User> command = new PolicyCheckDecorator<User>(
-				new GetUserAction(assignmentApi, tokenApi, identityApi, userid), null, tokenApi, policyApi, parMap);
-		User ret = command.execute(getRequest());
-		return new UserWrapper(ret, getRequest());
+	public MemberWrapper<User> getUser(String userid) throws Exception {
+		User ref = getMemberFromDriver(userid);
+		ProtectedAction<User> command = new ProtectedDecorator<User>(
+				new GetUserAction(identityApi, tokenProviderApi, userid), tokenProviderApi, policyApi, ref);
+		MemberWrapper<User> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public UserWrapper updateUser(String userid, User user) {
-		parMap.put("userid", userid);
-		parMap.put("user", user);
-		Action<User> command = new PolicyCheckDecorator<User>(new UpdateUserAction(assignmentApi, tokenApi, identityApi,
-				userid, user), null, tokenApi, policyApi, parMap);
-		User ret = command.execute(getRequest());
-		return new UserWrapper(ret, getRequest());
+	public MemberWrapper<User> updateUser(String userid, User user) throws Exception {
+		User ref = getMemberFromDriver(userid);
+		ProtectedAction<User> command = new ProtectedDecorator<User>(new UpdateUserAction(identityApi, tokenProviderApi,
+				userid, user), tokenProviderApi, policyApi, ref);
+		MemberWrapper<User> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public void deleteUser(String userid) {
-		parMap.put("userid", userid);
-		Action<User> command = new PolicyCheckDecorator<User>(new DeleteUserAction(assignmentApi, tokenApi, identityApi,
-				userid), null, tokenApi, policyApi, parMap);
+	public void deleteUser(String userid) throws Exception {
+		User ref = getMemberFromDriver(userid);
+		ProtectedAction<User> command = new ProtectedDecorator<User>(new DeleteUserAction(identityApi, tokenProviderApi,
+				userid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
 	}
 
 	@Override
-	public UsersWrapper listUsersInGroup(String groupid, String domainid, String email, Boolean enabled, String name,
-			int page, int perPage) {
-		parMap.put("groupid", groupid);
-		parMap.put("domainid", domainid);
-		parMap.put("email", email);
-		parMap.put("enabled", enabled);
-
-		Action<List<User>> command = new FilterCheckDecorator<List<User>>(new PaginateDecorator<User>(
-				new ListUsersInGroupAction(assignmentApi, tokenApi, identityApi, groupid, domainid, email, enabled, name),
-				page, perPage), tokenApi, policyApi, parMap);
-
-		List<User> ret = command.execute(getRequest());
-		return new UsersWrapper(ret, getRequest());
+	public CollectionWrapper<User> listUsersInGroup(String groupid) throws Exception {
+		FilterProtectedAction<User> command = new FilterProtectedDecorator<User>(new ListUsersInGroupAction(identityApi,
+				tokenProviderApi, groupid), tokenProviderApi, policyApi);
+		CollectionWrapper<User> ret = command.execute(getRequest(), "domain_id", "enabled", "name");
+		return ret;
 	}
 
 	@Override
-	public void addUserToGroup(String groupid, String userid) {
-		parMap.put("groupid", groupid);
-		parMap.put("userid", userid);
-		CheckUserAndGroupProtection callback = new CheckUserAndGroupProtection(userid, groupid, identityApi, tokenApi,
-				policyApi);
-		Action<User> command = new PolicyCheckDecorator<User>(new AddUserToGroupAction(assignmentApi, tokenApi, identityApi,
-				userid, groupid), callback, tokenApi, policyApi, parMap);
+	public void addUserToGroup(String groupid, String userid) throws Exception {
+		CheckUserAndGroupProtection callback = new CheckUserAndGroupProtection(userid, groupid, identityApi,
+				tokenProviderApi, policyApi);
+		ProtectedAction<User> command = new ProtectedDecorator<User>(new AddUserToGroupAction(identityApi, tokenProviderApi,
+				userid, groupid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
 	@Override
-	public void checkUserInGroup(String groupid, String userid) {
-		parMap.put("groupid", groupid);
-		parMap.put("userid", userid);
-		CheckUserAndGroupProtection callback = new CheckUserAndGroupProtection(userid, groupid, identityApi, tokenApi,
-				policyApi);
-		Action<User> command = new PolicyCheckDecorator<User>(new CheckUserInGroupAction(assignmentApi, tokenApi,
-				identityApi, userid, groupid), callback, tokenApi, policyApi, parMap);
+	public void checkUserInGroup(String groupid, String userid) throws Exception {
+		CheckUserAndGroupProtection callback = new CheckUserAndGroupProtection(userid, groupid, identityApi,
+				tokenProviderApi, policyApi);
+		ProtectedAction<User> command = new ProtectedDecorator<User>(new CheckUserInGroupAction(identityApi,
+				tokenProviderApi, userid, groupid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
 	@Override
-	public void removeUserFromGroup(String groupid, String userid) {
-		parMap.put("groupid", groupid);
-		parMap.put("userid", userid);
-		CheckUserAndGroupProtection callback = new CheckUserAndGroupProtection(userid, groupid, identityApi, tokenApi,
-				policyApi);
-		Action<User> command = new PolicyCheckDecorator<User>(new RemoveUserFromGroupAction(assignmentApi, tokenApi,
-				identityApi, userid, groupid), callback, tokenApi, policyApi, parMap);
+	public void removeUserFromGroup(String groupid, String userid) throws Exception {
+		CheckUserAndGroupProtection callback = new CheckUserAndGroupProtection(userid, groupid, identityApi,
+				tokenProviderApi, policyApi);
+		ProtectedAction<User> command = new ProtectedDecorator<User>(new RemoveUserFromGroupAction(identityApi,
+				tokenProviderApi, userid, groupid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
 	@Override
-	public void changePassword(String userid, UserParam user) {
-		parMap.put("user", user);
-		parMap.put("userid", userid);
-		Action<User> command = new PolicyCheckDecorator<User>(new ChangePasswordAction(assignmentApi, tokenApi, identityApi,
-				userid, user), null, tokenApi, policyApi, parMap);
+	public void changePassword(String userid, UserParam user) throws Exception {
+		User ref = getMemberFromDriver(userid);
+		ProtectedAction<User> command = new ProtectedDecorator<User>(new ChangePasswordAction(identityApi, tokenProviderApi,
+				userid, user), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
 	}
 
+	public User getMemberFromDriver(String userid) {
+		return identityApi.getUser(userid);
+	}
 }

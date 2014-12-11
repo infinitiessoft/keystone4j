@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.credential.CredentialDriver;
-import com.infinities.keystone4j.credential.command.CreateCredentialCommand;
-import com.infinities.keystone4j.credential.command.DeleteCredentialCommand;
-import com.infinities.keystone4j.credential.command.DeleteCredentialsForProjectCommand;
-import com.infinities.keystone4j.credential.command.DeleteCredentialsForUserCommand;
-import com.infinities.keystone4j.credential.command.GetCredentialCommand;
-import com.infinities.keystone4j.credential.command.ListCredentialsCommand;
-import com.infinities.keystone4j.credential.command.UpdateCredentialCommand;
+import com.infinities.keystone4j.credential.api.command.CreateCredentialCommand;
+import com.infinities.keystone4j.credential.api.command.DeleteCredentialCommand;
+import com.infinities.keystone4j.credential.api.command.DeleteCredentialsForProjectCommand;
+import com.infinities.keystone4j.credential.api.command.DeleteCredentialsForUserCommand;
+import com.infinities.keystone4j.credential.api.command.GetCredentialCommand;
+import com.infinities.keystone4j.credential.api.command.ListCredentialsCommand;
+import com.infinities.keystone4j.credential.api.command.UpdateCredentialCommand;
 import com.infinities.keystone4j.model.credential.Credential;
 
 public class CredentialApiImpl implements CredentialApi {

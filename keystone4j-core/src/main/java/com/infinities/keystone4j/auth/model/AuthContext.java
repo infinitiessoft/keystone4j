@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.token.Bind;
 
+@Deprecated
 public class AuthContext {
 
 	@XmlElement(name = "method_names")

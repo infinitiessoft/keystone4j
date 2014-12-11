@@ -2,24 +2,23 @@ package com.infinities.keystone4j.model.identity;
 
 import java.util.List;
 
-import javax.ws.rs.container.ContainerRequestContext;
-
-import com.infinities.keystone4j.ReferentialLinkUtils;
+import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.common.Links;
 
-public class GroupsWrapper {
+public class GroupsWrapper implements CollectionWrapper<Group> {
 
 	private List<Group> groups;
+	private boolean truncated;
+
 	private Links links = new Links();
 
 
-	public GroupsWrapper(List<Group> groups, ContainerRequestContext context) {
-		String baseUrl = context.getUriInfo().getBaseUri().toASCIIString() + "v3/groups/";
+	public GroupsWrapper() {
+
+	}
+
+	public GroupsWrapper(List<Group> groups) {
 		this.groups = groups;
-		for (Group group : groups) {
-			ReferentialLinkUtils.instance.addSelfReferentialLink(group, baseUrl);
-		}
-		links.setSelf(context.getUriInfo().getRequestUri().toASCIIString());
 	}
 
 	public List<Group> getGroups() {
@@ -30,12 +29,29 @@ public class GroupsWrapper {
 		this.groups = groups;
 	}
 
+	@Override
 	public Links getLinks() {
 		return links;
 	}
 
+	@Override
 	public void setLinks(Links links) {
 		this.links = links;
+	}
+
+	@Override
+	public boolean isTruncated() {
+		return truncated;
+	}
+
+	@Override
+	public void setTruncated(boolean truncated) {
+		this.truncated = truncated;
+	}
+
+	@Override
+	public void setRefs(List<Group> refs) {
+		this.groups = refs;
 	}
 
 }

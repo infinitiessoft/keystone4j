@@ -8,19 +8,21 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.controller.DomainV3Controller;
 import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.assignment.controllers.DomainV3 20141209
 
 public class DomainV3ControllerFactory extends BaseControllerFactory implements Factory<DomainV3Controller> {
 
 	private final AssignmentApi assignmentApi;
-	private final TokenApi tokenApi;
+	private final TokenProviderApi tokenProviderApi;
 	private final PolicyApi policyApi;
 
 
 	@Inject
-	public DomainV3ControllerFactory(AssignmentApi assignmentApi, TokenApi tokenApi, PolicyApi policyApi) {
+	public DomainV3ControllerFactory(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
-		this.tokenApi = tokenApi;
+		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
 	}
 
@@ -31,7 +33,7 @@ public class DomainV3ControllerFactory extends BaseControllerFactory implements 
 
 	@Override
 	public DomainV3Controller provide() {
-		DomainV3ControllerImpl controller = new DomainV3ControllerImpl(assignmentApi, tokenApi, policyApi);
+		DomainV3ControllerImpl controller = new DomainV3ControllerImpl(assignmentApi, tokenProviderApi, policyApi);
 		controller.setRequest(getRequest());
 		return controller;
 	}

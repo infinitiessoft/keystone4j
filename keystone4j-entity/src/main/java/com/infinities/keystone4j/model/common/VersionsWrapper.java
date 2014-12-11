@@ -1,28 +1,28 @@
 package com.infinities.keystone4j.model.common;
 
-import java.util.Set;
+import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class VersionsWrapper {
 
-	private Set<Version> versions;
+	private Collection<Version> versions;
 
 
 	public VersionsWrapper() {
 
 	}
 
-	public VersionsWrapper(Set<Version> versions) {
+	public VersionsWrapper(Collection<Version> versions) {
 		this.versions = versions;
 	}
 
-	public Set<Version> getVersions() {
+	public Collection<Version> getVersions() {
 		return versions;
 	}
 
-	public void setVersions(Set<Version> versions) {
+	public void setVersions(Collection<Version> versions) {
 		this.versions = versions;
 	}
 

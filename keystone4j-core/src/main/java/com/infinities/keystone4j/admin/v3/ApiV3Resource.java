@@ -7,9 +7,13 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.common.api.VersionApi;
+import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.common.VersionWrapper;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -36,11 +40,11 @@ public class ApiV3Resource {
 		return RoleV3Resource.class;
 	}
 
-	// @Path("/role_assignments")
-	// // assignment
-	// public Class<RoleAssignmentV3Resource> getRoleAssignmentV3Resource() {
-	// return RoleAssignmentV3Resource.class;
-	// }
+	@Path("/role_assignments")
+	// assignment
+	public Class<RoleAssignmentV3Resource> getRoleAssignmentV3Resource() {
+		return RoleAssignmentV3Resource.class;
+	}
 
 	@Path("/projects")
 	// assignment
@@ -54,11 +58,16 @@ public class ApiV3Resource {
 		return DomainResource.class;
 	}
 
-	// @Path("/OS-INHERIT")
-	// // assignment
-	// public Class<OSInheritResource> getOSInheritResource() {
-	// return OSInheritResource.class;
-	// }
+	@Path("/OS-INHERIT")
+	// assignment
+	public Class<OSInheritResource> getOSInheritResource() {
+		if (Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean()) {
+			return OSInheritResource.class;
+		} else {
+			throw Exceptions.NotFoundException.getInstance();
+		}
+	}
+
 	@Path("/auth")
 	// auth
 	public Class<AuthResource> getAuthResource() {
@@ -107,6 +116,7 @@ public class ApiV3Resource {
 	// return EndpointFilterResource.class;
 	// }
 
+	// keystone.contrib.simple_cert.routers 20141129
 	@Path("/OS-SIMPLE-CERT")
 	// trusts
 	public Class<SimpleCertResource> getSimpleCertResource() {
@@ -114,8 +124,8 @@ public class ApiV3Resource {
 	}
 
 	@GET
-	public VersionWrapper getVersions() throws MalformedURLException {
-		return versionApi.getVersionV3();
+	public VersionWrapper getVersions(@Context ContainerRequestContext context) throws MalformedURLException {
+		return versionApi.getVersionV3(context);
 	}
 
 }

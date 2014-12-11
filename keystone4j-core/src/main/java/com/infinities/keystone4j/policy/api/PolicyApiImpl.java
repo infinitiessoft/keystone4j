@@ -8,12 +8,12 @@ import com.infinities.keystone4j.model.policy.PolicyEntity;
 import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.PolicyDriver;
-import com.infinities.keystone4j.policy.command.CreatePolicyCommand;
-import com.infinities.keystone4j.policy.command.DeletePolicyCommand;
-import com.infinities.keystone4j.policy.command.EnforceCommand;
-import com.infinities.keystone4j.policy.command.GetPolicyCommand;
-import com.infinities.keystone4j.policy.command.ListPoliciesCommand;
-import com.infinities.keystone4j.policy.command.UpdatePolicyCommand;
+import com.infinities.keystone4j.policy.api.command.CreatePolicyCommand;
+import com.infinities.keystone4j.policy.api.command.DeletePolicyCommand;
+import com.infinities.keystone4j.policy.api.command.EnforceCommand;
+import com.infinities.keystone4j.policy.api.command.GetPolicyCommand;
+import com.infinities.keystone4j.policy.api.command.ListPoliciesCommand;
+import com.infinities.keystone4j.policy.api.command.UpdatePolicyCommand;
 
 public class PolicyApiImpl implements PolicyApi {
 

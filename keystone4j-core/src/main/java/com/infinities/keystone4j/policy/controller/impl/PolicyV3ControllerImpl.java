@@ -1,82 +1,73 @@
 package com.infinities.keystone4j.policy.controller.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
-import com.infinities.keystone4j.Action;
+import com.infinities.keystone4j.FilterProtectedAction;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterCheckDecorator;
-import com.infinities.keystone4j.decorator.PaginateDecorator;
-import com.infinities.keystone4j.decorator.PolicyCheckDecorator;
-import com.infinities.keystone4j.model.policy.PoliciesWrapper;
+import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.policy.Policy;
-import com.infinities.keystone4j.model.policy.PolicyWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.policy.action.CreatePolicyAction;
-import com.infinities.keystone4j.policy.action.DeletePolicyAction;
-import com.infinities.keystone4j.policy.action.GetPolicyAction;
-import com.infinities.keystone4j.policy.action.ListPoliciesAction;
-import com.infinities.keystone4j.policy.action.UpdatePolicyAction;
 import com.infinities.keystone4j.policy.controller.PolicyV3Controller;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.policy.controller.action.CreatePolicyAction;
+import com.infinities.keystone4j.policy.controller.action.DeletePolicyAction;
+import com.infinities.keystone4j.policy.controller.action.GetPolicyAction;
+import com.infinities.keystone4j.policy.controller.action.ListPoliciesAction;
+import com.infinities.keystone4j.policy.controller.action.UpdatePolicyAction;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.policy.controllers.PolicyV3 20141211
 
 public class PolicyV3ControllerImpl extends BaseController implements PolicyV3Controller {
 
 	private final PolicyApi policyApi;
-	private final TokenApi tokenApi;
-	private final Map<String, Object> parMap;
+	private final TokenProviderApi tokenProviderApi;
 
 
-	public PolicyV3ControllerImpl(PolicyApi policyApi, TokenApi tokenApi) {
+	public PolicyV3ControllerImpl(PolicyApi policyApi, TokenProviderApi tokenProviderApi) {
 		this.policyApi = policyApi;
-		this.tokenApi = tokenApi;
-		parMap = Maps.newHashMap();
+		this.tokenProviderApi = tokenProviderApi;
+	}
+
+	// TODO Ignore validation.validated(schema.policy_create,'policy')
+	@Override
+	public MemberWrapper<Policy> createPolicy(Policy policy) throws Exception {
+		ProtectedAction<Policy> command = new ProtectedDecorator<Policy>(new CreatePolicyAction(policyApi, tokenProviderApi,
+				policy), tokenProviderApi, policyApi);
+		MemberWrapper<Policy> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public PolicyWrapper createPolicy(Policy policy) {
-		parMap.put("policy", policy);
-		Action<Policy> command = new PolicyCheckDecorator<Policy>(new CreatePolicyAction(policyApi, policy), null, tokenApi,
-				policyApi, parMap);
-		Policy ret = command.execute(getRequest());
-		return new PolicyWrapper(ret);
+	public CollectionWrapper<Policy> listPolicies() throws Exception {
+		FilterProtectedAction<Policy> command = new FilterProtectedDecorator<Policy>(new ListPoliciesAction(policyApi,
+				tokenProviderApi), tokenProviderApi, policyApi);
+		CollectionWrapper<Policy> ret = command.execute(getRequest(), "type");
+		return ret;
 	}
 
 	@Override
-	public PoliciesWrapper listPolicies(String type, int page, int perPage) {
-		parMap.put("type", type);
-		Action<List<Policy>> command = new FilterCheckDecorator<List<Policy>>(new PaginateDecorator<Policy>(
-				new ListPoliciesAction(policyApi, type), page, perPage), tokenApi, policyApi, parMap);
+	public MemberWrapper<Policy> getPolicy(String policyid) throws Exception {
+		ProtectedAction<Policy> command = new ProtectedDecorator<Policy>(new GetPolicyAction(policyApi, tokenProviderApi,
+				policyid), tokenProviderApi, policyApi);
+		MemberWrapper<Policy> ret = command.execute(getRequest());
+		return ret;
+	}
 
-		List<Policy> ret = command.execute(getRequest());
-		return new PoliciesWrapper(ret);
+	// TODO Ignore validation.validated(schema.policy_update,'policy')
+	@Override
+	public MemberWrapper<Policy> updatePolicy(String policyid, Policy policy) throws Exception {
+		ProtectedAction<Policy> command = new ProtectedDecorator<Policy>(new UpdatePolicyAction(policyApi, tokenProviderApi,
+				policyid, policy), tokenProviderApi, policyApi);
+		MemberWrapper<Policy> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public PolicyWrapper getPolicy(String policyid) {
-		parMap.put("policyid", policyid);
-		Action<Policy> command = new PolicyCheckDecorator<Policy>(new GetPolicyAction(policyApi, policyid), null, tokenApi,
-				policyApi, parMap);
-		Policy ret = command.execute(getRequest());
-		return new PolicyWrapper(ret);
-	}
-
-	@Override
-	public PolicyWrapper updatePolicy(String policyid, Policy policy) {
-		parMap.put("policyid", policyid);
-		parMap.put("policy", policy);
-		Action<Policy> command = new PolicyCheckDecorator<Policy>(new UpdatePolicyAction(policyApi, policyid, policy), null,
-				tokenApi, policyApi, parMap);
-		Policy ret = command.execute(getRequest());
-		return new PolicyWrapper(ret);
-	}
-
-	@Override
-	public void deletePolicy(String policyid) {
-		parMap.put("policyid", policyid);
-		Action<Policy> command = new PolicyCheckDecorator<Policy>(new DeletePolicyAction(policyApi, policyid), null,
-				tokenApi, policyApi, parMap);
+	public void deletePolicy(String policyid) throws Exception {
+		ProtectedAction<Policy> command = new ProtectedDecorator<Policy>(new DeletePolicyAction(policyApi, tokenProviderApi,
+				policyid), tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 

@@ -1,23 +1,34 @@
 package com.infinities.keystone4j.auth.controller;
 
+import javax.ws.rs.core.Response;
+
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.auth.AuthV3;
-import com.infinities.keystone4j.model.auth.TokenMetadata;
-import com.infinities.keystone4j.model.trust.SignedWrapper;
+import com.infinities.keystone4j.model.catalog.Catalog;
 
 public interface AuthController {
 
 	public final static String NOCATALOG = "nocatalog";
 
 
-	TokenMetadata authenticateForToken(AuthV3 auth);
+	Response authenticateForToken(AuthV3 auth) throws Exception;
 
-	void checkToken();
+	Response checkToken() throws Exception;
 
-	void revokeToken();
+	void revokeToken() throws Exception;
 
-	TokenMetadata validateToken();
+	Response validateToken() throws Exception;
 
-	SignedWrapper getRevocationList();
+	MemberWrapper<String> getRevocationList() throws Exception;
+
+	MemberWrapper<Catalog> getAuthCatalog() throws Exception;
+
+	CollectionWrapper<Project> getAuthProjects() throws Exception;
+
+	CollectionWrapper<Domain> getAuthDomains() throws Exception;
 
 	// keystone.common.cms.sign_token
 	// String getTokenId(Token token);

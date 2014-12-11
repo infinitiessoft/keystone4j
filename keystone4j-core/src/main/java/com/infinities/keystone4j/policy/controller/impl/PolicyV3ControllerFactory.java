@@ -7,18 +7,20 @@ import org.glassfish.hk2.api.Factory;
 import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.controller.PolicyV3Controller;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.policy.controllers.PolicyV3 20141211
 
 public class PolicyV3ControllerFactory extends BaseControllerFactory implements Factory<PolicyV3Controller> {
 
 	private final PolicyApi policyApi;
-	private final TokenApi tokenApi;
+	private final TokenProviderApi tokenProviderApi;
 
 
 	@Inject
-	public PolicyV3ControllerFactory(PolicyApi policyApi, TokenApi tokenApi) {
+	public PolicyV3ControllerFactory(PolicyApi policyApi, TokenProviderApi tokenProviderApi) {
 		this.policyApi = policyApi;
-		this.tokenApi = tokenApi;
+		this.tokenProviderApi = tokenProviderApi;
 	}
 
 	@Override
@@ -28,7 +30,7 @@ public class PolicyV3ControllerFactory extends BaseControllerFactory implements 
 
 	@Override
 	public PolicyV3Controller provide() {
-		return new PolicyV3ControllerImpl(policyApi, tokenApi);
+		return new PolicyV3ControllerImpl(policyApi, tokenProviderApi);
 	}
 
 }
