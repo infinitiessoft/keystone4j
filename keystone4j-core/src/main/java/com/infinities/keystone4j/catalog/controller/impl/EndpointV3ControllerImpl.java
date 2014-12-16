@@ -1,9 +1,6 @@
 package com.infinities.keystone4j.catalog.controller.impl;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Maps;
+import com.infinities.keystone4j.FilterProtectedAction;
 import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.controller.EndpointV3Controller;
@@ -14,74 +11,73 @@ import com.infinities.keystone4j.catalog.controller.action.endpoint.ListEndpoint
 import com.infinities.keystone4j.catalog.controller.action.endpoint.UpdateEndpointAction;
 import com.infinities.keystone4j.common.BaseController;
 import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
-import com.infinities.keystone4j.decorator.PaginateDecorator;
 import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Endpoint;
 import com.infinities.keystone4j.model.catalog.EndpointWrapper;
-import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+
+//keystone.catalog.controllers 20141216
 
 public class EndpointV3ControllerImpl extends BaseController implements EndpointV3Controller {
 
 	private final CatalogApi catalogApi;
-	private final TokenApi tokenApi;
+	private final TokenProviderApi tokenProviderApi;
 	private final PolicyApi policyApi;
-	private final Map<String, Object> parMap;
 
 
-	public EndpointV3ControllerImpl(CatalogApi catalogApi, TokenApi tokenApi, PolicyApi policyApi) {
+	public EndpointV3ControllerImpl(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.catalogApi = catalogApi;
-		this.tokenApi = tokenApi;
+		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
-		parMap = Maps.newHashMap();
 	}
 
 	@Override
-	public EndpointWrapper createEndpoint(Endpoint endpoint) {
-		parMap.put("endpoint", endpoint);
-		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new CreateEndpointAction(catalogApi, endpoint), null,
-				tokenApi, policyApi, parMap);
-		Endpoint ret = command.execute(getRequest());
-		return new EndpointWrapper(ret, getRequest());
+	public MemberWrapper<Endpoint> createEndpoint(Endpoint endpoint) throws Exception {
+		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new CreateEndpointAction(catalogApi,
+				tokenProviderApi, policyApi, endpoint), tokenProviderApi, policyApi);
+		MemberWrapper<Endpoint> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
-	public EndpointsWrapper listEndpoints(String interfaceType, String serviceid, int page, int perPage) {
-		parMap.put("serviceid", serviceid);
-		parMap.put("interfaceType", interfaceType);
-		ProtectedAction<List<Endpoint>> command = new FilterProtectedDecorator<List<Endpoint>>(new PaginateDecorator<Endpoint>(
-				new ListEndpointsAction(catalogApi, interfaceType, serviceid), page, perPage), tokenApi, policyApi, parMap);
-
-		List<Endpoint> ret = command.execute(getRequest());
-		return new EndpointsWrapper(ret, getRequest());
+	public CollectionWrapper<Endpoint> listEndpoints() throws Exception {
+		FilterProtectedAction<Endpoint> command = new FilterProtectedDecorator<Endpoint>(new ListEndpointsAction(catalogApi,
+				tokenProviderApi, policyApi), tokenProviderApi, policyApi);
+		CollectionWrapper<Endpoint> ret = command.execute(getRequest(), "interface", "service_id");
+		return ret;
 	}
 
 	@Override
-	public EndpointWrapper getEndpoint(String endpointid) {
-		parMap.put("endpointid", endpointid);
-		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new GetEndpointAction(catalogApi, endpointid), null,
-				tokenApi, policyApi, parMap);
-		Endpoint ret = command.execute(getRequest());
-		return new EndpointWrapper(ret, getRequest());
+	public MemberWrapper<Endpoint> getEndpoint(String endpointid) {
+		Endpoint ref = getMemberFromDriver(endpointid);
+		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new GetEndpointAction(catalogApi,
+				tokenProviderApi, policyApi, endpointid), tokenProviderApi, policyApi, ref);
+		MemberWrapper<Endpoint> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
 	public EndpointWrapper updateEndpoint(String endpointid, Endpoint endpoint) {
-		parMap.put("endpoint", endpoint);
-		parMap.put("endpointid", endpointid);
-		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new UpdateEndpointAction(catalogApi, endpointid,
-				endpoint), null, tokenApi, policyApi, parMap);
-		Endpoint ret = command.execute(getRequest());
-		return new EndpointWrapper(ret, getRequest());
+		Endpoint ref = getMemberFromDriver(endpointid);
+		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new UpdateEndpointAction(catalogApi,
+				tokenProviderApi, policyApi, endpointid, endpoint), tokenProviderApi, policyApi, ref);
+		MemberWrapper<Endpoint> ret = command.execute(getRequest());
+		return ret;
 	}
 
 	@Override
 	public void deleteEndpoint(String endpointid) {
-		parMap.put("endpointid", endpointid);
-		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new DeleteEndpointAction(catalogApi, endpointid),
-				null, tokenApi, policyApi, parMap);
+		Endpoint ref = getMemberFromDriver(endpointid);
+		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new DeleteEndpointAction(catalogApi,
+				tokenProviderApi, policyApi, endpointid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
+	}
+
+	public Endpoint getMemberFromDriver(String endpointid) {
+		return catalogApi.getEndpoint(endpointid);
 	}
 
 }

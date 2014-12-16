@@ -6,6 +6,7 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class UpdateRoleAction extends AbstractRoleAction implements ProtectedAction<Role> {
@@ -14,8 +15,9 @@ public class UpdateRoleAction extends AbstractRoleAction implements ProtectedAct
 	private final Role role;
 
 
-	public UpdateRoleAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, String roleid, Role role) {
-		super(assignmentApi, tokenProviderApi);
+	public UpdateRoleAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String roleid, Role role) {
+		super(assignmentApi, tokenProviderApi, policyApi);
 		this.role = role;
 		this.roleid = roleid;
 	}

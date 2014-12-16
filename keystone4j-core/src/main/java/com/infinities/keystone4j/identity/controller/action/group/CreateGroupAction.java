@@ -9,6 +9,7 @@ import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class CreateGroupAction extends AbstractGroupAction implements ProtectedAction<Group> {
@@ -16,8 +17,8 @@ public class CreateGroupAction extends AbstractGroupAction implements ProtectedA
 	private final Group group;
 
 
-	public CreateGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, Group group) {
-		super(identityApi, tokenProviderApi);
+	public CreateGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi, Group group) {
+		super(identityApi, tokenProviderApi, policyApi);
 		this.group = group;
 	}
 

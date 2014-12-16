@@ -7,6 +7,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Service;
 import com.infinities.keystone4j.model.catalog.ServiceWrapper;
 import com.infinities.keystone4j.model.catalog.ServicesWrapper;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public abstract class AbstractServiceAction extends AbstractAction<Service> {
@@ -14,8 +15,8 @@ public abstract class AbstractServiceAction extends AbstractAction<Service> {
 	protected CatalogApi catalogApi;
 
 
-	public AbstractServiceAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi) {
-		super(tokenProviderApi);
+	public AbstractServiceAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(tokenProviderApi, policyApi);
 		this.catalogApi = catalogApi;
 	}
 

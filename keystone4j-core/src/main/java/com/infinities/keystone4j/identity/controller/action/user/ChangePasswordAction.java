@@ -10,6 +10,7 @@ import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.identity.UserParam;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ChangePasswordAction extends AbstractUserAction implements ProtectedAction<User> {
@@ -24,8 +25,9 @@ public class ChangePasswordAction extends AbstractUserAction implements Protecte
 	// private final Logger logger =
 	// LoggerFactory.getLogger(ChangePasswordAction.class);
 
-	public ChangePasswordAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, String userid, UserParam param) {
-		super(identityApi, tokenProviderApi);
+	public ChangePasswordAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String userid, UserParam param) {
+		super(identityApi, tokenProviderApi, policyApi);
 		this.param = param;
 		this.userid = userid;
 	}

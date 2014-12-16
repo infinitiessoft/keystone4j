@@ -1,19 +1,19 @@
 package com.infinities.keystone4j.catalog.controller;
 
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Endpoint;
-import com.infinities.keystone4j.model.catalog.EndpointWrapper;
-import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
 
 public interface EndpointV3Controller {
 
-	EndpointWrapper createEndpoint(Endpoint endpoint);
+	MemberWrapper<Endpoint> createEndpoint(Endpoint endpoint) throws Exception;
 
-	EndpointsWrapper listEndpoints(String interfaceType, String serviceid, int page, int perPage);
+	CollectionWrapper<Endpoint> listEndpoints() throws Exception;
 
-	EndpointWrapper getEndpoint(String endpointid);
+	MemberWrapper<Endpoint> getEndpoint(String endpointid) throws Exception;
 
-	EndpointWrapper updateEndpoint(String endpointid, Endpoint endpoint);
+	MemberWrapper<Endpoint> updateEndpoint(String endpointid, Endpoint endpoint) throws Exception;
 
-	void deleteEndpoint(String endpointid);
+	void deleteEndpoint(String endpointid) throws Exception;
 
 }

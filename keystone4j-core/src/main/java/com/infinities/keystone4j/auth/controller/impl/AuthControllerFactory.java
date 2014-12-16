@@ -10,7 +10,6 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
@@ -19,7 +18,6 @@ public class AuthControllerFactory extends BaseControllerFactory implements Fact
 	private final AssignmentApi assignmentApi;
 	private final TokenProviderApi tokenProviderApi;
 	private final IdentityApi identityApi;
-	private final TokenApi tokenApi;
 	private final TrustApi trustApi;
 	private final PolicyApi policyApi;
 	private final CatalogApi catalogApi;
@@ -27,12 +25,11 @@ public class AuthControllerFactory extends BaseControllerFactory implements Fact
 
 	@Inject
 	public AuthControllerFactory(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, TokenApi tokenApi, TrustApi trustApi, PolicyApi policyApi) {
+			TokenProviderApi tokenProviderApi, TrustApi trustApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
 		this.catalogApi = catalogApi;
 		this.identityApi = identityApi;
 		this.tokenProviderApi = tokenProviderApi;
-		this.tokenApi = tokenApi;
 		this.trustApi = trustApi;
 		this.policyApi = policyApi;
 	}
@@ -45,7 +42,7 @@ public class AuthControllerFactory extends BaseControllerFactory implements Fact
 	@Override
 	public AuthController provide() {
 		AuthControllerImpl controller = new AuthControllerImpl(assignmentApi, catalogApi, identityApi, tokenProviderApi,
-				tokenApi, trustApi, policyApi);
+				trustApi, policyApi);
 		controller.setRequest(getRequest());
 		return controller;
 	}

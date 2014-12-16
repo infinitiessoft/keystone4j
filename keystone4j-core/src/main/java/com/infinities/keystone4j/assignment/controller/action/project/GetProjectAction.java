@@ -8,6 +8,7 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class GetProjectAction extends AbstractProjectAction implements ProtectedAction<Project> {
@@ -15,8 +16,9 @@ public class GetProjectAction extends AbstractProjectAction implements Protected
 	private final String projectid;
 
 
-	public GetProjectAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, String projectid) {
-		super(assignmentApi, tokenProviderApi);
+	public GetProjectAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String projectid) {
+		super(assignmentApi, tokenProviderApi, policyApi);
 		this.projectid = projectid;
 	}
 

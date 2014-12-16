@@ -9,12 +9,13 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ListRolesAction extends AbstractRoleAction implements FilterProtectedAction<Role> {
 
-	public ListRolesAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi) {
-		super(assignmentApi, tokenProviderApi);
+	public ListRolesAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(assignmentApi, tokenProviderApi, policyApi);
 	}
 
 	@Override

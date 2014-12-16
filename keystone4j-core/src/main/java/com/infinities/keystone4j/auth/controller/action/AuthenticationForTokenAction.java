@@ -31,7 +31,7 @@ import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.model.token.TokenDataWrapper;
 import com.infinities.keystone4j.model.trust.Trust;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
@@ -55,9 +55,9 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 
 
 	public AuthenticationForTokenAction(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, TokenApi tokenApi, TrustApi trustApi, AuthV3 auth)
+			TokenProviderApi tokenProviderApi, TrustApi trustApi, PolicyApi policyApi, AuthV3 auth)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi);
+		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, policyApi);
 		this.auth = auth;
 	}
 
@@ -134,7 +134,7 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 
 		User userRef = null;
 		try {
-			userRef = identityApi.getUser(authContext.getUserid(), null);
+			userRef = identityApi.getUser(authContext.getUserid());
 		} catch (Exception e) {
 			logger.error("Get user failed", e);
 			throw Exceptions.UnauthorizedException.getInstance(e);

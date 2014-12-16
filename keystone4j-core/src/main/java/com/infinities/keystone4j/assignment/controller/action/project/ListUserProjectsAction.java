@@ -9,6 +9,7 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ListUserProjectsAction extends AbstractProjectAction implements FilterProtectedAction<Project> {
@@ -16,8 +17,9 @@ public class ListUserProjectsAction extends AbstractProjectAction implements Fil
 	private final String userid;
 
 
-	public ListUserProjectsAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, String userid) {
-		super(assignmentApi, tokenProviderApi);
+	public ListUserProjectsAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String userid) {
+		super(assignmentApi, tokenProviderApi, policyApi);
 		this.userid = userid;
 	}
 

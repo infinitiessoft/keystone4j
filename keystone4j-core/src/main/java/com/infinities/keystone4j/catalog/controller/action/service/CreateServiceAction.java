@@ -6,6 +6,7 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Service;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class CreateServiceAction extends AbstractServiceAction implements ProtectedAction<Service> {
@@ -13,8 +14,8 @@ public class CreateServiceAction extends AbstractServiceAction implements Protec
 	private final Service service;
 
 
-	public CreateServiceAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, Service service) {
-		super(catalogApi, tokenProviderApi);
+	public CreateServiceAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi, Service service) {
+		super(catalogApi, tokenProviderApi, policyApi);
 		this.service = service;
 	}
 

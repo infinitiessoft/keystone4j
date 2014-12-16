@@ -21,7 +21,7 @@ import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class GetAuthProjectsAction extends AbstractAuthAction implements FilterProtectedAction<Project> {
@@ -30,9 +30,9 @@ public class GetAuthProjectsAction extends AbstractAuthAction implements FilterP
 
 
 	public GetAuthProjectsAction(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, TokenApi tokenApi) throws ClassNotFoundException, InstantiationException,
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
-		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi);
+		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, policyApi);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class GetAuthProjectsAction extends AbstractAuthAction implements FilterP
 
 		List<Project> refs = combineListsUniquely(userRefs, groupRefs);
 
-		return new AbstractProjectAction(assignmentApi, tokenProviderApi) {
+		return new AbstractProjectAction(assignmentApi, tokenProviderApi, policyApi) {
 
 		}.wrapCollection(context, refs);
 	}

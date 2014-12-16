@@ -9,12 +9,13 @@ import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ListGroupsAction extends AbstractGroupAction implements FilterProtectedAction<Group> {
 
-	public ListGroupsAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi) {
-		super(identityApi, tokenProviderApi);
+	public ListGroupsAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(identityApi, tokenProviderApi, policyApi);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ListGrantsByUserDomainAction extends AbstractGrantAction implements FilterProtectedAction<Role> {
@@ -18,8 +19,8 @@ public class ListGrantsByUserDomainAction extends AbstractGrantAction implements
 
 
 	public ListGrantsByUserDomainAction(AssignmentApi assignmentApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, String userid, String domainid) {
-		super(assignmentApi, identityApi, tokenProviderApi);
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi, String userid, String domainid) {
+		super(assignmentApi, identityApi, tokenProviderApi, policyApi);
 		this.userid = userid;
 		this.domainid = domainid;
 	}

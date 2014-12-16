@@ -13,7 +13,7 @@ import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Catalog;
 import com.infinities.keystone4j.model.catalog.CatalogWrapper;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class GetAuthCatalogAction extends AbstractAuthAction implements ProtectedAction<Catalog> {
@@ -22,9 +22,9 @@ public class GetAuthCatalogAction extends AbstractAuthAction implements Protecte
 	// LoggerFactory.getLogger(GetAuthCatalogAction.class);
 
 	public GetAuthCatalogAction(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, TokenApi tokenApi) throws ClassNotFoundException, InstantiationException,
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
-		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi);
+		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, policyApi);
 	}
 
 	@Override

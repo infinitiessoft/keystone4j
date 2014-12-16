@@ -7,6 +7,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.identity.UserWrapper;
 import com.infinities.keystone4j.model.identity.UsersWrapper;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public abstract class AbstractUserAction extends AbstractAction<User> {
@@ -14,8 +15,8 @@ public abstract class AbstractUserAction extends AbstractAction<User> {
 	protected IdentityApi identityApi;
 
 
-	public AbstractUserAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi) {
-		super(tokenProviderApi);
+	public AbstractUserAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(tokenProviderApi, policyApi);
 		this.identityApi = identityApi;
 	}
 

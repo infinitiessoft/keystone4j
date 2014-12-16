@@ -16,6 +16,7 @@ import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.token.Bind;
+import com.infinities.keystone4j.model.token.IMetadata;
 import com.infinities.keystone4j.model.token.IToken;
 import com.infinities.keystone4j.model.token.ITokenData;
 import com.infinities.keystone4j.model.token.TokenData;
@@ -336,7 +337,7 @@ public class KeystoneToken {
 		return null;
 	}
 
-	public String getMetadata() {
+	public IMetadata getMetadata() {
 		if (V3.equals(version)) {
 			return ((TokenData) tokenData).getToken().getMetadata();
 		} else {

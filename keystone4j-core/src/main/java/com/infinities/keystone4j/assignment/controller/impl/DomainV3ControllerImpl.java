@@ -38,7 +38,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 	public MemberWrapper<Domain> createDomain(Domain domain) throws Exception {
 		// parMap.put("domain", domain);
 		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new CreateDomainAction(assignmentApi,
-				tokenProviderApi, domain), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, domain), tokenProviderApi, policyApi);
 		MemberWrapper<Domain> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -46,7 +46,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 	@Override
 	public CollectionWrapper<Domain> listDomains() throws Exception {
 		FilterProtectedAction<Domain> command = new FilterProtectedDecorator<Domain>(new ListDomainsAction(assignmentApi,
-				tokenProviderApi), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi), tokenProviderApi, policyApi);
 		CollectionWrapper<Domain> ret = command.execute(getRequest(), "name", "enabled");
 		return ret;
 	}
@@ -55,7 +55,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 	public MemberWrapper<Domain> getDomain(String domainid) throws Exception {
 		Domain ref = getMemberFromDriver(domainid);
 		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new GetDomainAction(assignmentApi,
-				tokenProviderApi, domainid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, domainid), tokenProviderApi, policyApi, ref);
 		MemberWrapper<Domain> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -64,7 +64,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 	public MemberWrapper<Domain> updateDomain(String domainid, Domain domain) throws Exception {
 		Domain ref = getMemberFromDriver(domainid);
 		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new UpdateDomainAction(assignmentApi,
-				tokenProviderApi, domainid, domain), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, domainid, domain), tokenProviderApi, policyApi, ref);
 		MemberWrapper<Domain> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -73,7 +73,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 	public void deleteDomain(String domainid) throws Exception {
 		Domain ref = getMemberFromDriver(domainid);
 		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new DeleteDomainAction(assignmentApi,
-				tokenProviderApi, domainid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, domainid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
 	}
 

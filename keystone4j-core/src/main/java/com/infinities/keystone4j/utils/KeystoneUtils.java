@@ -51,6 +51,7 @@ public class KeystoneUtils extends TokenBindValidator {
 
 	}
 
+	@Deprecated
 	public void assertAdmin(PolicyApi policyApi, TokenApi tokenApi, KeystoneContext context) {
 		if (!context.isAdmin()) {
 			Token token = null;

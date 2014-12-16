@@ -2,6 +2,7 @@ package com.infinities.keystone4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -31,6 +32,8 @@ import com.infinities.keystone4j.model.DomainScoped;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.common.Links;
+import com.infinities.keystone4j.model.token.IMetadata;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.model.KeystoneToken;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -38,10 +41,12 @@ public abstract class AbstractAction<T extends BaseEntity> {
 
 	private final static Logger logger = LoggerFactory.getLogger(AbstractAction.class);
 	private final TokenProviderApi tokenProviderApi;
+	protected PolicyApi policyApi;
 
 
-	public AbstractAction(TokenProviderApi tokenProviderApi) {
+	public AbstractAction(TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.tokenProviderApi = tokenProviderApi;
+		this.policyApi = policyApi;
 	}
 
 	protected void assignUniqueId(BaseEntity ref) {
@@ -126,7 +131,7 @@ public abstract class AbstractAction<T extends BaseEntity> {
 		ref.setLinks(links);
 	}
 
-	protected MemberWrapper<T> wrapMember(ContainerRequestContext context, T ref) {
+	public MemberWrapper<T> wrapMember(ContainerRequestContext context, T ref) {
 		addSelfReferentialLink(context, ref);
 		MemberWrapper<T> wrapper = getMemberWrapper();
 		wrapper.setRef(ref);
@@ -164,6 +169,36 @@ public abstract class AbstractAction<T extends BaseEntity> {
 
 		}
 		return refs;
+	}
+
+	public void assertAdmin(KeystoneContext context) {
+		if (!context.isAdmin()) {
+			KeystoneToken userTokenRef = null;
+			try {
+				userTokenRef = new KeystoneToken(context.getTokenid(), tokenProviderApi.validToken(context.getTokenid()));
+			} catch (Exception e) {
+				throw Exceptions.UnauthorizedException.getInstance(e);
+			}
+			Wsgi.validateTokenBind(context, userTokenRef);
+			IMetadata creds = userTokenRef.getMetadata();
+
+			try {
+				creds.setUserId(userTokenRef.getUserId());
+			} catch (Exception e) {
+				logger.debug("Invalid user");
+				throw Exceptions.UnauthorizedException.getInstance();
+			}
+
+			if (userTokenRef.isProjectScoped()) {
+				creds.setTenantId(userTokenRef.getProjectId());
+			} else {
+				logger.debug("Invalid tenant");
+				throw Exceptions.UnauthorizedException.getInstance();
+			}
+
+			creds.setRoles(userTokenRef.getRoleNames());
+			policyApi.enforce(creds, "admin_required", new HashMap<String, Object>());
+		}
 	}
 
 

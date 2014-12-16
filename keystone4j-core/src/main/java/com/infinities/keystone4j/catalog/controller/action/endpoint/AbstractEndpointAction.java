@@ -7,6 +7,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Endpoint;
 import com.infinities.keystone4j.model.catalog.EndpointWrapper;
 import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public abstract class AbstractEndpointAction extends AbstractAction<Endpoint> {
@@ -14,8 +15,8 @@ public abstract class AbstractEndpointAction extends AbstractAction<Endpoint> {
 	protected CatalogApi catalogApi;
 
 
-	public AbstractEndpointAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi) {
-		super(tokenProviderApi);
+	public AbstractEndpointAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(tokenProviderApi, policyApi);
 		this.catalogApi = catalogApi;
 	}
 
@@ -45,6 +46,18 @@ public abstract class AbstractEndpointAction extends AbstractAction<Endpoint> {
 	@Override
 	public String getMemberName() {
 		return "endpoint";
+	}
+
+	protected Endpoint validateEndpointRegion(Endpoint endpoint) {
+		if (endpoint.getRegion() != null) {
+			try {
+				catalogApi.getRegion(endpoint.getRegionid());
+			} catch (Exception e) {
+				catalogApi.createRegion(endpoint.getRegion());
+			}
+		}
+
+		return endpoint;
 	}
 
 }

@@ -7,6 +7,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.DomainWrapper;
 import com.infinities.keystone4j.model.assignment.DomainsWrapper;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public abstract class AbstractDomainAction extends AbstractAction<Domain> {
@@ -16,8 +17,8 @@ public abstract class AbstractDomainAction extends AbstractAction<Domain> {
 	protected AssignmentApi assignmentApi;
 
 
-	public AbstractDomainAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi) {
-		super(tokenProviderApi);
+	public AbstractDomainAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(tokenProviderApi, policyApi);
 		this.assignmentApi = assignmentApi;
 	}
 

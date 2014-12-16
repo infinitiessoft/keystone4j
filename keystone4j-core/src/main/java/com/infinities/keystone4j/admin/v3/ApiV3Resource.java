@@ -86,6 +86,12 @@ public class ApiV3Resource {
 		return EndpointResource.class;
 	}
 
+	@Path("/regions")
+	// catalog
+	public Class<RegionResource> getRegionResource() {
+		return RegionResource.class;
+	}
+
 	// @Path("/credentials")
 	// // credential user for ec2 auth
 	// public Class<CredentialResource> getCredentialResource() {
@@ -98,17 +104,17 @@ public class ApiV3Resource {
 		return GroupResource.class;
 	}
 
-	// @Path("/policies")
-	// // policies
-	// public Class<PolicyResource> getPolicyResource() {
-	// return PolicyResource.class;
-	// }
+	@Path("/policies")
+	// policies
+	public Class<PolicyResource> getPolicyResource() {
+		return PolicyResource.class;
+	}
 
-	// @Path("/OS-TRUST/trusts")
-	// // trusts
-	// public Class<TrustResource> getTrustResource() {
-	// return TrustResource.class;
-	// }
+	@Path("/OS-TRUST/trusts")
+	// trusts
+	public Class<TrustResource> getTrustResource() {
+		return TrustResource.class;
+	}
 
 	// @Path("/OS-EP-FILTER/trusts")
 	// // endpoint-filter

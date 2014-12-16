@@ -9,6 +9,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.assignment.RoleWrapper;
 import com.infinities.keystone4j.model.assignment.RolesWrapper;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public abstract class AbstractRoleAction extends AbstractAction<Role> {
@@ -19,8 +20,8 @@ public abstract class AbstractRoleAction extends AbstractAction<Role> {
 	protected Method getMemberFromDriver;
 
 
-	public AbstractRoleAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi) {
-		super(tokenProviderApi);
+	public AbstractRoleAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(tokenProviderApi, policyApi);
 		this.assignmentApi = assignmentApi;
 	}
 

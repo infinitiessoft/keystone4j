@@ -16,7 +16,7 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Wsgi;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public abstract class AbstractAuthAction extends AbstractControllerAction {
@@ -26,18 +26,18 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 	protected CatalogApi catalogApi;
 	protected IdentityApi identityApi;
 	protected TokenProviderApi tokenProviderApi;
-	protected TokenApi tokenApi;
+	protected PolicyApi policyApi;
 
 
 	public AbstractAuthAction(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, TokenApi tokenApi) throws ClassNotFoundException, InstantiationException,
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
 		super();
 		this.assignmentApi = assignmentApi;
 		this.catalogApi = catalogApi;
 		this.identityApi = identityApi;
 		this.tokenProviderApi = tokenProviderApi;
-		this.tokenApi = tokenApi;
+		this.policyApi = policyApi;
 	}
 
 	public TokenProviderApi getTokenProviderApi() {
@@ -62,14 +62,6 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 
 	public void setAssignmentApi(AssignmentApi assignmentApi) {
 		this.assignmentApi = assignmentApi;
-	}
-
-	public TokenApi getTokenApi() {
-		return tokenApi;
-	}
-
-	public void setTokenApi(TokenApi tokenApi) {
-		this.tokenApi = tokenApi;
 	}
 
 	public CatalogApi getCatalogApi() {

@@ -61,7 +61,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 	@Override
 	public MemberWrapper<Role> createRole(Role role) throws Exception {
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new CreateRoleAction(assignmentApi, tokenProviderApi,
-				role), tokenProviderApi, policyApi);
+				policyApi, role), tokenProviderApi, policyApi);
 		MemberWrapper<Role> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -69,7 +69,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 	@Override
 	public CollectionWrapper<Role> listRoles() throws Exception {
 		FilterProtectedAction<Role> command = new FilterProtectedDecorator<Role>(new ListRolesAction(assignmentApi,
-				tokenProviderApi), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi), tokenProviderApi, policyApi);
 		CollectionWrapper<Role> ret = command.execute(getRequest(), "name");
 		return ret;
 	}
@@ -78,7 +78,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 	public MemberWrapper<Role> getRole(String roleid) throws Exception {
 		Role ref = getMemberFromDriver(roleid);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new GetRoleAction(assignmentApi, tokenProviderApi,
-				roleid), tokenProviderApi, policyApi, ref);
+				policyApi, roleid), tokenProviderApi, policyApi, ref);
 		MemberWrapper<Role> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -87,7 +87,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 	public MemberWrapper<Role> updateRole(String roleid, Role role) throws Exception {
 		Role ref = getMemberFromDriver(roleid);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new UpdateRoleAction(assignmentApi, tokenProviderApi,
-				roleid, role), tokenProviderApi, policyApi, ref);
+				policyApi, roleid, role), tokenProviderApi, policyApi, ref);
 		MemberWrapper<Role> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -96,7 +96,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 	public void deleteRole(String roleid) throws Exception {
 		Role ref = getMemberFromDriver(roleid);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new DeleteRoleAction(assignmentApi, tokenProviderApi,
-				roleid), tokenProviderApi, policyApi, ref);
+				policyApi, roleid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
 	}
 
@@ -105,7 +105,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, userid, roleid, null, null, domainid);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new CreateGrantByUserDomainAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, userid, domainid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, userid, domainid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -114,7 +114,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, null, roleid, groupid, null, domainid);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new CreateGrantByGroupDomainAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, groupid, domainid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, groupid, domainid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -123,7 +123,8 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantCollectionProtectionCallback callback = new CheckGrantCollectionProtectionCallback(tokenProviderApi,
 				policyApi, identityApi, assignmentApi, userid, null, null, null, domainid);
 		FilterProtectedAction<Role> command = new ProtectedCollectionDecorator<Role>(new ListGrantsByUserDomainAction(
-				assignmentApi, identityApi, tokenProviderApi, userid, domainid), callback, tokenProviderApi, policyApi);
+				assignmentApi, identityApi, tokenProviderApi, policyApi, userid, domainid), callback, tokenProviderApi,
+				policyApi);
 		return command.execute(getRequest());
 	}
 
@@ -132,7 +133,8 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantCollectionProtectionCallback callback = new CheckGrantCollectionProtectionCallback(tokenProviderApi,
 				policyApi, identityApi, assignmentApi, null, null, groupid, null, domainid);
 		FilterProtectedAction<Role> command = new ProtectedCollectionDecorator<Role>(new ListGrantsByGroupDomainAction(
-				assignmentApi, identityApi, tokenProviderApi, groupid, domainid), callback, tokenProviderApi, policyApi);
+				assignmentApi, identityApi, tokenProviderApi, policyApi, groupid, domainid), callback, tokenProviderApi,
+				policyApi);
 		return command.execute(getRequest());
 	}
 
@@ -141,7 +143,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, userid, roleid, null, null, domainid);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new CheckGrantByUserDomainAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, userid, domainid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, userid, domainid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -150,7 +152,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, null, roleid, groupid, null, domainid);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new CheckGrantByGroupDomainAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, groupid, domainid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, groupid, domainid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -159,7 +161,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, userid, roleid, null, null, domainid, true);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new DeleteGrantByUserDomainAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, userid, domainid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, userid, domainid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -168,7 +170,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, null, roleid, groupid, null, domainid, true);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new DeleteGrantByGroupDomainAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, groupid, domainid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, groupid, domainid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -177,7 +179,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, userid, roleid, null, projectid, null);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new CreateGrantByUserProjectAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, userid, projectid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, userid, projectid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -186,7 +188,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, null, roleid, groupid, projectid, null);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new CreateGrantByGroupProjectAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, groupid, projectid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, groupid, projectid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -195,7 +197,8 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantCollectionProtectionCallback callback = new CheckGrantCollectionProtectionCallback(tokenProviderApi,
 				policyApi, identityApi, assignmentApi, userid, null, null, projectid, null);
 		FilterProtectedAction<Role> command = new ProtectedCollectionDecorator<Role>(new ListGrantsByUserProjectAction(
-				assignmentApi, identityApi, tokenProviderApi, userid, projectid), callback, tokenProviderApi, policyApi);
+				assignmentApi, identityApi, tokenProviderApi, policyApi, userid, projectid), callback, tokenProviderApi,
+				policyApi);
 		return command.execute(getRequest());
 	}
 
@@ -204,7 +207,8 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantCollectionProtectionCallback callback = new CheckGrantCollectionProtectionCallback(tokenProviderApi,
 				policyApi, identityApi, assignmentApi, null, null, groupid, projectid, null);
 		FilterProtectedAction<Role> command = new ProtectedCollectionDecorator<Role>(new ListGrantsByGroupProjectAction(
-				assignmentApi, identityApi, tokenProviderApi, groupid, projectid), callback, tokenProviderApi, policyApi);
+				assignmentApi, identityApi, tokenProviderApi, policyApi, groupid, projectid), callback, tokenProviderApi,
+				policyApi);
 		return command.execute(getRequest());
 	}
 
@@ -213,7 +217,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, userid, roleid, null, projectid, null);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new CheckGrantByUserProjectAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, userid, projectid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, userid, projectid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -222,7 +226,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, null, roleid, groupid, projectid, null);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new CheckGrantByGroupProjectAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, groupid, projectid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, groupid, projectid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -231,7 +235,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, userid, roleid, null, projectid, null, true);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new DeleteGrantByUserProjectAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, userid, projectid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, userid, projectid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -240,7 +244,7 @@ public class RoleV3ControllerImpl extends BaseController implements RoleV3Contro
 		CheckGrantProtectionCallback callback = new CheckGrantProtectionCallback(tokenProviderApi, policyApi, identityApi,
 				assignmentApi, null, roleid, groupid, projectid, null, true);
 		ProtectedAction<Role> command = new ProtectedDecorator<Role>(new DeleteGrantByGroupProjectAction(assignmentApi,
-				identityApi, tokenProviderApi, roleid, groupid, projectid), callback, tokenProviderApi, policyApi);
+				identityApi, tokenProviderApi, policyApi, roleid, groupid, projectid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 

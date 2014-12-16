@@ -6,6 +6,7 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class DeleteRoleAction extends AbstractRoleAction implements ProtectedAction<Role> {
@@ -13,8 +14,9 @@ public class DeleteRoleAction extends AbstractRoleAction implements ProtectedAct
 	private final String roleid;
 
 
-	public DeleteRoleAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, String roleid) {
-		super(assignmentApi, tokenProviderApi);
+	public DeleteRoleAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String roleid) {
+		super(assignmentApi, tokenProviderApi, policyApi);
 		this.roleid = roleid;
 	}
 

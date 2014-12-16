@@ -7,6 +7,7 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class CheckGrantByGroupDomainAction extends AbstractGrantAction implements ProtectedAction<Role> {
@@ -17,8 +18,8 @@ public class CheckGrantByGroupDomainAction extends AbstractGrantAction implement
 
 
 	public CheckGrantByGroupDomainAction(AssignmentApi assignmentApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, String roleid, String groupid, String domainid) {
-		super(assignmentApi, identityApi, tokenProviderApi);
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi, String roleid, String groupid, String domainid) {
+		super(assignmentApi, identityApi, tokenProviderApi, policyApi);
 		this.roleid = roleid;
 		this.groupid = groupid;
 		this.domainid = domainid;

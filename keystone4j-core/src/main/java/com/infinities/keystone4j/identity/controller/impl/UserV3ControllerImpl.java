@@ -43,7 +43,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	@Override
 	public MemberWrapper<User> createUser(User user) throws Exception {
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new CreateUserAction(identityApi, tokenProviderApi,
-				user), tokenProviderApi, policyApi);
+				policyApi, user), tokenProviderApi, policyApi);
 		MemberWrapper<User> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -51,7 +51,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	@Override
 	public CollectionWrapper<User> listUsers() throws Exception {
 		FilterProtectedAction<User> command = new FilterProtectedDecorator<User>(new ListUsersAction(identityApi,
-				tokenProviderApi), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi), tokenProviderApi, policyApi);
 		CollectionWrapper<User> ret = command.execute(getRequest(), "domain_id", "enabled", "name");
 		return ret;
 	}
@@ -59,8 +59,8 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	@Override
 	public MemberWrapper<User> getUser(String userid) throws Exception {
 		User ref = getMemberFromDriver(userid);
-		ProtectedAction<User> command = new ProtectedDecorator<User>(
-				new GetUserAction(identityApi, tokenProviderApi, userid), tokenProviderApi, policyApi, ref);
+		ProtectedAction<User> command = new ProtectedDecorator<User>(new GetUserAction(identityApi, tokenProviderApi,
+				policyApi, userid), tokenProviderApi, policyApi, ref);
 		MemberWrapper<User> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -69,7 +69,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	public MemberWrapper<User> updateUser(String userid, User user) throws Exception {
 		User ref = getMemberFromDriver(userid);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new UpdateUserAction(identityApi, tokenProviderApi,
-				userid, user), tokenProviderApi, policyApi, ref);
+				policyApi, userid, user), tokenProviderApi, policyApi, ref);
 		MemberWrapper<User> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -78,14 +78,14 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	public void deleteUser(String userid) throws Exception {
 		User ref = getMemberFromDriver(userid);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new DeleteUserAction(identityApi, tokenProviderApi,
-				userid), tokenProviderApi, policyApi, ref);
+				policyApi, userid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
 	}
 
 	@Override
 	public CollectionWrapper<User> listUsersInGroup(String groupid) throws Exception {
 		FilterProtectedAction<User> command = new FilterProtectedDecorator<User>(new ListUsersInGroupAction(identityApi,
-				tokenProviderApi, groupid), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, groupid), tokenProviderApi, policyApi);
 		CollectionWrapper<User> ret = command.execute(getRequest(), "domain_id", "enabled", "name");
 		return ret;
 	}
@@ -95,7 +95,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 		CheckUserAndGroupProtection callback = new CheckUserAndGroupProtection(userid, groupid, identityApi,
 				tokenProviderApi, policyApi);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new AddUserToGroupAction(identityApi, tokenProviderApi,
-				userid, groupid), callback, tokenProviderApi, policyApi);
+				policyApi, userid, groupid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -104,7 +104,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 		CheckUserAndGroupProtection callback = new CheckUserAndGroupProtection(userid, groupid, identityApi,
 				tokenProviderApi, policyApi);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new CheckUserInGroupAction(identityApi,
-				tokenProviderApi, userid, groupid), callback, tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, userid, groupid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -113,7 +113,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 		CheckUserAndGroupProtection callback = new CheckUserAndGroupProtection(userid, groupid, identityApi,
 				tokenProviderApi, policyApi);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new RemoveUserFromGroupAction(identityApi,
-				tokenProviderApi, userid, groupid), callback, tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, userid, groupid), callback, tokenProviderApi, policyApi);
 		command.execute(getRequest());
 	}
 
@@ -121,7 +121,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	public void changePassword(String userid, UserParam user) throws Exception {
 		User ref = getMemberFromDriver(userid);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new ChangePasswordAction(identityApi, tokenProviderApi,
-				userid, user), tokenProviderApi, policyApi, ref);
+				policyApi, userid, user), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
 	}
 

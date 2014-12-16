@@ -37,7 +37,7 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 	@Override
 	public MemberWrapper<Group> createGroup(Group group) throws Exception {
 		ProtectedAction<Group> command = new ProtectedDecorator<Group>(new CreateGroupAction(identityApi, tokenProviderApi,
-				group), tokenProviderApi, policyApi);
+				policyApi, group), tokenProviderApi, policyApi);
 		MemberWrapper<Group> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -45,7 +45,7 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 	@Override
 	public CollectionWrapper<Group> listGroups() throws Exception {
 		FilterProtectedAction<Group> command = new FilterProtectedDecorator<Group>(new ListGroupsAction(identityApi,
-				tokenProviderApi), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi), tokenProviderApi, policyApi);
 		CollectionWrapper<Group> ret = command.execute(getRequest(), "domain_id", "name");
 		return ret;
 	}
@@ -54,7 +54,7 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 	public MemberWrapper<Group> getGroup(String groupid) throws Exception {
 		Group ref = getMemberFromDriver(groupid);
 		ProtectedAction<Group> command = new ProtectedDecorator<Group>(new GetGroupAction(identityApi, tokenProviderApi,
-				groupid), tokenProviderApi, policyApi, ref);
+				policyApi, groupid), tokenProviderApi, policyApi, ref);
 		MemberWrapper<Group> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -63,7 +63,7 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 	public MemberWrapper<Group> updateGroup(String groupid, Group group) throws Exception {
 		Group ref = getMemberFromDriver(groupid);
 		ProtectedAction<Group> command = new ProtectedDecorator<Group>(new UpdateGroupAction(identityApi, tokenProviderApi,
-				groupid, group), tokenProviderApi, policyApi, ref);
+				policyApi, groupid, group), tokenProviderApi, policyApi, ref);
 		MemberWrapper<Group> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -72,14 +72,14 @@ public class GroupV3ControllerImpl extends BaseController implements GroupV3Cont
 	public void deleteGroup(String groupid) throws Exception {
 		Group ref = getMemberFromDriver(groupid);
 		ProtectedAction<Group> command = new ProtectedDecorator<Group>(new DeleteGroupAction(identityApi, tokenProviderApi,
-				groupid), tokenProviderApi, policyApi, ref);
+				policyApi, groupid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
 	}
 
 	@Override
 	public CollectionWrapper<Group> listGroupsForUser(String groupid) throws Exception {
 		FilterProtectedAction<Group> command = new FilterProtectedDecorator<Group>(new ListGroupsForUserAction(identityApi,
-				tokenProviderApi, groupid), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, groupid), tokenProviderApi, policyApi);
 		CollectionWrapper<Group> ret = command.execute(getRequest(), "name");
 		return ret;
 	}

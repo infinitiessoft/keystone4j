@@ -9,12 +9,13 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ListProjectsAction extends AbstractProjectAction implements FilterProtectedAction<Project> {
 
-	public ListProjectsAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi) {
-		super(assignmentApi, tokenProviderApi);
+	public ListProjectsAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(assignmentApi, tokenProviderApi, policyApi);
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.ProjectWrapper;
 import com.infinities.keystone4j.model.assignment.ProjectsWrapper;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public abstract class AbstractProjectAction extends AbstractAction<Project> {
@@ -19,8 +20,8 @@ public abstract class AbstractProjectAction extends AbstractAction<Project> {
 	protected Method getMemberFromDriver;
 
 
-	public AbstractProjectAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi) {
-		super(tokenProviderApi);
+	public AbstractProjectAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(tokenProviderApi, policyApi);
 		this.assignmentApi = assignmentApi;
 	}
 

@@ -21,7 +21,7 @@ import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class GetAuthDomainsAction extends AbstractAuthAction implements FilterProtectedAction<Domain> {
@@ -30,9 +30,9 @@ public class GetAuthDomainsAction extends AbstractAuthAction implements FilterPr
 
 
 	public GetAuthDomainsAction(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, TokenApi tokenApi) throws ClassNotFoundException, InstantiationException,
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
-		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi);
+		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, policyApi);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class GetAuthDomainsAction extends AbstractAuthAction implements FilterPr
 
 		List<Domain> refs = combineListsUniquely(userRefs, groupRefs);
 
-		return new AbstractDomainAction(assignmentApi, tokenProviderApi) {
+		return new AbstractDomainAction(assignmentApi, tokenProviderApi, policyApi) {
 
 		}.wrapCollection(context, refs);
 	}

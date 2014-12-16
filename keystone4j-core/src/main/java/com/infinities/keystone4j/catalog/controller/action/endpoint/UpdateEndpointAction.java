@@ -2,26 +2,36 @@ package com.infinities.keystone4j.catalog.controller.action.endpoint;
 
 import javax.ws.rs.container.ContainerRequestContext;
 
-import com.infinities.keystone4j.KeystonePreconditions;
+import com.google.common.base.Strings;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.catalog.CatalogApi;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Endpoint;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
-public class UpdateEndpointAction extends AbstractEndpointAction<Endpoint> {
+public class UpdateEndpointAction extends AbstractEndpointAction implements ProtectedAction<Endpoint> {
 
 	private final String endpointid;
-	private final Endpoint endpoint;
+	private Endpoint endpoint;
 
 
-	public UpdateEndpointAction(CatalogApi catalogApi, String endpointid, Endpoint endpoint) {
-		super(catalogApi);
-		this.endpoint = endpoint;
+	public UpdateEndpointAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String endpointid, Endpoint endpoint) {
+		super(catalogApi, tokenProviderApi, policyApi);
 		this.endpointid = endpointid;
+		this.endpoint = endpoint;
 	}
 
 	@Override
-	public Endpoint execute(ContainerRequestContext request) {
-		KeystonePreconditions.requireMatchingId(endpointid, endpoint);
-		return this.getCatalogApi().updateEndpoint(endpointid, endpoint);
+	public MemberWrapper<Endpoint> execute(ContainerRequestContext context) {
+		requireMatchingId(endpointid, endpoint);
+		if (!Strings.isNullOrEmpty(endpoint.getServiceid())) {
+			catalogApi.getService(endpoint.getServiceid());
+		}
+		endpoint = validateEndpointRegion(endpoint);
+		Endpoint ref = this.getCatalogApi().updateEndpoint(endpointid, endpoint);
+		return this.wrapMember(context, ref);
 	}
 
 	@Override

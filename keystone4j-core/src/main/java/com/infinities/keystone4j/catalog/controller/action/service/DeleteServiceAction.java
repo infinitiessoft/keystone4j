@@ -6,6 +6,7 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Service;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class DeleteServiceAction extends AbstractServiceAction implements ProtectedAction<Service> {
@@ -13,8 +14,9 @@ public class DeleteServiceAction extends AbstractServiceAction implements Protec
 	private final String serviceid;
 
 
-	public DeleteServiceAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, String serviceid) {
-		super(catalogApi, tokenProviderApi);
+	public DeleteServiceAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String serviceid) {
+		super(catalogApi, tokenProviderApi, policyApi);
 		this.serviceid = serviceid;
 	}
 

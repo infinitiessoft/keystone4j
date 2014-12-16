@@ -4,60 +4,54 @@ import java.util.List;
 
 import javax.ws.rs.container.ContainerRequestContext;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.FilterProtectedAction;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.policy.PolicyApi;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
-import com.infinities.keystone4j.utils.KeystoneUtils;
 
-public class ListTrustsAction extends AbstractTrustAction<List<Trust>> {
+public class ListTrustsAction extends AbstractTrustAction implements FilterProtectedAction<Trust> {
 
-	private final String trustorid;
-	private final String trusteeid;
-	private final PolicyApi policyApi;
-
-
-	public ListTrustsAction(AssignmentApi assignmentApi, IdentityApi identityApi, TrustApi trustApi, TokenApi tokenApi,
-			PolicyApi policyApi, String trustorid, String trusteeid) {
-		super(assignmentApi, identityApi, trustApi, tokenApi);
-		this.trustorid = trustorid;
-		this.trusteeid = trusteeid;
-		this.policyApi = policyApi;
+	public ListTrustsAction(AssignmentApi assignmentApi, IdentityApi identityApi, TrustApi trustApi,
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(assignmentApi, identityApi, trustApi, tokenProviderApi, policyApi);
 	}
 
 	@Override
-	public List<Trust> execute(ContainerRequestContext request) {
+	public CollectionWrapper<Trust> execute(ContainerRequestContext request, String... filters) throws Exception {
 		List<Trust> trusts = Lists.newArrayList();
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		User callingUser = new KeystoneUtils().getUser(tokenApi, context);
 
-		if (Strings.isNullOrEmpty(trustorid) && Strings.isNullOrEmpty(trusteeid)) {
-			new KeystoneUtils().assertAdmin(policyApi, tokenApi, context);
-			trusts = this.getTrustApi().listTrusts();
+		if (request.getUriInfo().getQueryParameters().isEmpty()) {
+			assertAdmin(context);
+			trusts.addAll(trustApi.listTrusts());
 		}
 
-		if (!Strings.isNullOrEmpty(trustorid)) {
-			if (!trustorid.equals(callingUser.getId())) {
+		if ((request.getUriInfo().getQueryParameters().containsKey("trustor_user_id"))) {
+			String userid = request.getUriInfo().getQueryParameters().getFirst("trustor_user_id");
+			String callingUserId = getUserId(context);
+			if (!userid.equals(callingUserId)) {
 				throw Exceptions.ForbiddenException.getInstance();
 			}
-			trusts.addAll(this.getTrustApi().listTrustsForTrustor(trustorid));
+			trusts.addAll(trustApi.listTrustsForTrustor(userid));
 		}
 
-		if (!Strings.isNullOrEmpty(trusteeid)) {
-			if (!trusteeid.equals(callingUser.getId())) {
+		if ((request.getUriInfo().getQueryParameters().containsKey("trustee_user_id"))) {
+			String userid = request.getUriInfo().getQueryParameters().getFirst("trustee_user_id");
+			String callingUserId = getUserId(context);
+			if (!userid.equals(callingUserId)) {
 				throw Exceptions.ForbiddenException.getInstance();
 			}
-			trusts.addAll(this.getTrustApi().listTrustsForTrustee(trusteeid));
+			trusts.addAll(trustApi.listTrustsForTrustee(userid));
 		}
 
-		return trusts;
+		return wrapCollection(request, trusts);
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import com.infinities.keystone4j.model.trust.Trust;
 
 public interface TrustApi extends Api {
 
-	Trust createTrust(Trust trust, List<Role> cleanRoles);
+	Trust createTrust(String id, Trust trust, List<Role> cleanRoles);
 
 	List<Trust> listTrusts();
 

@@ -13,7 +13,7 @@ import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.auth.RevokedWrapper;
 import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.model.trust.SignedWrapper;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.utils.Cms;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
@@ -21,9 +21,9 @@ import com.infinities.keystone4j.utils.jackson.JsonUtils;
 public class GetRevocationListAction extends AbstractAuthAction implements ProtectedAction<String> {
 
 	public GetRevocationListAction(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, TokenApi tokenApi) throws ClassNotFoundException, InstantiationException,
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException {
-		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, tokenApi);
+		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, policyApi);
 	}
 
 	@Override

@@ -37,7 +37,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 	@Override
 	public MemberWrapper<Service> createService(Service service) throws Exception {
 		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new CreateServiceAction(catalogApi,
-				tokenProviderApi, service), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, service), tokenProviderApi, policyApi);
 		MemberWrapper<Service> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -45,7 +45,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 	@Override
 	public CollectionWrapper<Service> listServices() throws Exception {
 		FilterProtectedAction<Service> command = new FilterProtectedDecorator<Service>(new ListServicesAction(catalogApi,
-				tokenProviderApi), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi), tokenProviderApi, policyApi);
 		CollectionWrapper<Service> ret = command.execute(getRequest(), "type", "name");
 		return ret;
 	}
@@ -54,7 +54,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 	public MemberWrapper<Service> getService(String serviceid) {
 		Service ref = getMemberFromDriver(serviceid);
 		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new GetServiceAction(catalogApi,
-				tokenProviderApi, serviceid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, serviceid), tokenProviderApi, policyApi, ref);
 		MemberWrapper<Service> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -64,7 +64,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 	public MemberWrapper<Service> updateService(String serviceid, Service service) {
 		Service ref = getMemberFromDriver(serviceid);
 		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new UpdateServiceAction(catalogApi,
-				tokenProviderApi, serviceid, service), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, serviceid, service), tokenProviderApi, policyApi, ref);
 		MemberWrapper<Service> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -73,7 +73,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 	public void deleteService(String serviceid) {
 		Service ref = getMemberFromDriver(serviceid);
 		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new DeleteServiceAction(catalogApi,
-				tokenProviderApi, serviceid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, serviceid), tokenProviderApi, policyApi, ref);
 		command.execute(getRequest());
 	}
 

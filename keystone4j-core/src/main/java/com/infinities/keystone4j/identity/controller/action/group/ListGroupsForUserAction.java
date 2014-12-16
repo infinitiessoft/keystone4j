@@ -9,6 +9,7 @@ import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ListGroupsForUserAction extends AbstractGroupAction implements FilterProtectedAction<Group> {
@@ -16,8 +17,9 @@ public class ListGroupsForUserAction extends AbstractGroupAction implements Filt
 	private final String userid;
 
 
-	public ListGroupsForUserAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, String userid) {
-		super(identityApi, tokenProviderApi);
+	public ListGroupsForUserAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String userid) {
+		super(identityApi, tokenProviderApi, policyApi);
 		this.userid = userid;
 	}
 

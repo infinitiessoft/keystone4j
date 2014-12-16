@@ -7,6 +7,7 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class CreateGrantByUserProjectAction extends AbstractGrantAction implements ProtectedAction<Role> {
@@ -17,8 +18,8 @@ public class CreateGrantByUserProjectAction extends AbstractGrantAction implemen
 
 
 	public CreateGrantByUserProjectAction(AssignmentApi assignmentApi, IdentityApi identityApi,
-			TokenProviderApi tokenProviderApi, String roleid, String userid, String projectid) {
-		super(assignmentApi, identityApi, tokenProviderApi);
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi, String roleid, String userid, String projectid) {
+		super(assignmentApi, identityApi, tokenProviderApi, policyApi);
 		this.roleid = roleid;
 		this.userid = userid;
 		this.projectid = projectid;

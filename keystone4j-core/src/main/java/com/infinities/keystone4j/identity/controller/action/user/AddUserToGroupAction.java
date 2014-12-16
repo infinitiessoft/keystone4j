@@ -6,6 +6,7 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class AddUserToGroupAction extends AbstractUserAction implements ProtectedAction<User> {
@@ -14,8 +15,9 @@ public class AddUserToGroupAction extends AbstractUserAction implements Protecte
 	private final String groupid;
 
 
-	public AddUserToGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, String userid, String groupid) {
-		super(identityApi, tokenProviderApi);
+	public AddUserToGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String userid, String groupid) {
+		super(identityApi, tokenProviderApi, policyApi);
 		this.userid = userid;
 		this.groupid = groupid;
 	}

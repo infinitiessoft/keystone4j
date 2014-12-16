@@ -6,6 +6,7 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class UpdateGroupAction extends AbstractGroupAction implements ProtectedAction<Group> {
@@ -14,8 +15,9 @@ public class UpdateGroupAction extends AbstractGroupAction implements ProtectedA
 	private final Group group;
 
 
-	public UpdateGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, String groupid, Group group) {
-		super(identityApi, tokenProviderApi);
+	public UpdateGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String groupid, Group group) {
+		super(identityApi, tokenProviderApi, policyApi);
 		this.group = group;
 		this.groupid = groupid;
 	}

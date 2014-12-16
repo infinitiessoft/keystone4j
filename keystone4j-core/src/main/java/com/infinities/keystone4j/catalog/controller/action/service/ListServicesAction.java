@@ -9,12 +9,13 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.catalog.Service;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ListServicesAction extends AbstractServiceAction implements FilterProtectedAction<Service> {
 
-	public ListServicesAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi) {
-		super(catalogApi, tokenProviderApi);
+	public ListServicesAction(CatalogApi catalogApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(catalogApi, tokenProviderApi, policyApi);
 	}
 
 	@Override

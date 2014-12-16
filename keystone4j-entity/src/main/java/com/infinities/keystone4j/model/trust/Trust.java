@@ -15,10 +15,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.common.Links;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.token.Token;
 
@@ -41,6 +43,9 @@ public class Trust extends BaseEntity implements java.io.Serializable {
 	private String extra;
 	private Set<TrustRole> trustRoles = new HashSet<TrustRole>(0);
 	private Set<Token> tokens = new HashSet<Token>(0);
+
+	@XmlElement(name = "roles_links")
+	private Links rolesLinks = new Links();
 
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -130,4 +135,67 @@ public class Trust extends BaseEntity implements java.io.Serializable {
 		this.tokens = tokens;
 	}
 
+	@Transient
+	public Links getRolesLinks() {
+		return rolesLinks;
+	}
+
+	@Transient
+	public void setRolesLinks(Links rolesLinks) {
+		this.rolesLinks = rolesLinks;
+	}
+
+	@Transient
+	@XmlElement(name = "project_id")
+	public String getProjectId() {
+		if (getProject() == null) {
+			return null;
+		} else {
+			return getProject().getId();
+		}
+	}
+
+	@Transient
+	@XmlElement(name = "project_id")
+	public void setProjectId(String projectId) {
+		Project project = new Project();
+		project.setId(projectId);
+		setProject(project);
+	}
+
+	@Transient
+	@XmlElement(name = "trustor_user_id")
+	public String getTrustorUserId() {
+		if (getTrustor() == null) {
+			return null;
+		} else {
+			return getTrustor().getId();
+		}
+	}
+
+	@Transient
+	@XmlElement(name = "trustor_user_id")
+	public void setTrustorUserId(String trustorUserId) {
+		User user = new User();
+		user.setId(trustorUserId);
+		setTrustor(user);
+	}
+
+	@Transient
+	@XmlElement(name = "trustee_user_id")
+	public String getTrusteeUserId() {
+		if (getTrustee() == null) {
+			return null;
+		} else {
+			return getTrustee().getId();
+		}
+	}
+
+	@Transient
+	@XmlElement(name = "trustee_user_id")
+	public void setTrusteeUserId(String trusteeUserId) {
+		User user = new User();
+		user.setId(trusteeUserId);
+		setTrustee(user);
+	}
 }

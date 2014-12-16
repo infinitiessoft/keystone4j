@@ -15,7 +15,7 @@ public abstract class AbstractPolicyAction extends AbstractAction<Policy> {
 
 
 	public AbstractPolicyAction(PolicyApi policyApi, TokenProviderApi tokenProviderApi) {
-		super(tokenProviderApi);
+		super(tokenProviderApi, policyApi);
 		this.policyApi = policyApi;
 	}
 

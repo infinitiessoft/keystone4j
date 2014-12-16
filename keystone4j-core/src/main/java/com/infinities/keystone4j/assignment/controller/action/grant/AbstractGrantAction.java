@@ -6,6 +6,7 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.controller.action.role.v3.AbstractRoleAction;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public abstract class AbstractGrantAction extends AbstractRoleAction {
@@ -13,8 +14,9 @@ public abstract class AbstractGrantAction extends AbstractRoleAction {
 	protected IdentityApi identityApi;
 
 
-	public AbstractGrantAction(AssignmentApi assignmentApi, IdentityApi identityApi, TokenProviderApi tokenProviderApi) {
-		super(assignmentApi, tokenProviderApi);
+	public AbstractGrantAction(AssignmentApi assignmentApi, IdentityApi identityApi, TokenProviderApi tokenProviderApi,
+			PolicyApi policyApi) {
+		super(assignmentApi, tokenProviderApi, policyApi);
 		this.identityApi = identityApi;
 	}
 

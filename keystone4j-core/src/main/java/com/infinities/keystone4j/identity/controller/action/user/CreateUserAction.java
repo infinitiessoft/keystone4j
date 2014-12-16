@@ -9,6 +9,7 @@ import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class CreateUserAction extends AbstractUserAction implements ProtectedAction<User> {
@@ -18,8 +19,8 @@ public class CreateUserAction extends AbstractUserAction implements ProtectedAct
 	private final User user;
 
 
-	public CreateUserAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, User user) {
-		super(identityApi, tokenProviderApi);
+	public CreateUserAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi, User user) {
+		super(identityApi, tokenProviderApi, policyApi);
 		this.user = user;
 	}
 

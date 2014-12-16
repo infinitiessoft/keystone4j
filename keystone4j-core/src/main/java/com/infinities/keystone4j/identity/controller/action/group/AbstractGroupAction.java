@@ -7,6 +7,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.model.identity.GroupWrapper;
 import com.infinities.keystone4j.model.identity.GroupsWrapper;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public abstract class AbstractGroupAction extends AbstractAction<Group> {
@@ -14,8 +15,8 @@ public abstract class AbstractGroupAction extends AbstractAction<Group> {
 	protected IdentityApi identityApi;
 
 
-	public AbstractGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi) {
-		super(tokenProviderApi);
+	public AbstractGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		super(tokenProviderApi, policyApi);
 		this.identityApi = identityApi;
 	}
 

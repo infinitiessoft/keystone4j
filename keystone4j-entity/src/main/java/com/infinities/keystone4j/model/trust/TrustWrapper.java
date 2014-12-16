@@ -1,10 +1,8 @@
 package com.infinities.keystone4j.model.trust;
 
-import javax.ws.rs.container.ContainerRequestContext;
+import com.infinities.keystone4j.model.MemberWrapper;
 
-import com.infinities.keystone4j.ReferentialLinkUtils;
-
-public class TrustWrapper {
+public class TrustWrapper implements MemberWrapper<Trust> {
 
 	private Trust trust;
 
@@ -13,13 +11,10 @@ public class TrustWrapper {
 
 	}
 
-	public TrustWrapper(Trust trust, ContainerRequestContext context) {
-		this(trust, context.getUriInfo().getBaseUri().toASCIIString() + "v3/trusts/");
-	}
-
-	public TrustWrapper(Trust trust, String baseUrl) {
+	public TrustWrapper(Trust trust) {
 		this.trust = trust;
-		ReferentialLinkUtils.instance.addSelfReferentialLink(trust, baseUrl);
+		// ReferentialLinkUtils.instance.addSelfReferentialLink(trust,
+		// baseUrl);
 	}
 
 	public Trust getTrust() {
@@ -30,4 +25,8 @@ public class TrustWrapper {
 		this.trust = trust;
 	}
 
+	@Override
+	public void setRef(Trust ref) {
+		this.trust = ref;
+	}
 }

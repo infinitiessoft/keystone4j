@@ -1,25 +1,24 @@
 package com.infinities.keystone4j.trust.controller;
 
-import com.infinities.keystone4j.model.assignment.RoleWrapper;
-import com.infinities.keystone4j.model.assignment.RolesWrapper;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.trust.Trust;
-import com.infinities.keystone4j.model.trust.TrustWrapper;
-import com.infinities.keystone4j.model.trust.TrustsWrapper;
 
 public interface TrustV3Controller {
 
-	TrustWrapper getTrust(String trustid);
+	MemberWrapper<Trust> getTrust(String trustid) throws Exception;
 
-	TrustWrapper createTrust(Trust trust);
+	MemberWrapper<Trust> createTrust(Trust trust) throws Exception;
 
-	TrustsWrapper listTrusts(String trustorid, String trusteeid, int page, int perPage);
+	CollectionWrapper<Trust> listTrusts() throws Exception;
 
-	void deleteTrust(String trustid);
+	void deleteTrust(String trustid) throws Exception;
 
-	RolesWrapper listRolesForTrust(String trustid, int page, int perPage);
+	CollectionWrapper<Role> listRolesForTrust(String trustid) throws Exception;
 
-	void checkRoleForTrust(String trustid, String roleid);
+	void checkRoleForTrust(String trustid, String roleid) throws Exception;
 
-	RoleWrapper getRoleForTrust(String trustid, String roleid);
+	MemberWrapper<Role> getRoleForTrust(String trustid, String roleid) throws Exception;
 
 }

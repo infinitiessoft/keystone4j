@@ -6,6 +6,7 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class UpdateDomainAction extends AbstractDomainAction implements ProtectedAction<Domain> {
@@ -14,8 +15,9 @@ public class UpdateDomainAction extends AbstractDomainAction implements Protecte
 	private final Domain domain;
 
 
-	public UpdateDomainAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, String domainid, Domain domain) {
-		super(assignmentApi, tokenProviderApi);
+	public UpdateDomainAction(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi,
+			String domainid, Domain domain) {
+		super(assignmentApi, tokenProviderApi, policyApi);
 		this.domain = domain;
 		this.domainid = domainid;
 	}

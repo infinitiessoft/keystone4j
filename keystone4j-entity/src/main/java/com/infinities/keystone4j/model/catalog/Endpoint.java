@@ -33,7 +33,6 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 	private String legacyEndpoint;
 	@NotNull(message = "interface field is required and cannot be empty")
 	private String interfaceType;
-	private String region;
 	@NotNull(message = "service_id field is required and cannot be empty")
 	private Service service;
 	private String url;
@@ -47,6 +46,7 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 	private boolean extraUpdated = false;
 	private boolean nameUpdated = false;
 	private Set<ProjectEndpoint> projectEndpoints = new HashSet<ProjectEndpoint>(0);
+	private Region region;
 
 
 	@XmlTransient
@@ -73,14 +73,44 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 		interfaceTypeUpdated = true;
 	}
 
-	@Column(name = "REGION", length = 255)
-	public String getRegion() {
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REGIONID", nullable = true)
+	public Region getRegion() {
 		return region;
 	}
 
-	public void setRegion(String region) {
+	public void setRegion(Region region) {
 		this.region = region;
 		regionUpdated = true;
+	}
+
+	@Transient
+	@XmlElement(name = "region_id")
+	public String getRegionid() {
+		if (getRegion() != null) {
+			return getRegion().getId();
+		}
+		return null;
+	}
+
+	@Transient
+	@XmlElement(name = "region_id")
+	public void setRegionid(String regionid) {
+		if (!(regionid == null || regionid.length() == 0)) {
+			Region region = new Region();
+			region.setId(regionid);
+			setRegion(region);
+		}
+	}
+
+	@Transient
+	@XmlElement(name = "region")
+	public void setRegion(String region) {
+		if (!(region == null || region.length() == 0)) {
+			Region ref = new Region();
+			ref.setId(region);
+			setRegion(ref);
+		}
 	}
 
 	@XmlTransient

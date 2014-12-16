@@ -6,6 +6,7 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class DeleteGroupAction extends AbstractGroupAction implements ProtectedAction<Group> {
@@ -13,8 +14,8 @@ public class DeleteGroupAction extends AbstractGroupAction implements ProtectedA
 	private final String groupid;
 
 
-	public DeleteGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, String groupid) {
-		super(identityApi, tokenProviderApi);
+	public DeleteGroupAction(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi, String groupid) {
+		super(identityApi, tokenProviderApi, policyApi);
 		this.groupid = groupid;
 	}
 
