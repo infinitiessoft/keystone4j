@@ -2,27 +2,27 @@ package com.infinities.keystone4j.token.controller;
 
 import javax.ws.rs.core.Response;
 
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.token.Auth;
-import com.infinities.keystone4j.model.token.v2.EndpointsV2Wrapper;
-import com.infinities.keystone4j.model.token.v2.TokenV2DataWrapper;
-import com.infinities.keystone4j.model.trust.SignedWrapper;
+import com.infinities.keystone4j.model.token.v2.Access;
+import com.infinities.keystone4j.model.token.v2.Access.Service;
 
 public interface TokenController {
 
-	Response getCaCert();
+	Response getCaCert() throws Exception;
 
-	Response getSigningCert();
+	Response getSigningCert() throws Exception;
 
-	TokenV2DataWrapper authenticate(Auth auth);
+	MemberWrapper<Access> authenticate(Auth auth) throws Exception;
 
-	void validateTokenHead(String tokenid, String belongsTo);
+	void validateTokenHead(String tokenid) throws Exception;
 
-	TokenV2DataWrapper validateToken(String tokenid, String belongsTo);
+	MemberWrapper<Access> validateToken(String tokenid) throws Exception;
 
-	void deleteToken(String tokenid);
+	void deleteToken(String tokenid) throws Exception;
 
-	SignedWrapper getRevocationList();
+	MemberWrapper<String> getRevocationList() throws Exception;
 
-	EndpointsV2Wrapper getEndpoints(String tokenid);
+	Service getEndpoints(String tokenid) throws Exception;
 
 }

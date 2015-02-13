@@ -11,12 +11,15 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.trust.Trust;
+import com.infinities.keystone4j.model.trust.wrapper.TrustWrapper;
+import com.infinities.keystone4j.model.trust.wrapper.TrustsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
-public class ListTrustsAction extends AbstractTrustAction implements FilterProtectedAction<Trust> {
+public class ListTrustsAction extends AbstractTrustAction<Trust> implements FilterProtectedAction<Trust> {
 
 	public ListTrustsAction(AssignmentApi assignmentApi, IdentityApi identityApi, TrustApi trustApi,
 			TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
@@ -57,5 +60,15 @@ public class ListTrustsAction extends AbstractTrustAction implements FilterProte
 	@Override
 	public String getName() {
 		return "list_trust";
+	}
+
+	@Override
+	public CollectionWrapper<Trust> getCollectionWrapper() {
+		return new TrustsWrapper();
+	}
+
+	@Override
+	public MemberWrapper<Trust> getMemberWrapper() {
+		return new TrustWrapper();
 	}
 }

@@ -287,7 +287,7 @@ public enum Cms {
 		}
 	}
 
-	private static String toHex(byte[] digest) {
+	public static String toHex(byte[] digest) {
 		StringBuilder sb = new StringBuilder();
 		for (byte b : digest) {
 			sb.append(String.format("%1$02X", b));
@@ -313,5 +313,14 @@ public enum Cms {
 		formatted += "-----END CMS-----\n";
 
 		return formatted;
+	}
+
+	public String pkizSign(String text, String certfile, String keyfile) throws CertificateException,
+			NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException, CertStoreException, IOException,
+			CMSException {
+		String signed = cmsSignData(text, certfile, keyfile, PKIZ_CMS_FORM);
+		byte[] compressed = CompressionUtils.compress(signed.getBytes());
+		String encoded = PKIZ_PREFIX + BaseEncoding.base64Url().encode(compressed);
+		return encoded;
 	}
 }

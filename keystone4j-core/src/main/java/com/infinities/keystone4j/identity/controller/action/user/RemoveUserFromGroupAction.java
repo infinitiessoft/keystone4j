@@ -23,7 +23,7 @@ public class RemoveUserFromGroupAction extends AbstractUserAction implements Pro
 	}
 
 	@Override
-	public MemberWrapper<User> execute(ContainerRequestContext request) {
+	public MemberWrapper<User> execute(ContainerRequestContext request) throws Exception {
 		this.getIdentityApi().removeUserFromGroup(userid, groupid);
 		return null;
 	}

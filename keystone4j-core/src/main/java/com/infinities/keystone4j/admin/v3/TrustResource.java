@@ -14,11 +14,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.model.assignment.RoleWrapper;
-import com.infinities.keystone4j.model.assignment.RolesWrapper;
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.trust.Trust;
-import com.infinities.keystone4j.model.trust.TrustWrapper;
-import com.infinities.keystone4j.model.trust.TrustsWrapper;
 import com.infinities.keystone4j.trust.controller.TrustV3Controller;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -33,46 +32,50 @@ public class TrustResource {
 	}
 
 	@POST
-	public TrustWrapper createTrust(Trust trust) {
+	public MemberWrapper<Trust> createTrust(Trust trust) throws Exception {
 		return trustController.createTrust(trust);
 	}
 
 	@GET
-	public TrustsWrapper listTrusts(@QueryParam("trustor_id") String trustorid, @QueryParam("trustee_id") String trusteeid,
-			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
-		return trustController.listTrusts(trustorid, trusteeid, page, perPage);
+	public CollectionWrapper<Trust> listTrusts(@QueryParam("trustor_id") String trustorid,
+			@QueryParam("trustee_id") String trusteeid, @DefaultValue("1") @QueryParam("page") int page,
+			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
+		return trustController.listTrusts();
 	}
 
 	@GET
 	@Path("/{trustid}")
-	public TrustWrapper getTrust(@PathParam("trustid") String trustid) {
+	public MemberWrapper<Trust> getTrust(@PathParam("trustid") String trustid) throws Exception {
 		return trustController.getTrust(trustid);
 	}
 
 	@DELETE
 	@Path("/{trustid}")
-	public Response deleteTrust(@PathParam("trustid") String trustid) {
+	public Response deleteTrust(@PathParam("trustid") String trustid) throws Exception {
 		trustController.deleteTrust(trustid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
 	@GET
 	@Path("/{trustid}/roles")
-	public RolesWrapper listRolesForTrust(@PathParam("trustid") String trustid,
-			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage) {
-		return trustController.listRolesForTrust(trustid, page, perPage);
+	public CollectionWrapper<Role> listRolesForTrust(@PathParam("trustid") String trustid,
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws Exception {
+		return trustController.listRolesForTrust(trustid);
 	}
 
 	@HEAD
 	@Path("/{trustid}/roles/{roleid}")
-	public Response checkRoleForTrust(@PathParam("trustid") String trustid, @PathParam("roleid") String roleid) {
+	public Response checkRoleForTrust(@PathParam("trustid") String trustid, @PathParam("roleid") String roleid)
+			throws Exception {
 		trustController.checkRoleForTrust(trustid, roleid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
 	@GET
 	@Path("/{trustid}/roles/{roleid}")
-	public RoleWrapper getRoleForTrust(@PathParam("trustid") String trustid, @PathParam("roleid") String roleid) {
+	public MemberWrapper<Role> getRoleForTrust(@PathParam("trustid") String trustid, @PathParam("roleid") String roleid)
+			throws Exception {
 		return trustController.getRoleForTrust(trustid, roleid);
 	}
 }

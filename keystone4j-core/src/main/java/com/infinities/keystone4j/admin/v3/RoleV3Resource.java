@@ -18,10 +18,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.MemberWrapper;
-import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.assignment.RoleWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RoleWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RolesWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 
 //keystone.assignment.routers 20141209
@@ -39,31 +37,30 @@ public class RoleV3Resource {
 	}
 
 	@POST
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public Response createRole(RoleWrapper roleWrapper) throws Exception {
-		return Response.status(Status.CREATED).entity(roleController.createRole(roleWrapper.getRole())).build();
+		return Response.status(Status.CREATED).entity(roleController.createRole(roleWrapper.getRef())).build();
 	}
 
 	@GET
-	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Role> listRoles(@QueryParam("name") String name,
-			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
-			throws Exception {
-		return roleController.listRoles();
+	@JsonView(Views.Advance.class)
+	public RolesWrapper listRoles(@QueryParam("name") String name, @DefaultValue("1") @QueryParam("page") int page,
+			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
+		return (RolesWrapper) roleController.listRoles();
 	}
 
 	@GET
 	@Path("/{roleid}")
-	@JsonView(Views.Basic.class)
-	public MemberWrapper<Role> getRole(@PathParam("roleid") String roleid) throws Exception {
-		return roleController.getRole(roleid);
+	@JsonView(Views.Advance.class)
+	public RoleWrapper getRole(@PathParam("roleid") String roleid) throws Exception {
+		return (RoleWrapper) roleController.getRole(roleid);
 	}
 
 	@PATCH
 	@Path("/{roleid}")
-	@JsonView(Views.Basic.class)
-	public MemberWrapper<Role> updateRole(@PathParam("roleid") String roleid, RoleWrapper roleWrapper) throws Exception {
-		return roleController.updateRole(roleid, roleWrapper.getRole());
+	@JsonView(Views.Advance.class)
+	public RoleWrapper updateRole(@PathParam("roleid") String roleid, RoleWrapper roleWrapper) throws Exception {
+		return (RoleWrapper) roleController.updateRole(roleid, roleWrapper.getRef());
 	}
 
 	@DELETE

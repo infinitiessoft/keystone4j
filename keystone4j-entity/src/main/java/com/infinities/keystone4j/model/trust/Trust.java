@@ -1,17 +1,12 @@
 package com.infinities.keystone4j.model.trust;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,10 +14,8 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.infinities.keystone4j.model.BaseEntity;
-import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.common.Links;
-import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.common.CollectionLinks;
 
 @Entity
 @Table(name = "TRUST", schema = "PUBLIC", catalog = "PUBLIC")
@@ -32,53 +25,39 @@ public class Trust extends BaseEntity implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -3573037726561198048L;
-	@XmlElement(name = "trustor_user")
-	private User trustor;
-	@XmlElement(name = "trustee_user")
-	private User trustee;
-	private Project project;
+	@XmlElement(name = "trustor_user_id")
+	private String trustorUserId;
+	@XmlElement(name = "trustee_user_id")
+	private String trusteeUserId;
+	@XmlElement(name = "project_id")
+	private String projectId;
 	private Boolean impersonation;
-	private Date deletedAt;
-	private Date expiresAt;
+	private Calendar deletedAt;
+	private Calendar expiresAt;
 	private String extra;
-	private Set<TrustRole> trustRoles = new HashSet<TrustRole>(0);
-	private Set<Token> tokens = new HashSet<Token>(0);
+	@XmlElement(name = "remaining_uses")
+	private Integer remainingUses;
+
+	// private final Set<Token> tokens = new HashSet<Token>(0);
+
+	private List<Role> roles = new ArrayList<Role>();
+
+
+	@Transient
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
 
 	@XmlElement(name = "roles_links")
-	private Links rolesLinks = new Links();
+	private CollectionLinks rolesLinks = new CollectionLinks();
 
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TRUSTORID", nullable = false)
-	public User getTrustor() {
-		return trustor;
-	}
-
-	public void setTrustor(User trustor) {
-		this.trustor = trustor;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TRUSTEEID", nullable = false)
-	public User getTrustee() {
-		return trustee;
-	}
-
-	public void setTrustee(User trustee) {
-		this.trustee = trustee;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PROJECTID", nullable = false)
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	@Column(name = "IMPERSONATION")
+	@Column(name = "IMPERSONATION", nullable = false)
 	public Boolean getImpersonation() {
 		return impersonation;
 	}
@@ -89,21 +68,21 @@ public class Trust extends BaseEntity implements java.io.Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DELETEAT")
-	public Date getDeletedAt() {
+	public Calendar getDeletedAt() {
 		return deletedAt;
 	}
 
-	public void setDeletedAt(Date deletedAt) {
+	public void setDeletedAt(Calendar deletedAt) {
 		this.deletedAt = deletedAt;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "EXPIREAT")
-	public Date getExpiresAt() {
+	public Calendar getExpiresAt() {
 		return expiresAt;
 	}
 
-	public void setExpiresAt(Date expiresAt) {
+	public void setExpiresAt(Calendar expiresAt) {
 		this.expiresAt = expiresAt;
 	}
 
@@ -117,85 +96,61 @@ public class Trust extends BaseEntity implements java.io.Serializable {
 		this.extra = extra;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "trust", cascade = CascadeType.ALL)
-	public Set<TrustRole> getTrustRoles() {
-		return trustRoles;
-	}
-
-	public void setTrustRoles(Set<TrustRole> trustRoles) {
-		this.trustRoles = trustRoles;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "trust", cascade = CascadeType.ALL)
-	public Set<Token> getTokens() {
-		return tokens;
-	}
-
-	public void setTokens(Set<Token> tokens) {
-		this.tokens = tokens;
-	}
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "trust", cascade =
+	// CascadeType.ALL)
+	// public Set<Token> getTokens() {
+	// return tokens;
+	// }
+	//
+	// public void setTokens(Set<Token> tokens) {
+	// this.tokens = tokens;
+	// }
 
 	@Transient
-	public Links getRolesLinks() {
+	public CollectionLinks getRolesLinks() {
 		return rolesLinks;
 	}
 
 	@Transient
-	public void setRolesLinks(Links rolesLinks) {
+	public void setRolesLinks(CollectionLinks rolesLinks) {
 		this.rolesLinks = rolesLinks;
 	}
 
-	@Transient
-	@XmlElement(name = "project_id")
-	public String getProjectId() {
-		if (getProject() == null) {
-			return null;
-		} else {
-			return getProject().getId();
-		}
+	@XmlElement(name = "remaining_uses")
+	@Column(name = "REMAINING_USE", nullable = false)
+	public Integer getRemainingUses() {
+		return remainingUses;
 	}
 
-	@Transient
-	@XmlElement(name = "project_id")
-	public void setProjectId(String projectId) {
-		Project project = new Project();
-		project.setId(projectId);
-		setProject(project);
+	public void setRemainingUses(Integer remainingUses) {
+		this.remainingUses = remainingUses;
 	}
 
-	@Transient
-	@XmlElement(name = "trustor_user_id")
+	@Column(name = "TRUSTOR_USER_ID", length = 64, nullable = false)
 	public String getTrustorUserId() {
-		if (getTrustor() == null) {
-			return null;
-		} else {
-			return getTrustor().getId();
-		}
+		return trustorUserId;
 	}
 
-	@Transient
-	@XmlElement(name = "trustor_user_id")
 	public void setTrustorUserId(String trustorUserId) {
-		User user = new User();
-		user.setId(trustorUserId);
-		setTrustor(user);
+		this.trustorUserId = trustorUserId;
 	}
 
-	@Transient
-	@XmlElement(name = "trustee_user_id")
+	@Column(name = "TRUSTEE_USER_ID", length = 64, nullable = false)
 	public String getTrusteeUserId() {
-		if (getTrustee() == null) {
-			return null;
-		} else {
-			return getTrustee().getId();
-		}
+		return trusteeUserId;
 	}
 
-	@Transient
-	@XmlElement(name = "trustee_user_id")
 	public void setTrusteeUserId(String trusteeUserId) {
-		User user = new User();
-		user.setId(trusteeUserId);
-		setTrustee(user);
+		this.trusteeUserId = trusteeUserId;
 	}
+
+	@Column(name = "PROJECT_ID", length = 64)
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
+
 }

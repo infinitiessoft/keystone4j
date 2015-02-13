@@ -26,7 +26,7 @@ public enum Config {
 	Instance;
 
 	public enum Type {
-		assignment, auth, cache, catalog, credential, database, ec2, endpoint_filter, federation, identity, kvs, ldap, memcache, pam, paste_deploy, policy, signing, ssl, stats, sql, token, oauth1, os_inherit, DEFAULT, trust;
+		assignment, auth, cache, catalog, credential, database, ec2, endpoint_filter, federation, identity, kvs, ldap, memcache, pam, paste_deploy, policy, signing, ssl, stats, sql, token, oauth1, os_inherit, DEFAULT, trust, identity_mapping, revoke;
 	}
 
 
@@ -52,7 +52,7 @@ public enum Config {
 		// DEFAULT_CONFIG_FILENAME =
 		// getClass().getResource(KeystoneApplication.CONF_DIR +
 		// "keystone.conf");
-		DEFAULT_CONFIG_FILENAME = new KeystoneUtils().getURL(KeystoneApplication.CONF_DIR + "keystone.conf");
+		DEFAULT_CONFIG_FILENAME = KeystoneUtils.getURL(KeystoneApplication.CONF_DIR + "keystone.conf");
 
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "admin_token", Options.newStrOpt("admin_token", true, "ADMIN"));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "public_bind_host", Options.newStrOpt("public_bind_host", "0.0.0.0"));
@@ -77,6 +77,7 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "policy_file",
 				Options.newStrOpt("policy_file", KeystoneApplication.CONF_DIR + "policy.json"));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "domain_id_immutable", Options.newBoolOpt("domain_id_immutable", false));
+		FILE_OPTIONS.put(Config.Type.DEFAULT, "max_project_tree_depth", Options.newIntOpt("max_project_tree_depth", 5));
 
 		FILE_OPTIONS.put(Config.Type.identity, "default_domain_id", Options.newStrOpt("default_domain_id", "default"));
 		FILE_OPTIONS.put(Config.Type.identity, "domain_specific_drivers_enabled",
@@ -315,6 +316,12 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.kvs, "enable_key_mangler", Options.newBoolOpt("enable_key_mangler", true));
 		FILE_OPTIONS.put(Config.Type.kvs, "default_lock_timeout", Options.newIntOpt("default_lock_timeout", 5));
 
+		FILE_OPTIONS.put(Config.Type.identity_mapping, "backward_compatible_ids",
+				Options.newBoolOpt("backward_compatible_ids", true));
+		FILE_OPTIONS.put(Config.Type.DEFAULT, "strict_password_check", Options.newBoolOpt("strict_password_check", false));
+		FILE_OPTIONS.put(Config.Type.revoke, "expiration_buffer", Options.newIntOpt("expiration_buffer", 1800));
+		FILE_OPTIONS.put(Config.Type.token, "hash_algorithm", Options.newStrOpt("hash_algorithm", "md5"));
+
 	}
 
 	private void parseConfigFiles() throws IOException {
@@ -356,13 +363,40 @@ public enum Config {
 		Pattern pattern = Pattern.compile("%\\((.+?)\\)s");
 		Matcher matcher = pattern.matcher(original);
 		StringBuffer replace = new StringBuffer(original);
-		while (matcher.find()) {
-			String match = matcher.group(1);
-			int start = matcher.start(1);
-			int end = matcher.end(1);
-			String value = Config.Instance.getOpt(Config.Type.DEFAULT, match).asText();
-			replace.replace(start, end, value);
+		boolean nextRound = true;
+		while (nextRound) {
+			nextRound = false;
+			while (matcher.find()) {
+				String match = matcher.group(1);
+				int start = matcher.start(1);
+				int end = matcher.end(1);
+				String value = Config.Instance.getOpt(Config.Type.DEFAULT, match).asText();
+				replace.replace(start, end, value);
+				nextRound = true;
+			}
 		}
 		return replace.toString();
+	}
+
+	public String findFile(String name) {
+		String path = name;
+		File f = new File(path);
+		if (f.exists()) {
+			return f.getAbsolutePath();
+		} else {
+			return null;
+		}
+	}
+
+	public void configure(Table<Type, String, Option> conf) {
+		for (Cell<Type, String, Option> cell : FILE_OPTIONS.cellSet()) {
+			conf.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue().clone());
+		}
+	}
+
+	public Table<Type, String, Option> getTable() {
+		Table<Type, String, Option> table = HashBasedTable.create();
+		table.putAll(FILE_OPTIONS);
+		return table;
 	}
 }

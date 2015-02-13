@@ -8,8 +8,9 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.controller.AuthController;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.auth.TokenIdAndData;
-import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.token.wrapper.TokenDataWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -22,7 +23,7 @@ public class ValidateTokenAction extends AbstractAuthAction implements Protected
 	}
 
 	@Override
-	public TokenIdAndData execute(ContainerRequestContext request) {
+	public TokenIdAndData execute(ContainerRequestContext request) throws Exception {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		String tokenid = context.getSubjectTokenid();
 		boolean includeCatalog = !request.getUriInfo().getQueryParameters().containsKey(AuthController.NOCATALOG);
@@ -38,6 +39,11 @@ public class ValidateTokenAction extends AbstractAuthAction implements Protected
 	@Override
 	public String getName() {
 		return "validate_token";
+	}
+
+	@Override
+	public MemberWrapper<TokenDataWrapper> getMemberWrapper() {
+		return new TokenIdAndData();
 	}
 
 }

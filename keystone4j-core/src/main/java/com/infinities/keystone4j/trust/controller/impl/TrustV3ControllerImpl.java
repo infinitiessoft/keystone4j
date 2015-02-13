@@ -4,8 +4,8 @@ import com.infinities.keystone4j.FilterProtectedAction;
 import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.ProtectedCollectionDecorator;
-import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedCollectionDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
@@ -39,6 +39,7 @@ public class TrustV3ControllerImpl extends BaseController implements TrustV3Cont
 		this.trustApi = trustApi;
 		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
+		this.assignmentApi.setIdentityApi(identityApi);
 	}
 
 	// TODO ignore validation.validated(schema.trust_create,'trust')

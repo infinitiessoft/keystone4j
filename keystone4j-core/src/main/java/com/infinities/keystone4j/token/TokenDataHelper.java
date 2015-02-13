@@ -2,8 +2,11 @@ package com.infinities.keystone4j.token;
 
 import java.text.MessageFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -15,17 +18,18 @@ import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.catalog.Service;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.token.Bind;
 import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.model.token.TokenData;
-import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.token.wrapper.TokenDataWrapper;
 import com.infinities.keystone4j.model.trust.Trust;
-import com.infinities.keystone4j.model.trust.TrustRole;
+import com.infinities.keystone4j.token.provider.driver.BaseProvider;
 
 public class TokenDataHelper {
 
+	private final static Logger logger = LoggerFactory.getLogger(TokenDataHelper.class);
 	private final IdentityApi identityApi;
 	private final AssignmentApi assignmentApi;
 	private final CatalogApi catalogApi;
@@ -35,76 +39,37 @@ public class TokenDataHelper {
 		this.identityApi = identityApi;
 		this.assignmentApi = assignmentApi;
 		this.catalogApi = catalogApi;
+		this.identityApi.setAssignmentApi(assignmentApi);
+		this.assignmentApi.setIdentityApi(identityApi);
 	}
 
-	public TokenDataWrapper getTokenData(String userid, List<String> methodNames, Date expiresAt, String projectid,
-			String domainid, Bind bind, Trust trust, Token token, boolean includeCatalog) {
-		TokenData tokenData = new TokenData();
-		tokenData.setMethods(methodNames);
-
-		if (token != null) {
-			if (token.getUser() != null) {
-				tokenData.setUser(token.getUser());
-			}
+	private void populateTokenDates(TokenData tokenData, Calendar expires, Trust trust, Calendar issuedAt) {
+		if (expires == null) {
+			expires = BaseProvider.getDefaultExpireTime();
 		}
-
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
-
-		if (enabled && trust != null) {
-			if (!userid.equals(trust.getTrustee().getId())) {
-				Exceptions.ForbiddenException.getInstance("User is not a trustee");
-			}
-		}
-
-		if (bind != null) {
-			tokenData.setBind(bind);
-		}
-
-		populateScope(tokenData, domainid, projectid);
-		populateUser(tokenData, userid, trust);
-		populateRoles(tokenData, userid, domainid, projectid, trust);
-		if (includeCatalog) {
-			populateServiceCatalog(tokenData, userid, domainid, projectid, trust);
-		}
-		populateTokenDates(tokenData, expiresAt, trust);
-		return new TokenDataWrapper(tokenData);
+		tokenData.setExpireAt(expires);
+		tokenData.setIssuedAt(issuedAt == null ? Calendar.getInstance() : issuedAt);
 	}
 
-	private void populateTokenDates(TokenData tokenData, Date expiresAt, Trust trust) {
-		if (expiresAt == null) {
-			int expireSec = Config.Instance.getOpt(Config.Type.token, "expiration").asInteger();
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.SECOND, expireSec);
-			expiresAt = calendar.getTime();
-		}
-
-		tokenData.setExpireAt(expiresAt);
-		tokenData.setIssuedAt(new Date());
-	}
-
-	private void populateServiceCatalog(TokenData tokenData, String userid, String domainid, String projectid, Trust trust) {
+	private void populateServiceCatalog(TokenData tokenData, String userid, String domainid, String projectid, Trust trust)
+			throws Exception {
 		if (tokenData.getCatalog() != null) {
 			return;
 		}
 		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
 
 		if (enabled && trust != null) {
-			userid = trust.getTrustor().getId();
+			userid = trust.getTrustorUserId();
 		}
-
 		if (!Strings.isNullOrEmpty(projectid) || !Strings.isNullOrEmpty(domainid)) {
-			Catalog catalog;
-			try {
-				catalog = catalogApi.getV3Catalog(userid, projectid);
-			} catch (Exception e) {
-				catalog = new Catalog();
-			}
+			List<Service> catalog = catalogApi.getV3Catalog(userid, projectid);
 			tokenData.setCatalog(catalog);
 		}
 
 	}
 
-	private void populateRoles(TokenData tokenData, String userid, String domainid, String projectid, Trust trust) {
+	private void populateRoles(TokenData tokenData, String userid, String domainid, String projectid, Trust trust)
+			throws Exception {
 		if (!tokenData.getRoles().isEmpty()) {
 			return;
 		}
@@ -115,8 +80,8 @@ public class TokenDataHelper {
 		String tokenProjectid;
 		String tokenDomainid;
 		if (enabled && trust != null) {
-			tokenUserid = trust.getTrustor().getId();
-			tokenProjectid = trust.getProject().getId();
+			tokenUserid = trust.getTrustorUserId();
+			tokenProjectid = trust.getProjectId();
 			tokenDomainid = null;
 		} else {
 			tokenUserid = userid;
@@ -129,10 +94,10 @@ public class TokenDataHelper {
 			roles = getRolesForUser(tokenUserid, tokenDomainid, tokenProjectid);
 			List<Role> filteredRoles = Lists.newArrayList();
 			if (enabled && trust != null) {
-				for (TrustRole trustRole : trust.getTrustRoles()) {
+				for (Role trustRole : trust.getRoles()) {
 					List<Role> matchRoles = Lists.newArrayList();
 					for (Role role : roles) {
-						if (role.getId().equals(trustRole.getRole().getId())) {
+						if (role.getId().equals(trustRole.getId())) {
 							matchRoles.add(role);
 						}
 					}
@@ -165,42 +130,64 @@ public class TokenDataHelper {
 
 	}
 
-	private List<Role> getRolesForUser(String userid, String domainid, String projectid) {
-		List<Role> roles = Lists.newArrayList();
+	private List<Role> getRolesForUser(String userid, String domainid, String projectid) throws Exception {
+		List<String> roles = Lists.newArrayList();
 		if (!Strings.isNullOrEmpty(domainid)) {
 			roles = assignmentApi.getRolesForUserAndDomain(userid, domainid);
+			logger.debug("get roles {} for user: {} and domain: {}", new Object[] { roles.size(), userid, domainid });
 		}
 
 		if (!Strings.isNullOrEmpty(projectid)) {
 			roles = assignmentApi.getRolesForUserAndProject(userid, projectid);
+			logger.debug("get roles {} for user: {} and project: {}", new Object[] { roles.size(), userid, projectid });
 		}
-		return roles;
+
+		List<Role> rets = Lists.newArrayList();
+
+		for (String roleid : roles) {
+			rets.add(assignmentApi.getRole(roleid));
+		}
+
+		return rets;
 	}
 
-	private void populateUser(TokenData tokenData, String userid, Trust trust) {
+	private void populateUser(TokenData tokenData, String userid, Trust trust) throws Exception {
 		if (tokenData.getUser() != null) {
 			return;
 		}
 
-		User user = this.identityApi.getUser(userid, null);
+		User userRef = this.identityApi.getUser(userid);
 		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
-
 		if (enabled && trust != null && tokenData.getTrust() != null) {
-			User trustor = this.identityApi.getUser(trust.getTrustor().getId(), null);
-			if (!trustor.getEnabled()) {
-				Exceptions.ForbiddenException.getInstance("Trustor is disabled");
+			User trustorUserRef = this.identityApi.getUser(trust.getTrustorUserId());
+			try {
+				identityApi.assertUserEnabled(trust.getTrustorUserId(), null);
+			} catch (Exception e) {
+				throw Exceptions.ForbiddenException.getInstance("Trustor id disabled.");
 			}
 			if (trust.getImpersonation()) {
-				user = trustor;
+				userRef = trustorUserRef;
 			}
-			tokenData.setTrust(trust);
+			TokenData.Trust t = new TokenData.Trust();
+			t.setId(trust.getId());
+			User trustee = new User();
+			trustee.setId(trust.getTrusteeUserId());
+			t.setTrusteeUser(trustee);
+			User trustor = new User();
+			trustor.setId(trust.getTrustorUserId());
+			t.setTrustorUser(trustor);
+			t.setImpersonation(trust.getImpersonation());
+			tokenData.setTrust(t);
 		}
-
-		tokenData.setUser(user);
+		User filteredUser = new User();
+		filteredUser.setId(userRef.getId());
+		filteredUser.setName(userRef.getName());
+		filteredUser.setDomain(getFilteredDomain(userRef.getDomainId()));
+		tokenData.setUser(filteredUser);
 	}
 
-	private void populateScope(TokenData tokenData, String domainid, String projectid) {
-		if (tokenData.getDomain() != null && tokenData.getProject() != null) {
+	private void populateScope(TokenData tokenData, String domainid, String projectid) throws Exception {
+		if (tokenData.getDomain() != null || tokenData.getProject() != null) {
 			return;
 		}
 
@@ -213,13 +200,69 @@ public class TokenDataHelper {
 		}
 	}
 
-	private Project getFilteredProject(String projectid) {
+	private Project getFilteredProject(String projectid) throws Exception {
 		Project project = assignmentApi.getProject(projectid);
 		return project;
 	}
 
-	private Domain getFilteredDomain(String domainid) {
+	private Domain getFilteredDomain(String domainid) throws Exception {
 		Domain domain = this.assignmentApi.getDomain(domainid);
 		return domain;
+	}
+
+	// domainid=null,projectid==null,expires=null,trust=null,token=null,includeCatalog=true,bind=null,issuedAt=null,auditInfo=null
+	public TokenDataWrapper getTokenData(String userid, List<String> methodNames, Map<String, String> extras,
+			String domainid, String projectid, Calendar expires, Trust trust, Bind bind, Token token,
+			boolean includeCatalog, Calendar issuedAt, Object auditInfo) throws Exception {
+		TokenData tokenData = new TokenData();
+		tokenData.setMethods(methodNames);
+		tokenData.setExtras(extras);
+
+		// TODO ignore federation
+		// # We've probably already written these to the token
+		// if token:
+		// for x in ('roles', 'user', 'catalog', 'project', 'domain'):
+		// if x in token:
+		// token_data[x] = token[x]
+
+		if (Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean() && trust != null) {
+			if (!trust.getTrusteeUserId().equals(userid)) {
+				throw Exceptions.ForbiddenException.getInstance("User is not a trustee");
+			}
+		}
+
+		if (bind != null) {
+			tokenData.setBind(bind);
+		}
+
+		populateScope(tokenData, domainid, projectid);
+		populateUser(tokenData, userid, trust);
+		populateRoles(tokenData, userid, domainid, projectid, trust);
+		populateAuditInfo(tokenData, auditInfo);
+
+		if (includeCatalog) {
+			populateServiceCatalog(tokenData, userid, domainid, projectid, trust);
+		}
+
+		populateTokenDates(tokenData, expires, trust, issuedAt);
+		// TODO ignore populateOauthSection(tokenData,accessToken);
+
+		TokenDataWrapper wrapper = new TokenDataWrapper();
+		wrapper.setToken(tokenData);
+		return wrapper;
+	}
+
+	// auditInfo=null
+	@SuppressWarnings("unchecked")
+	private void populateAuditInfo(TokenData tokenData, Object auditInfo) {
+		if (auditInfo == null || auditInfo instanceof String) {
+			tokenData.setAuditIds(BaseProvider.auditInfo(auditInfo == null ? null : (String) auditInfo));
+		} else if (auditInfo instanceof List) {
+			tokenData.setAuditIds((List<String>) auditInfo);
+		} else {
+			String msg = "Invalid audit info data type";
+			logger.error(msg);
+			throw Exceptions.UnexpectedException.getInstance(msg);
+		}
 	}
 }

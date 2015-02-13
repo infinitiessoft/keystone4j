@@ -1,62 +1,50 @@
 package com.infinities.keystone4j.model.token;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Calendar;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.infinities.keystone4j.model.assignment.Domain;
+import com.google.common.base.Strings;
 import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.auth.AuthData;
 import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.trust.Trust;
-import com.infinities.keystone4j.model.utils.ISO8601DateAdapter;
+import com.infinities.keystone4j.model.token.wrapper.ITokenDataWrapper;
 
 @Entity
 @Table(name = "TOKEN", schema = "PUBLIC", catalog = "PUBLIC")
-public class Token implements java.io.Serializable, PolicyEntity, AuthData {
+public class Token implements java.io.Serializable, IToken, AuthData {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 899631282574098673L;
-	@XmlElement(name = "expires_at")
-	@XmlJavaTypeAdapter(value = ISO8601DateAdapter.class, type = Date.class)
-	private Date expires = new Date();
-	@XmlElement(name = "issued_at")
-	@XmlJavaTypeAdapter(value = ISO8601DateAdapter.class, type = Date.class)
-	private Date issueAt = new Date();
+	private String id;
+	private Calendar expires;
+	private String userId;
+	private String trustId;
 	private String extra;
 	private Boolean valid = true;
-	private User user;
-	private Project project;
-	private Domain domain;
-	private Trust trust;
 	private Bind bind;
-	private String id;
+
 	private int version;
-	private Set<TokenRole> tokenRoles = new HashSet<TokenRole>(0);
+	// from extra
+	private String tokenVersion;
 	private Metadata metadata = new Metadata();
+	private String projectId;
+	private ITokenDataWrapper tokenData;
+
+	private byte[] tokenDataBytes;
 
 
 	@Version
@@ -82,24 +70,15 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 		this.id = id;
 	}
 
+	@Override
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "EXPIRES")
-	public Date getExpires() {
+	public Calendar getExpires() {
 		return expires;
 	}
 
-	public void setExpires(Date expires) {
+	public void setExpires(Calendar expires) {
 		this.expires = expires;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "ISSUEAT")
-	public Date getIssueAt() {
-		return issueAt;
-	}
-
-	public void setIssueAt(Date issueAt) {
-		this.issueAt = issueAt;
 	}
 
 	@Lob
@@ -112,7 +91,7 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 		this.extra = extra;
 	}
 
-	@Column(name = "VALID")
+	@Column(name = "VALID", nullable = false)
 	public Boolean getValid() {
 		return valid;
 	}
@@ -122,48 +101,6 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 	}
 
 	@Override
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USERID", nullable = false)
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	@Override
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PROJECTID", nullable = true)
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	@Override
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DOMAINID", nullable = true)
-	public Domain getDomain() {
-		return domain;
-	}
-
-	public void setDomain(Domain domain) {
-		this.domain = domain;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TRUSTID", nullable = true)
-	public Trust getTrust() {
-		return trust;
-	}
-
-	public void setTrust(Trust trust) {
-		this.trust = trust;
-	}
-
 	@Transient
 	public Bind getBind() {
 		return bind;
@@ -174,15 +111,7 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 		this.bind = bind;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "token", cascade = CascadeType.ALL)
-	public Set<TokenRole> getTokenRoles() {
-		return tokenRoles;
-	}
-
-	public void setTokenRoles(Set<TokenRole> tokenRoles) {
-		this.tokenRoles = tokenRoles;
-	}
-
+	@Override
 	@OneToOne(optional = false, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "METADATA_ID", unique = true, nullable = false)
 	public Metadata getMetadata() {
@@ -193,37 +122,129 @@ public class Token implements java.io.Serializable, PolicyEntity, AuthData {
 		this.metadata = metadata;
 	}
 
-	@XmlTransient
+	@Column(name = "USERID", length = 64)
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	@Column(name = "TRUSTID", length = 64)
+	public String getTrustId() {
+		return trustId;
+	}
+
+	public void setTrustId(String trustId) {
+		this.trustId = trustId;
+	}
+
+	@Column(name = "TOKEN_VERSION", length = 5)
+	public String getTokenVersion() {
+		return tokenVersion;
+	}
+
+	public void setTokenVersion(String tokenVersion) {
+		this.tokenVersion = tokenVersion;
+	}
+
+	@Column(name = "PROJECTID", length = 64)
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
+
+	// from Data
+	@Override
 	@Transient
-	public TokenDataWrapper getTokenData() {
-		TokenData tokenData = new TokenData();
-		tokenData.setBind(getBind());
-		tokenData.setUser(getUser());
-		tokenData.setProject(getProject());
-		tokenData.setTrust(getTrust());
-		tokenData.setExpireAt(getExpires());
-		tokenData.setIssuedAt(getIssueAt());
-		tokenData.setDomain(getDomain());
-
-		for (TokenRole tokenRole : getTokenRoles()) {
-			tokenData.getRoles().add(tokenRole.getRole());
+	public User getUser() {
+		if (Strings.isNullOrEmpty(getUserId())) {
+			return null;
 		}
+		User user = new User();
+		user.setId(getUserId());
+		return user;
+	}
 
-		return new TokenDataWrapper(tokenData);
+	// from Data
+	@Override
+	@Transient
+	public Project getTenant() {
+		if (Strings.isNullOrEmpty(getProjectId())) {
+			return null;
+		}
+		Project project = new Project();
+		project.setId(getProjectId());
+		return project;
+	}
+
+	public void setTenant(Project tenant) {
+		if (tenant != null) {
+			this.projectId = tenant.getId();
+		}
+	}
+
+	// @XmlTransient
+	// @Transient
+	// public TokenDataWrapper getTokenData() {
+	// TokenData tokenData = new TokenData();
+	// tokenData.setBind(getBind());
+	// tokenData.setUser(getUser());
+	// tokenData.setProject(getProject());
+	// tokenData.setTrust(getTrust());
+	// tokenData.setExpireAt(getExpires());
+	// tokenData.setIssuedAt(getIssueAt());
+	// tokenData.setDomain(getDomain());
+	//
+	// for (TokenRole tokenRole : getTokenRoles()) {
+	// tokenData.getRoles().add(tokenRole.getRole());
+	// }
+	//
+	// return new TokenDataWrapper(tokenData);
+	// }
+	//
+	// @Transient
+	// public void setTokenData(TokenDataWrapper tokenData) {
+	// setBind(tokenData.getToken().getBind());
+	// setUser(tokenData.getToken().getUser());
+	// setProject(tokenData.getToken().getProject());
+	// setTrust(tokenData.getToken().getTrust());
+	// setExpires(tokenData.getToken().getExpireAt());
+	// setIssueAt(tokenData.getToken().getIssuedAt());
+	// setDomain(tokenData.getToken().getDomain());
+	//
+	// for (Role role : tokenData.getToken().getRoles()) {
+	// this.getTokenRoles().add(new TokenRole(this, role));
+	// }
+	// }
+
+	@Transient
+	@Override
+	public ITokenDataWrapper getTokenData() {
+		return tokenData;
+	}
+
+	public void setTokenData(ITokenDataWrapper tokenData) {
+		this.tokenData = tokenData;
 	}
 
 	@Transient
-	public void setTokenData(TokenDataWrapper tokenData) {
-		setBind(tokenData.getToken().getBind());
-		setUser(tokenData.getToken().getUser());
-		setProject(tokenData.getToken().getProject());
-		setTrust(tokenData.getToken().getTrust());
-		setExpires(tokenData.getToken().getExpireAt());
-		setIssueAt(tokenData.getToken().getIssuedAt());
-		setDomain(tokenData.getToken().getDomain());
+	@Override
+	public String getParentAuditId() {
+		return null;
+	}
 
-		for (Role role : tokenData.getToken().getRoles()) {
-			this.getTokenRoles().add(new TokenRole(this, role));
-		}
+	@Lob
+	@Column(name = "TOKENDATABYTES")
+	public byte[] getTokenDataBytes() {
+		return tokenDataBytes;
+	}
+
+	public void setTokenDataBytes(byte[] tokenDataBytes) {
+		this.tokenDataBytes = tokenDataBytes;
 	}
 }

@@ -21,13 +21,13 @@ public class CertificateResource {
 
 	@GET
 	@Path("/ca")
-	public Response getCaCertficate() {
+	public Response getCaCertficate() throws Exception {
 		return tokenController.getCaCert();
 	}
 
 	@GET
 	@Path("/signing")
-	public Response listCertificates() {
+	public Response listCertificates() throws Exception {
 		return tokenController.getSigningCert();
 	}
 

@@ -5,8 +5,8 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Region;
-import com.infinities.keystone4j.model.catalog.RegionWrapper;
-import com.infinities.keystone4j.model.catalog.RegionsWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.RegionWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.RegionsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -29,12 +29,12 @@ public abstract class AbstractRegionAction extends AbstractAction<Region> {
 	}
 
 	@Override
-	protected CollectionWrapper<Region> getCollectionWrapper() {
+	public CollectionWrapper<Region> getCollectionWrapper() {
 		return new RegionsWrapper();
 	}
 
 	@Override
-	protected MemberWrapper<Region> getMemberWrapper() {
+	public MemberWrapper<Region> getMemberWrapper() {
 		return new RegionWrapper();
 	}
 

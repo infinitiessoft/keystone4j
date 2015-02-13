@@ -1,7 +1,7 @@
 package com.infinities.keystone4j.identity.controller;
 
-import com.infinities.keystone4j.model.identity.UserWrapper;
-import com.infinities.keystone4j.model.identity.UsersWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UserWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UsersWrapper;
 
 public interface UserController {
 

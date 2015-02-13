@@ -11,37 +11,38 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.model.BaseEntity;
-import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.token.TokenRole;
-import com.infinities.keystone4j.model.trust.TrustRole;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
-@Table(name = "ROLE", schema = "PUBLIC", catalog = "PUBLIC")
-public class Role extends BaseEntity implements java.io.Serializable, PolicyEntity {
+@Table(name = "ROLE", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = { "NAME" }) })
+public class Role extends BaseEntity implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1497968571650652616L;
+	@JsonView(Views.Basic.class)
 	@NotNull(message = "name field is required and cannot be empty")
 	private String name;
 	private String extra;
 
-	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
-	private Set<GroupProjectGrant> groupProjectGrants = new HashSet<GroupProjectGrant>(0);
-	private Set<GroupDomainGrant> groupDomainGrants = new HashSet<GroupDomainGrant>(0);
-	private Set<UserProjectGrant> userProjectGrants = new HashSet<UserProjectGrant>(0);
-	private Set<UserDomainGrant> userDomainGrants = new HashSet<UserDomainGrant>(0);
-	private Set<TrustRole> trustRoles = new HashSet<TrustRole>(0);
-	private Set<TokenRole> tokenRoles = new HashSet<TokenRole>(0);
+	private Set<RoleAssignment> roleAssignments = new HashSet<RoleAssignment>(0); // 20150107
+	// private Set<GroupProjectGrant> groupProjectGrants = new
+	// HashSet<GroupProjectGrant>(0);
+	// private Set<GroupDomainGrant> groupDomainGrants = new
+	// HashSet<GroupDomainGrant>(0);
+	// private Set<UserProjectGrant> userProjectGrants = new
+	// HashSet<UserProjectGrant>(0);
+	// private Set<UserDomainGrant> userDomainGrants = new
+	// HashSet<UserDomainGrant>(0);
+	// private final Set<TrustRole> trustRoles = new HashSet<TrustRole>(0);
+	// private Set<TokenRole> tokenRoles = new HashSet<TokenRole>(0);
 
 	// transient property
 	private String inheritedTo;
@@ -72,60 +73,68 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 		setExtraUpdated(true);
 	}
 
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<TrustRole> getTrustRoles() {
-		return trustRoles;
-	}
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade =
+	// CascadeType.ALL)
+	// public Set<TrustRole> getTrustRoles() {
+	// return trustRoles;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// public void setTrustRoles(Set<TrustRole> trustRoles) {
+	// this.trustRoles = trustRoles;
+	// }
 
-	@JsonView(Views.All.class)
-	public void setTrustRoles(Set<TrustRole> trustRoles) {
-		this.trustRoles = trustRoles;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<GroupProjectGrant> getGroupProjectGrants() {
-		return groupProjectGrants;
-	}
-
-	@JsonView(Views.All.class)
-	public void setGroupProjectGrants(Set<GroupProjectGrant> groupProjectGrants) {
-		this.groupProjectGrants = groupProjectGrants;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<GroupDomainGrant> getGroupDomainGrants() {
-		return groupDomainGrants;
-	}
-
-	@JsonView(Views.All.class)
-	public void setGroupDomainGrants(Set<GroupDomainGrant> groupDomainGrants) {
-		this.groupDomainGrants = groupDomainGrants;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<UserProjectGrant> getUserProjectGrants() {
-		return userProjectGrants;
-	}
-
-	@JsonView(Views.All.class)
-	public void setUserProjectGrants(Set<UserProjectGrant> userProjectGrants) {
-		this.userProjectGrants = userProjectGrants;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<UserDomainGrant> getUserDomainGrants() {
-		return userDomainGrants;
-	}
-
-	@JsonView(Views.All.class)
-	public void setUserDomainGrants(Set<UserDomainGrant> userDomainGrants) {
-		this.userDomainGrants = userDomainGrants;
-	}
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade =
+	// CascadeType.ALL)
+	// public Set<GroupProjectGrant> getGroupProjectGrants() {
+	// return groupProjectGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// public void setGroupProjectGrants(Set<GroupProjectGrant>
+	// groupProjectGrants) {
+	// this.groupProjectGrants = groupProjectGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade =
+	// CascadeType.ALL)
+	// public Set<GroupDomainGrant> getGroupDomainGrants() {
+	// return groupDomainGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// public void setGroupDomainGrants(Set<GroupDomainGrant> groupDomainGrants)
+	// {
+	// this.groupDomainGrants = groupDomainGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade =
+	// CascadeType.ALL)
+	// public Set<UserProjectGrant> getUserProjectGrants() {
+	// return userProjectGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// public void setUserProjectGrants(Set<UserProjectGrant> userProjectGrants)
+	// {
+	// this.userProjectGrants = userProjectGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade =
+	// CascadeType.ALL)
+	// public Set<UserDomainGrant> getUserDomainGrants() {
+	// return userDomainGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// public void setUserDomainGrants(Set<UserDomainGrant> userDomainGrants) {
+	// this.userDomainGrants = userDomainGrants;
+	// }
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade =
 	// CascadeType.ALL)
@@ -174,39 +183,25 @@ public class Role extends BaseEntity implements java.io.Serializable, PolicyEnti
 		this.extraUpdated = extraUpdated;
 	}
 
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade =
+	// CascadeType.ALL)
+	// public Set<TokenRole> getTokenRoles() {
+	// return tokenRoles;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// public void setTokenRoles(Set<TokenRole> tokenRoles) {
+	// this.tokenRoles = tokenRoles;
+	// }
+
 	@JsonView(Views.All.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL)
-	public Set<TokenRole> getTokenRoles() {
-		return tokenRoles;
+	public Set<RoleAssignment> getRoleAssignments() {
+		return roleAssignments;
 	}
 
-	@JsonView(Views.All.class)
-	public void setTokenRoles(Set<TokenRole> tokenRoles) {
-		this.tokenRoles = tokenRoles;
+	public void setRoleAssignments(Set<RoleAssignment> roleAssignments) {
+		this.roleAssignments = roleAssignments;
 	}
-
-	@XmlTransient
-	@Transient
-	@Override
-	@JsonIgnore
-	public User getUser() {
-		throw new IllegalStateException("propert 'user' not exist");
-	}
-
-	@XmlTransient
-	@Transient
-	@Override
-	@JsonIgnore
-	public Domain getDomain() {
-		throw new IllegalStateException("propert 'domain' not exist");
-	}
-
-	@XmlTransient
-	@Transient
-	@Override
-	@JsonIgnore
-	public Project getProject() {
-		throw new IllegalStateException("propert 'project' not exist");
-	}
-
 }

@@ -115,8 +115,10 @@ public class AuthInfo extends AbstractControllerAction {
 				throw new ForbiddenException("Trusts are disabled.");
 			}
 			Trust trust = lookupTrust(auth.getScope().getTrust());
-			if (trust.getProject() != null) {
-				Project project = lookupProject(trust.getProject());
+			if (!Strings.isNullOrEmpty(trust.getProjectId())) {
+				Project project = new Project();
+				project.setId(trust.getProjectId());
+				project = lookupProject(project);
 				Scope scopeData = new Scope();
 				scopeData.setProjectid(project.getId());
 				scopeData.setTrustRef(trust);
@@ -134,7 +136,7 @@ public class AuthInfo extends AbstractControllerAction {
 		if (Strings.isNullOrEmpty(trustid)) {
 			throw Exceptions.ValidationException.getInstance(null, "trust_id", "trust");
 		}
-		Trust ret = trustApi.getTrust(trustid);
+		Trust ret = trustApi.getTrust(trustid, false);
 		if (ret == null) {
 			throw Exceptions.TrustNotFoundException.getInstance(null, trustid);
 		}

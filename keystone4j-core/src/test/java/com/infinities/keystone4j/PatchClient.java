@@ -36,7 +36,7 @@ public class PatchClient {
 	}
 
 	public JsonNode connect(Object obj) throws ClientProtocolException, IOException {
-		String input = JsonUtils.toJson(obj);
+		String input = JsonUtils.toJsonWithoutPrettyPrint(obj);
 		logger.debug("input: {}", input);
 		StringEntity requestEntity = new StringEntity(input, ContentType.create("application/json", Consts.UTF_8));
 
@@ -52,14 +52,13 @@ public class PatchClient {
 				public JsonNode handleResponse(final HttpResponse response) throws IOException {
 					StatusLine statusLine = response.getStatusLine();
 					HttpEntity entity = response.getEntity();
-					assertEquals(200, statusLine.getStatusCode());
-
 					if (entity == null) {
 						throw new ClientProtocolException("Response contains no content");
 					}
-
 					String output = getStringFromInputStream(entity.getContent());
 					logger.debug("output: {}", output);
+					assertEquals(200, statusLine.getStatusCode());
+
 					JsonNode node = JsonUtils.convertToJsonNode(output);
 					return node;
 				}

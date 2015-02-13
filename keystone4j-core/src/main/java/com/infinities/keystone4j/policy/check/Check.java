@@ -1,7 +1,5 @@
 package com.infinities.keystone4j.policy.check;
 
-import com.infinities.keystone4j.policy.BaseCheck;
-
 public abstract class Check implements BaseCheck {
 
 	private String kind;// the field before the ':'
@@ -26,4 +24,8 @@ public abstract class Check implements BaseCheck {
 
 	public abstract Check newInstance(String kind, String match);
 
+	@Override
+	public String toString() {
+		return String.format("%s:%s", kind, match);
+	}
 }

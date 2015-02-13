@@ -8,6 +8,7 @@ import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.model.identity.User;
 
+@Deprecated
 public class IdentityUtils {
 
 	private final Map<String, IdentityDriver> driverMap = new ConcurrentHashMap<String, IdentityDriver>();

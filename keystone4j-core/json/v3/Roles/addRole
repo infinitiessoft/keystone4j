@@ -1,0 +1,14 @@
+request:
+curl -X "POST" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN" -d '{"role":{"name":"demo","description":"demo"}}
+
+response:
+{
+   "role":{
+      "links":{
+         "self":"http://192.168.126.2:5000/v3/roles/0484e3d30bc545cd8d24709ab7d6d25d"
+      },
+      "description":"demo",
+      "name":"demo",
+      "id":"0484e3d30bc545cd8d24709ab7d6d25d"
+   }
+}

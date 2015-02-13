@@ -1,53 +1,93 @@
 package com.infinities.keystone4j.model.assignment;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import javax.xml.bind.annotation.XmlTransient;
 
-public class RoleAssignment implements java.io.Serializable {
+import com.infinities.keystone4j.model.BaseEntity;
+
+@Entity
+@Table(name = "ROLE_ASSIGNMENT", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
+		"TYPE", "ACTORID", "TARGETID", "ROLEID" }) })
+public class RoleAssignment extends BaseEntity implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String id;
-	private Links links = new Links();
-	private User user;
-	private Group group;
+
+
+	public static enum AssignmentType {
+		USER_PROJECT, GROUP_PROJECT, USER_DOMAIN, GROUP_DOMAIN
+	}
+
+
+	private String actorId;
+	private String targetId;
 	private Role role;
-	private Scope scope;
+	private AssignmentType type;
+	private Boolean inherited = false;
+
+	private boolean actorIdUpdate = false;
+	private boolean targetIdUpdate = false;
+	private boolean inheritedUpdate = false;
 
 
-	public String getId() {
-		return this.id;
+	@Transient
+	public void setActorIdUpdate(boolean actorIdUpdate) {
+		this.actorIdUpdate = actorIdUpdate;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	@Transient
+	public void setTargetIdUpdate(boolean targetIdUpdate) {
+		this.targetIdUpdate = targetIdUpdate;
 	}
 
-	public Links getLinks() {
-		return links;
+	@Transient
+	public void setInheritedUpdate(boolean inheritedUpdate) {
+		this.inheritedUpdate = inheritedUpdate;
 	}
 
-	public void setLinks(Links links) {
-		this.links = links;
+	@Transient
+	public boolean isTargetIdUpdate() {
+		return targetIdUpdate;
 	}
 
-	public User getUser() {
-		return user;
+	@Transient
+	public boolean isInheritedUpdate() {
+		return inheritedUpdate;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	@Column(name = "ACTORID", length = 64, nullable = false)
+	public String getActorId() {
+		return actorId;
 	}
 
-	public Group getGroup() {
-		return group;
+	public void setActorId(String actorId) {
+		this.actorId = actorId;
+		this.setActorIdUpdate(true);
 	}
 
-	public void setGroup(Group group) {
-		this.group = group;
+	@Column(name = "TARGETID", length = 64, nullable = false)
+	public String getTargetId() {
+		return targetId;
 	}
 
+	public void setTargetId(String targetId) {
+		this.targetId = targetId;
+		this.setTargetIdUpdate(true);
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ROLEID", nullable = false)
 	public Role getRole() {
 		return role;
 	}
@@ -56,173 +96,44 @@ public class RoleAssignment implements java.io.Serializable {
 		this.role = role;
 	}
 
-	public Scope getScope() {
-		return scope;
+	@Column(name = "INHERITED", nullable = false)
+	public Boolean getInherited() {
+		return inherited;
 	}
 
-	public void setScope(Scope scope) {
-		this.scope = scope;
+	public void setInherited(Boolean inherited) {
+		this.inherited = inherited;
+		this.setInheritedUpdate(true);
 	}
 
-
-	public class Links {
-
-		private String assignment;
-		private String membership;
-
-
-		public String getAssignment() {
-			return assignment;
-		}
-
-		public void setAssignment(String assignment) {
-			this.assignment = assignment;
-		}
-
-		public String getMembership() {
-			return membership;
-		}
-
-		public void setMembership(String membership) {
-			this.membership = membership;
-		}
-
+	@Transient
+	public boolean isActorIdUpdate() {
+		return actorIdUpdate;
 	}
 
-	public static class User {
-
-		private String id;
-
-
-		public String getId() {
-			return this.id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
+	@Enumerated(EnumType.STRING)
+	public AssignmentType getType() {
+		return type;
 	}
 
-	public static class Group {
-
-		private String id;
-
-
-		public String getId() {
-			return this.id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
+	public void setType(AssignmentType type) {
+		this.type = type;
 	}
 
-	public static class Role {
-
-		private String id;
-
-
-		public String getId() {
-			return this.id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
+	@Transient
+	@XmlTransient
+	public void setRoleId(String roleId) {
+		Role role = new Role();
+		role.setId(roleId);
+		this.setRole(role);
 	}
 
-	public interface Scope {
-
-		public String getInheritedTo();
-
-		@XmlElement(name = "OS-INHERIT:inherited_to")
-		public void setInheritedTo(String inheritedTo);
-
-	}
-
-	public static class ProjectScope implements Scope {
-
-		private Project project = new Project();
-		@XmlElement(name = "OS-INHERIT:inherited_to")
-		private String inheritedTo;
-
-
-		public Project getProject() {
-			return project;
+	@Transient
+	@XmlTransient
+	public String getRoleId() {
+		if (this.getRole() == null) {
+			return null;
 		}
-
-		public void setProject(Project project) {
-			this.project = project;
-		}
-
-
-		public static class Project {
-
-			private String id;
-
-
-			public String getId() {
-				return this.id;
-			}
-
-			public void setId(String id) {
-				this.id = id;
-			}
-		}
-
-
-		@Override
-		public String getInheritedTo() {
-			return inheritedTo;
-		}
-
-		@Override
-		public void setInheritedTo(String inheritedTo) {
-			this.inheritedTo = inheritedTo;
-		}
-
-	}
-
-	public static class DomainScope implements Scope {
-
-		private Domain domain = new Domain();
-		@XmlElement(name = "OS-INHERIT:inherited_to")
-		private String inheritedTo;
-
-
-		public Domain getDomain() {
-			return domain;
-		}
-
-		public void setDomain(Domain domain) {
-			this.domain = domain;
-		}
-
-
-		public static class Domain {
-
-			private String id;
-
-
-			public String getId() {
-				return this.id;
-			}
-
-			public void setId(String id) {
-				this.id = id;
-			}
-		}
-
-
-		@Override
-		public String getInheritedTo() {
-			return inheritedTo;
-		}
-
-		@Override
-		public void setInheritedTo(String inheritedTo) {
-			this.inheritedTo = inheritedTo;
-		}
-
+		return this.getRole().getId();
 	}
 }

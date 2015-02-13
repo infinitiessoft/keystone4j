@@ -1,0 +1,20 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/domains/default/users/e7912c2225e84ac5905d8cf0b5040a6d/roles | python -mjson.tool
+
+response:
+{
+    "links": {
+        "next": null, 
+        "previous": null, 
+        "self": "http://192.168.126.2:5000/v3/domains/f938b93cc0454ad686eb3481ba71d276/users/e7912c2225e84ac5905d8cf0b5040a6d/roles"
+    }, 
+    "roles": [
+        {
+            "id": "d903936e7bbd4183b8cd35816d2cf88b", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/roles/d903936e7bbd4183b8cd35816d2cf88b"
+            }, 
+            "name": "admin"
+        }
+    ]
+}

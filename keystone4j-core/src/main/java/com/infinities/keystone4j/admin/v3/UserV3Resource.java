@@ -20,13 +20,11 @@ import com.infinities.keystone4j.assignment.controller.ProjectV3Controller;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
-import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.MemberWrapper;
-import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.model.identity.UserParamWrapper;
-import com.infinities.keystone4j.model.identity.UserWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.ProjectsWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.GroupsWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UserParamWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UserWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UsersWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 
 //keystone.assignment.routers 20141209
@@ -49,42 +47,33 @@ public class UserV3Resource {
 		this.groupController = groupController;
 	}
 
-	@GET
-	@Path("/{userid}/projects")
-	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Project> listUserProjects(@PathParam("userid") String userid, @QueryParam("name") String name,
-			@QueryParam("enabled") Boolean enabled, @DefaultValue("1") @QueryParam("page") int page,
-			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
-		return projectController.listUserProjects(userid);
-	}
-
 	@POST
 	@JsonView(Views.Basic.class)
 	public Response createUser(UserWrapper userWrapper) throws Exception {
-		return Response.status(Status.CREATED).entity(userController.createUser(userWrapper.getUser())).build();
+		return Response.status(Status.CREATED).entity(userController.createUser(userWrapper.getRef())).build();
 	}
 
 	@GET
 	@JsonView(Views.Basic.class)
-	public CollectionWrapper<User> listUsers(@QueryParam("domain_id") String domainid, @QueryParam("email") String email,
+	public UsersWrapper listUsers(@QueryParam("domain_id") String domainid, @QueryParam("email") String email,
 			@QueryParam("enabled") Boolean enabled, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
 			throws Exception {
-		return userController.listUsers();
+		return (UsersWrapper) userController.listUsers();
 	}
 
 	@GET
 	@Path("/{userid}")
 	@JsonView(Views.Basic.class)
-	public MemberWrapper<User> getUser(@PathParam("userid") String userid) throws Exception {
-		return userController.getUser(userid);
+	public UserWrapper getUser(@PathParam("userid") String userid) throws Exception {
+		return (UserWrapper) userController.getUser(userid);
 	}
 
 	@PATCH
 	@Path("/{userid}")
 	@JsonView(Views.Basic.class)
-	public MemberWrapper<User> updateUser(@PathParam("userid") String userid, UserWrapper userWrapper) throws Exception {
-		return userController.updateUser(userid, userWrapper.getUser());
+	public UserWrapper updateUser(@PathParam("userid") String userid, UserWrapper userWrapper) throws Exception {
+		return (UserWrapper) userController.updateUser(userid, userWrapper.getRef());
 	}
 
 	@DELETE
@@ -104,10 +93,19 @@ public class UserV3Resource {
 	@GET
 	@Path("/{userid}/groups")
 	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Group> listGroupsForUser(@PathParam("userid") String userid, @QueryParam("name") String name,
+	public GroupsWrapper listGroupsForUser(@PathParam("userid") String userid, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
 			throws Exception {
-		return groupController.listGroupsForUser(userid);
+		return (GroupsWrapper) groupController.listGroupsForUser(userid);
+	}
+
+	@GET
+	@Path("/{userid}/projects")
+	@JsonView(Views.Basic.class)
+	public ProjectsWrapper listUserProjects(@PathParam("userid") String userid, @QueryParam("name") String name,
+			@QueryParam("enabled") Boolean enabled, @DefaultValue("1") @QueryParam("page") int page,
+			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
+		return (ProjectsWrapper) projectController.listUserProjects(userid);
 	}
 
 }

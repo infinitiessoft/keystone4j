@@ -20,7 +20,7 @@ public class DeleteRegionAction extends AbstractRegionAction implements Protecte
 	}
 
 	@Override
-	public MemberWrapper<Region> execute(ContainerRequestContext context) {
+	public MemberWrapper<Region> execute(ContainerRequestContext context) throws Exception {
 		this.getCatalogApi().deleteRegion(regionid);
 		return null;
 	}

@@ -2,9 +2,10 @@ package com.infinities.keystone4j.token.controller.action;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -18,29 +19,33 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Environment;
 import com.infinities.keystone4j.KeystoneContext;
+import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.common.Wsgi;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.auth.TokenIdAndDataV2;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.token.Auth;
 import com.infinities.keystone4j.model.token.Bind;
 import com.infinities.keystone4j.model.token.Metadata;
-import com.infinities.keystone4j.model.token.Token;
-import com.infinities.keystone4j.model.token.v2.TokenV2DataWrapper;
+import com.infinities.keystone4j.model.token.v2.Access;
+import com.infinities.keystone4j.model.token.v2.wrapper.TokenV2DataWrapper;
 import com.infinities.keystone4j.model.trust.Trust;
-import com.infinities.keystone4j.model.trust.TrustRole;
+import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.ExternalAuthNotApplicableException;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.token.model.KeystoneToken;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
+import com.infinities.keystone4j.token.provider.TokenProviderApi.AuthTokenData;
+import com.infinities.keystone4j.token.provider.driver.BaseProvider;
 import com.infinities.keystone4j.trust.TrustApi;
 
-public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> {
+public class AuthenticateAction extends AbstractTokenAction implements ProtectedAction<Access> {
 
 	private final static Logger logger = LoggerFactory.getLogger(AuthenticateAction.class);
 	private final Auth auth;
@@ -48,13 +53,14 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 
 
 	public AuthenticateAction(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
-			TokenApi tokenApi, TokenProviderApi tokenProviderApi, TrustApi trustApi, Auth auth) {
-		super(assignmentApi, catalogApi, identityApi, tokenApi, tokenProviderApi, trustApi);
+			TokenProviderApi tokenProviderApi, TrustApi trustApi, PolicyApi policyApi, Auth auth)
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		super(assignmentApi, catalogApi, identityApi, tokenProviderApi, trustApi, policyApi);
 		this.auth = auth;
 	}
 
 	@Override
-	public TokenV2DataWrapper execute(ContainerRequestContext request) {
+	public MemberWrapper<Access> execute(ContainerRequestContext request) throws Exception {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		if (auth == null) {
 			throw Exceptions.ValidationException.getInstance(null, "auth", "request body");
@@ -74,25 +80,35 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 		User userRef = authInfo.getCurrentUserRef();
 		Project tenantRef = authInfo.getTenantRef();
 		Metadata metadataRef = authInfo.getMetadataRef();
-		Date expiry = authInfo.getExpiry();
+		Calendar expiry = authInfo.getExpiry();
 		Bind bind = authInfo.getBind();
+		String auditId = authInfo.getAuditId();
 
-		validateAuthInfo(userRef, tenantRef);
-		userRef = filterDomainId(userRef);
+		try {
+			identityApi.assertUserEnabled(userRef.getId(), userRef);
+			if (tenantRef != null) {
+				assignmentApi.assertProjectEnabled(tenantRef.getId(), tenantRef);
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		logger.debug("user exist? {}", new Object[] { String.valueOf(userRef != null) });
+		userRef = v3ToV2User(userRef);
 		if (tenantRef != null) {
 			tenantRef = filterDomainId(tenantRef);
 		}
+		AuthTokenData authTokenData = getAuthTokenData(userRef, tenantRef, metadataRef, expiry, auditId);
 
-		Token authTokenData = new Token();
-		authTokenData.setUser(userRef);
-		authTokenData.setProject(tenantRef);
-		authTokenData.setMetadata(metadataRef);
-		authTokenData.setExpires(expiry);
-
-		Catalog catalogRef = new Catalog();
+		Map<String, Map<String, Map<String, String>>> catalogRef;
 		if (tenantRef != null) {
-			catalogRef = catalogApi.getV3Catalog(userRef.getId(), tenantRef.getId());
+			logger.debug("user exist? {}, tenant exist? {}",
+					new Object[] { String.valueOf(userRef != null), String.valueOf(tenantRef != null) });
+			catalogRef = catalogApi.getCatalog(userRef.getId(), tenantRef.getId(), metadataRef);
+		} else {
+			catalogRef = new HashMap<String, Map<String, Map<String, String>>>();
 		}
+
+		logger.debug("catalog exist? {}", new Object[] { String.valueOf(catalogRef != null) });
 
 		authTokenData.setId("placeholder");
 		if (bind != null) {
@@ -104,59 +120,64 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 			rolesRef.add(assignmentApi.getRole(roleid));
 		}
 
-		Entry<String, TokenV2DataWrapper> ret = tokenProviderApi.issueV2Token(authTokenData, rolesRef, catalogRef);
+		TokenIdAndDataV2 ret = tokenProviderApi.issueV2Token(authTokenData, rolesRef, catalogRef);
 
-		return ret.getValue();
+		if (Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean() && !Strings.isNullOrEmpty(auth.getTrustId())) {
+			trustApi.consumeUse(auth.getTrustId());
+		}
+
+		return ret.getTokenData();
+	}
+
+	private AuthTokenData getAuthTokenData(User userRef, Project tenantRef, Metadata metadataRef, Calendar expiry,
+			String auditId) {
+		AuthTokenData token = new AuthTokenData();
+		token.setUser(userRef);
+		token.setTenant(tenantRef);
+		token.setMetadata(metadataRef);
+		token.setExpires(expiry);
+		token.setParentAuditId(auditId);
+		return token;
+	}
+
+	private User v3ToV2User(User ref) {
+		return normalizeAndFilterUserProperties(ref);
+	}
+
+	private User normalizeAndFilterUserProperties(User ref) {
+		formatDefaultProjectId(ref);
+		filterDomainId(ref);
+		normalizeUsernameIdResponse(ref);
+		return ref;
+	}
+
+	private void normalizeUsernameIdResponse(User ref) {
+		if (Strings.isNullOrEmpty(ref.getUsername()) && !Strings.isNullOrEmpty(ref.getName())) {
+			ref.setUsername(ref.getName());
+		}
+	}
+
+	private void formatDefaultProjectId(User ref) {
+		String defaultProjectId = ref.getDefaultProjectId();
+		if (!Strings.isNullOrEmpty(defaultProjectId)) {
+			ref.setTenantId(defaultProjectId);
+		}
 	}
 
 	private Project filterDomainId(Project tenantRef) {
+		// tenantRef.setDomainId(null);
 		return tenantRef;
 	}
 
 	private User filterDomainId(User userRef) {
+		// userRef.setDomainId(null);
 		return userRef;
-	}
-
-	private void validateAuthInfo(User userRef, Project tenantRef) {
-		if (userRef.getEnabled() == null || !userRef.getEnabled()) {
-			String msg = String.format("User is disabled: %s", userRef.getId());
-			logger.warn(msg);
-			throw Exceptions.UnauthorizedException.getInstance(msg);
-		}
-
-		Domain userDomainRef = userRef.getDomain();
-		if (userDomainRef != null && (userDomainRef.getEnabled() == null || !userDomainRef.getEnabled())) {
-			String msg = String.format("Domain is disabled: %s", userRef.getDomainid());
-			logger.warn(msg);
-			throw Exceptions.UnauthorizedException.getInstance(msg);
-		}
-
-		if (tenantRef != null) {
-			if (tenantRef.getEnabled() == null || !tenantRef.getEnabled()) {
-				String msg = String.format("Tenant is disabled: %s", tenantRef.getId());
-				logger.warn(msg);
-				throw Exceptions.UnauthorizedException.getInstance(msg);
-			}
-
-			Domain projectDomainRef = tenantRef.getDomain();
-			if (projectDomainRef != null && (projectDomainRef.getEnabled() == null || !projectDomainRef.getEnabled())) {
-				String msg = String.format("Domain is disabled: %s", projectDomainRef.getId());
-				logger.warn(msg);
-				throw Exceptions.UnauthorizedException.getInstance(msg);
-			}
-
-		}
-
 	}
 
 	private AuthInfo authenticateExternal(KeystoneContext context, Auth auth) throws ExternalAuthNotApplicableException {
 		Environment environment = context.getEnvironment();
 		if (Strings.isNullOrEmpty(environment.getRemoteUser())) {
 			throw new ExternalAuthNotApplicableException();
-		}
-
-		if (auth == null) {
-			auth = new Auth();
 		}
 
 		String username = environment.getRemoteUser();
@@ -174,9 +195,9 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 		String tenantid = getProjectIdFromAuth(auth);
 		Entry<Project, Set<String>> entry = getProjectRolesAndRef(userid, tenantid);
 		Project tenantRef = entry.getKey();
-		metadataRef.setRoles(entry.getValue());
+		metadataRef.setRoles(new ArrayList<String>(entry.getValue()));
 
-		Date expiry = getDefaultExpireTime();
+		Calendar expiry = BaseProvider.getDefaultExpireTime();
 		Bind bind = null;
 
 		List<String> binds = Config.Instance.getOpt(Config.Type.token, "bind").asList();
@@ -185,15 +206,9 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 			bind.setBindType("kerberos");
 			bind.setIdentifier(username);
 		}
+		String auditId = null;
 
-		return new AuthInfo(userRef, tenantRef, metadataRef, expiry, bind);
-	}
-
-	private Date getDefaultExpireTime() {
-		Calendar calendar = Calendar.getInstance();
-		int expiration = Config.Instance.getOpt(Config.Type.token, "expiration").asInteger();
-		calendar.add(Calendar.SECOND, expiration);
-		return calendar.getTime();
+		return new AuthInfo(userRef, tenantRef, metadataRef, expiry, bind, auditId);
 	}
 
 	private AuthInfo authenticateLocal(KeystoneContext context, Auth auth) {
@@ -237,7 +252,7 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 		}
 
 		try {
-			userRef = identityApi.authenticate(userid, password, null);
+			userRef = identityApi.authenticate(userid, password);
 		} catch (Exception e) {
 			throw Exceptions.UnauthorizedException.getInstance(e);
 		}
@@ -246,14 +261,16 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 		String tenantid = getProjectIdFromAuth(auth);
 		Entry<Project, Set<String>> entry = getProjectRolesAndRef(userid, tenantid);
 		Project tenantRef = entry.getKey();
-		metadataRef.setRoles(entry.getValue());
+		metadataRef.setRoles(new ArrayList<String>(entry.getValue()));
 
-		Date expiry = getDefaultExpireTime();
+		Calendar expiry = BaseProvider.getDefaultExpireTime();
+		Bind bind = null;
+		String auditId = null;
 
-		return new AuthInfo(userRef, tenantRef, metadataRef, expiry, null);
+		return new AuthInfo(userRef, tenantRef, metadataRef, expiry, bind, auditId);
 	}
 
-	private AuthInfo authenticateToken(KeystoneContext context, Auth auth) {
+	private AuthInfo authenticateToken(KeystoneContext context, Auth auth) throws Exception {
 		if (auth.getToken() == null) {
 			throw Exceptions.ValidationException.getInstance(null, "token", "auth");
 		}
@@ -267,56 +284,52 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 			throw Exceptions.ValidationSizeException.getInstance(null, "id", "token");
 		}
 
-		Token oldTokenRef = null;
+		KeystoneToken tokenModelRef = null;
 
 		try {
-			oldTokenRef = tokenApi.getToken(oldToken);
+			tokenModelRef = new KeystoneToken(oldToken, tokenProviderApi.validateToken(oldToken, null));
 		} catch (WebApplicationException e) {
 			throw Exceptions.UnauthorizedException.getInstance(e);
 		}
 
-		validateTokenBind(context, oldTokenRef);
+		Wsgi.validateTokenBind(context, tokenModelRef);
 
-		if (oldTokenRef.getTrust() != null) {
-			throw Exceptions.ForbiddenException.getInstance();
-		}
-		if (!Strings.isNullOrEmpty(oldTokenRef.getMetadata().getTrustId())) {
+		if (tokenModelRef.isTrustScoped()) {
 			throw Exceptions.ForbiddenException.getInstance();
 		}
 
-		User user = oldTokenRef.getUser();
-		String userid = user.getId();
+		String userid = tokenModelRef.getUserId();
+		String tenantid = getProjectIdFromAuth(auth);
 		User currentUserRef = null;
 		Trust trustRef = null;
-		String tenantid = getProjectIdFromAuth(auth);
+
 		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
 		if (!enabled && !Strings.isNullOrEmpty(auth.getTrustId())) {
 			throw Exceptions.ForbiddenException.getInstance("Trusts are disabled.");
 		} else if (enabled && !Strings.isNullOrEmpty(auth.getTrustId())) {
-			trustRef = trustApi.getTrust(auth.getTrustId());
+			trustRef = trustApi.getTrust(auth.getTrustId(), false);
 			if (trustRef == null) {
 				throw Exceptions.ForbiddenException.getInstance();
 			}
-			if (!userid.equals(trustRef.getTrustee().getUser().getId())) {
+			if (!userid.equals(trustRef.getTrusteeUserId())) {
 				throw Exceptions.ForbiddenException.getInstance();
 			}
-			if (trustRef.getProject() != null && !tenantid.equals(trustRef.getProject().getId())) {
+			if (!Strings.isNullOrEmpty(trustRef.getProjectId()) && !tenantid.equals(trustRef.getProjectId())) {
 				throw Exceptions.ForbiddenException.getInstance();
 			}
 			if (trustRef.getExpiresAt() != null) {
 				Calendar now = Calendar.getInstance();
-				Calendar expires = Calendar.getInstance();
-				expires.setTime(trustRef.getExpiresAt());
+				Calendar expires = trustRef.getExpiresAt();
 				if (now.after(expires)) {
 					throw Exceptions.ForbiddenException.getInstance();
 				}
 			}
-			userid = trustRef.getTrustor().getId();
-			User trustorUserRef = trustRef.getTrustor();
+			userid = trustRef.getTrustorUserId();
+			User trustorUserRef = identityApi.getUser(trustRef.getTrustorUserId());
 			if (!trustorUserRef.getEnabled()) {
 				throw Exceptions.ForbiddenException.getInstance();
 			}
-			User trusteeUserRef = trustRef.getTrustee();
+			User trusteeUserRef = identityApi.getUser(trustRef.getTrusteeUserId());
 			if (!trusteeUserRef.getEnabled()) {
 				throw Exceptions.ForbiddenException.getInstance();
 			}
@@ -327,40 +340,41 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 			}
 
 		} else {
-			currentUserRef = user;
+			currentUserRef = identityApi.getUser(userid);
 		}
 
+		Metadata metadataRef = new Metadata();
 		Entry<Project, Set<String>> entry = getProjectRolesAndRef(userid, tenantid);
 		Project tenantRef = entry.getKey();
-		Metadata metadataRef = new Metadata();
-		metadataRef.setRoles(entry.getValue());
+		metadataRef.setRoles(new ArrayList<String>(entry.getValue()));
 
-		Date expiry = oldTokenRef.getExpires();
+		Calendar expiry = tokenModelRef.getExpires();
 		if (enabled && !Strings.isNullOrEmpty(auth.getTrustId())) {
 			String trustid = auth.getTrustId();
 			Set<String> trustRoles = new HashSet<String>();
-			for (TrustRole trustRole : trustRef.getTrustRoles()) {
-				if (metadataRef.getRoles() == null) {
+			for (Role role : trustRef.getRoles()) {
+				if (metadataRef.getRoles() == null || metadataRef.getRoles().isEmpty()) {
 					throw Exceptions.ForbiddenException.getInstance();
 				}
-				if (metadataRef.getRoles().contains(trustRole.getRole().getId())) {
-					trustRoles.add(trustRole.getRole().getId());
+				if (metadataRef.getRoles().contains(role.getId())) {
+					trustRoles.add(role.getId());
 				} else {
 					throw Exceptions.ForbiddenException.getInstance();
 				}
 			}
 			if (trustRef.getExpiresAt() != null) {
-				Date trustExpiry = trustRef.getExpiresAt();
+				Calendar trustExpiry = trustRef.getExpiresAt();
 				if (trustExpiry.before(expiry)) {
 					expiry = trustExpiry;
 				}
 			}
-			metadataRef.setRoles(trustRoles);
-			metadataRef.setTrusteeUserId(trustRef.getTrustee().getId());
+			metadataRef.setRoles(new ArrayList<String>(trustRoles));
+			metadataRef.setTrusteeUserId(trustRef.getTrusteeUserId());
 			metadataRef.setTrustId(trustid);
 		}
-		Bind bind = oldTokenRef.getBind();
-		return new AuthInfo(currentUserRef, tenantRef, metadataRef, expiry, bind);
+		Bind bind = tokenModelRef.getBind();
+		String auditId = tokenModelRef.getAutitChainId();
+		return new AuthInfo(currentUserRef, tenantRef, metadataRef, expiry, bind, auditId);
 
 	}
 
@@ -371,16 +385,14 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 		if (!Strings.isNullOrEmpty(tenantid)) {
 			try {
 				tenantRef = assignmentApi.getProject(tenantid);
-				List<Role> roles = assignmentApi.getRolesForUserAndProject(userid, tenantid);
-				for (Role role : roles) {
-					roleList.add(role.getId());
-				}
+				roleList = new HashSet<String>(assignmentApi.getRolesForUserAndProject(userid, tenantid));
 			} catch (Exception e) {
 				// pass
 			}
 
 			if (roleList.isEmpty()) {
 				String msg = String.format("User %s is unauthorized for tenant %s", userid, tenantid);
+				logger.warn(msg);
 				throw Exceptions.UnauthorizedException.getInstance(msg);
 			}
 		}
@@ -416,90 +428,24 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 	}
 
 
-	// public class AuthTokenData {
-	//
-	// private String id;
-	// private User user;
-	// private Project tenant;
-	// private Metadata metadata;
-	// private Date expires;
-	// private Bind bind;
-	//
-	//
-	// public AuthTokenData(User user, Project tenant, Metadata metadata, Date
-	// expires) {
-	// super();
-	// this.user = user;
-	// this.tenant = tenant;
-	// this.metadata = metadata;
-	// this.expires = expires;
-	// }
-	//
-	// public User getUser() {
-	// return user;
-	// }
-	//
-	// public void setUser(User user) {
-	// this.user = user;
-	// }
-	//
-	// public Project getTenant() {
-	// return tenant;
-	// }
-	//
-	// public void setTenant(Project tenant) {
-	// this.tenant = tenant;
-	// }
-	//
-	// public Metadata getMetadata() {
-	// return metadata;
-	// }
-	//
-	// public void setMetadata(Metadata metadata) {
-	// this.metadata = metadata;
-	// }
-	//
-	// public Date getExpires() {
-	// return expires;
-	// }
-	//
-	// public void setExpires(Date expires) {
-	// this.expires = expires;
-	// }
-	//
-	// public String getId() {
-	// return id;
-	// }
-	//
-	// public void setId(String id) {
-	// this.id = id;
-	// }
-	//
-	// public Bind getBind() {
-	// return bind;
-	// }
-	//
-	// public void setBind(Bind bind) {
-	// this.bind = bind;
-	// }
-	//
-	// }
-
 	private class AuthInfo {
 
 		private final User currentUserRef;
 		private final Project tenantRef;
 		private final Metadata metadataRef;
-		private final Date expiry;
+		private final Calendar expiry;
 		private final Bind bind;
+		private final String auditId;
 
 
-		public AuthInfo(User currentUserRef, Project tenantRef, Metadata metadataRef, Date expiry, Bind bind) {
+		public AuthInfo(User currentUserRef, Project tenantRef, Metadata metadataRef, Calendar expiry, Bind bind,
+				String auditId) {
 			this.currentUserRef = currentUserRef;
 			this.tenantRef = tenantRef;
 			this.metadataRef = metadataRef;
 			this.expiry = expiry;
 			this.bind = bind;
+			this.auditId = auditId;
 		}
 
 		public User getCurrentUserRef() {
@@ -514,7 +460,7 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 			return metadataRef;
 		}
 
-		public Date getExpiry() {
+		public Calendar getExpiry() {
 			return expiry;
 		}
 
@@ -522,6 +468,26 @@ public class AuthenticateAction extends AbstractTokenAction<TokenV2DataWrapper> 
 			return bind;
 		}
 
+		public String getAuditId() {
+			return auditId;
+		}
+
+	}
+
+
+	@Override
+	public String getCollectionName() {
+		return null;
+	}
+
+	@Override
+	public String getMemberName() {
+		return null;
+	}
+
+	@Override
+	public MemberWrapper<Access> getMemberWrapper() {
+		return new TokenV2DataWrapper();
 	}
 
 }

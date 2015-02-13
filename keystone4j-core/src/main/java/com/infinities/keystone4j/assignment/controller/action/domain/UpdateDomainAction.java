@@ -23,7 +23,7 @@ public class UpdateDomainAction extends AbstractDomainAction implements Protecte
 	}
 
 	@Override
-	public MemberWrapper<Domain> execute(ContainerRequestContext context) {
+	public MemberWrapper<Domain> execute(ContainerRequestContext context) throws Exception {
 		requireMatchingId(domainid, domain);
 		Domain ref = this.getAssignmentApi().updateDomain(domainid, domain);
 		return this.wrapMember(context, ref);

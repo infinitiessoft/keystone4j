@@ -21,7 +21,7 @@ public class DeleteServiceAction extends AbstractServiceAction implements Protec
 	}
 
 	@Override
-	public MemberWrapper<Service> execute(ContainerRequestContext context) {
+	public MemberWrapper<Service> execute(ContainerRequestContext context) throws Exception {
 		this.getCatalogApi().deleteService(serviceid);
 		return null;
 	}

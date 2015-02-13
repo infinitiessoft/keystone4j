@@ -1,11 +1,23 @@
 package com.infinities.keystone4j.identity.driver;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.NoResultException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.infinities.keystone4j.ListFunction;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.common.Hints;
+import com.infinities.keystone4j.common.TruncatedFunction;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityDriver;
+import com.infinities.keystone4j.identity.driver.function.ListGroupsFunction;
+import com.infinities.keystone4j.identity.driver.function.ListUsersFunction;
 import com.infinities.keystone4j.jpa.impl.GroupDao;
 import com.infinities.keystone4j.jpa.impl.UserDao;
 import com.infinities.keystone4j.jpa.impl.UserGroupMembershipDao;
@@ -16,10 +28,11 @@ import com.infinities.keystone4j.utils.PasswordUtils;
 
 public class IdentityJpaDriver implements IdentityDriver {
 
+	private final static Logger logger = LoggerFactory.getLogger(IdentityJpaDriver.class);
 	private final UserDao userDao;
 	private final GroupDao groupDao;
 	private final UserGroupMembershipDao userGroupMembershipDao;
-	private final static String USER_NOT_FOUND = "User not found in group";
+	private final static String USER_NOT_FOUND = "User %s not found in group %s";
 	private final static String INVALID_USER_PASSWORD = "Invalid user / password";
 
 
@@ -31,128 +44,73 @@ public class IdentityJpaDriver implements IdentityDriver {
 	}
 
 	@Override
+	public boolean isSql() {
+		return true;
+	}
+
+	private boolean checkPassword(String password, User userRef) {
+		return PasswordUtils.checkPassword(password, userRef.getPassword());
+	}
+
+	private User filterUser(User userRef) {
+		if (userRef != null) {
+			userRef.setPassword(null);
+		}
+		return userRef;
+	}
+
+	@Override
 	public User authenticate(String userid, String password) {
-		User user = null;
+		User userRef = null;
 		try {
-			user = getUser(userid);
+			userRef = _getUser(userid);
 		} catch (Exception e) {
+			logger.debug("get user failed", e);
 			// replace AssertionError
 			throw new IllegalArgumentException(INVALID_USER_PASSWORD);
 		}
-
-		boolean checked = PasswordUtils.checkPassword(password, user.getPassword());
+		logger.debug("_getUser : {}", userRef.toString());
+		boolean checked = checkPassword(password, userRef);
 		if (!checked) {
 			// replace AssertionError
 			throw new IllegalArgumentException(INVALID_USER_PASSWORD);
 		}
-		return user;
+		return filterUser(userRef);
 	}
 
+	// TODO ignore @sql.handle_conflicts(conflict_type='user')
 	@Override
-	public User createUser(User user) {
+	public User createUser(String userid, User user) {
 		user.setPassword(PasswordUtils.hashPassword(user.getPassword()));
 		userDao.persist(user);
 		return user;
 	}
 
 	@Override
-	public List<User> listUsers() {
-		return userDao.findAll();
-	}
-
-	@Override
-	public List<User> listUsersInGroup(String groupid) {
-		getGroup(groupid);
-		List<User> users = userGroupMembershipDao.listUserByGroup(groupid);
-		// List<User> users = Lists.newArrayList();
-		// for (UserGroupMembership membership : memberships) {
-		// users.add(membership.getUser());
-		// }
-		return users;
+	public List<User> listUsers(Hints hints) throws Exception {
+		ListFunction<User> function = new TruncatedFunction<User>(new ListUsersFunction());
+		function.execute(hints);
+		List<User> refs = new ArrayList<User>();
+		for (User userRef : function.execute(hints)) {
+			refs.add(filterUser(userRef));
+		}
+		return refs;
 	}
 
 	@Override
 	public User getUser(String userid) {
-		User user = userDao.findById(userid);
-		if (user == null) {
+		User userRef = _getUser(userid);
+		// return filterUser(userRef);
+		return userRef;
+	}
+
+	private User _getUser(String userid) {
+		User userRef = userDao.findById(userid);
+		if (userRef == null) {
 			throw Exceptions.UserNotFoundException.getInstance(null, userid);
 		}
-		return user;
-	}
 
-	@Override
-	public User updateUser(String userid, User user) {
-		User oldUser = getUser(userid);
-		if (user.isDefaultProjectUpdated()) {
-			oldUser.setDefault_project(user.getDefault_project());
-		}
-		if (user.isDescriptionUpdated()) {
-			oldUser.setDescription(user.getDescription());
-		}
-		if (user.isDomainUpdated()) {
-			oldUser.setDomain(user.getDomain());
-		}
-		if (user.isEmailUpdated()) {
-			oldUser.setEmail(user.getEmail());
-		}
-		if (user.isEnabledUpdated()) {
-			oldUser.setEnabled(user.getEnabled());
-		}
-		if (user.isExtraUpdated()) {
-			oldUser.setExtra(user.getExtra());
-		}
-		if (user.isNameUpdated()) {
-			oldUser.setName(user.getName());
-		}
-		if (user.isPasswordUpdated()) {
-			user.setPassword(PasswordUtils.hashPassword(user.getPassword()));
-			oldUser.setPassword(user.getPassword());
-		}
-
-		return userDao.merge(oldUser);
-	}
-
-	@Override
-	public void addUserToGroup(String userid, String groupid) {
-		Group group = getGroup(groupid);
-		User user = getUser(userid);
-		try {
-			userGroupMembershipDao.findByUserGroup(userid, groupid);
-			return;
-		} catch (NoResultException e) {
-			UserGroupMembership membership = new UserGroupMembership();
-			membership.setGroup(group);
-			membership.setUser(user);
-			userGroupMembershipDao.persist(membership);
-		}
-	}
-
-	@Override
-	public void checkUserInGroup(String userid, String groupid) {
-		getGroup(groupid);
-		getUser(userid);
-		try {
-			userGroupMembershipDao.findByUserGroup(userid, groupid);
-			return;
-		} catch (NoResultException e) {
-			throw Exceptions.NotFoundException.getInstance(USER_NOT_FOUND);
-		}
-	}
-
-	@Override
-	public void removeUserFromGroup(String userid, String groupid) {
-		try {
-			UserGroupMembership membership = userGroupMembershipDao.findByUserGroup(userid, groupid);
-			userGroupMembershipDao.remove(membership);
-		} catch (NoResultException e) {
-			throw Exceptions.NotFoundException.getInstance(USER_NOT_FOUND);
-		}
-	}
-
-	@Override
-	public void deleteUser(String userid) {
-		User user = getUser(userid);
-		userDao.remove(user);
+		return userRef;
 	}
 
 	@Override
@@ -166,25 +124,114 @@ public class IdentityJpaDriver implements IdentityDriver {
 	}
 
 	@Override
-	public Group createGroup(Group group) {
+	public User updateUser(String userid, User user) {
+		User oldUser = _getUser(userid);
+		if (user.isDefaultProjectUpdated()) {
+			oldUser.setDefaultProject(user.getDefaultProject());
+		}
+		if (user.isDescriptionUpdated()) {
+			oldUser.setDescription(user.getDescription());
+		}
+		if (user.isDomainUpdated()) {
+			oldUser.setDomain(user.getDomain());
+		}
+		if (user.isEnabledUpdated()) {
+			oldUser.setEnabled(user.getEnabled());
+		}
+		if (user.isExtraUpdated()) {
+			oldUser.setExtra(user.getExtra());
+		}
+		if (user.isNameUpdated()) {
+			oldUser.setName(user.getName());
+		}
+		if (user.isPasswordUpdated()) {
+			user = PasswordUtils.hashUserPassword(user);
+			oldUser.setPassword(user.getPassword());
+		}
+
+		return filterUser(userDao.merge(oldUser));
+	}
+
+	@Override
+	public void addUserToGroup(String userid, String groupid) {
+		Group group = getGroup(groupid);
+		User user = getUser(userid);
+		try {
+			userGroupMembershipDao.findByUserGroup(userid, groupid);
+			return;
+		} catch (NoResultException e) {
+			UserGroupMembership membership = new UserGroupMembership();
+			membership.setGroup(group);
+			membership.setUser(user);
+			membership.setId(UUID.randomUUID().toString());
+			userGroupMembershipDao.persist(membership);
+		}
+	}
+
+	@Override
+	public void checkUserInGroup(String userid, String groupid) {
+		getGroup(groupid);
+		getUser(userid);
+		try {
+			userGroupMembershipDao.findByUserGroup(userid, groupid);
+			return;
+		} catch (NoResultException e) {
+			String msg = String.format(USER_NOT_FOUND, userid, groupid);
+			throw Exceptions.NotFoundException.getInstance(msg);
+		}
+	}
+
+	@Override
+	public void removeUserFromGroup(String userid, String groupid) {
+		try {
+			UserGroupMembership membership = userGroupMembershipDao.findByUserGroup(userid, groupid);
+			userGroupMembershipDao.remove(membership);
+		} catch (NoResultException e) {
+			String msg = String.format(USER_NOT_FOUND, userid, groupid);
+			throw Exceptions.NotFoundException.getInstance(msg);
+		}
+	}
+
+	@Override
+	public List<Group> listGroupsForUser(String userid, Hints hints) {
+		getUser(userid);
+		List<Group> groups = userGroupMembershipDao.listGroupsByUser(userid);
+		return groups;
+	}
+
+	@Override
+	public List<User> listUsersInGroup(String groupid, Hints hints) {
+		getGroup(groupid);
+		List<User> users = userGroupMembershipDao.listUserByGroup(groupid);
+		List<User> refs = new ArrayList<User>();
+		for (User user : users) {
+			refs.add(filterUser(user));
+		}
+
+		return refs;
+	}
+
+	@Override
+	public void deleteUser(String userid) {
+		User user = _getUser(userid);
+		List<UserGroupMembership> memberships = userGroupMembershipDao.listByUser(userid);
+		for (UserGroupMembership userGroupMembership : memberships) {
+			userGroupMembershipDao.remove(userGroupMembership);
+		}
+		userDao.remove(user);
+	}
+
+	// TODO ignore @sql.handle_conflicts(conflict_type='group')
+	@Override
+	public Group createGroup(String groupid, Group group) {
 		groupDao.persist(group);
 		return group;
 	}
 
 	@Override
-	public List<Group> listGroups() {
-		return groupDao.findAll();
-	}
-
-	@Override
-	public List<Group> listGroupsForUser(String userid) {
-		getUser(userid);
-		List<Group> groups = userGroupMembershipDao.listGroupsByUser(userid);
-		// List<Group> groups = Lists.newArrayList();
-		// for (UserGroupMembership membership : memberships) {
-		// groups.add(membership.getGroup());
-		// }
-		return groups;
+	public List<Group> listGroups(Hints hints) throws Exception {
+		ListFunction<Group> function = new TruncatedFunction<Group>(new ListGroupsFunction());
+		return function.execute(hints);
 	}
 
 	@Override
@@ -196,6 +243,17 @@ public class IdentityJpaDriver implements IdentityDriver {
 		return group;
 	}
 
+	@Override
+	public Group getGroupByName(String groupName, String domainid) {
+		try {
+			Group group = groupDao.findByName(groupName, domainid);
+			return group;
+		} catch (NoResultException e) {
+			throw Exceptions.GroupNotFoundException.getInstance(null, groupName);
+		}
+	}
+
+	// TODO ignore @sql.handle_conflicts(conflict_type='group')
 	@Override
 	public Group updateGroup(String groupid, Group group) {
 		Group oldGroup = groupDao.findById(groupid);
@@ -215,14 +273,39 @@ public class IdentityJpaDriver implements IdentityDriver {
 	}
 
 	@Override
+	public void deleteGroup(String groupid) {
+		Group group = getGroup(groupid);
+		List<UserGroupMembership> memberships = userGroupMembershipDao.listByGroup(groupid);
+		for (UserGroupMembership userGroupMembership : memberships) {
+			userGroupMembershipDao.remove(userGroupMembership);
+		}
+		groupDao.remove(group);
+	}
+
+	@Override
 	public boolean isDomainAware() {
 		return true;
 	}
 
 	@Override
-	public void deleteGroup(String groupid) {
-		Group group = getGroup(groupid);
-		groupDao.remove(group);
+	public Integer getListLimit() {
+		return Config.Instance.getOpt(Config.Type.identity, "list_limit").asInteger();
+	}
+
+	@Override
+	public boolean generateUuids() {
+		return true;
+	}
+
+	@Override
+	public void setAssignmentApi(AssignmentApi assignmentApi) {
+
+	}
+
+	@Override
+	public boolean isMultipleDomainsSupported() {
+		return this.isDomainAware()
+				|| Config.Instance.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean();
 	}
 
 }

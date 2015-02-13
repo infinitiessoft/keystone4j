@@ -23,7 +23,7 @@ public class UpdateUserAction extends AbstractUserAction implements ProtectedAct
 	}
 
 	@Override
-	public MemberWrapper<User> execute(ContainerRequestContext request) {
+	public MemberWrapper<User> execute(ContainerRequestContext request) throws Exception {
 		requireMatchingId(userid, user);
 		User existedRef = identityApi.getUser(userid);
 		requireMatchingDomainId(user, existedRef);

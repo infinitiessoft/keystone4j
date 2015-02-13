@@ -18,10 +18,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.catalog.controller.EndpointV3Controller;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.MemberWrapper;
-import com.infinities.keystone4j.model.catalog.Endpoint;
-import com.infinities.keystone4j.model.catalog.EndpointWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.EndpointWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.EndpointsWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -37,33 +35,32 @@ public class EndpointResource {
 	}
 
 	@POST
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public Response createEndpoint(EndpointWrapper endpointWrapper) throws Exception {
-		return Response.status(Status.CREATED).entity(endpointController.createEndpoint(endpointWrapper.getEndpoint()))
-				.build();
+		return Response.status(Status.CREATED).entity(endpointController.createEndpoint(endpointWrapper.getRef())).build();
 	}
 
 	@GET
-	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Endpoint> listEndpoints(@QueryParam("interface") String interfaceType,
+	@JsonView(Views.Advance.class)
+	public EndpointsWrapper listEndpoints(@QueryParam("interface") String interfaceType,
 			@QueryParam("service_id") String serviceid, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
-		return endpointController.listEndpoints();
+		return (EndpointsWrapper) endpointController.listEndpoints();
 	}
 
 	@GET
 	@Path("/{endpointid}")
-	@JsonView(Views.Basic.class)
-	public MemberWrapper<Endpoint> getEndpoint(@PathParam("endpointid") String endpointid) throws Exception {
-		return endpointController.getEndpoint(endpointid);
+	@JsonView(Views.Advance.class)
+	public EndpointWrapper getEndpoint(@PathParam("endpointid") String endpointid) throws Exception {
+		return (EndpointWrapper) endpointController.getEndpoint(endpointid);
 	}
 
 	@PATCH
 	@Path("/{endpointid}")
-	@JsonView(Views.Basic.class)
-	public MemberWrapper<Endpoint> updateEndpoint(@PathParam("endpointid") String endpointid, EndpointWrapper endpointWrapper)
+	@JsonView(Views.Advance.class)
+	public EndpointWrapper updateEndpoint(@PathParam("endpointid") String endpointid, EndpointWrapper endpointWrapper)
 			throws Exception {
-		return endpointController.updateEndpoint(endpointid, endpointWrapper.getEndpoint());
+		return (EndpointWrapper) endpointController.updateEndpoint(endpointid, endpointWrapper.getRef());
 	}
 
 	@DELETE

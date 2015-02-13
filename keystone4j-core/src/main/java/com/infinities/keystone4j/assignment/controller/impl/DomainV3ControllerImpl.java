@@ -10,8 +10,8 @@ import com.infinities.keystone4j.assignment.controller.action.domain.GetDomainAc
 import com.infinities.keystone4j.assignment.controller.action.domain.ListDomainsAction;
 import com.infinities.keystone4j.assignment.controller.action.domain.UpdateDomainAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
-import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
@@ -38,7 +38,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 	public MemberWrapper<Domain> createDomain(Domain domain) throws Exception {
 		// parMap.put("domain", domain);
 		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new CreateDomainAction(assignmentApi,
-				tokenProviderApi, policyApi, domain), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, domain), tokenProviderApi, policyApi, null, domain);
 		MemberWrapper<Domain> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -55,7 +55,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 	public MemberWrapper<Domain> getDomain(String domainid) throws Exception {
 		Domain ref = getMemberFromDriver(domainid);
 		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new GetDomainAction(assignmentApi,
-				tokenProviderApi, policyApi, domainid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, domainid), tokenProviderApi, policyApi, ref, null);
 		MemberWrapper<Domain> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -64,7 +64,7 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 	public MemberWrapper<Domain> updateDomain(String domainid, Domain domain) throws Exception {
 		Domain ref = getMemberFromDriver(domainid);
 		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new UpdateDomainAction(assignmentApi,
-				tokenProviderApi, policyApi, domainid, domain), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, domainid, domain), tokenProviderApi, policyApi, ref, domain);
 		MemberWrapper<Domain> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -73,11 +73,11 @@ public class DomainV3ControllerImpl extends BaseController implements DomainV3Co
 	public void deleteDomain(String domainid) throws Exception {
 		Domain ref = getMemberFromDriver(domainid);
 		ProtectedAction<Domain> command = new ProtectedDecorator<Domain>(new DeleteDomainAction(assignmentApi,
-				tokenProviderApi, policyApi, domainid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, domainid), tokenProviderApi, policyApi, ref, null);
 		command.execute(getRequest());
 	}
 
-	public Domain getMemberFromDriver(String domainid) {
+	public Domain getMemberFromDriver(String domainid) throws Exception {
 		return assignmentApi.getDomain(domainid);
 	}
 

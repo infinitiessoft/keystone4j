@@ -3,8 +3,8 @@ package com.infinities.keystone4j.identity.controller.impl;
 import com.infinities.keystone4j.FilterProtectedAction;
 import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
-import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
 import com.infinities.keystone4j.identity.controller.action.user.AddUserToGroupAction;
@@ -60,7 +60,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	public MemberWrapper<User> getUser(String userid) throws Exception {
 		User ref = getMemberFromDriver(userid);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new GetUserAction(identityApi, tokenProviderApi,
-				policyApi, userid), tokenProviderApi, policyApi, ref);
+				policyApi, userid), tokenProviderApi, policyApi, ref, null);
 		MemberWrapper<User> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -69,7 +69,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	public MemberWrapper<User> updateUser(String userid, User user) throws Exception {
 		User ref = getMemberFromDriver(userid);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new UpdateUserAction(identityApi, tokenProviderApi,
-				policyApi, userid, user), tokenProviderApi, policyApi, ref);
+				policyApi, userid, user), tokenProviderApi, policyApi, ref, user);
 		MemberWrapper<User> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -78,7 +78,7 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	public void deleteUser(String userid) throws Exception {
 		User ref = getMemberFromDriver(userid);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new DeleteUserAction(identityApi, tokenProviderApi,
-				policyApi, userid), tokenProviderApi, policyApi, ref);
+				policyApi, userid), tokenProviderApi, policyApi, ref, null);
 		command.execute(getRequest());
 	}
 
@@ -121,11 +121,11 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 	public void changePassword(String userid, UserParam user) throws Exception {
 		User ref = getMemberFromDriver(userid);
 		ProtectedAction<User> command = new ProtectedDecorator<User>(new ChangePasswordAction(identityApi, tokenProviderApi,
-				policyApi, userid, user), tokenProviderApi, policyApi, ref);
+				policyApi, userid, user), tokenProviderApi, policyApi, ref, user);
 		command.execute(getRequest());
 	}
 
-	public User getMemberFromDriver(String userid) {
+	public User getMemberFromDriver(String userid) throws Exception {
 		return identityApi.getUser(userid);
 	}
 }

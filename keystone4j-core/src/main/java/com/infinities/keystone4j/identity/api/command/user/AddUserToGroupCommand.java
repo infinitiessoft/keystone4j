@@ -1,43 +1,49 @@
 package com.infinities.keystone4j.identity.api.command.user;
 
-import com.google.common.base.Strings;
-import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.NonTruncatedCommand;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.identity.IdMappingApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
-import com.infinities.keystone4j.identity.IdentityUtils;
 import com.infinities.keystone4j.identity.api.command.AbstractIdentityCommand;
 import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.token.TokenApi;
 
-public class AddUserToGroupCommand extends AbstractIdentityCommand<User> {
+public class AddUserToGroupCommand extends AbstractIdentityCommand implements NonTruncatedCommand<User> {
 
-	private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
+	// private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
 	private final String userid;
 	private final String groupid;
-	private String domainid;
 
 
-	public AddUserToGroupCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
-			IdentityDriver identityDriver, String userid, String groupid, String domainid) {
-		super(credentialApi, tokenApi, identityApi, identityDriver);
+	public AddUserToGroupCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, RevokeApi revokeApi,
+			IdentityApi identityApi, IdMappingApi idMappingApi, IdentityDriver identityDriver, String userid, String groupid) {
+		super(assignmentApi, credentialApi, revokeApi, identityApi, idMappingApi, identityDriver);
 		this.userid = userid;
 		this.groupid = groupid;
-		this.domainid = domainid;
 	}
 
 	@Override
-	public User execute() {
-		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
-		}
-		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
-		if (driver == null) {
-			driver = this.getIdentityDriver();
-		}
-		driver.addUserToGroup(userid, groupid);
-		this.getTokenApi().deleteTokensForUser(userid, null);
+	public User execute() throws Exception {
+		DomainIdDriverAndEntityId domainIdDriverAndEntityId = getDomainDriverAndEntityId(groupid);
+		// String domainId = domainIdDriverAndEntityId.getDomainId();
+		IdentityDriver groupDriver = domainIdDriverAndEntityId.getDriver();
+		String groupEntityId = domainIdDriverAndEntityId.getLocalId();
+
+		domainIdDriverAndEntityId = getEntryInfoForUser(userid);
+		// domainId = domainIdDriverAndEntityId.getDomainId();
+		IdentityDriver userDriver = domainIdDriverAndEntityId.getDriver();
+		String userEntityId = domainIdDriverAndEntityId.getLocalId();
+
+		assertUserAndGroupInSameBackend(userEntityId, userDriver, groupEntityId, groupDriver);
+
+		groupDriver.addUserToGroup(userEntityId, groupEntityId);
 		return null;
+	}
+
+	private DomainIdDriverAndEntityId getEntryInfoForUser(String publicid) throws Exception {
+		return getDomainDriverAndEntityId(publicid);
 	}
 
 }

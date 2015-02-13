@@ -1,16 +1,14 @@
 package com.infinities.keystone4j.model.common;
 
-import javax.xml.bind.annotation.XmlTransient;
-
 public class Link implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3037390869002692024L;
+	private String href;
 	private String rel;
 	private String type;
-	private String href;
 
 
 	public String getRel() {
@@ -21,7 +19,6 @@ public class Link implements java.io.Serializable {
 		this.rel = rel;
 	}
 
-	@XmlTransient
 	public String getType() {
 		return type;
 	}

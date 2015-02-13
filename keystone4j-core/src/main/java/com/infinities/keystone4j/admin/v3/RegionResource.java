@@ -6,6 +6,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -21,7 +22,7 @@ import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Region;
-import com.infinities.keystone4j.model.catalog.RegionWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.RegionWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 
 //keystone.catalog.routers 20141211
@@ -41,7 +42,7 @@ public class RegionResource {
 	@POST
 	@JsonView(Views.Basic.class)
 	public Response createRegion(RegionWrapper regionWrapper) throws Exception {
-		return Response.status(Status.CREATED).entity(regionController.createRegion(regionWrapper.getRegion())).build();
+		return Response.status(Status.CREATED).entity(regionController.createRegion(regionWrapper.getRef())).build();
 	}
 
 	@GET
@@ -64,7 +65,7 @@ public class RegionResource {
 	@JsonView(Views.Basic.class)
 	public MemberWrapper<Region> updateRegion(@PathParam("regionid") String regionid, RegionWrapper regionWrapper)
 			throws Exception {
-		return regionController.updateRegion(regionid, regionWrapper.getRegion());
+		return regionController.updateRegion(regionid, regionWrapper.getRef());
 	}
 
 	@DELETE
@@ -72,6 +73,14 @@ public class RegionResource {
 	public Response deleteRegion(@PathParam("regionid") String regionid) throws Exception {
 		regionController.deleteRegion(regionid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
+	}
+
+	@PUT
+	@Path("/{regionid}")
+	@JsonView(Views.Basic.class)
+	public MemberWrapper<Region> createRegionWithId(@PathParam("regionid") String regionid, RegionWrapper regionWrapper)
+			throws Exception {
+		return regionController.createRegionWithId(regionid, regionWrapper.getRef());
 	}
 
 }

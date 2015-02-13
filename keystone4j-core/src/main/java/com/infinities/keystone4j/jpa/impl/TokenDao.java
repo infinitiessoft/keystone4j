@@ -1,6 +1,7 @@
 package com.infinities.keystone4j.jpa.impl;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,9 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.infinities.keystone4j.jpa.AbstractDao;
@@ -18,27 +22,47 @@ import com.infinities.keystone4j.model.token.Token;
 
 public class TokenDao extends AbstractDao<Token> {
 
+	private final static Logger logger = LoggerFactory.getLogger(TokenDao.class);
+
+
 	public TokenDao() {
 		super(Token.class);
 	}
 
-	public List<Token> findBeforeExpireAndValid(Date date, boolean valid) {
+	private boolean isTenantMatches(String tenantid, Token token) {
+		return (Strings.isNullOrEmpty(tenantid) || (!Strings.isNullOrEmpty(token.getTenant().getId()) && token.getTenant()
+				.getId().equals(tenantid)));
+	}
 
+	private boolean isConsumerMatches(String consumerid, Token token) {
+		if (Strings.isNullOrEmpty(consumerid)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void deleteToken(String userid, String tenantid, String trustid, String consumerid) {
+		Calendar now = Calendar.getInstance();
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
 		Root<Token> root = cq.from(getEntityType());
-		Path<Date> path = root.get("expires");
+		Path<Calendar> path = root.get("expires");
 		List<Predicate> predicates = Lists.newArrayList();
-		Predicate expiresPredicate = cb.greaterThan(path, date);
+		Predicate expiresPredicate = cb.greaterThan(path, now);
 		predicates.add(expiresPredicate);
 
-		Predicate validPredicate = cb.equal(root.get("valid"), valid);
+		Predicate validPredicate = cb.equal(root.get("valid"), true);
 		predicates.add(validPredicate);
+
+		if (!Strings.isNullOrEmpty(trustid)) {
+			Predicate trustPredicate = cb.equal(root.get("trustId"), trustid);
+			predicates.add(trustPredicate);
+		} else {
+			Predicate userPredicate = cb.equal(root.get("userId"), userid);
+			predicates.add(userPredicate);
+		}
 
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
@@ -46,104 +70,53 @@ public class TokenDao extends AbstractDao<Token> {
 		TypedQuery<Token> q = em.createQuery(cq);
 		List<Token> tokens = q.getResultList();
 
-		// tx.commit();
+		for (Token tokenRef : tokens) {
+			if (!Strings.isNullOrEmpty(tenantid)) {
+				if (!isTenantMatches(tenantid, tokenRef)) {
+					continue;
+				}
+			}
+
+			if (!Strings.isNullOrEmpty(consumerid)) {
+				if (!isConsumerMatches(consumerid, tokenRef)) {
+					continue;
+				}
+			}
+
+			tokenRef.setValid(false);
+			em.merge(tokenRef);
+		}
+	}
+
+	public List<Token> listRevokedTokens() {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
+		Root<Token> root = cq.from(getEntityType());
+		Path<Calendar> path = root.get("expires");
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate expiresPredicate = cb.greaterThan(path, Calendar.getInstance());
+		predicates.add(expiresPredicate);
+
+		Predicate validPredicate = cb.equal(root.get("valid"), false);
+		predicates.add(validPredicate);
+
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Token> q = em.createQuery(cq);
+		List<Token> tokens = q.getResultList();
 		return tokens;
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
-
-	}
-
-	public void deleteTokensForTrust(String userid, String trustid) {
-
-		EntityManager em = getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
-		Root<Token> root = cq.from(getEntityType());
-		Path<Date> path = root.get("expires");
-		List<Predicate> predicates = Lists.newArrayList();
-		Predicate expiresPredicate = cb.greaterThan(path, new Date());
-		predicates.add(expiresPredicate);
-
-		Predicate validPredicate = cb.equal(root.get("valid"), true);
-		predicates.add(validPredicate);
-
-		Predicate userPredicate = cb.equal(root.get("user").get("id"), userid);
-		predicates.add(userPredicate);
-
-		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-		cq.select(root);
-
-		TypedQuery<Token> q = em.createQuery(cq);
-		List<Token> tokens = q.getResultList();
-
-		for (Token token : tokens) {
-			if (!Strings.isNullOrEmpty(trustid)) {
-				if (!isTrustMatches(trustid, token)) {
-					continue;
-				}
-			}
-
-			token.setValid(false);
-			em.merge(token);
-		}
-
-	}
-
-	public void deleteTokensForUser(String userid, String projectid) {
-
-		EntityManager em = getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
-		Root<Token> root = cq.from(getEntityType());
-		Path<Date> path = root.get("expires");
-		List<Predicate> predicates = Lists.newArrayList();
-		Predicate expiresPredicate = cb.greaterThan(path, new Date());
-		predicates.add(expiresPredicate);
-
-		Predicate validPredicate = cb.equal(root.get("valid"), true);
-		predicates.add(validPredicate);
-
-		Predicate userPredicate = cb.equal(root.get("user").get("id"), userid);
-		predicates.add(userPredicate);
-
-		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-		cq.select(root);
-
-		TypedQuery<Token> q = em.createQuery(cq);
-		List<Token> tokens = q.getResultList();
-
-		for (Token token : tokens) {
-			if (!Strings.isNullOrEmpty(projectid)) {
-				if (!isTenantMatches(projectid, token)) {
-					continue;
-				}
-			}
-
-			token.setValid(false);
-			em.merge(token);
-		}
-
 	}
 
 	public void flushExpiredTokens() {
-
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Token> cq = cb.createQuery(getEntityType());
 		Root<Token> root = cq.from(getEntityType());
-		Path<Date> path = root.get("expires");
+		Path<Calendar> path = root.get("expires");
 		List<Predicate> predicates = Lists.newArrayList();
-		Predicate expiresPredicate = cb.lessThan(path, new Date());
+		Predicate expiresPredicate = cb.lessThan(path, Calendar.getInstance());
 		predicates.add(expiresPredicate);
 
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
@@ -151,28 +124,94 @@ public class TokenDao extends AbstractDao<Token> {
 
 		TypedQuery<Token> q = em.createQuery(cq);
 		List<Token> tokens = q.getResultList();
+		int totalRemoved = 0;
 
 		for (Token token : tokens) {
 			em.remove(token);
+			totalRemoved++;
 		}
-		// tx.commit();
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
-
+		logger.info("Total expired tokens removed: {}", totalRemoved);
 	}
 
-	private boolean isTrustMatches(String trustid, Token token) {
-		return (Strings.isNullOrEmpty(trustid) || (token.getTrust() != null && token.getTrust().getId().equals(trustid)));
+	public List<String> listTokensForTrust(String trustId) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Token> root = cq.from(getEntityType());
+		Path<Calendar> path = root.get("expires");
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate expiresPredicate = cb.greaterThan(path, Calendar.getInstance());
+		predicates.add(expiresPredicate);
+
+		Predicate validPredicate = cb.equal(root.get("valid"), true);
+		predicates.add(validPredicate);
+
+		Predicate trustPredicate = cb.equal(root.get("trustId"), trustId);
+		predicates.add(trustPredicate);
+
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root.<String> get("id"));
+
+		TypedQuery<String> q = em.createQuery(cq);
+		List<String> tokens = q.getResultList();
+		return tokens;
 	}
 
-	private boolean isTenantMatches(String tenantid, Token token) {
-		return (Strings.isNullOrEmpty(tenantid) || (token.getProject() != null && token.getProject().getId()
-				.equals(tenantid)));
+	public List<String> listTokensForUser(String userId, String tenantId) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Token> cq = cb.createQuery(Token.class);
+		Root<Token> root = cq.from(getEntityType());
+		Path<Calendar> path = root.get("expires");
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate expiresPredicate = cb.greaterThan(path, Calendar.getInstance());
+		predicates.add(expiresPredicate);
+
+		Predicate validPredicate = cb.equal(root.get("valid"), true);
+		predicates.add(validPredicate);
+
+		Predicate trustPredicate = cb.equal(root.get("userId"), userId);
+		predicates.add(trustPredicate);
+
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Token> q = em.createQuery(cq);
+		List<String> tokens = new ArrayList<String>();
+		for (Token token : q.getResultList()) {
+			if (isTenantMatches(tenantId, token)) {
+				tokens.add(token.getId());
+			}
+		}
+		return tokens;
+	}
+
+	public List<String> listTokensForConsumer(String userId, String consumerId) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Token> cq = cb.createQuery(Token.class);
+		Root<Token> root = cq.from(getEntityType());
+		Path<Calendar> path = root.get("expires");
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate expiresPredicate = cb.greaterThan(path, Calendar.getInstance());
+		predicates.add(expiresPredicate);
+
+		Predicate validPredicate = cb.equal(root.get("valid"), true);
+		predicates.add(validPredicate);
+
+		Predicate trustPredicate = cb.equal(root.get("userId"), userId);
+		predicates.add(trustPredicate);
+
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Token> q = em.createQuery(cq);
+		List<String> tokens = new ArrayList<String>();
+		for (Token token : q.getResultList()) {
+			if (isConsumerMatches(consumerId, token)) {
+				tokens.add(token.getId());
+			}
+		}
+		return tokens;
 	}
 }

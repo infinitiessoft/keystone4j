@@ -18,8 +18,10 @@ public class UserGroupMembership extends BaseEntity implements java.io.Serializa
 	 * 
 	 */
 	private static final long serialVersionUID = 6316399395123858269L;
-	private User user;
-	private Group group;
+	private User user; // keystone.identity.backends.sql.UserGroupMembership
+						// 20150114
+	private Group group; // keystone.identity.backends.sql.UserGroupMembership
+							// 20150114
 
 
 	@ManyToOne(fetch = FetchType.LAZY)

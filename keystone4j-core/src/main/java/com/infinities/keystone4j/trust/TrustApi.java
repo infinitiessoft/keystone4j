@@ -8,7 +8,7 @@ import com.infinities.keystone4j.model.trust.Trust;
 
 public interface TrustApi extends Api {
 
-	Trust createTrust(String id, Trust trust, List<Role> cleanRoles);
+	Trust createTrust(String id, Trust trust, List<Role> cleanRoles) throws Exception;
 
 	List<Trust> listTrusts();
 
@@ -16,10 +16,11 @@ public interface TrustApi extends Api {
 
 	List<Trust> listTrustsForTrustee(String trusteeid);
 
-	Trust getTrust(String trustid);
+	// deleted=false
+	Trust getTrust(String trustid, boolean deleted);
 
-	void deleteTrust(String trustid);
+	void deleteTrust(String trustid) throws Exception;
 
-	void consumeUse(String id);
+	void consumeUse(String id) throws Exception;
 
 }

@@ -19,9 +19,9 @@ public class CreatePolicyAction extends AbstractPolicyAction implements Protecte
 	}
 
 	@Override
-	public MemberWrapper<Policy> execute(ContainerRequestContext context) {
+	public MemberWrapper<Policy> execute(ContainerRequestContext context) throws Exception {
 		assignUniqueId(policy);
-		Policy ref = policyApi.createPolicy(policy);
+		Policy ref = policyApi.createPolicy(policy.getId(), policy);
 		return this.wrapMember(context, ref);
 	}
 

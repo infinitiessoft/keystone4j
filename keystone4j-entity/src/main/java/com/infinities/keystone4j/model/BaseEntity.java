@@ -3,18 +3,15 @@ package com.infinities.keystone4j.model;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.hibernate.annotations.GenericGenerator;
-
 //import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.infinities.keystone4j.model.common.Links;
+import com.infinities.keystone4j.model.common.MemberLinks;
 import com.infinities.keystone4j.model.utils.Views;
 
 @MappedSuperclass
@@ -24,16 +21,15 @@ public class BaseEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -8270011464801370690L;
-
 	private String id;
 	private String description;
 	private int version;
 	private boolean descriptionUpdated = false;
-	private Links links = new Links();
+	private MemberLinks links = new MemberLinks();
 
 
-	@JsonView(Views.Basic.class)
 	@Column(name = "DESC", length = 150)
+	@JsonView(Views.Advance.class)
 	public String getDescription() {
 		return description;
 	}
@@ -55,9 +51,10 @@ public class BaseEntity implements Serializable {
 		this.version = version;
 	}
 
+	@JsonView(Views.Basic.class)
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
+	// @GeneratedValue(generator = "system-uuid")
+	// @GenericGenerator(name = "system-uuid", strategy = "uuid2")
 	@Column(name = "ID", unique = true, nullable = false)
 	public String getId() {
 		return this.id;
@@ -113,13 +110,14 @@ public class BaseEntity implements Serializable {
 		this.descriptionUpdated = descriptionUpdated;
 	}
 
+	@JsonView(Views.Advance.class)
 	@Transient
-	public Links getLinks() {
+	public MemberLinks getLinks() {
 		return links;
 	}
 
 	@Transient
-	public void setLinks(Links links) {
+	public void setLinks(MemberLinks links) {
 		this.links = links;
 	}
 

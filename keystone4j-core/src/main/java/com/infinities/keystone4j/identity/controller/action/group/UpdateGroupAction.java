@@ -23,7 +23,7 @@ public class UpdateGroupAction extends AbstractGroupAction implements ProtectedA
 	}
 
 	@Override
-	public MemberWrapper<Group> execute(ContainerRequestContext request) {
+	public MemberWrapper<Group> execute(ContainerRequestContext request) throws Exception {
 		requireMatchingId(groupid, group);
 		Group existedRef = identityApi.getGroup(groupid);
 		requireMatchingDomainId(group, existedRef);

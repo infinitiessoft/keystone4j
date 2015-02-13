@@ -20,7 +20,7 @@ public class GetServiceAction extends AbstractServiceAction implements Protected
 	}
 
 	@Override
-	public MemberWrapper<Service> execute(ContainerRequestContext context) {
+	public MemberWrapper<Service> execute(ContainerRequestContext context) throws Exception {
 		Service ref = this.getCatalogApi().getService(serviceid);
 		return this.wrapMember(context, ref);
 	}

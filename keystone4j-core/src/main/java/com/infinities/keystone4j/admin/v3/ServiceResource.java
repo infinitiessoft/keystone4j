@@ -18,10 +18,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.MemberWrapper;
-import com.infinities.keystone4j.model.catalog.Service;
-import com.infinities.keystone4j.model.catalog.ServiceWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.ServiceWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.ServicesWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 
 //keystone.catalog.routers 20141211
@@ -39,32 +37,31 @@ public class ServiceResource {
 	}
 
 	@POST
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public Response createService(ServiceWrapper serviceWrapper) throws Exception {
-		return Response.status(Status.CREATED).entity(serviceController.createService(serviceWrapper.getService())).build();
+		return Response.status(Status.CREATED).entity(serviceController.createService(serviceWrapper.getRef())).build();
 	}
 
 	@GET
-	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Service> listServices(@QueryParam("type") String type,
-			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
-			throws Exception {
-		return serviceController.listServices();
+	@JsonView(Views.Advance.class)
+	public ServicesWrapper listServices(@QueryParam("type") String type, @DefaultValue("1") @QueryParam("page") int page,
+			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
+		return (ServicesWrapper) serviceController.listServices();
 	}
 
 	@GET
 	@Path("/{serviceid}")
-	@JsonView(Views.Basic.class)
-	public MemberWrapper<Service> getService(@PathParam("serviceid") String serviceid) throws Exception {
-		return serviceController.getService(serviceid);
+	@JsonView(Views.Advance.class)
+	public ServiceWrapper getService(@PathParam("serviceid") String serviceid) throws Exception {
+		return (ServiceWrapper) serviceController.getService(serviceid);
 	}
 
 	@PATCH
 	@Path("/{serviceid}")
-	@JsonView(Views.Basic.class)
-	public MemberWrapper<Service> updateService(@PathParam("serviceid") String serviceid, ServiceWrapper serviceWrapper)
+	@JsonView(Views.Advance.class)
+	public ServiceWrapper updateService(@PathParam("serviceid") String serviceid, ServiceWrapper serviceWrapper)
 			throws Exception {
-		return serviceController.updateService(serviceid, serviceWrapper.getService());
+		return (ServiceWrapper) serviceController.updateService(serviceid, serviceWrapper.getRef());
 	}
 
 	@DELETE

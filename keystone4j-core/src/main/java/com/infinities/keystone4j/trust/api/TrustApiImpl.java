@@ -2,10 +2,13 @@ package com.infinities.keystone4j.trust.api;
 
 import java.util.List;
 
+import com.infinities.keystone4j.NonTruncatedCommand;
 import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.trust.Trust;
+import com.infinities.keystone4j.notification.Notifications;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.trust.TrustDriver;
+import com.infinities.keystone4j.trust.api.command.ConsumeUseCommand;
 import com.infinities.keystone4j.trust.api.command.CreateTrustCommand;
 import com.infinities.keystone4j.trust.api.command.DeleteTrustCommand;
 import com.infinities.keystone4j.trust.api.command.GetTrustCommand;
@@ -16,6 +19,7 @@ import com.infinities.keystone4j.trust.api.command.ListTrustsForTrustorCommand;
 public class TrustApiImpl implements TrustApi {
 
 	private final TrustDriver trustDriver;
+	private final static String _TRUST = "OS-TRUST:trust";
 
 
 	public TrustApiImpl(TrustDriver trustDriver) {
@@ -24,8 +28,9 @@ public class TrustApiImpl implements TrustApi {
 	}
 
 	@Override
-	public Trust createTrust(Trust trust, List<Role> cleanRoles) {
-		CreateTrustCommand command = new CreateTrustCommand(trustDriver, trust, cleanRoles);
+	public Trust createTrust(String trustid, Trust trust, List<Role> cleanRoles) throws Exception {
+		NonTruncatedCommand<Trust> command = Notifications.created(new CreateTrustCommand(trustDriver, trustid, trust,
+				cleanRoles), _TRUST);
 		return command.execute();
 	}
 
@@ -48,14 +53,20 @@ public class TrustApiImpl implements TrustApi {
 	}
 
 	@Override
-	public Trust getTrust(String trustid) {
-		GetTrustCommand command = new GetTrustCommand(trustDriver, trustid);
+	public Trust getTrust(String trustid, boolean deleted) {
+		GetTrustCommand command = new GetTrustCommand(trustDriver, trustid, deleted);
 		return command.execute();
 	}
 
 	@Override
-	public void deleteTrust(String trustid) {
-		DeleteTrustCommand command = new DeleteTrustCommand(trustDriver, trustid);
+	public void deleteTrust(String trustid) throws Exception {
+		NonTruncatedCommand<Trust> command = Notifications.deleted(new DeleteTrustCommand(trustDriver, trustid), _TRUST);
+		command.execute();
+	}
+
+	@Override
+	public void consumeUse(String trustid) throws Exception {
+		ConsumeUseCommand command = new ConsumeUseCommand(trustDriver, trustid);
 		command.execute();
 	}
 

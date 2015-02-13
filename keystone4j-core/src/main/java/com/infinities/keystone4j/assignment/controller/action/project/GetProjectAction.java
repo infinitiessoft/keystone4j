@@ -23,17 +23,17 @@ public class GetProjectAction extends AbstractProjectAction implements Protected
 	}
 
 	@Override
-	public MemberWrapper<Project> execute(ContainerRequestContext context) {
+	public MemberWrapper<Project> execute(ContainerRequestContext context) throws Exception {
 		Project ref = this.getAssignmentApi().getProject(projectid);
 		expandProjectRef(context, ref);
 		return this.wrapMember(context, ref);
 	}
 
-	private void expandProjectRef(ContainerRequestContext context, Project ref) {
-		String userid = getAuthContext(context).getUserid();
+	private void expandProjectRef(ContainerRequestContext context, Project ref) throws Exception {
+		String userid = getAuthContext(context).getUserId();
 		if (context.getUriInfo().getQueryParameters().containsKey("parents_as_list")
 				&& queryFilterIsTrue(context.getUriInfo().getQueryParameters().getFirst("parents_as_list"))) {
-			List<Project> parents = assignmentApi.listProjectsParents(ref.getId(), userid);
+			List<Project> parents = assignmentApi.listProjectParents(ref.getId(), userid);
 			for (Project p : parents) {
 				ref.getParents().add(wrapMember(context, p));
 			}

@@ -5,8 +5,8 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Endpoint;
-import com.infinities.keystone4j.model.catalog.EndpointWrapper;
-import com.infinities.keystone4j.model.catalog.EndpointsWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.EndpointWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.EndpointsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -29,12 +29,12 @@ public abstract class AbstractEndpointAction extends AbstractAction<Endpoint> {
 	}
 
 	@Override
-	protected CollectionWrapper<Endpoint> getCollectionWrapper() {
+	public CollectionWrapper<Endpoint> getCollectionWrapper() {
 		return new EndpointsWrapper();
 	}
 
 	@Override
-	protected MemberWrapper<Endpoint> getMemberWrapper() {
+	public MemberWrapper<Endpoint> getMemberWrapper() {
 		return new EndpointWrapper();
 	}
 
@@ -48,7 +48,7 @@ public abstract class AbstractEndpointAction extends AbstractAction<Endpoint> {
 		return "endpoint";
 	}
 
-	protected Endpoint validateEndpointRegion(Endpoint endpoint) {
+	protected Endpoint validateEndpointRegion(Endpoint endpoint) throws Exception {
 		if (endpoint.getRegion() != null) {
 			try {
 				catalogApi.getRegion(endpoint.getRegionid());

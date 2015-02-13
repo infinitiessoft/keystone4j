@@ -20,7 +20,7 @@ public class DeleteGroupAction extends AbstractGroupAction implements ProtectedA
 	}
 
 	@Override
-	public MemberWrapper<Group> execute(ContainerRequestContext request) {
+	public MemberWrapper<Group> execute(ContainerRequestContext request) throws Exception {
 		this.getIdentityApi().deleteGroup(groupid);
 		return null;
 	}

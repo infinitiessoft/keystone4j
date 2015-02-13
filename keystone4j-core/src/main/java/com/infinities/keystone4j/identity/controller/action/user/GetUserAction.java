@@ -20,7 +20,7 @@ public class GetUserAction extends AbstractUserAction implements ProtectedAction
 	}
 
 	@Override
-	public MemberWrapper<User> execute(ContainerRequestContext request) {
+	public MemberWrapper<User> execute(ContainerRequestContext request) throws Exception {
 		User ref = this.getIdentityApi().getUser(userid);
 		return wrapMember(request, ref);
 	}

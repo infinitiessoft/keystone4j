@@ -1,57 +1,55 @@
 package com.infinities.keystone4j.assignment.driver;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.infinities.keystone4j.ListFunction;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
+import com.infinities.keystone4j.assignment.driver.function.ListDomainsFunction;
+import com.infinities.keystone4j.assignment.driver.function.ListProjectsFunction;
+import com.infinities.keystone4j.assignment.driver.function.ListRolesFunction;
 import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.common.Config.Type;
+import com.infinities.keystone4j.common.Hints;
+import com.infinities.keystone4j.common.TruncatedFunction;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.jpa.impl.DomainDao;
-import com.infinities.keystone4j.jpa.impl.GroupDomainGrantDao;
-import com.infinities.keystone4j.jpa.impl.GroupProjectGrantDao;
 import com.infinities.keystone4j.jpa.impl.ProjectDao;
+import com.infinities.keystone4j.jpa.impl.RoleAssignmentDao;
 import com.infinities.keystone4j.jpa.impl.RoleDao;
-import com.infinities.keystone4j.jpa.impl.UserDao;
-import com.infinities.keystone4j.jpa.impl.UserDomainGrantDao;
-import com.infinities.keystone4j.jpa.impl.UserProjectGrantDao;
 import com.infinities.keystone4j.model.assignment.Assignment;
 import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.assignment.GroupDomainGrant;
-import com.infinities.keystone4j.model.assignment.GroupProjectGrant;
+import com.infinities.keystone4j.model.assignment.Metadata;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.assignment.UserDomainGrant;
-import com.infinities.keystone4j.model.assignment.UserProjectGrant;
-import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.assignment.RoleAssignment;
+import com.infinities.keystone4j.model.assignment.RoleAssignment.AssignmentType;
 
 public class AssignmentJpaDriver implements AssignmentDriver {
 
 	private final Logger logger = LoggerFactory.getLogger(AssignmentJpaDriver.class);
 	private final ProjectDao projectDao;
-	private final UserDao userDao;
 	private final RoleDao roleDao;
 	private final DomainDao domainDao;
+	private final RoleAssignmentDao roleAssignmentDao;
 	// private final AssignmentDao assignmentDao;
-	private final UserProjectGrantDao userProjectGrantDao;
-	private final UserDomainGrantDao userDomainGrantDao;
-	private final GroupProjectGrantDao groupProjectGrantDao;
-	private final GroupDomainGrantDao groupDomainGrantDao;
-	// private final UserProjectGrantMetadataDao userProjectGrantMetadataDao;
-	// private final GroupDomainGrantMetadataDao groupDomainGrantMetadataDao;
-	// private final GroupProjectGrantMetadataDao groupProjectGrantMetadataDao;
-	// private final UserDomainGrantMetadataDao userDomainGrantMetadataDao;
-	private final static String PROJECTS = "projects";
-	private final static String ENABLED = "enabled";
+	// private final UserProjectGrantDao userProjectGrantDao;
+	// private final UserDomainGrantDao userDomainGrantDao;
+	// private final GroupProjectGrantDao groupProjectGrantDao;
+	// private final GroupDomainGrantDao groupDomainGrantDao;
 	private final static String ROLE_GRANT = "role grant";
 	private final static String USER_ALREADY_HAS_ROLE = "User {0} already has role {1} in tenant {2}";
 	private final static String CANNOT_REMOVE_ROLE = "Cannot remove role that has not been granted, {0}";
@@ -60,19 +58,13 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 	public AssignmentJpaDriver() {
 		super();
 		this.projectDao = new ProjectDao();
-		this.userDao = new UserDao();
 		this.roleDao = new RoleDao();
 		this.domainDao = new DomainDao();
-		// this.assignmentDao = assignmentDao;
-		this.userProjectGrantDao = new UserProjectGrantDao();
-		this.userDomainGrantDao = new UserDomainGrantDao();
-		this.groupProjectGrantDao = new GroupProjectGrantDao();
-		this.groupDomainGrantDao = new GroupDomainGrantDao();
-		// this.userProjectGrantMetadataDao = new UserProjectGrantMetadataDao();
-		// this.groupDomainGrantMetadataDao = new GroupDomainGrantMetadataDao();
-		// this.groupProjectGrantMetadataDao = new
-		// GroupProjectGrantMetadataDao();
-		// this.userDomainGrantMetadataDao = new UserDomainGrantMetadataDao();
+		this.roleAssignmentDao = new RoleAssignmentDao();
+		// this.userProjectGrantDao = new UserProjectGrantDao();
+		// this.userDomainGrantDao = new UserDomainGrantDao();
+		// this.groupProjectGrantDao = new GroupProjectGrantDao();
+		// this.groupDomainGrantDao = new GroupDomainGrantDao();
 	}
 
 	@Override
@@ -95,207 +87,378 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 	}
 
 	@Override
-	public List<User> listUsersForProject(String projectid) {
-		return userDao.listUsersForProject(projectid);
+	public List<String> listUserIdsForProject(String projectid) {
+		this.getProject(projectid);
+		return roleAssignmentDao.listUserIdsForProject(projectid);
 	}
 
 	@Override
-	public List<Project> listProjects(String domainid) {
+	public void createGrant(String roleid, String userid, String groupid, String domainid, String projectid,
+			boolean inheritedToProjects) {
+		getRole(roleid);
 		if (!Strings.isNullOrEmpty(domainid)) {
 			getDomain(domainid);
 		}
+		if (!Strings.isNullOrEmpty(projectid)) {
+			getProject(projectid);
+		}
 
-		List<Project> projects = projectDao.listProject(domainid);
-		return projects;
+		AssignmentType type = calculateType(userid, groupid, projectid, domainid);
+		try {
+			RoleAssignment roleAssignment = new RoleAssignment();
+			roleAssignment.setType(type);
+			String actorId = Strings.isNullOrEmpty(userid) ? groupid : userid;
+			roleAssignment.setActorId(actorId);
+			String targetId = Strings.isNullOrEmpty(projectid) ? domainid : projectid;
+			roleAssignment.setTargetId(targetId);
+			roleAssignment.setRoleId(roleid);
+			roleAssignment.setInherited(inheritedToProjects);
+			roleAssignment.setId(UUID.randomUUID().toString());
+			roleAssignmentDao.persist(roleAssignment);
+		} catch (EntityExistsException e) {
+			logger.warn("role assignment exist", e);
+		}
+	}
+
+	private AssignmentType calculateType(String userid, String groupid, String projectid, String domainid) {
+		if (!Strings.isNullOrEmpty(userid) && !Strings.isNullOrEmpty(projectid)) {
+			return AssignmentType.USER_PROJECT;
+		} else if (!Strings.isNullOrEmpty(userid) && !Strings.isNullOrEmpty(domainid)) {
+			return AssignmentType.USER_DOMAIN;
+		} else if (!Strings.isNullOrEmpty(groupid) && !Strings.isNullOrEmpty(projectid)) {
+			return AssignmentType.GROUP_PROJECT;
+		} else if (!Strings.isNullOrEmpty(groupid) && !Strings.isNullOrEmpty(domainid)) {
+			return AssignmentType.GROUP_DOMAIN;
+		} else {
+			String messageData = Joiner.on(", ").join(userid, groupid, projectid, domainid);
+			throw new RuntimeException(messageData);
+		}
 	}
 
 	@Override
-	public List<Project> listProjectsForUser(String userid, List<String> groupids) {
-		List<UserProjectGrant> userProjects = userProjectGrantDao.listUserProjectGrant(userid);
-		Set<Project> projects = Sets.newHashSet();
-
-		for (UserProjectGrant userProjectGrant : userProjects) {
-			// if (!userProjectGrant.getMetadatas().isEmpty()) {
-			projects.add(userProjectGrant.getProject());
-			// }
+	public List<Role> listGrants(String userid, String groupid, String domainid, String projectid,
+			boolean inheritedToProjects) {
+		if (!Strings.isNullOrEmpty(domainid)) {
+			getDomain(domainid);
+		}
+		if (!Strings.isNullOrEmpty(projectid)) {
+			getProject(projectid);
 		}
 
-		for (String groupid : groupids) {
-			List<GroupProjectGrant> grants = groupProjectGrantDao.listGroupProjectGrant(groupid);
-			for (GroupProjectGrant grant : grants) {
-				// if (!grant.getMetadatas().isEmpty()) {
-				projects.add(grant.getProject());
-				// }
+		String actorId = Strings.isNullOrEmpty(userid) ? groupid : userid;
+		String targetId = Strings.isNullOrEmpty(projectid) ? domainid : projectid;
+		List<Role> roles = roleDao.listGrants(actorId, targetId, inheritedToProjects);
+		return roles;
+	}
+
+	@Override
+	public Role getGrant(String roleid, String userid, String groupid, String domainid, String projectid,
+			boolean inheritedToProjects) {
+		Role roleRef = getRole(roleid);
+		if (!Strings.isNullOrEmpty(domainid)) {
+			getDomain(domainid);
+		}
+		if (!Strings.isNullOrEmpty(projectid)) {
+			getProject(projectid);
+		}
+		try {
+			String actorId = Strings.isNullOrEmpty(userid) ? groupid : userid;
+			String targetId = Strings.isNullOrEmpty(projectid) ? domainid : projectid;
+			roleAssignmentDao.getGrant(roleid, targetId, actorId, inheritedToProjects);
+		} catch (NoResultException e) {
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
+		}
+		return roleRef;
+	}
+
+	@Override
+	public void deleteGrant(String roleid, String userid, String groupid, String domainid, String projectid,
+			boolean inheritedToProjects) {
+		getRole(roleid);
+		if (!Strings.isNullOrEmpty(domainid)) {
+			getDomain(domainid);
+		}
+		if (!Strings.isNullOrEmpty(projectid)) {
+			getProject(projectid);
+		}
+
+		String actorId = Strings.isNullOrEmpty(userid) ? groupid : userid;
+		String targetId = Strings.isNullOrEmpty(projectid) ? domainid : projectid;
+		RoleAssignment roleAssignment = roleAssignmentDao.getGrant(roleid, targetId, actorId, inheritedToProjects);
+
+		try {
+			roleAssignmentDao.remove(roleAssignment);
+		} catch (IllegalArgumentException e) {
+			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
+		}
+
+	}
+
+	@Override
+	public List<Project> listProjects(Hints hints) throws Exception {
+		ListFunction<Project> function = new TruncatedFunction<Project>(new ListProjectsFunction());
+		return function.execute(hints);
+	}
+
+	@Override
+	public List<Project> listProjectsInDomain(String domainid) throws Exception {
+		return projectDao.listProjectsInDomain(domainid);
+	}
+
+	@Override
+	public List<Project> listProjectsForUser(String userid, List<String> groupids, Hints hints) {
+		List<String> actorList = new ArrayList<String>();
+		actorList.add(userid);
+		if (groupids != null) {
+			actorList.addAll(groupids);
+		}
+
+		List<RoleAssignment> assignments = roleAssignmentDao.listRoleAssignmentsForActors(actorList);
+		Set<String> projectIds = new HashSet<String>();
+		for (RoleAssignment assignment : assignments) {
+			if (assignment.getType() == AssignmentType.USER_PROJECT || assignment.getType() == AssignmentType.GROUP_PROJECT
+					&& !assignment.getInherited()) {
+				projectIds.add(assignment.getTargetId());
 			}
 		}
 
-		boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
-		if (!enabled) {
-			return Lists.newArrayList(projects);
+		if (!Config.Instance.getOpt(Type.os_inherit, "enabled").asBoolean()) {
+			return projectIdsToDicts(projectIds);
 		}
 
-		Set<Domain> domains = Sets.newHashSet();
-		List<UserDomainGrant> userDomainGrants = userDomainGrantDao.listUserDomainGrant(userid);
-		domains.addAll(listDomainsWithInheritedGrantsByUser(userDomainGrants));
-
-		for (String groupid : groupids) {
-			List<GroupDomainGrant> grants = groupDomainGrantDao.listGroupDomainGrant(groupid);
-			domains.addAll(listDomainsWithInheritedGrantsByGroup(grants));
+		Set<String> domainIds = new HashSet<String>();
+		for (RoleAssignment assignment : assignments) {
+			if (assignment.getType() == AssignmentType.USER_DOMAIN || assignment.getType() == AssignmentType.GROUP_DOMAIN
+					&& !assignment.getInherited()) {
+				domainIds.add(assignment.getTargetId());
+			}
 		}
 
-		for (Domain domain : domains) {
-			List<Project> refs = projectDao.listProject(domain.getId());
-			projects.addAll(refs);
+		if (!domainIds.isEmpty()) {
+			List<Project> projects = projectDao.listProjectsInDomains(domainIds);
+			for (Project projectRef : projects) {
+				projectIds.add(projectRef.getId());
+			}
+		}
+		return projectIdsToDicts(projectIds);
+	}
+
+	@Override
+	public List<Project> listProjectsForGroups(List<String> groupids) {
+		List<RoleAssignment> assignments = roleAssignmentDao.listRoleAssignmentsForActors(groupids);
+		Set<String> projectIds = new HashSet<String>();
+		for (RoleAssignment assignment : assignments) {
+			if (assignment.getType() == AssignmentType.GROUP_PROJECT) {
+				projectIds.add(assignment.getTargetId());
+			}
 		}
 
-		return Lists.newArrayList(projects);
+		if (!Config.Instance.getOpt(Type.os_inherit, "enabled").asBoolean()) {
+			return projectIdsToDicts(projectIds);
+		}
+
+		Set<String> domainIds = new HashSet<String>();
+		for (RoleAssignment assignment : assignments) {
+			if (assignment.getType() == AssignmentType.GROUP_DOMAIN && assignment.getInherited()) {
+				domainIds.add(assignment.getTargetId());
+			}
+		}
+
+		if (!domainIds.isEmpty()) {
+			List<Project> projects = projectDao.listProjectsInDomains(domainIds);
+			for (Project projectRef : projects) {
+				projectIds.add(projectRef.getId());
+			}
+		}
+		return projectIdsToDicts(projectIds);
+	}
+
+	private List<Project> projectIdsToDicts(Set<String> ids) {
+		if (ids.isEmpty()) {
+			return new ArrayList<Project>();
+		} else {
+			return projectDao.listProjectsInProjectIds(ids);
+		}
+	}
+
+	@Override
+	public List<Project> listProjectsInSubtree(String projectid) throws Exception {
+		Project project = getProject(projectid);
+		List<String> projectIds = new ArrayList<String>();
+		projectIds.add(project.getId());
+		List<Project> children = getChildren(projectIds);
+
+		List<Project> subtree = new ArrayList<Project>();
+		Set<String> examined = new HashSet<String>();
+		examined.add(project.getId());
+
+		while (!children.isEmpty()) {
+			Set<String> childrenIds = new HashSet<String>();
+			for (Project ref : children) {
+				if (examined.contains(ref.getId())) {
+					String msg = String.format("Circular reference or a repeated entry found in projects hierarchy - %s",
+							ref.getId());
+					logger.error(msg);
+					return new ArrayList<Project>();
+				}
+				childrenIds.add(ref.getId());
+			}
+			examined.addAll(childrenIds);
+			subtree.addAll(children);
+			children = getChildren(new ArrayList<String>(childrenIds));
+		}
+
+		return subtree;
+	}
+
+	private List<Project> getChildren(List<String> projectIds) {
+		return projectDao.getChildren(projectIds);
+	}
+
+	@Override
+	public List<Project> listProjectParents(String projectid) throws Exception {
+		Project project = getProject(projectid);
+		List<Project> parents = new ArrayList<Project>();
+		Set<String> examined = new HashSet<String>();
+
+		while (!Strings.isNullOrEmpty(project.getParentId())) {
+			if (examined.contains(project.getId())) {
+				String msg = String.format("Circular reference or a repeated entry found in projects hierarchy - %s",
+						project.getId());
+				logger.error(msg);
+				return new ArrayList<Project>();
+			}
+			examined.add(project.getId());
+			Project parentProject = getProject(project.getParentId());
+			parents.add(parentProject);
+			project = parentProject;
+		}
+
+		return parents;
+	}
+
+	public boolean isLeadProject(String projectid) {
+		List<String> ids = new ArrayList<String>();
+		ids.add(projectid);
+		List<Project> projectRefs = getChildren(ids);
+		return projectRefs.isEmpty();
+	}
+
+	// projectid=null, domainid=null
+	public List<Role> getRolesForGroup(List<String> groupids, String projectid, String domainid) throws Exception {
+
+		if (!Strings.isNullOrEmpty(projectid)) {
+			return getRolesForGroupsOnProject(groupids, projectid);
+		} else if (!Strings.isNullOrEmpty(domainid)) {
+			return getRolesForGroupsOnDomain(groupids, domainid);
+		} else {
+			throw new IllegalArgumentException("Must specify either domain or project");
+		}
+	}
+
+	private List<Role> getRolesForGroupsOnDomain(List<String> groupids, String domainid) {
+		return roleDao.getRolesForGroupsOnDomain(groupids, domainid);
+	}
+
+	private List<Role> getRolesForGroupsOnProject(List<String> groupids, String projectid) throws Exception {
+		Project project = getProject(projectid);
+		List<String> roleids = getGroupProjectRoles(groupids, projectid, project.getDomainId());
+		return roleIdsToDicts(roleids);
+	}
+
+	private List<Role> roleIdsToDicts(List<String> roleids) {
+		if (roleids.isEmpty()) {
+			return new ArrayList<Role>();
+		} else {
+			return roleDao.listRolesInIds(roleids);
+		}
+	}
+
+	@Override
+	public List<String> getGroupProjectRoles(List<String> groups, String projectid, String projectDomainId) throws Exception {
+		if (groups.isEmpty()) {
+			return new ArrayList<String>();
+		}
+		return roleAssignmentDao.getGroupProjectRoles(groups, projectid, projectDomainId, this);
 	}
 
 	@Override
 	public void addRoleToUserAndProject(String userid, String projectid, String roleid) {
-		User user = new User();
-		user.setId(userid);
-		Project project = getProject(projectid);
-		Role role = getRole(roleid);
-
-		boolean isNew = false;
-		UserProjectGrant grant = null;
-		try {
-			// _get_metadata
-			grant = getUserProjectGrant(userid, projectid, roleid);
-		} catch (Exception e) {
-			isNew = true;
-			grant = new UserProjectGrant();
-			grant.setUser(user);
-			grant.setProject(project);
-			grant.setRole(role);
-		}
+		RoleAssignment roleAssignment = new RoleAssignment();
+		roleAssignment.setType(AssignmentType.USER_PROJECT);
+		roleAssignment.setActorId(userid);
+		roleAssignment.setTargetId(projectid);
+		roleAssignment.setRoleId(roleid);
+		roleAssignment.setInherited(false);
 
 		try {
-			// _add_role_to_role_dics
-			addRoleToUserProjectGrantMetadata(role, grant, false, false);
-			// TODO should we do this?
-			// userProjectGrantDao.persist(grant);
-		} catch (IllegalArgumentException e) {
+			roleAssignmentDao.persist(roleAssignment);
+		} catch (EntityExistsException e) {
 			String msg = MessageFormat.format(USER_ALREADY_HAS_ROLE, userid, roleid, projectid);
 			logger.error(msg, e);
 			throw Exceptions.ConflictException.getInstance(null, ROLE_GRANT, msg); // replace
 			// KeyError
 		}
 
-		if (isNew) {
-			userProjectGrantDao.persist(grant);
-
-		} else {
-			userProjectGrantDao.merge(grant);
-		}
-
 	}
 
 	@Override
 	public void removeRoleFromUserAndProject(String userid, String projectid, String roleid) {
-		UserProjectGrant grant = null;
 		try {
-			// _get_metadata
-			grant = getUserProjectGrant(userid, projectid, roleid);
-			userProjectGrantDao.remove(grant);
-		} catch (Exception e) {
+			RoleAssignment roleAssignment = roleAssignmentDao.getGrant(roleid, projectid, userid, false);
+			roleAssignmentDao.remove(roleAssignment);
+		} catch (NoResultException e) {
 			String msg = MessageFormat.format(CANNOT_REMOVE_ROLE, roleid);
 			throw Exceptions.RoleNotFoundException.getInstance(msg);
 		}
-
-		// try {
-		// // _remove_role_from_role_dics
-		// UserProjectGrantMetadata metadata =
-		// removeRoleFromUserProjectGrantMetadata(roleid, grant, false);
-		// userProjectGrantMetadataDao.remove(metadata);
-		// } catch (IllegalArgumentException e) {
-		// String msg = MessageFormat.format(CANNOT_REMOVE_ROLE, roleid);
-		// throw Exceptions.RoleNotFoundException.getInstance(msg);
-		// }
-
-		// if (!grant.getMetadatas().isEmpty()) {
-		// userProjectGrantDao.merge(grant);
-		// } else {
-
-		// }
-
 	}
 
 	@Override
 	public List<Assignment> listRoleAssignments() {
-		// TODO wired
-		// List<Assignment> assignments = assignmentDao.findAll();
-		// return assignments;
+		List<RoleAssignment> roleAssignments = roleAssignmentDao.findAll();
+
 		List<Assignment> assignments = Lists.newArrayList();
-		List<UserDomainGrant> userDomainGrants = userDomainGrantDao.findAll();
-		boolean[] bools = new boolean[] { true, false };
-		for (boolean b : bools) {
-			List<UserDomainGrant> grants = filterUserDomainGrant(userDomainGrants, b);
-			for (UserDomainGrant grant : grants) {
-
-				// for (Role role : roles) {
-				Assignment assignment = new Assignment();
-				assignment.setRole(grant.getRole());
-				assignment.setUser(grant.getUser());
-				assignment.setDomain(grant.getDomain());
-				assignment.setInheritedToProjects(b);
-				assignments.add(assignment);
-				// }
-			}
-		}
-
-		List<UserProjectGrant> userProjectGrants = userProjectGrantDao.findAll();
-		userProjectGrants = filterUserProjectGrant(userProjectGrants, false);
-		for (UserProjectGrant grant : userProjectGrants) {
-			// List<Role> roles = filterUserProjectGrant(grant.getMetadatas(),
-			// false);
-			// for (Role role : roles) {
-			Assignment assignment = new Assignment();
-			assignment.setRole(grant.getRole());
-			assignment.setUser(grant.getUser());
-			assignment.setProject(grant.getProject());
-			assignment.setInheritedToProjects(false);
-			assignments.add(assignment);
-			// }
-		}
-		List<GroupDomainGrant> groupDomainGrants = groupDomainGrantDao.findAll();
-		for (boolean b : bools) {
-			List<GroupDomainGrant> grants = filterGroupDomainGrant(groupDomainGrants, b);
-			for (GroupDomainGrant grant : grants) {
-
-				// for (Role role : roles) {
-				Assignment assignment = new Assignment();
-				assignment.setRole(grant.getRole());
-				assignment.setGroup(grant.getGroup());
-				assignment.setDomain(grant.getDomain());
-				assignment.setInheritedToProjects(b);
-				assignments.add(assignment);
-				// }
-			}
-		}
-		List<GroupProjectGrant> groupProjectGrants = groupProjectGrantDao.findAll();
-		groupProjectGrants = filterGroupProjectGrant(groupProjectGrants, false);
-		for (GroupProjectGrant grant : groupProjectGrants) {
-
-			// for (Role role : roles) {
-			Assignment assignment = new Assignment();
-			assignment.setRole(grant.getRole());
-			assignment.setGroup(grant.getGroup());
-			assignment.setProject(grant.getProject());
-			assignment.setInheritedToProjects(false);
-			assignments.add(assignment);
-			// }
+		for (RoleAssignment roleAssignment : roleAssignments) {
+			assignments.add(denormalizeRole(roleAssignment));
 		}
 		return assignments;
 	}
 
+	private Assignment denormalizeRole(RoleAssignment ref) {
+		Assignment assignment = new Assignment();
+		if (ref.getType() == AssignmentType.USER_PROJECT) {
+			assignment.setUserId(ref.getActorId());
+			assignment.setProjectId(ref.getTargetId());
+		} else if (ref.getType() == AssignmentType.USER_DOMAIN) {
+			assignment.setUserId(ref.getActorId());
+			assignment.setDomainId(ref.getTargetId());
+		} else if (ref.getType() == AssignmentType.GROUP_PROJECT) {
+			assignment.setGroupId(ref.getActorId());
+			assignment.setProjectId(ref.getTargetId());
+		} else if (ref.getType() == AssignmentType.GROUP_DOMAIN) {
+			assignment.setGroupId(ref.getActorId());
+			assignment.setDomainId(ref.getTargetId());
+		} else {
+			String msg = String.format("Unexpected assignment type encountered, %s", ref.getType());
+			throw new RuntimeException(msg);
+		}
+
+		assignment.setRoleId(ref.getRoleId());
+		if (ref.getInherited()) {
+			assignment.setInheritedToProjects("projects");
+		}
+
+		return assignment;
+	}
+
+	// TODO ignore @sql.handle_conflicts(conflict_type='project')
 	@Override
-	public Project createProject(Project project) {
+	public Project createProject(String projectid, Project project) {
 		projectDao.persist(project);
 		return project;
 	}
 
+	// TODO ignore @sql.handle_conflicts(conflict_type='project')
 	@Override
 	public Project updateProject(String projectid, Project project) {
 		Project oldProject = getProject(projectid);
@@ -319,21 +482,34 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		return projectDao.merge(oldProject);
 	}
 
+	// TODO ignore @sql.handle_conflicts(conflict_type='project')
 	@Override
-	public void deleteProject(String projectid) {
+	public Project deleteProject(String projectid) {
 		Project project = getProject(projectid);
 		projectDao.remove(project);
+		return null;
 	}
 
 	@Override
-	public Domain createDomain(Domain domain) {
+	public Domain createDomain(String domainid, Domain domain) {
 		domainDao.persist(domain);
 		return domain;
 	}
 
 	@Override
-	public List<Domain> listDomains() {
-		return domainDao.findAll();
+	public List<Domain> listDomains(Hints hints) throws Exception {
+		ListFunction<Domain> function = new TruncatedFunction<Domain>(new ListDomainsFunction());
+		return function.execute(hints);
+	}
+
+	@Override
+	public List<Domain> listDomainsForUser(String userid, List<String> groupids, Hints hints) {
+		return domainDao.listDomainsForUser(userid, groupids);
+	}
+
+	@Override
+	public List<Domain> listDomainsForGroups(List<String> groupids) {
+		return domainDao.listDomainsForGroups(groupids);
 	}
 
 	@Override
@@ -355,6 +531,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		}
 	}
 
+	// TODO ignore @sql.handle_conflicts(conflict_type='domain')
 	@Override
 	public Domain updateDomain(String domainid, Domain domain) {
 		Domain oldDomain = getDomain(domainid);
@@ -379,15 +556,17 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		domainDao.remove(domain);
 	}
 
+	// TODO ignore @sql.handle_conflicts(conflict_type='role')
 	@Override
-	public Role createRole(Role role) {
+	public Role createRole(String roleid, Role role) {
 		roleDao.persist(role);
 		return role;
 	}
 
 	@Override
-	public List<Role> listRoles() {
-		return roleDao.findAll();
+	public List<Role> listRoles(Hints hints) throws Exception {
+		ListFunction<Role> function = new TruncatedFunction<Role>(new ListRolesFunction());
+		return function.execute(hints);
 	}
 
 	@Override
@@ -399,6 +578,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 		return role;
 	}
 
+	// TODO ignore @sql.handle_conflicts(conflict_type='role')
 	@Override
 	public Role updateRole(String roleid, Role role) {
 		Role oldRole = getRole(roleid);
@@ -417,724 +597,190 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 	@Override
 	public void deleteRole(String roleid) {
 		Role role = getRole(roleid);
+		roleAssignmentDao.removeByRoleId(roleid);
 		roleDao.remove(role);
 	}
 
+	@Override
+	public void deleteUser(String userid) {
+		roleAssignmentDao.removeByActorId(userid);
+	}
+
+	@Override
+	public void deleteGroup(String groupid) {
+		roleAssignmentDao.removeByActorId(groupid);
+	}
+
+	// _get_metadata
 	// @Override
-	// public void deleteUser() {
+	// public GroupProjectGrant getGroupProjectGrant(String groupid, String
+	// projectid, String roleid) {
+	// try {
+	// GroupProjectGrant grant = groupProjectGrantDao.getGrant(groupid,
+	// projectid, roleid);
+	// return grant;
+	// } catch (NoResultException e) {
+	// throw Exceptions.MetadataNotFoundException.getInstance(null);
 	// }
-	//
+	// }
+
+	// _get_metadata
 	// @Override
-	// public void deleteGroup() {
-	// // TODO Auto-generated method stub
-	//
+	// public GroupDomainGrant getGroupDomainGrant(String groupid, String
+	// domainid, String roleid) {
+	// try {
+	// GroupDomainGrant grant = groupDomainGrantDao.getGrant(groupid, domainid,
+	// roleid);
+	// return grant;
+	// } catch (NoResultException e) {
+	// throw Exceptions.MetadataNotFoundException.getInstance(null);
+	// }
+	// }
+
+	// @Override
+	// public List<GroupDomainGrant> getGroupDomainGrants(String groupid, String
+	// domainid) {
+	// try {
+	// List<GroupDomainGrant> grants =
+	// groupDomainGrantDao.findByGroupidAndDomainid(groupid, domainid);
+	// return grants;
+	// } catch (NoResultException e) {
+	// throw Exceptions.MetadataNotFoundException.getInstance(null);
+	// }
+	// }
+
+	// @Override
+	// public List<UserDomainGrant> getUserDomainGrants(String userid, String
+	// domainid) {
+	// try {
+	// List<UserDomainGrant> grants =
+	// userDomainGrantDao.findByUseridAndDomainid(userid, domainid);
+	// return grants;
+	// } catch (NoResultException e) {
+	// throw Exceptions.MetadataNotFoundException.getInstance(null);
+	// }
+	// }
+
+	// @Override
+	// public List<GroupProjectGrant> getGroupProjectGrants(String groupid,
+	// String projectid) {
+	// try {
+	// List<GroupProjectGrant> grants =
+	// groupProjectGrantDao.findByGroupidAndProjectid(groupid, projectid);
+	// return grants;
+	// } catch (NoResultException e) {
+	// throw Exceptions.MetadataNotFoundException.getInstance(null);
+	// }
+	// }
+
+	// @Override
+	// public List<UserProjectGrant> getUserProjectGrants(String userid, String
+	// projectid) {
+	// try {
+	// List<UserProjectGrant> grants =
+	// userProjectGrantDao.findByUseridAndProjectid(userid, projectid);
+	// return grants;
+	// } catch (NoResultException e) {
+	// throw Exceptions.MetadataNotFoundException.getInstance(null);
+	// }
 	// }
 
 	// _get_metadata
-	@Override
-	public GroupProjectGrant getGroupProjectGrant(String groupid, String projectid, String roleid) {
-		try {
-			GroupProjectGrant grant = groupProjectGrantDao.getGrant(groupid, projectid, roleid);
-			return grant;
-		} catch (NoResultException e) {
-			throw Exceptions.MetadataNotFoundException.getInstance(null);
-		}
-	}
+	// @Override
+	// public UserProjectGrant getUserProjectGrant(String userid, String
+	// projectid, String roleid) {
+	// try {
+	// UserProjectGrant grant = userProjectGrantDao.getGrant(userid, projectid,
+	// roleid);
+	// return grant;
+	// } catch (NoResultException e) {
+	// throw Exceptions.MetadataNotFoundException.getInstance(null);
+	// }
+	// }
 
 	// _get_metadata
+	// @Override
+	// public UserDomainGrant getUserDomainGrant(String userid, String domainid,
+	// String roleid) {
+	// try {
+	// UserDomainGrant grant = userDomainGrantDao.getGrant(userid, domainid,
+	// roleid);
+	// return grant;
+	// } catch (NoResultException e) {
+	// throw Exceptions.MetadataNotFoundException.getInstance(null);
+	// }
+	// }
+
 	@Override
-	public GroupDomainGrant getGroupDomainGrant(String groupid, String domainid, String roleid) {
-		try {
-			GroupDomainGrant grant = groupDomainGrantDao.getGrant(groupid, domainid, roleid);
-			return grant;
-		} catch (NoResultException e) {
-			throw Exceptions.MetadataNotFoundException.getInstance(null);
-		}
+	public Integer getListLimit() {
+		return Config.Instance.getOpt(Config.Type.assignment, "list_limit").asInteger();
 	}
 
 	@Override
-	public List<GroupDomainGrant> getGroupDomainGrants(String groupid, String domainid) {
-		try {
-			List<GroupDomainGrant> grants = groupDomainGrantDao.findByGroupidAndDomainid(groupid, domainid);
-			return grants;
-		} catch (NoResultException e) {
-			throw Exceptions.MetadataNotFoundException.getInstance(null);
-		}
+	public boolean isLeafProject(String tenantid) {
+		List<String> projectids = new ArrayList<String>();
+		projectids.add(tenantid);
+		List<Project> projectRefs = getChildren(projectids);
+		return projectRefs.isEmpty();
 	}
 
 	@Override
-	public List<UserDomainGrant> getUserDomainGrants(String userid, String domainid) {
-		try {
-			List<UserDomainGrant> grants = userDomainGrantDao.findByUseridAndDomainid(userid, domainid);
-			return grants;
-		} catch (NoResultException e) {
-			throw Exceptions.MetadataNotFoundException.getInstance(null);
+	public Metadata getMetadata(String userid, String tenantid, String domainid, String groupid) {
+		RoleAssignment.AssignmentType type = calcAssignmentType(userid, tenantid);
+		String actorId = Strings.isNullOrEmpty(userid) ? groupid : userid;
+		String targetId = Strings.isNullOrEmpty(tenantid) ? domainid : tenantid;
+		List<RoleAssignment> refs = roleAssignmentDao.findAll(type, actorId, targetId);
+		if (refs == null || refs.isEmpty()) {
+			throw Exceptions.MetadataNotFoundException.getInstance();
 		}
-	}
 
-	@Override
-	public List<GroupProjectGrant> getGroupProjectGrants(String groupid, String projectid) {
-		try {
-			List<GroupProjectGrant> grants = groupProjectGrantDao.findByGroupidAndProjectid(groupid, projectid);
-			return grants;
-		} catch (NoResultException e) {
-			throw Exceptions.MetadataNotFoundException.getInstance(null);
+		Metadata metadataRef = new Metadata();
+		for (RoleAssignment assignment : refs) {
+			Metadata.Role roleRef = new Metadata.Role();
+			roleRef.setId(assignment.getRoleId());
+			if (assignment.getInherited()) {
+				roleRef.setIheritedTo("projects");
+			}
+			metadataRef.getRoles().add(roleRef);
 		}
-	}
 
-	@Override
-	public List<UserProjectGrant> getUserProjectGrants(String userid, String projectid) {
-		try {
-			List<UserProjectGrant> grants = userProjectGrantDao.findByUseridAndProjectid(userid, projectid);
-			return grants;
-		} catch (NoResultException e) {
-			throw Exceptions.MetadataNotFoundException.getInstance(null);
-		}
-	}
-
-	// _get_metadata
-	@Override
-	public UserProjectGrant getUserProjectGrant(String userid, String projectid, String roleid) {
-		try {
-			UserProjectGrant grant = userProjectGrantDao.getGrant(userid, projectid, roleid);
-			return grant;
-		} catch (NoResultException e) {
-			throw Exceptions.MetadataNotFoundException.getInstance(null);
-		}
-	}
-
-	// _get_metadata
-	@Override
-	public UserDomainGrant getUserDomainGrant(String userid, String domainid, String roleid) {
-		try {
-			UserDomainGrant grant = userDomainGrantDao.getGrant(userid, domainid, roleid);
-			return grant;
-		} catch (NoResultException e) {
-			throw Exceptions.MetadataNotFoundException.getInstance(null);
-		}
-	}
-
-	@Override
-	public void deleteGrantByGroupDomain(String roleid, String groupid, String domainid, boolean inherited) {
-		getRole(roleid);
-		getDomain(domainid);
-		GroupDomainGrant grant = null;
-		// _get_metadata
-		grant = getGroupDomainGrant(groupid, domainid, roleid);
-		try {
-			// _remove_role_from_role_dics
-			// GroupDomainGrantMetadata metadata =
-			// removeRoleFromGroupDomainGrantMetadata(roleid, grant, inherited);
-			// groupDomainGrantMetadataDao.remove(metadata);
-			groupDomainGrantDao.remove(grant);
-		} catch (IllegalArgumentException e) {
-			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
-		}
+		return metadataRef;
 
 	}
 
-	@Override
-	public void deleteGrantByGroupProject(String roleid, String groupid, String projectid, boolean inherited) {
-		getRole(roleid);
-		getProject(projectid);
-		GroupProjectGrant grant = null;
-
-		// _get_metadata
-		grant = getGroupProjectGrant(groupid, projectid, roleid);
-		try {
-			// _remove_role_from_role_dics
-			// GroupProjectGrantMetadata metadata =
-			// removeRoleFromGroupProjectGrantMetadata(roleid, grant,
-			// inherited);
-			// groupProjectGrantMetadataDao.remove(metadata);
-			groupProjectGrantDao.remove(grant);
-		} catch (IllegalArgumentException e) {
-			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
-		}
-
-	}
-
-	@Override
-	public void deleteGrantByUserDomain(String roleid, String userid, String domainid, boolean inherited) {
-		getRole(roleid);
-		getDomain(domainid);
-		UserDomainGrant grant = null;
-
-		// _get_metadata
-		grant = getUserDomainGrant(userid, domainid, roleid);
-		try {
-			// _remove_role_from_role_dics
-			// UserDomainGrantMetadata metadata =
-			// removeRoleFromUserDomainGrantMetadata(roleid, grant, inherited);
-			// userDomainGrantMetadataDao.remove(metadata);
-			userDomainGrantDao.remove(grant);
-		} catch (IllegalArgumentException e) {
-			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
-		}
-
-	}
-
-	@Override
-	public void deleteGrantByUserProject(String roleid, String userid, String projectid, boolean inherited) {
-		getRole(roleid);
-		getProject(projectid);
-		UserProjectGrant grant = null;
-		// _get_metadata
-		grant = getUserProjectGrant(userid, projectid, roleid);
-		try {
-			// _remove_role_from_role_dics
-			// UserProjectGrantMetadata metadata =
-			// removeRoleFromUserProjectGrantMetadata(roleid, grant, inherited);
-			// userProjectGrantMetadataDao.remove(metadata);
-			userProjectGrantDao.remove(grant);
-		} catch (IllegalArgumentException e) {
-			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
-		}
-
-	}
-
-	@Override
-	public Role getGrantByGroupDomain(String roleid, String groupid, String domainid, boolean inherited) {
-		Role role = getRole(roleid);
-		getDomain(domainid);
-		GroupDomainGrant grant = null;
-		try {
-			// _get_metadata
-			grant = getGroupDomainGrant(groupid, domainid, roleid);
-		} catch (Exception e) {
-			grant = new GroupDomainGrant();
-		}
-		// _roles_from_role_dicts
-		List<GroupDomainGrant> grants = Lists.newArrayList();
-		grants.add(grant);
-		grants = filterGroupDomainGrant(grants, inherited);
-		List<String> roleids = Lists.newArrayList();
-		for (GroupDomainGrant g : grants) {
-			roleids.add(g.getRole().getId());
-		}
-		if (!roleids.contains(role.getId())) {
-			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
-		}
-		return role;
-	}
-
-	@Override
-	public Role getGrantByGroupProject(String roleid, String groupid, String projectid, boolean inherited) {
-		Role role = getRole(roleid);
-		getProject(projectid);
-		GroupProjectGrant grant = null;
-		try {
-			// _get_metadata
-			grant = getGroupProjectGrant(groupid, projectid, roleid);
-		} catch (Exception e) {
-			grant = new GroupProjectGrant();
-		}
-		// _roles_from_role_dicts
-		List<GroupProjectGrant> grants = Lists.newArrayList();
-		grants.add(grant);
-		grants = filterGroupProjectGrant(grants, inherited);
-		List<String> roleids = Lists.newArrayList();
-		for (GroupProjectGrant g : grants) {
-			roleids.add(g.getRole().getId());
-		}
-		if (!roleids.contains(role.getId())) {
-			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
-		}
-		return role;
-	}
-
-	@Override
-	public Role getGrantByUserDomain(String roleid, String userid, String domainid, boolean inherited) {
-		Role role = getRole(roleid);
-		getDomain(domainid);
-		UserDomainGrant grant = null;
-		try {
-			// _get_metadata
-			grant = getUserDomainGrant(userid, domainid, roleid);
-		} catch (Exception e) {
-			grant = new UserDomainGrant();
-		}
-		// _roles_from_role_dicts
-		List<UserDomainGrant> grants = Lists.newArrayList();
-		grants.add(grant);
-		grants = filterUserDomainGrant(grants, inherited);
-		List<String> roleids = Lists.newArrayList();
-		for (UserDomainGrant g : grants) {
-			roleids.add(g.getRole().getId());
-		}
-		if (!roleids.contains(role.getId())) {
-			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
-		}
-		return role;
-	}
-
-	@Override
-	public Role getGrantByUserProject(String roleid, String userid, String projectid, boolean inherited) {
-		Role role = getRole(roleid);
-		getProject(projectid);
-		UserProjectGrant grant = null;
-		try {
-			// _get_metadata
-			grant = getUserProjectGrant(userid, projectid, roleid);
-		} catch (Exception e) {
-			grant = new UserProjectGrant();
-		}
-		// _roles_from_role_dicts
-		List<UserProjectGrant> grants = Lists.newArrayList();
-		grants.add(grant);
-		grants = filterUserProjectGrant(grants, inherited);
-		List<String> roleids = Lists.newArrayList();
-		for (UserProjectGrant g : grants) {
-			roleids.add(g.getRole().getId());
-		}
-		if (!roleids.contains(role.getId())) {
-			throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
-		}
-		return role;
-	}
-
-	@Override
-	public void createGrantByGroupDomain(String roleid, String groupid, String domainid, boolean inherited) {
-		Role role = getRole(roleid);
-		Domain domain = getDomain(domainid);
-		GroupDomainGrant grant = null;
-		boolean isNew = false;
-		try {
-			// _get_metadata
-			grant = getGroupDomainGrant(groupid, domainid, roleid);
-		} catch (Exception e) {
-			grant = new GroupDomainGrant();
-			grant.setDomain(domain);
-			Group group = new Group();
-			group.setId(groupid);
-			grant.setGroup(group);
-			grant.setRole(role);
-			isNew = true;
-		}
-		// _add_role_to_role_dics
-		addRoleToGroupDomainGrantMetadata(role, grant, inherited, true);
-
-		if (isNew) {
-			groupDomainGrantDao.persist(grant);
+	private AssignmentType calcAssignmentType(String userid, String tenantid) {
+		if (!Strings.isNullOrEmpty(userid)) {
+			if (!Strings.isNullOrEmpty(tenantid)) {
+				return AssignmentType.USER_PROJECT;
+			} else {
+				return AssignmentType.USER_DOMAIN;
+			}
 		} else {
-			groupDomainGrantDao.merge(grant);
+			if (!Strings.isNullOrEmpty(tenantid)) {
+				return AssignmentType.GROUP_PROJECT;
+			} else {
+				return AssignmentType.GROUP_DOMAIN;
+			}
 		}
-
-		// TODO should we do this?
-		// groupDomainGrantMetadataDao.persist(groupDomainGrantMetadata);
 	}
 
 	@Override
-	public void createGrantByGroupProject(String roleid, String groupid, String projectid) {
-		Role role = getRole(roleid);
-		Project project = getProject(projectid);
-		GroupProjectGrant grant = null;
-		boolean isNew = false;
-		try {
-			// _get_metadata
-			grant = getGroupProjectGrant(groupid, projectid, roleid);
-		} catch (Exception e) {
-			grant = new GroupProjectGrant();
-			grant.setProject(project);
-			Group group = new Group();
-			group.setId(groupid);
-			grant.setGroup(group);
-			grant.setRole(role);
-			isNew = true;
-		}
-
-		// _add_role_to_role_dics
-		addRoleToGroupProjectGrantMetadata(role, grant, false, true);
-
-		if (isNew) {
-			groupProjectGrantDao.persist(grant);
-		} else {
-			groupProjectGrantDao.merge(grant);
-		}
-
-		// TODO should we do this?
-		// groupProjectGrantMetadataDao.persist(groupProjectGrantMetadata);
-
+	public List<Project> listUserProjects(String userid, Hints hints) {
+		throw Exceptions.NotImplementedException.getInstance();
 	}
 
 	@Override
-	public void createGrantByUserDomain(String roleid, String userid, String domainid, boolean inherited) {
-		Role role = getRole(roleid);
-		Domain domain = getDomain(domainid);
-		UserDomainGrant grant = null;
-		boolean isNew = false;
-		try {
-			// _get_metadata
-			grant = getUserDomainGrant(userid, domainid, roleid);
-		} catch (Exception e) {
-			grant = new UserDomainGrant();
-			grant.setDomain(domain);
-			User user = new User();
-			user.setId(userid);
-			grant.setUser(user);
-			grant.setRole(role);
-			isNew = true;
-		}
+	public List<String> rolesFromRoleDicts(List<com.infinities.keystone4j.model.assignment.Metadata.Role> dictList,
+			boolean inherited) {
+		List<String> roleList = new ArrayList<String>();
 
-		// _add_role_to_role_dics
-		addRoleToUserDomainGrantMetadata(role, grant, inherited, true);
-
-		if (isNew) {
-			userDomainGrantDao.persist(grant);
-		} else {
-			userDomainGrantDao.merge(grant);
-		}
-
-		// TODO should we do this?
-		// userDomainGrantMetadataDao.persist(userDomainGrantMetadata);
-
-	}
-
-	@Override
-	public void createGrantByUserProject(String roleid, String userid, String projectid) {
-		Role role = getRole(roleid);
-		Project project = getProject(projectid);
-		UserProjectGrant grant = null;
-		boolean isNew = false;
-		try {
-			// _get_metadata
-			grant = getUserProjectGrant(userid, projectid, roleid);
-		} catch (Exception e) {
-			grant = new UserProjectGrant();
-			grant.setProject(project);
-			User user = new User();
-			user.setId(userid);
-			grant.setUser(user);
-			grant.setRole(role);
-			isNew = true;
-		}
-
-		// _add_role_to_role_dics
-		addRoleToUserProjectGrantMetadata(role, grant, false, true);
-
-		if (isNew) {
-			userProjectGrantDao.persist(grant);
-		} else {
-			userProjectGrantDao.merge(grant);
-		}
-
-		// TODO should we do this?
-		// userProjectGrantMetadataDao.persist(userProjectGrantMetadata);
-
-	}
-
-	@Override
-	public List<Role> listGrantsByGroupDomain(String groupid, String domainid, boolean inherited) {
-		getDomain(domainid);
-		List<GroupDomainGrant> grants = null;
-		try {
-			// _get_metadata
-			grants = getGroupDomainGrants(groupid, domainid);
-		} catch (Exception e) {
-			grants = Lists.newArrayList();
-		}
-		// _roles_from_role_dics
-		grants = filterGroupDomainGrant(grants, inherited);
-		List<Role> roles = Lists.newArrayList();
-		for (GroupDomainGrant grant : grants) {
-			roles.add(grant.getRole());
-		}
-
-		return roles;
-	}
-
-	@Override
-	public List<Role> listGrantsByGroupProject(String groupid, String projectid, boolean inherited) {
-		getProject(projectid);
-		List<GroupProjectGrant> grants = null;
-		try {
-			// _get_metadata
-			grants = getGroupProjectGrants(groupid, projectid);
-		} catch (Exception e) {
-			grants = Lists.newArrayList();
-		}
-		// _roles_from_role_dics
-		grants = filterGroupProjectGrant(grants, inherited);
-		List<Role> roles = Lists.newArrayList();
-		for (GroupProjectGrant grant : grants) {
-			roles.add(grant.getRole());
-		}
-		return roles;
-	}
-
-	@Override
-	public List<Role> listGrantsByUserProject(String userid, String projectid, boolean inherited) {
-		getProject(projectid);
-		List<UserProjectGrant> grants = null;
-		try {
-			// _get_metadata
-			grants = getUserProjectGrants(userid, projectid);
-		} catch (Exception e) {
-			grants = Lists.newArrayList();
-		}
-		// _roles_from_role_dics
-		grants = filterUserProjectGrant(grants, inherited);
-		List<Role> roles = Lists.newArrayList();
-		for (UserProjectGrant grant : grants) {
-			roles.add(grant.getRole());
-		}
-		return roles;
-	}
-
-	@Override
-	public List<Role> listGrantsByUserDomain(String userid, String domainid, boolean inherited) {
-		getDomain(domainid);
-		List<UserDomainGrant> grants = null;
-		try {
-			// _get_metadata
-			grants = getUserDomainGrants(userid, domainid);
-		} catch (Exception e) {
-			grants = Lists.newArrayList();
-		}
-		// _roles_from_role_dics
-		grants = filterUserDomainGrant(grants, inherited);
-		List<Role> roles = Lists.newArrayList();
-		for (UserDomainGrant grant : grants) {
-			roles.add(grant.getRole());
-		}
-		return roles;
-	}
-
-	private Set<Domain> listDomainsWithInheritedGrantsByUser(List<UserDomainGrant> userDomainGrants) {
-		Set<Domain> domains = Sets.newHashSet();
-		for (UserDomainGrant userDomainGrant : userDomainGrants) {
-			// for (UserDomainGrantMetadata metadata :
-			// userDomainGrant.getMetadatas()) {
-			if (!Strings.isNullOrEmpty(userDomainGrant.getRole().getInheritedTo())) {
-				domains.add(userDomainGrant.getDomain());
-			}
-			// }
-		}
-		return domains;
-	}
-
-	private Set<Domain> listDomainsWithInheritedGrantsByGroup(List<GroupDomainGrant> groupDomainGrants) {
-		Set<Domain> domains = Sets.newHashSet();
-		for (GroupDomainGrant groupDomainGrant : groupDomainGrants) {
-			// for (GroupDomainGrantMetadata metadata :
-			// groupDomainGrant.getGroupDomainGrantMetadatas()) {
-			if (!Strings.isNullOrEmpty(groupDomainGrant.getRole().getInheritedTo())) {
-				domains.add(groupDomainGrant.getDomain());
-			}
-			// }
-		}
-		return domains;
-	}
-
-	// _roles_from_role_dics
-	private List<GroupDomainGrant> filterGroupDomainGrant(List<GroupDomainGrant> grants, boolean inheritedToProjects) {
-		List<GroupDomainGrant> ret = Lists.newArrayList();
-		for (GroupDomainGrant grant : grants) {
-			if ((!inheritedToProjects && Strings.isNullOrEmpty(grant.getRole().getInheritedTo()))
-					|| (inheritedToProjects && PROJECTS.equals(grant.getRole().getInheritedTo()))) {
-				ret.add(grant);
-			}
-
-		}
-		return ret;
-	}
-
-	// _roles_from_role_dics
-	private List<GroupProjectGrant> filterGroupProjectGrant(List<GroupProjectGrant> grants, boolean inheritedToProjects) {
-		List<GroupProjectGrant> ret = Lists.newArrayList();
-		for (GroupProjectGrant grant : grants) {
-			if ((!inheritedToProjects && Strings.isNullOrEmpty(grant.getRole().getInheritedTo()))
-					|| (inheritedToProjects && PROJECTS.equals(grant.getRole().getInheritedTo()))) {
-				ret.add(grant);
-			}
-
-		}
-		return ret;
-	}
-
-	// _roles_from_role_dics
-	private List<UserDomainGrant> filterUserDomainGrant(List<UserDomainGrant> grants, boolean inheritedToProjects) {
-		List<UserDomainGrant> ret = Lists.newArrayList();
-		for (UserDomainGrant grant : grants) {
-			if ((!inheritedToProjects && Strings.isNullOrEmpty(grant.getRole().getInheritedTo()))
-					|| (inheritedToProjects && PROJECTS.equals(grant.getRole().getInheritedTo()))) {
-				ret.add(grant);
-			}
-
-		}
-		return ret;
-	}
-
-	// _roles_from_role_dics
-	private List<UserProjectGrant> filterUserProjectGrant(List<UserProjectGrant> grants, boolean inheritedToProjects) {
-		List<UserProjectGrant> ret = Lists.newArrayList();
-		for (UserProjectGrant grant : grants) {
-			if ((!inheritedToProjects && Strings.isNullOrEmpty(grant.getRole().getInheritedTo()))
-					|| (inheritedToProjects && PROJECTS.equals(grant.getRole().getInheritedTo()))) {
-				ret.add(grant);
-			}
-
-		}
-		return ret;
-	}
-
-	// _add_role_to_role_dics
-	private void addRoleToGroupDomainGrantMetadata(Role role, GroupDomainGrant grant, boolean inheritedToProjects,
-			boolean allowExisting) {
-		if (inheritedToProjects) {
-			role.setInheritedTo(PROJECTS);
-		}
-		// GroupDomainGrantMetadata groupDomainGrantMetadata = new
-		// GroupDomainGrantMetadata();
-		// groupDomainGrantMetadata.setRole(role);
-		// groupDomainGrantMetadata.setGrant(grant);
-		if (!allowExisting) {
-			// for (GroupDomainGrantMetadata metadata :
-			// grant.getGroupDomainGrantMetadatas()) {
-			if (!Strings.isNullOrEmpty(grant.getId())) {
-				throw new IllegalArgumentException();
-			}
-			// }
-		}
-
-		// grant.getGroupDomainGrantMetadatas().add(groupDomainGrantMetadata);
-
-		// return groupDomainGrantMetadata;
-	}
-
-	// _add_role_to_role_dics
-	private void addRoleToGroupProjectGrantMetadata(Role role, GroupProjectGrant grant, boolean inheritedToProjects,
-			boolean allowExisting) {
-		if (inheritedToProjects) {
-			role.setInheritedTo(PROJECTS);
-		}
-		// GroupProjectGrantMetadata groupProjectGrantMetadata = new
-		// GroupProjectGrantMetadata();
-		// groupProjectGrantMetadata.setRole(role);
-		// groupProjectGrantMetadata.setGrant(grant);
-		if (!allowExisting) {
-			// for (GroupProjectGrantMetadata metadata : grant.getMetadatas()) {
-			// if (role.getId().equals(metadata.getRole().getId())) {
-			// throw new IllegalArgumentException();
-			// }
-			// }
-			if (!Strings.isNullOrEmpty(grant.getId())) {
-				throw new IllegalArgumentException();
+		for (com.infinities.keystone4j.model.assignment.Metadata.Role role : dictList) {
+			if ((Strings.isNullOrEmpty(role.getIheritedTo()) && !inherited) || "projects".equals(role.getIheritedTo())
+					&& inherited) {
+				roleList.add(role.getId());
 			}
 		}
-		// grant.getMetadatas().add(groupProjectGrantMetadata);
-
-		// return groupProjectGrantMetadata;
+		return roleList;
 	}
 
-	// _add_role_to_role_dics
-	private void addRoleToUserDomainGrantMetadata(Role role, UserDomainGrant grant, boolean inheritedToProjects,
-			boolean allowExisting) {
-		if (inheritedToProjects) {
-			role.setInheritedTo(PROJECTS);
-		}
-		// UserDomainGrantMetadata userDomainGrantMetadata = new
-		// UserDomainGrantMetadata();
-		// userDomainGrantMetadata.setRole(role);
-		// userDomainGrantMetadata.setGrant(grant);
-		if (!allowExisting) {
-			// for (UserDomainGrantMetadata metadata : grant.getMetadatas()) {
-			// if (role.getId().equals(metadata.getRole().getId())) {
-			// throw new IllegalArgumentException();
-			// }
-			// }
-			if (!Strings.isNullOrEmpty(grant.getId())) {
-				throw new IllegalArgumentException();
-			}
-		}
-		// grant.getMetadatas().add(userDomainGrantMetadata);
-
-		// return userDomainGrantMetadata;
-	}
-
-	// _add_role_to_role_dics
-	private void addRoleToUserProjectGrantMetadata(Role role, UserProjectGrant grant, boolean inheritedToProjects,
-			boolean allowExisting) {
-		if (inheritedToProjects) {
-			role.setInheritedTo(PROJECTS);
-		}
-		// UserProjectGrantMetadata userProjectGrantMetadata = new
-		// UserProjectGrantMetadata();
-		// userProjectGrantMetadata.setRole(role);
-		// userProjectGrantMetadata.setGrant(grant);
-		if (!allowExisting) {
-			// for (UserProjectGrantMetadata metadata : grant.getMetadatas()) {
-			// if (role.getId().equals(metadata.getRole().getId())) {
-			// throw new IllegalArgumentException("duplicate role");
-			// }
-			// }
-			if (!Strings.isNullOrEmpty(grant.getId())) {
-				throw new IllegalArgumentException();
-			}
-		}
-		// grant.getMetadatas().add(userProjectGrantMetadata);
-
-		// return userProjectGrantMetadata;
-	}
-
-	// // _remove_role_from_role_dics
-	// private GroupProjectGrantMetadata
-	// removeRoleFromGroupProjectGrantMetadata(String roleid, GroupProjectGrant
-	// grant,
-	// boolean inheritedToProjects) {
-	// for (GroupProjectGrantMetadata ref : grant.getMetadatas()) {
-	// if (roleid.equals(ref.getRole().getId())) {
-	// grant.getMetadatas().remove(ref);
-	// return ref;
-	// }
-	// }
-	// // KeyError
-	// throw new IllegalArgumentException();
-	// }
-
-	// _remove_role_from_role_dics
-	// private GroupDomainGrantMetadata
-	// removeRoleFromGroupDomainGrantMetadata(String roleid, GroupDomainGrant
-	// grant,
-	// boolean inheritedToProjects) {
-	// for (GroupDomainGrantMetadata ref : grant.getGroupDomainGrantMetadatas())
-	// {
-	// if (roleid.equals(ref.getRole().getId())) {
-	// grant.getGroupDomainGrantMetadatas().remove(ref);
-	// return ref;
-	// }
-	// }
-	// // KeyError
-	// throw new IllegalArgumentException();
-	// }
-
-	// // _remove_role_from_role_dics
-	// private UserProjectGrantMetadata
-	// removeRoleFromUserProjectGrantMetadata(String roleid, UserProjectGrant
-	// grant,
-	// boolean inheritedToProjects) {
-	// for (UserProjectGrantMetadata ref : grant.getMetadatas()) {
-	// if (roleid.equals(ref.getRole().getId())) {
-	// grant.getMetadatas().remove(ref);
-	// return ref;
-	// }
-	// }
-	// // KeyError
-	// throw new IllegalArgumentException();
-	// }
-
-	// // _remove_role_from_role_dics
-	// private UserDomainGrantMetadata
-	// removeRoleFromUserDomainGrantMetadata(String roleid, UserDomainGrant
-	// grant,
-	// boolean inheritedToProjects) {
-	// for (UserDomainGrantMetadata ref : grant.getMetadatas()) {
-	// if (roleid.equals(ref.getRole().getId())) {
-	// grant.getMetadatas().remove(ref);
-	// return ref;
-	// }
-	// }
-	// // KeyError
-	// throw new IllegalArgumentException();
-	// }
 }

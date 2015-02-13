@@ -1,0 +1,27 @@
+request:
+curl -H "Content-Type: application/json" http://localhost:5000/v3 | python -mjson.tool
+
+response:
+{
+    "version": {
+        "id": "v3.0", 
+        "links": [
+            {
+                "href": "http://d00-0c-29-37-0b-41.cloud.default.net:35357/v3/", 
+                "rel": "self"
+            }
+        ], 
+        "media-types": [
+            {
+                "base": "application/json", 
+                "type": "application/vnd.openstack.identity-v3+json"
+            }, 
+            {
+                "base": "application/xml", 
+                "type": "application/vnd.openstack.identity-v3+xml"
+            }
+        ], 
+        "status": "stable", 
+        "updated": "2013-03-06T00:00:00Z"
+    }
+}

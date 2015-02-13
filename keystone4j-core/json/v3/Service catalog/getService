@@ -1,0 +1,16 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/services/3f813b99431e46c0af877393f6ad91d7 | python -mjson.tool
+
+response:
+{
+    "service": {
+        "description": "Openstack Identity Service", 
+        "enabled": true, 
+        "id": "3f813b99431e46c0af877393f6ad91d7", 
+        "links": {
+            "self": "http://192.168.126.2:5000/v3/services/3f813b99431e46c0af877393f6ad91d7"
+        }, 
+        "name": "keystone", 
+        "type": "identity"
+    }
+}

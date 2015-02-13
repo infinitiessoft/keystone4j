@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.container.ContainerRequestContext;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Function;
@@ -20,9 +19,11 @@ import com.infinities.keystone4j.common.Wsgi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.assignment.FormattedRoleAssignment;
 import com.infinities.keystone4j.model.assignment.RoleAssignment;
-import com.infinities.keystone4j.model.assignment.RoleAssignmentWrapper;
-import com.infinities.keystone4j.model.assignment.RoleAssignmentsWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RoleAssignmentWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RoleAssignmentsWrapper;
+import com.infinities.keystone4j.utils.ReflectUtils;
 
 public abstract class AbstractRoleAssignmentAction {
 
@@ -54,7 +55,7 @@ public abstract class AbstractRoleAssignmentAction {
 		this.identityApi = identityApi;
 	}
 
-	protected CollectionWrapper<RoleAssignment> getCollectionWrapper() {
+	protected CollectionWrapper<FormattedRoleAssignment> getCollectionWrapper() {
 		return new RoleAssignmentsWrapper();
 	}
 
@@ -62,7 +63,7 @@ public abstract class AbstractRoleAssignmentAction {
 		return new RoleAssignmentWrapper();
 	}
 
-	protected MemberWrapper<RoleAssignment> wrapMember(ContainerRequestContext context, RoleAssignment ref) {
+	protected MemberWrapper<FormattedRoleAssignment> wrapMember(ContainerRequestContext context, FormattedRoleAssignment ref) {
 		// addSelfReferentialLink(context, ref);
 		// MemberWrapper<Assignment> wrapper = getMemberWrapper();
 		// wrapper.setRef(ref);
@@ -70,22 +71,23 @@ public abstract class AbstractRoleAssignmentAction {
 		return null;
 	}
 
-	protected CollectionWrapper<RoleAssignment> wrapCollection(ContainerRequestContext context, List<RoleAssignment> refs,
-			Hints hints) {
+	protected CollectionWrapper<FormattedRoleAssignment> wrapCollection(ContainerRequestContext context,
+			List<FormattedRoleAssignment> refs, Hints hints) {
 		if (hints != null) {
 			refs = filterByAttributes(refs, hints);
 		}
 
-		Entry<Boolean, List<RoleAssignment>> entry = limit(refs, hints);
+		Entry<Boolean, List<FormattedRoleAssignment>> entry = limit(refs, hints);
 		Boolean listLimited = entry.getKey();
 		refs = entry.getValue();
 
-		for (RoleAssignment ref : refs) {
+		for (FormattedRoleAssignment ref : refs) {
 			wrapMember(context, ref);
 		}
 
-		CollectionWrapper<RoleAssignment> container = getCollectionWrapper();
-		container.getLinks().setSelf(getFullUrl(context, context.getUriInfo().getPath()));
+		CollectionWrapper<FormattedRoleAssignment> container = getCollectionWrapper();
+		container.setRefs(refs);
+		container.getLinks().setSelf(getFullUrl(context, context.getUriInfo().getPath().replace("/v3", "")));
 
 		if (listLimited) {
 			container.setTruncated(true);
@@ -97,13 +99,14 @@ public abstract class AbstractRoleAssignmentAction {
 	private String getFullUrl(ContainerRequestContext context, String path) {
 		String url = getBaseUrl(context, path);
 		String queryStr = context.getUriInfo().getRequestUri().getRawQuery();
-		if (Strings.isNullOrEmpty(queryStr)) {
+		if (!Strings.isNullOrEmpty(queryStr)) {
 			url = String.format("%s?%s", url, queryStr);
 		}
+
 		return url;
 	}
 
-	private Entry<Boolean, List<RoleAssignment>> limit(List<RoleAssignment> refs, Hints hints) {
+	private Entry<Boolean, List<FormattedRoleAssignment>> limit(List<FormattedRoleAssignment> refs, Hints hints) {
 		boolean NOT_LIMITED = false;
 		boolean LIMITED = true;
 
@@ -122,7 +125,7 @@ public abstract class AbstractRoleAssignmentAction {
 		return Maps.immutableEntry(NOT_LIMITED, refs);
 	}
 
-	private List<RoleAssignment> filterByAttributes(List<RoleAssignment> refs, Hints hints) {
+	private List<FormattedRoleAssignment> filterByAttributes(List<FormattedRoleAssignment> refs, Hints hints) {
 		for (Filter filter : hints.getFilters()) {
 			if ("equals".equals(filter.getComparator())) {
 				String attr = filter.getName();
@@ -149,11 +152,16 @@ public abstract class AbstractRoleAssignmentAction {
 		if (Strings.isNullOrEmpty(path)) {
 			path = getCollectionName();
 		}
-		return String.format("%s/%s/s", endpoint, "v3", StringUtils.removeStart(path, "/"));
+
+		String ret = String.format("%s/%s/%s", endpoint, "v3", StringUtils.removeStart(path, "/"));
+		if (ret.endsWith("/")) {
+			ret = ret.substring(0, ret.length() - 1);
+		}
+		return ret;
 	}
 
 
-	private class AttrMatchFunction implements Function<List<RoleAssignment>, List<RoleAssignment>> {
+	private class AttrMatchFunction implements Function<List<FormattedRoleAssignment>, List<FormattedRoleAssignment>> {
 
 		private final String attr;
 		private final Object value;
@@ -165,11 +173,11 @@ public abstract class AbstractRoleAssignmentAction {
 		}
 
 		@Override
-		public List<RoleAssignment> apply(List<RoleAssignment> input) {
-			List<RoleAssignment> output = new ArrayList<RoleAssignment>();
-			for (RoleAssignment t : input) {
+		public List<FormattedRoleAssignment> apply(List<FormattedRoleAssignment> input) {
+			List<FormattedRoleAssignment> output = new ArrayList<FormattedRoleAssignment>();
+			for (FormattedRoleAssignment t : input) {
 				try {
-					if (attrMatch(PropertyUtils.getProperty(t, attr), value)) {
+					if (attrMatch(ReflectUtils.reflact(t, attr), value)) {
 						output.add(t);
 					}
 				} catch (Exception e) {

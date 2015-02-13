@@ -5,8 +5,8 @@ import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.model.identity.UserWrapper;
-import com.infinities.keystone4j.model.identity.UsersWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UserWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UsersWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -29,12 +29,12 @@ public abstract class AbstractUserAction extends AbstractAction<User> {
 	}
 
 	@Override
-	protected CollectionWrapper<User> getCollectionWrapper() {
+	public CollectionWrapper<User> getCollectionWrapper() {
 		return new UsersWrapper();
 	}
 
 	@Override
-	protected MemberWrapper<User> getMemberWrapper() {
+	public MemberWrapper<User> getMemberWrapper() {
 		return new UserWrapper();
 	}
 

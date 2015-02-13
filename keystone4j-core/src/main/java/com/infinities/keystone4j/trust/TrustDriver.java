@@ -7,9 +7,9 @@ import com.infinities.keystone4j.model.trust.Trust;
 
 public interface TrustDriver {
 
-	Trust createTrust(Trust trust, List<Role> cleanRoles);
+	Trust createTrust(String trustid, Trust trust, List<Role> cleanRoles);
 
-	Trust getTrust(String trustid);
+	Trust getTrust(String trustid, boolean deleted);
 
 	List<Trust> listTrusts();
 
@@ -18,5 +18,7 @@ public interface TrustDriver {
 	List<Trust> listTrustsForTrustor(String trustorid);
 
 	void deleteTrust(String trustid);
+
+	void consumeUse(String trustid) throws Exception;
 
 }

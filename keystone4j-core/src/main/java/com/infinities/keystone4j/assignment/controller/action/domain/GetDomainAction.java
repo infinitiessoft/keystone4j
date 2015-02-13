@@ -21,7 +21,7 @@ public class GetDomainAction extends AbstractDomainAction implements ProtectedAc
 	}
 
 	@Override
-	public MemberWrapper<Domain> execute(ContainerRequestContext context) {
+	public MemberWrapper<Domain> execute(ContainerRequestContext context) throws Exception {
 		Domain ref = this.getAssignmentApi().getDomain(domainid);
 		return this.wrapMember(context, ref);
 	}

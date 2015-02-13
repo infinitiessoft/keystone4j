@@ -23,7 +23,7 @@ public class UpdateRegionAction extends AbstractRegionAction implements Protecte
 	}
 
 	@Override
-	public MemberWrapper<Region> execute(ContainerRequestContext context) {
+	public MemberWrapper<Region> execute(ContainerRequestContext context) throws Exception {
 		requireMatchingId(regionid, region);
 		Region ref = this.getCatalogApi().updateRegion(regionid, region);
 		return this.wrapMember(context, ref);

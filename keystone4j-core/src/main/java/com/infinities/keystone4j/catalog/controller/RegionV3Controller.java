@@ -16,4 +16,6 @@ public interface RegionV3Controller {
 
 	void deleteRegion(String regionid) throws Exception;
 
+	MemberWrapper<Region> createRegionWithId(String regionid, Region region) throws Exception;
+
 }

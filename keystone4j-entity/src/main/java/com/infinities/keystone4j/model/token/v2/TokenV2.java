@@ -2,6 +2,9 @@ package com.infinities.keystone4j.model.token.v2;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
 
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.token.Bind;
@@ -22,6 +25,10 @@ public class TokenV2 implements Serializable {
 	private Project tenant;
 
 	private Bind bind;
+
+	private List<String> auditIds;
+
+	private Trust trust;
 
 
 	public String getId() {
@@ -62,6 +69,58 @@ public class TokenV2 implements Serializable {
 
 	public void setBind(Bind bind) {
 		this.bind = bind;
+	}
+
+	public List<String> getAuditIds() {
+		return auditIds;
+	}
+
+	public void setAuditIds(List<String> auditIds) {
+		this.auditIds = auditIds;
+	}
+
+	public Trust getTrust() {
+		return trust;
+	}
+
+	public void setTrust(Trust trust) {
+		this.trust = trust;
+	}
+
+
+	public static class Trust {
+
+		private String id;
+		@XmlElement(name = "trustor_id")
+		private String trustorId;
+		@XmlElement(name = "trustee_id")
+		private String trusteeId;
+
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getTrustorId() {
+			return trustorId;
+		}
+
+		public void setTrustorId(String trustorId) {
+			this.trustorId = trustorId;
+		}
+
+		public String getTrusteeId() {
+			return trusteeId;
+		}
+
+		public void setTrusteeId(String trusteeId) {
+			this.trusteeId = trusteeId;
+		}
+
 	}
 
 	// @Override

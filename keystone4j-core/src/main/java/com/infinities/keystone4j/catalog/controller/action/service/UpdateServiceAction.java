@@ -23,7 +23,7 @@ public class UpdateServiceAction extends AbstractServiceAction implements Protec
 	}
 
 	@Override
-	public MemberWrapper<Service> execute(ContainerRequestContext context) {
+	public MemberWrapper<Service> execute(ContainerRequestContext context) throws Exception {
 		requireMatchingId(serviceid, service);
 		Service ref = this.getCatalogApi().updateService(serviceid, service);
 		return this.wrapMember(context, ref);

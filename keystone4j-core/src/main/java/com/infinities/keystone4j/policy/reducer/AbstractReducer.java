@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.common.collect.Lists;
-import com.infinities.keystone4j.policy.BaseCheck;
 import com.infinities.keystone4j.policy.BaseReducer;
+import com.infinities.keystone4j.policy.check.BaseCheck;
 
 public abstract class AbstractReducer implements BaseReducer {
 

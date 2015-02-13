@@ -11,8 +11,8 @@ import com.infinities.keystone4j.assignment.controller.action.project.ListProjec
 import com.infinities.keystone4j.assignment.controller.action.project.ListUserProjectsAction;
 import com.infinities.keystone4j.assignment.controller.action.project.UpdateProjectAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
-import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Project;
@@ -37,7 +37,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 	@Override
 	public MemberWrapper<Project> createProject(Project project) throws Exception {
 		ProtectedAction<Project> command = new ProtectedDecorator<Project>(new CreateProjectAction(assignmentApi,
-				tokenProviderApi, policyApi, project), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, project), tokenProviderApi, policyApi, null, project);
 		MemberWrapper<Project> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -62,7 +62,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 	public MemberWrapper<Project> getProject(String projectid) throws Exception {
 		Project ref = getMemberFromDriver(projectid);
 		ProtectedAction<Project> command = new ProtectedDecorator<Project>(new GetProjectAction(assignmentApi,
-				tokenProviderApi, policyApi, projectid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, projectid), tokenProviderApi, policyApi, ref, null);
 		MemberWrapper<Project> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -71,7 +71,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 	public MemberWrapper<Project> updateProject(String projectid, Project project) throws Exception {
 		Project ref = getMemberFromDriver(projectid);
 		ProtectedAction<Project> command = new ProtectedDecorator<Project>(new UpdateProjectAction(assignmentApi,
-				tokenProviderApi, policyApi, projectid, project), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, projectid, project), tokenProviderApi, policyApi, ref, project);
 		MemberWrapper<Project> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -80,7 +80,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 	public void deleteProject(String projectid) throws Exception {
 		Project ref = getMemberFromDriver(projectid);
 		ProtectedAction<Project> command = new ProtectedDecorator<Project>(new DeleteProjectAction(assignmentApi,
-				tokenProviderApi, policyApi, projectid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, projectid), tokenProviderApi, policyApi, ref, null);
 		command.execute(getRequest());
 	}
 
@@ -97,7 +97,7 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 	// return ret;
 	// }
 
-	public Project getMemberFromDriver(String projectid) {
+	public Project getMemberFromDriver(String projectid) throws Exception {
 		return assignmentApi.getProject(projectid);
 	}
 }

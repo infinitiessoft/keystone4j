@@ -21,7 +21,7 @@ public class DeleteProjectAction extends AbstractProjectAction implements Protec
 	}
 
 	@Override
-	public MemberWrapper<Project> execute(ContainerRequestContext context) {
+	public MemberWrapper<Project> execute(ContainerRequestContext context) throws Exception {
 		this.getAssignmentApi().deleteProject(projectid);
 		return null;
 	}

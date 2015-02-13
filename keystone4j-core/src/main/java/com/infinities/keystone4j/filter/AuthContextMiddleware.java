@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.Environment;
 import com.infinities.keystone4j.KeystoneContext;
-import com.infinities.keystone4j.TokenBindValidator;
 import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.common.Wsgi;
@@ -25,15 +24,16 @@ import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 // keystone.middleware.core.AuthContextMiddleware 20141127
 @Priority(1001)
-public class AuthContextMiddleware extends TokenBindValidator implements Middleware {
+public class AuthContextMiddleware implements Middleware {
 
 	private final static Logger logger = LoggerFactory.getLogger(AuthContextMiddleware.class);
 	// private TokenApi tokenApi;
-	private TokenProviderApi tokenProviderApi;
+	private final TokenProviderApi tokenProviderApi;
 
 
-	public AuthContextMiddleware() {
-
+	@Inject
+	public AuthContextMiddleware(TokenProviderApi tokenProviderApi) {
+		this.tokenProviderApi = tokenProviderApi;
 	}
 
 	// subject_token_head only use in token-related action
@@ -90,7 +90,7 @@ public class AuthContextMiddleware extends TokenBindValidator implements Middlew
 		context.setEnvironment(environment);
 
 		try {
-			KeystoneToken tokenRef = new KeystoneToken(tokenid, tokenProviderApi.validToken(tokenid));
+			KeystoneToken tokenRef = new KeystoneToken(tokenid, tokenProviderApi.validateToken(tokenid, null));
 			Wsgi.validateTokenBind(context, tokenRef);
 			return Authorization.tokenToAuthContext(tokenRef);
 		} catch (Exception e) {
@@ -105,9 +105,9 @@ public class AuthContextMiddleware extends TokenBindValidator implements Middlew
 	// this.tokenApi = tokenApi;
 	// }
 
-	@Inject
-	public void setTokenProviderApi(TokenProviderApi tokenProviderApi) {
-		this.tokenProviderApi = tokenProviderApi;
-	}
+	// @Inject
+	// public void setTokenProviderApi(TokenProviderApi tokenProviderApi) {
+	// this.tokenProviderApi = tokenProviderApi;
+	// }
 
 }

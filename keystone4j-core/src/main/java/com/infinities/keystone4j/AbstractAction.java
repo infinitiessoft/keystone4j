@@ -1,5 +1,7 @@
 package com.infinities.keystone4j;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +30,17 @@ import com.infinities.keystone4j.common.Wsgi;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.DomainScoped;
+import com.infinities.keystone4j.model.DomainAwared;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.common.Links;
-import com.infinities.keystone4j.model.token.IMetadata;
+import com.infinities.keystone4j.model.common.MemberLinks;
+import com.infinities.keystone4j.model.token.wrapper.ITokenDataWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.model.KeystoneToken;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
+import com.infinities.keystone4j.utils.ReflectUtils;
 
-public abstract class AbstractAction<T extends BaseEntity> {
+public abstract class AbstractAction<T extends BaseEntity> implements Action {
 
 	private final static Logger logger = LoggerFactory.getLogger(AbstractAction.class);
 	private final TokenProviderApi tokenProviderApi;
@@ -98,7 +101,9 @@ public abstract class AbstractAction<T extends BaseEntity> {
 		}
 
 		CollectionWrapper<T> container = getCollectionWrapper();
-		container.getLinks().setSelf(getFullUrl(context, context.getUriInfo().getPath()));
+		container.setRefs(refs);
+		logger.debug("uri path: {}", context.getUriInfo().getPath());
+		container.getLinks().setSelf(getFullUrl(context, context.getUriInfo().getPath().replace("/v3", "")));
 
 		if (listLimited) {
 			container.setTruncated(true);
@@ -110,9 +115,10 @@ public abstract class AbstractAction<T extends BaseEntity> {
 	private String getFullUrl(ContainerRequestContext context, String path) {
 		String url = getBaseUrl(context, path);
 		String queryStr = context.getUriInfo().getRequestUri().getRawQuery();
-		if (Strings.isNullOrEmpty(queryStr)) {
+		if (!Strings.isNullOrEmpty(queryStr)) {
 			url = String.format("%s?%s", url, queryStr);
 		}
+
 		return url;
 	}
 
@@ -121,11 +127,15 @@ public abstract class AbstractAction<T extends BaseEntity> {
 		if (Strings.isNullOrEmpty(path)) {
 			path = getCollectionName();
 		}
-		return String.format("%s/%s/s", endpoint, "v3", StringUtils.removeStart(path, "/"));
+		String ret = String.format("%s/%s/%s", endpoint, "v3", StringUtils.removeStart(path, "/"));
+		if (ret.endsWith("/")) {
+			ret = ret.substring(0, ret.length() - 1);
+		}
+		return ret;
 	}
 
 	public void addSelfReferentialLink(ContainerRequestContext context, BaseEntity ref) {
-		Links links = new Links();
+		MemberLinks links = new MemberLinks();
 		String self = getBaseUrl(context, null) + "/" + ref.getId();
 		links.setSelf(self);
 		ref.setLinks(links);
@@ -171,16 +181,40 @@ public abstract class AbstractAction<T extends BaseEntity> {
 		return refs;
 	}
 
-	public void assertAdmin(KeystoneContext context) {
+	// keystone.common.wsgi.Application._get_trust_id_for_request
+	public String getTrustIdForRequest(KeystoneContext context) throws UnsupportedEncodingException,
+			NoSuchAlgorithmException, DecoderException {
+		if (Strings.isNullOrEmpty(context.getTokenid())
+				|| Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText().equals(context.getTokenid())) {
+			logger.debug("will not lookup trust as the request auth token is either absent or it is the system admin token");
+			return null;
+		}
+		ITokenDataWrapper tokenData;
+		try {
+			tokenData = tokenProviderApi.validateToken(context.getTokenid(), null);
+		} catch (Exception e) {
+			logger.warn("Invalid token in _get_trust_id_for_request", e);
+			throw Exceptions.UnauthorizedException.getInstance();
+		}
+		KeystoneToken tokenRef = new KeystoneToken(context.getTokenid(), tokenData);
+		logger.debug("trustId: {}", tokenRef.getTrustId());
+		return tokenRef.getTrustId();
+	}
+
+	// keystone.common.wsgi.Application.assert_admin
+	public void assertAdmin(KeystoneContext context) throws Exception {
 		if (!context.isAdmin()) {
 			KeystoneToken userTokenRef = null;
 			try {
-				userTokenRef = new KeystoneToken(context.getTokenid(), tokenProviderApi.validToken(context.getTokenid()));
+				userTokenRef = new KeystoneToken(context.getTokenid(), tokenProviderApi.validateToken(context.getTokenid(),
+						null));
 			} catch (Exception e) {
 				throw Exceptions.UnauthorizedException.getInstance(e);
 			}
 			Wsgi.validateTokenBind(context, userTokenRef);
-			IMetadata creds = userTokenRef.getMetadata();
+			Authorization.AuthContext creds = new Authorization.AuthContext();
+			creds.setRoles(userTokenRef.getMetadata().getRoles());
+			creds.setTrustId(userTokenRef.getMetadata().getTrustId());
 
 			try {
 				creds.setUserId(userTokenRef.getUserId());
@@ -218,7 +252,7 @@ public abstract class AbstractAction<T extends BaseEntity> {
 			List<T> output = new ArrayList<T>();
 			for (T t : input) {
 				try {
-					if (attrMatch(PropertyUtils.getProperty(t, attr), value)) {
+					if (attrMatch(ReflectUtils.reflact(t, attr), value)) {
 						output.add(t);
 					}
 				} catch (Exception e) {
@@ -242,7 +276,7 @@ public abstract class AbstractAction<T extends BaseEntity> {
 		KeystonePreconditions.requireMatchingId(id, entity);
 	}
 
-	public void requireMatchingDomainId(DomainScoped ref, DomainScoped existingRef) {
+	public void requireMatchingDomainId(DomainAwared ref, DomainAwared existingRef) {
 		boolean domainidImmutable = Config.Instance.getOpt(Config.Type.DEFAULT, "domain_id_immutable").asBoolean();
 		if (domainidImmutable && ref.getDomain() != null && !Strings.isNullOrEmpty(ref.getDomain().getId())) {
 			if (!ref.getDomain().getId().equals(existingRef.getDomain().getId())) {
@@ -268,19 +302,21 @@ public abstract class AbstractAction<T extends BaseEntity> {
 		}
 	}
 
-	public void normalizeDomainid(KeystoneContext context, DomainScoped domainScoped) {
+	// keystone.common.controller.V3Controller
+	public void normalizeDomainid(KeystoneContext context, DomainAwared domainScoped) {
 		if (domainScoped.getDomain() == null || Strings.isNullOrEmpty(domainScoped.getDomain().getId())) {
-			String domainid = getDomainFromToken(context);
+			String domainid = getDomainIdFromToken(context);
 			Domain domain = new Domain();
 			domain.setId(domainid);
 			domainScoped.setDomain(domain);
 		}
 	}
 
-	public String getDomainFromToken(KeystoneContext context) {
+	// keystone.common.controller.V3Controller
+	public String getDomainIdFromToken(KeystoneContext context) {
 		KeystoneToken tokenRef = null;
 		try {
-			tokenRef = new KeystoneToken(context.getTokenid(), tokenProviderApi.validToken(context.getTokenid()));
+			tokenRef = new KeystoneToken(context.getTokenid(), tokenProviderApi.validateToken(context.getTokenid(), null));
 		} catch (WebApplicationException e) {
 			logger.warn("Invalid token found while getting domain ID for list request");
 			throw Exceptions.UnauthorizedException.getInstance();
@@ -296,6 +332,7 @@ public abstract class AbstractAction<T extends BaseEntity> {
 		}
 	}
 
+	// keystone.common.controller.V3Controller
 	public String getDomainidForListRequest(ContainerRequestContext request) {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		if (!Config.Instance.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean()) {
@@ -308,7 +345,7 @@ public abstract class AbstractAction<T extends BaseEntity> {
 
 		KeystoneToken tokenRef = null;
 		try {
-			tokenRef = new KeystoneToken(context.getTokenid(), tokenProviderApi.validToken(context.getTokenid()));
+			tokenRef = new KeystoneToken(context.getTokenid(), tokenProviderApi.validateToken(context.getTokenid(), null));
 		} catch (Exception e) {
 			logger.warn("Invalid token found while getting domain ID for list request");
 			throw Exceptions.UnauthorizedException.getInstance();
@@ -322,12 +359,14 @@ public abstract class AbstractAction<T extends BaseEntity> {
 		}
 	}
 
-	protected abstract CollectionWrapper<T> getCollectionWrapper();
+	public abstract CollectionWrapper<T> getCollectionWrapper();
 
-	protected abstract MemberWrapper<T> getMemberWrapper();
-
-	public abstract String getCollectionName();
-
-	public abstract String getMemberName();
+	public abstract MemberWrapper<T> getMemberWrapper();
+	//
+	// @Override
+	// public abstract String getCollectionName();
+	//
+	// @Override
+	// public abstract String getMemberName();
 
 }

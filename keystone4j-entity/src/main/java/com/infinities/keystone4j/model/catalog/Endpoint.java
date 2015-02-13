@@ -1,16 +1,11 @@
 package com.infinities.keystone4j.model.catalog;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -19,7 +14,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.model.BaseEntity;
-import com.infinities.keystone4j.model.endpointfilter.ProjectEndpoint;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
@@ -30,35 +24,38 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 7446373184746636927L;
-	private String legacyEndpoint;
 	@NotNull(message = "interface field is required and cannot be empty")
 	private String interfaceType;
+	private String legacyEndpointId;
 	@NotNull(message = "service_id field is required and cannot be empty")
-	private Service service;
+	private Service service; // keystone.catalog.backends.sql.Endpoint 20150112
 	private String url;
 	private String extra;
 	private String name;
-	private boolean legacyEndpointUpdated = false;
+	private boolean legacyEndpointIdUpdated = false;
 	private boolean interfaceTypeUpdated = false;
 	private boolean regionUpdated = false;
 	private boolean serviceUpdated = false;
 	private boolean urlUpdated = false;
 	private boolean extraUpdated = false;
 	private boolean nameUpdated = false;
-	private Set<ProjectEndpoint> projectEndpoints = new HashSet<ProjectEndpoint>(0);
-	private Region region;
+	private Boolean enabled = true;
+	private boolean enabledUpdate = false;
+	// private Set<ProjectEndpoint> projectEndpoints = new
+	// HashSet<ProjectEndpoint>(0);
+	private Region region;// keystone.catalog.backends.sql.Endpoint 20150112
 
 
 	@XmlTransient
-	@Column(name = "LEGACY_ENDPOINT", length = 64)
-	public String getLegacyEndpoint() {
-		return legacyEndpoint;
+	@Column(name = "LEGACY_ENDPOINT_ID", length = 64)
+	public String getLegacyEndpointId() {
+		return legacyEndpointId;
 	}
 
 	@XmlTransient
-	public void setLegacyEndpoint(String legacyEndpoint) {
-		this.legacyEndpoint = legacyEndpoint;
-		legacyEndpointUpdated = true;
+	public void setLegacyEndpointId(String legacyEndpointId) {
+		this.legacyEndpointId = legacyEndpointId;
+		legacyEndpointIdUpdated = true;
 	}
 
 	@XmlElement(name = "interface")
@@ -73,17 +70,20 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 		interfaceTypeUpdated = true;
 	}
 
+	@XmlTransient
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REGIONID", nullable = true)
 	public Region getRegion() {
 		return region;
 	}
 
+	@XmlTransient
 	public void setRegion(Region region) {
 		this.region = region;
 		regionUpdated = true;
 	}
 
+	@JsonView(Views.All.class)
 	@Transient
 	@XmlElement(name = "region_id")
 	public String getRegionid() {
@@ -113,6 +113,15 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 		}
 	}
 
+	@Transient
+	@XmlElement(name = "region")
+	public String getRegionId() {
+		if (getRegion() != null) {
+			return getRegion().getId();
+		}
+		return null;
+	}
+
 	@XmlTransient
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SERVICEID", nullable = false)
@@ -126,6 +135,7 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 		serviceUpdated = true;
 	}
 
+	@JsonView(Views.Advance.class)
 	@Transient
 	@XmlElement(name = "service_id")
 	public String getServiceid() {
@@ -177,14 +187,14 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 
 	@XmlTransient
 	@Transient
-	public boolean isLegacyEndpointUpdated() {
-		return legacyEndpointUpdated;
+	public boolean isLegacyEndpointIdUpdated() {
+		return legacyEndpointIdUpdated;
 	}
 
 	@XmlTransient
 	@Transient
-	public void setLegacyEndpointUpdated(boolean legacyEndpointUpdated) {
-		this.legacyEndpointUpdated = legacyEndpointUpdated;
+	public void setLegacyEndpointIdUpdated(boolean legacyEndpointIdUpdated) {
+		this.legacyEndpointIdUpdated = legacyEndpointIdUpdated;
 	}
 
 	@XmlTransient
@@ -259,17 +269,19 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 		this.extraUpdated = extraUpdated;
 	}
 
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "endpoint", cascade = CascadeType.ALL)
-	public Set<ProjectEndpoint> getProjectEndpoints() {
-		return projectEndpoints;
-	}
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "endpoint", cascade =
+	// CascadeType.ALL)
+	// public Set<ProjectEndpoint> getProjectEndpoints() {
+	// return projectEndpoints;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// public void setProjectEndpoints(Set<ProjectEndpoint> projectEndpoints) {
+	// this.projectEndpoints = projectEndpoints;
+	// }
 
-	@JsonView(Views.All.class)
-	public void setProjectEndpoints(Set<ProjectEndpoint> projectEndpoints) {
-		this.projectEndpoints = projectEndpoints;
-	}
-
+	@JsonView(Views.Advance.class)
 	@Column(name = "NAME", length = 255)
 	public String getName() {
 		return name;
@@ -278,6 +290,30 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 	public void setName(String name) {
 		this.name = name;
 		nameUpdated = true;
+	}
+
+	@JsonView(Views.Advance.class)
+	@Column(name = "ENABLED", length = 8, nullable = false)
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	@XmlTransient
+	public void setEnabled(Boolean enabled) {
+		setEnabledUpdate(true);
+		this.enabled = enabled;
+	}
+
+	@XmlTransient
+	@Transient
+	public boolean isEnabledUpdate() {
+		return enabledUpdate;
+	}
+
+	@XmlTransient
+	@Transient
+	public void setEnabledUpdate(boolean enabledUpdate) {
+		this.enabledUpdate = enabledUpdate;
 	}
 
 }

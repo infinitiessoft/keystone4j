@@ -1,46 +1,55 @@
 package com.infinities.keystone4j.token.provider.api.command;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
-import java.util.Date;
 
-import org.apache.commons.codec.DecoderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.Command;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.common.Config.Type;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
+import com.infinities.keystone4j.contrib.revoke.model.Model;
+import com.infinities.keystone4j.contrib.revoke.model.Model.TokenValues;
 import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.token.Bind;
 import com.infinities.keystone4j.model.token.IToken;
+import com.infinities.keystone4j.model.token.Metadata;
+import com.infinities.keystone4j.model.token.Token;
 import com.infinities.keystone4j.model.token.TokenData;
-import com.infinities.keystone4j.model.token.TokenDataWrapper;
 import com.infinities.keystone4j.model.token.v2.Access;
 import com.infinities.keystone4j.model.token.v2.TokenV2;
-import com.infinities.keystone4j.model.token.v2.TokenV2DataWrapper;
-import com.infinities.keystone4j.model.utils.Views;
+import com.infinities.keystone4j.model.token.v2.wrapper.TokenV2DataWrapper;
+import com.infinities.keystone4j.model.token.wrapper.ITokenDataWrapper;
+import com.infinities.keystone4j.model.token.wrapper.TokenDataWrapper;
+import com.infinities.keystone4j.token.model.KeystoneToken;
+import com.infinities.keystone4j.token.persistence.PersistenceManager;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
-import com.infinities.keystone4j.utils.Cms;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
 
-public abstract class AbstractTokenProviderCommand<T> implements Command<T> {
+public abstract class AbstractTokenProviderCommand {
 
 	private final static Logger logger = LoggerFactory.getLogger(AbstractTokenProviderCommand.class);
 	private final TokenProviderApi tokenProviderApi;
 	private final TokenProviderDriver tokenProviderDriver;
-	private final static String UNEXPECTED_ERROR = "Unexpected error or malformed token determining token expiry: {}";
-	private final static String FAILED_TO_VALIDATE_TOKEN = "Failed to validate token";
-	private final String V2 = KeystoneToken.V2;
-	private final String V3 = KeystoneToken.V3;
+	private final RevokeApi revokeApi;
+	// private final static String UNEXPECTED_ERROR =
+	// "Unexpected error or malformed token determining token expiry: {}";
+	// private final static String FAILED_TO_VALIDATE_TOKEN =
+	// "Failed to validate token";
+	public final String V2 = KeystoneToken.V2;
+	public final String V3 = KeystoneToken.V3;
+	private final PersistenceManager persistenceManager;
 
 
-	public AbstractTokenProviderCommand(TokenProviderApi tokenProviderApi, TokenProviderDriver tokenProviderDriver) {
+	public AbstractTokenProviderCommand(TokenProviderApi tokenProviderApi, RevokeApi revokeApi,
+			TokenProviderDriver tokenProviderDriver, PersistenceManager persistenceManager) {
 		super();
+		this.revokeApi = revokeApi;
 		this.tokenProviderApi = tokenProviderApi;
 		this.tokenProviderDriver = tokenProviderDriver;
+		this.persistenceManager = persistenceManager;
 	}
 
 	public TokenProviderApi getTokenProviderApi() {
@@ -51,97 +60,66 @@ public abstract class AbstractTokenProviderCommand<T> implements Command<T> {
 		return tokenProviderDriver;
 	}
 
-	public String getUniqueId(String tokenid) {
-		String uniqueid = null;
-		try {
-			uniqueid = Cms.Instance.hashToken(tokenid, null);
-			return uniqueid;
-		} catch (UnsupportedEncodingException | NoSuchAlgorithmException | DecoderException e) {
-			throw Exceptions.UnexpectedException.getInstance(e);
-		}
+	public RevokeApi getRevokeApi() {
+		return revokeApi;
 	}
 
-	public void isValidToken(TokenDataWrapper token) {
-		Date currentTime = new Date();
-		try {
-
-			TokenData tokenData = token.getToken();
-
-			Calendar expiresAt = tokenData.getExpireAt();
-			if (expiresAt.after(currentTime)) {
-				return;
-			}
-		} catch (Exception e) {
-			String data;
-			try {
-				data = JsonUtils.toJson(token, Views.AuthenticateForToken.class);
-				logger.error(UNEXPECTED_ERROR, data, e);
-			} catch (Exception e1) {
-				logger.error("Unexpected error or malformed token determining token expiry", e1);
-			}
-
-		}
-		throw Exceptions.TokenNotFoundException.getInstance(FAILED_TO_VALIDATE_TOKEN);
+	public String getUniqueId(String tokenid) throws Exception {
+		return this.getTokenProviderApi().getUniqueId(tokenid);
 	}
 
-	public void isValidToken(IToken token) {
-		Calendar currentTime = Calendar.getInstance();
-		Calendar expiresAt = null;
-		try {
-			if (token instanceof TokenV2DataWrapper) {
-				expiresAt = ((TokenV2DataWrapper) token).getAccess().getToken().getExpires();
-			} else if (token instanceof TokenDataWrapper) {
-				expiresAt = ((TokenDataWrapper) token).getToken().getExpireAt();
-			}
-
-		} catch (Exception e) {
-			logger.error(UNEXPECTED_ERROR, token, e);
-			throw Exceptions.TokenNotFoundException.getInstance(FAILED_TO_VALIDATE_TOKEN);
-		}
-		if (expiresAt.after(currentTime)) {
-			checkRevocation(token);
+	public void isValidToken(ITokenDataWrapper token) throws Exception {
+		if (token instanceof TokenV2DataWrapper) {
+			isValidToken((TokenV2DataWrapper) token);
 			return;
-		} else {
-			throw Exceptions.TokenNotFoundException.getInstance(FAILED_TO_VALIDATE_TOKEN);
+		} else if (token instanceof TokenDataWrapper) {
+			isValidToken((TokenDataWrapper) token);
+			return;
 		}
+		logger.error("malformed token");
+		throw Exceptions.TokenNotFoundException.getInstance("Failed to validate token");
 	}
 
-	protected void checkRevocation(IToken token) {
-		String version = this.getTokenProviderDriver().getTokenVersion(tokenRef);
+	protected void checkRevocation(IToken token) throws Exception {
+		String version = this.getTokenProviderDriver().getTokenVersion(token);
 		if (V3.equals(version)) {
-			return checkRevocationV3(token);
+			checkRevocationV3((TokenDataWrapper) token);
 		} else if (V2.equals(version)) {
-			return checkRevocationV2(token);
+			checkRevocationV2((TokenV2DataWrapper) token);
 		}
 	}
 
-	protected void checkRevocationV2(IToken token) {
+	protected void checkRevocationV2(TokenV2DataWrapper token) throws Exception {
 		Access tokenData = null;
 		try {
-			tokenData = ((TokenV2DataWrapper) token).getAccess();
+			tokenData = token.getAccess();
 		} catch (Exception e) {
-			throw Exceptions.TokenNotFoundException.getInstance(FAILED_TO_VALIDATE_TOKEN);
+			throw Exceptions.TokenNotFoundException.getInstance("Failed to validate token");
 		}
 
-		tokenValues = this.getRevokeApi().buildTokenValuesV2(tokenData,
-				Config.Instance.getOpt(Type.DEFAULT, "default_domain_id").asText());
-		this.getRevokeApi().checkToken(tokenValues);
+		if (revokeApi != null) {
+			TokenValues tokenValues = Model.buildTokenValuesV2(tokenData,
+					Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+			revokeApi.checkToken(tokenValues);
+		}
 	}
 
-	protected void checkRevocationV3(IToken token) {
+	private void checkRevocationV3(TokenDataWrapper token) throws Exception {
 		TokenData tokenData = null;
 		try {
-			tokenData = ((TokenDataWrapper) token).getToken();
+			tokenData = token.getToken();
 		} catch (Exception e) {
-			throw Exceptions.TokenNotFoundException.getInstance(FAILED_TO_VALIDATE_TOKEN);
+			throw Exceptions.TokenNotFoundException.getInstance("Failed to validate token");
 		}
 
-		tokenValues = this.getRevokeApi().buildTokenValues(tokenData);
-		this.getRevokeApi().checkToken(tokenValues);
+		if (revokeApi != null) {
+			TokenValues tokenValues = Model.buildTokenValues(tokenData);
+			revokeApi.checkToken(tokenValues);
+		}
 	}
 
-	protected IToken validateToken(String tokenid) {
-		IToken tokenRef = persistence.getToken(tokenid);
+	protected ITokenDataWrapper validateToken(String tokenid) throws Exception {
+		Token tokenRef = this.getPersistence().getToken(tokenid);
 		String version = this.getTokenProviderDriver().getTokenVersion(tokenRef);
 		if (V3.equals(version)) {
 			return this.getTokenProviderDriver().validateV3Token(tokenRef);
@@ -152,44 +130,168 @@ public abstract class AbstractTokenProviderCommand<T> implements Command<T> {
 		throw Exceptions.UnsupportedTokenVersionException.getInstance();
 	}
 
-	public void isValidToken(TokenV2DataWrapper token) {
+	protected void isValidToken(TokenV2DataWrapper token) throws Exception {
 		Calendar currentTime = Calendar.getInstance();
+		Calendar expiry = null;
 		try {
-
 			Access tokenData = token.getAccess();
+			expiry = tokenData.getToken().getExpires();
+		} catch (Exception e) {
+			logger.error("Unexpected error or malformed token determining token expiry: :s", token);
+			throw Exceptions.TokenNotFoundException.getInstance("Failed to validate token");
+		}
 
-			Calendar expiresAt = tokenData.getToken().getExpires();
-			if (expiresAt.after(currentTime)) {
-				return;
+		if (currentTime.before(expiry)) {
+			checkRevocationV2(token);
+			return;
+		} else {
+			throw Exceptions.TokenNotFoundException.getInstance("Failed to validate token");
+		}
+	}
+
+	protected void isValidToken(TokenDataWrapper token) throws Exception {
+		Calendar currentTime = Calendar.getInstance();
+		Calendar expiry = null;
+		try {
+			TokenData tokenData = token.getToken();
+			expiry = tokenData.getExpireAt();
+
+			if (expiry == null) {
+				expiry = tokenData.getToken().getExpires();
 			}
 		} catch (Exception e) {
-			String data;
-			try {
-				data = JsonUtils.toJson(token, Views.AuthenticateForToken.class);
-				logger.error(UNEXPECTED_ERROR, data, e);
-			} catch (Exception e1) {
-				logger.error("Unexpected error or malformed token determining token expiry", e1);
-			}
-
+			logger.error("Unexpected error or malformed token determining token expiry: :s", token);
+			throw Exceptions.TokenNotFoundException.getInstance("Failed to validate token");
 		}
-		throw Exceptions.TokenNotFoundException.getInstance(FAILED_TO_VALIDATE_TOKEN);
-	}
 
-	public void tokenBelongsTo(TokenV2DataWrapper token, String belongsTo) {
-		if (!Strings.isNullOrEmpty(belongsTo)) {
-			TokenV2 tokenData = token.getAccess().getToken();
-			if (tokenData.getTenant() == null || !belongsTo.equals(tokenData.getTenant().getId())) {
-				throw Exceptions.UnauthorizedException.getInstance();
-			}
+		if (currentTime.before(expiry)) {
+			checkRevocationV3(token);
+			return;
+		} else {
+			throw Exceptions.TokenNotFoundException.getInstance("Failed to validate token");
 		}
 	}
 
-	public void tokenBelongsTo(IToken token, String belongsTo) {
+	public void tokenBelongsTo(ITokenDataWrapper token, String belongsTo) {
 		if (!Strings.isNullOrEmpty(belongsTo)) {
 			TokenV2 tokenData = ((TokenV2DataWrapper) token).getAccess().getToken();
 			if (tokenData.getTenant() == null || !belongsTo.equals(tokenData.getTenant().getId())) {
 				throw Exceptions.UnauthorizedException.getInstance();
 			}
 		}
+	}
+
+	protected void createToken(String tokenid, Data tokenData) throws Exception {
+		try {
+			getPersistence().createToken(tokenid, tokenData);
+		} catch (Exception e) {
+			logger.warn("create token failed: {}", e);
+			try {
+				getPersistence().getToken(tokenid);
+			} catch (Exception ex) {
+				throw ex;
+			}
+		}
+	}
+
+	protected PersistenceManager getPersistence() {
+		return this.persistenceManager;
+	}
+
+
+	public static class Data {
+
+		private String key;
+		private String id;
+		private Calendar expires;
+		private User user;
+		private Project tenant;
+		private Metadata metadata;
+		private ITokenDataWrapper tokenData;
+		private Bind bind;
+		private String trustid;
+		private String tokenVersion;
+
+
+		public String getKey() {
+			return key;
+		}
+
+		public void setKey(String key) {
+			this.key = key;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public Calendar getExpires() {
+			return expires;
+		}
+
+		public void setExpires(Calendar expires) {
+			this.expires = expires;
+		}
+
+		public User getUser() {
+			return user;
+		}
+
+		public void setUser(User user) {
+			this.user = user;
+		}
+
+		public Project getTenant() {
+			return tenant;
+		}
+
+		public void setTenant(Project tenant) {
+			this.tenant = tenant;
+		}
+
+		public Metadata getMetadata() {
+			return metadata;
+		}
+
+		public void setMetadata(Metadata metadata) {
+			this.metadata = metadata;
+		}
+
+		public ITokenDataWrapper getTokenData() {
+			return tokenData;
+		}
+
+		public void setTokenData(ITokenDataWrapper tokenData) {
+			this.tokenData = tokenData;
+		}
+
+		public Bind getBind() {
+			return bind;
+		}
+
+		public void setBind(Bind bind) {
+			this.bind = bind;
+		}
+
+		public String getTrustid() {
+			return trustid;
+		}
+
+		public void setTrustid(String trustid) {
+			this.trustid = trustid;
+		}
+
+		public String getTokenVersion() {
+			return tokenVersion;
+		}
+
+		public void setTokenVersion(String tokenVersion) {
+			this.tokenVersion = tokenVersion;
+		}
+
 	}
 }

@@ -16,13 +16,13 @@ import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.token.Bind;
-import com.infinities.keystone4j.model.token.IMetadata;
-import com.infinities.keystone4j.model.token.IToken;
 import com.infinities.keystone4j.model.token.ITokenData;
+import com.infinities.keystone4j.model.token.Metadata;
 import com.infinities.keystone4j.model.token.TokenData;
-import com.infinities.keystone4j.model.token.TokenDataWrapper;
 import com.infinities.keystone4j.model.token.v2.Access;
-import com.infinities.keystone4j.model.token.v2.TokenV2DataWrapper;
+import com.infinities.keystone4j.model.token.v2.wrapper.TokenV2DataWrapper;
+import com.infinities.keystone4j.model.token.wrapper.ITokenDataWrapper;
+import com.infinities.keystone4j.model.token.wrapper.TokenDataWrapper;
 import com.infinities.keystone4j.utils.Cms;
 
 //keystone.models.token_model.KeystoneToken
@@ -45,8 +45,8 @@ public class KeystoneToken {
 	}
 
 
-	public KeystoneToken(String tokenid, IToken token) throws UnsupportedEncodingException, NoSuchAlgorithmException,
-			DecoderException {
+	public KeystoneToken(String tokenid, ITokenDataWrapper token) throws UnsupportedEncodingException,
+			NoSuchAlgorithmException, DecoderException {
 		if (token instanceof TokenV2DataWrapper) {
 			tokenData = ((TokenV2DataWrapper) token).getAccess();
 			version = V2;
@@ -86,7 +86,7 @@ public class KeystoneToken {
 		if (V3.equals(version)) {
 			return Iterables.getFirst(((TokenData) tokenData).getAuditIds(), null);
 		} else {
-			return Iterables.getFirst(((Access) tokenData).getToken().getAutidIds(), null);
+			return Iterables.getFirst(((Access) tokenData).getToken().getAuditIds(), null);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class KeystoneToken {
 		if (V3.equals(version)) {
 			return Iterables.getLast(((TokenData) tokenData).getAuditIds(), null);
 		} else {
-			return Iterables.getLast(((Access) tokenData).getToken().getAutidIds(), null);
+			return Iterables.getLast(((Access) tokenData).getToken().getAuditIds(), null);
 		}
 	}
 
@@ -236,7 +236,7 @@ public class KeystoneToken {
 
 	public String getTrusteeUserId() {
 		if (V3.equals(version)) {
-			return ((TokenData) tokenData).getTrust().getTrustee().getId();
+			return ((TokenData) tokenData).getTrust().getTrusteeUser().getId();
 		} else {
 			return ((Access) tokenData).getTrust().getTrusteeUserId();
 		}
@@ -244,7 +244,7 @@ public class KeystoneToken {
 
 	public String getTrustorUserId() {
 		if (V3.equals(version)) {
-			return ((TokenData) tokenData).getTrust().getTrustor().getId();
+			return ((TokenData) tokenData).getTrust().getTrustorUser().getId();
 		} else {
 			return ((Access) tokenData).getTrust().getTrustorUserId();
 		}
@@ -337,7 +337,7 @@ public class KeystoneToken {
 		return null;
 	}
 
-	public IMetadata getMetadata() {
+	public Metadata getMetadata() {
 		if (V3.equals(version)) {
 			return ((TokenData) tokenData).getToken().getMetadata();
 		} else {
@@ -355,6 +355,14 @@ public class KeystoneToken {
 
 	public String getShortid() {
 		return this.shortid;
+	}
+
+	public List<String> getAuditIds() {
+		if (V3.equals(version)) {
+			return ((TokenData) tokenData).getAuditIds();
+		} else {
+			return ((Access) tokenData).getToken().getAuditIds();
+		}
 	}
 
 }

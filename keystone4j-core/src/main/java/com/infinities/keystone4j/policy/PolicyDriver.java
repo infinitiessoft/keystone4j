@@ -3,13 +3,13 @@ package com.infinities.keystone4j.policy;
 import java.util.List;
 import java.util.Map;
 
+import com.infinities.keystone4j.Driver;
+import com.infinities.keystone4j.model.policy.Context;
 import com.infinities.keystone4j.model.policy.Policy;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.token.Token;
 
-public interface PolicyDriver {
+public interface PolicyDriver extends Driver {
 
-	Policy createPolicy(Policy policy);
+	Policy createPolicy(String policyid, Policy policy);
 
 	List<Policy> listPolicies();
 
@@ -19,6 +19,6 @@ public interface PolicyDriver {
 
 	void deletePolicy(String policyid);
 
-	Policy enforce(Token token, String action, Map<String, PolicyEntity> target, Map<String, Object> parMap, boolean doRaise);
+	Policy enforce(Context context, String action, Map<String, Object> target) throws Exception;
 
 }

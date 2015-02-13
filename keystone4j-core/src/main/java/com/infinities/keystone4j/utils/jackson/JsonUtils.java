@@ -45,6 +45,16 @@ public class JsonUtils {
 	}
 
 
+	public static String toJsonWithoutPrettyPrint(Object object) throws JsonGenerationException, JsonMappingException,
+			IOException {
+		try {
+			objectMapper = objectMapper.disable(SerializationFeature.INDENT_OUTPUT);
+			return objectMapper.writeValueAsString(object);
+		} finally {
+			objectMapper = objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+		}
+	}
+
 	public static String toJson(Object object) throws JsonGenerationException, JsonMappingException, IOException {
 		return objectMapper.writeValueAsString(object);
 	}
@@ -59,6 +69,10 @@ public class JsonUtils {
 		return map;
 	}
 
+	public static <T> T readJson(String fromValue, TypeReference<T> toValueType) throws IOException {
+		return objectMapper.readValue(fromValue, toValueType);
+	}
+
 	public static JsonNode convertToJsonNode(String text) throws JsonProcessingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonFactory factory = mapper.getFactory(); // since 2.1 use
@@ -69,8 +83,14 @@ public class JsonUtils {
 		return node;
 	}
 
-	public <T> T readFile(String fileName, Class<T> valueType) throws JsonParseException, JsonMappingException, IOException {
+	public static <T> T readFile(String fileName, Class<T> valueType) throws JsonParseException, JsonMappingException,
+			IOException {
 		return objectMapper.readValue(new File(fileName), valueType);
+	}
+
+	public static <T> T convertValue(Object fromValue, Class<T> toValueType) throws JsonParseException,
+			JsonMappingException, IOException {
+		return objectMapper.convertValue(fromValue, toValueType);
 	}
 
 }

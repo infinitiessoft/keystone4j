@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.jpa.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.jpa.AbstractDao;
 import com.infinities.keystone4j.model.catalog.Service;
 
@@ -51,5 +53,23 @@ public class ServiceDao extends AbstractDao<Service> {
 		// em.close();
 		// }
 
+	}
+
+	public List<Service> listService(Hints hints) throws SecurityException, IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		return filterLimitQuery(Service.class, hints);
+	}
+
+	public List<Service> listAllEnabled() {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Service> cq = cb.createQuery(getEntityType());
+		Root<Service> root = cq.from(getEntityType());
+		root.join("endpoints");
+		cq.where(cb.isTrue(root.<Boolean> get("enabled")));
+		cq.select(root);
+		TypedQuery<Service> q = em.createQuery(cq);
+		List<Service> result = q.getResultList();
+		return result;
 	}
 }

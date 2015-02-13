@@ -1,0 +1,17 @@
+request:
+curl -X "POST" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN" -d '{"endpoint":{"interface":"public","name":"demo","url":"http://d00-0c-29-37-0b-41.cloud.default.net:2121/v2.0/","service_id":"3f813b99431e46c0af877393f6ad91d7", "region":"RegionOne"}}' http://localhost:5000/v3/endpoints; echo
+
+response:
+{
+   "endpoint":{
+      "name":"demo",
+      "links":{
+         "self":"http://192.168.126.2:5000/v3/endpoints/e8b005fddfc84365b739dc53fe29bb0e"
+      },
+      "url":"http://d00-0c-29-37-0b-41.cloud.default.net:2121/v2.0/",
+      "region":"RegionOne",
+      "enabled":true,
+      "interface":"public",
+      "service_id":"3f813b99431e46c0af877393f6ad91d7",
+      "id":"e8b005fddfc84365b739dc53fe29bb0e"
+   }

@@ -18,9 +18,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.credential.controller.CredentialV3Controller;
-import com.infinities.keystone4j.model.credential.Credential;
-import com.infinities.keystone4j.model.credential.CredentialWrapper;
-import com.infinities.keystone4j.model.credential.CredentialsWrapper;
+import com.infinities.keystone4j.model.credential.wrapper.CredentialWrapper;
+import com.infinities.keystone4j.model.credential.wrapper.CredentialsWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -36,36 +35,37 @@ public class CredentialResource {
 	}
 
 	@POST
-	@JsonView(Views.Basic.class)
-	public Response createCredential(CredentialWrapper credentialWrapper) {
-		return Response.status(Status.CREATED)
-				.entity(credentialController.createCredential(credentialWrapper.getCredential())).build();
+	@JsonView(Views.Advance.class)
+	public Response createCredential(CredentialWrapper credentialWrapper) throws Exception {
+		return Response.status(Status.CREATED).entity(credentialController.createCredential(credentialWrapper.getRef()))
+				.build();
 	}
 
 	@GET
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public CredentialsWrapper listCredentials(@DefaultValue("1") @QueryParam("page") int page,
-			@DefaultValue("30") @QueryParam("per_page") int perPage) {
-		return credentialController.listCredentials(page, perPage);
+			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
+		return (CredentialsWrapper) credentialController.listCredentials();
 	}
 
 	@GET
 	@Path("/{credentialid}")
-	@JsonView(Views.Basic.class)
-	public CredentialWrapper getCredential(@PathParam("credentialid") String credentialid) {
-		return credentialController.getCredential(credentialid);
+	@JsonView(Views.Advance.class)
+	public CredentialWrapper getCredential(@PathParam("credentialid") String credentialid) throws Exception {
+		return (CredentialWrapper) credentialController.getCredential(credentialid);
 	}
 
 	@PATCH
 	@Path("/{credentialid}")
-	@JsonView(Views.Basic.class)
-	public CredentialWrapper updateCredential(@PathParam("credentialid") String credentialid, Credential credential) {
-		return credentialController.updateCredential(credentialid, credential);
+	@JsonView(Views.Advance.class)
+	public CredentialWrapper updateCredential(@PathParam("credentialid") String credentialid,
+			CredentialWrapper credentialWrapper) throws Exception {
+		return (CredentialWrapper) credentialController.updateCredential(credentialid, credentialWrapper.getRef());
 	}
 
 	@DELETE
 	@Path("/{credentialid}")
-	public Response deleteCredential(@PathParam("credentialid") String credentialid) {
+	public Response deleteCredential(@PathParam("credentialid") String credentialid) throws Exception {
 		credentialController.deleteCredential(credentialid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}

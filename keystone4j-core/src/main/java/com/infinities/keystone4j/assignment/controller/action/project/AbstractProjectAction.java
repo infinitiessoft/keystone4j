@@ -7,8 +7,8 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.assignment.ProjectWrapper;
-import com.infinities.keystone4j.model.assignment.ProjectsWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.ProjectWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.ProjectsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -34,12 +34,12 @@ public abstract class AbstractProjectAction extends AbstractAction<Project> {
 	}
 
 	@Override
-	protected CollectionWrapper<Project> getCollectionWrapper() {
+	public CollectionWrapper<Project> getCollectionWrapper() {
 		return new ProjectsWrapper();
 	}
 
 	@Override
-	protected MemberWrapper<Project> getMemberWrapper() {
+	public MemberWrapper<Project> getMemberWrapper() {
 		return new ProjectWrapper();
 	}
 

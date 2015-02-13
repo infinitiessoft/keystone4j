@@ -19,7 +19,7 @@ public class UpdatePolicyAction extends AbstractPolicyAction implements Protecte
 	}
 
 	@Override
-	public MemberWrapper<Policy> execute(ContainerRequestContext context) {
+	public MemberWrapper<Policy> execute(ContainerRequestContext context) throws Exception {
 		Policy ref = this.getPolicyApi().updatePolicy(policyid, policy);
 		return this.wrapMember(context, ref);
 	}

@@ -5,8 +5,8 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Service;
-import com.infinities.keystone4j.model.catalog.ServiceWrapper;
-import com.infinities.keystone4j.model.catalog.ServicesWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.ServiceWrapper;
+import com.infinities.keystone4j.model.catalog.wrapper.ServicesWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -29,12 +29,12 @@ public abstract class AbstractServiceAction extends AbstractAction<Service> {
 	}
 
 	@Override
-	protected CollectionWrapper<Service> getCollectionWrapper() {
+	public CollectionWrapper<Service> getCollectionWrapper() {
 		return new ServicesWrapper();
 	}
 
 	@Override
-	protected MemberWrapper<Service> getMemberWrapper() {
+	public MemberWrapper<Service> getMemberWrapper() {
 		return new ServiceWrapper();
 	}
 

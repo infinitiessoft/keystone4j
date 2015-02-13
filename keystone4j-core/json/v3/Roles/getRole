@@ -1,0 +1,14 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/roles/0484e3d30bc545cd8d24709ab7d6d25d | python -mjson.tool
+
+response:
+{
+    "role": {
+        "description": "demo", 
+        "id": "0484e3d30bc545cd8d24709ab7d6d25d", 
+        "links": {
+            "self": "http://192.168.126.2:5000/v3/roles/0484e3d30bc545cd8d24709ab7d6d25d"
+        }, 
+        "name": "demo"
+    }
+}

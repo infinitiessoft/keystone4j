@@ -1,47 +1,48 @@
 package com.infinities.keystone4j.assignment.api.command.domain;
 
-import java.util.List;
-
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.api.command.AbstractAssignmentCommand;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.notification.NotifiableCommand;
 
-public class UpdateDomainCommand extends AbstractAssignmentCommand<Domain> {
+public class UpdateDomainCommand extends AbstractAssignmentCommand implements NotifiableCommand<Domain> {
 
 	private final String domainid;
 	private final Domain domain;
 
 
-	public UpdateDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,
-			AssignmentApi assignmentApi, AssignmentDriver assignmentDriver, String domainid, Domain domain) {
-		super(credentialApi, identityApi, tokenApi, assignmentApi, assignmentDriver);
+	public UpdateDomainCommand(CredentialApi credentialApi, IdentityApi identityApi, AssignmentApi assignmentApi,
+			RevokeApi revokeApi, AssignmentDriver assignmentDriver, String domainid, Domain domain) {
+		super(credentialApi, identityApi, assignmentApi, revokeApi, assignmentDriver);
 		this.domainid = domainid;
 		this.domain = domain;
 	}
 
 	@Override
-	public Domain execute() {
+	public Domain execute() throws Exception {
+		Domain originalDomain = this.getAssignmentDriver().getDomain(domainid);
 		Domain ret = this.getAssignmentDriver().updateDomain(domainid, domain);
-		if (!domain.getEnabled()) {
-			List<Project> projects = this.getAssignmentApi().listProjects();
 
-			for (Project project : projects) {
-				if (domainid.equals(project.getDomain().getId())) {
-					List<User> users = this.getAssignmentApi().listUsersForProject(project.getId());
-					for (User user : users) {
-						this.getTokenApi().deleteTokensForUser(user.getId(), project.getId());
-					}
-				}
-			}
+		if (originalDomain.getEnabled() && !domain.getEnabled()) {
+			this.getAssignmentApi().disableDomain(domainid);
 		}
-		// invalidate cache(getDomain, getDomainByName)
+		// TODO ignore invalidate cache(getDomain, getDomainByName)
 
 		return ret;
 	}
+
+	@Override
+	public Object getArgs(int index) {
+		if (index == 1) {
+			return domainid;
+		} else if (index == 2) {
+			return domain;
+		}
+		throw new IllegalArgumentException("invalid index");
+	}
+
 }

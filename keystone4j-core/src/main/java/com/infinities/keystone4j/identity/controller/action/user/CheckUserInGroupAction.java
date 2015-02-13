@@ -23,7 +23,7 @@ public class CheckUserInGroupAction extends AbstractUserAction implements Protec
 	}
 
 	@Override
-	public MemberWrapper<User> execute(ContainerRequestContext request) {
+	public MemberWrapper<User> execute(ContainerRequestContext request) throws Exception {
 		this.getIdentityApi().checkUserInGroup(userid, groupid);
 		return null;
 	}

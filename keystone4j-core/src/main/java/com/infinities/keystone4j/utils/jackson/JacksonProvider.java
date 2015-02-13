@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.utils.jackson;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -17,6 +18,7 @@ public class JacksonProvider extends com.fasterxml.jackson.jaxrs.json.JacksonJso
 		AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
 
 		ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module())
+				.setSerializationInclusion(Include.NON_NULL)
 				.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).enable(SerializationFeature.INDENT_OUTPUT)
 				.setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
 		// mapper = mapper.setSerializationInclusion(Include)

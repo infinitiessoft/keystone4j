@@ -4,5 +4,5 @@ import javax.ws.rs.container.ContainerRequestContext;
 
 public interface Callback {
 
-	void execute(ContainerRequestContext request, ProtectedAction<?> command);
+	void execute(ContainerRequestContext request, ProtectedAction<?> command) throws Exception;
 }

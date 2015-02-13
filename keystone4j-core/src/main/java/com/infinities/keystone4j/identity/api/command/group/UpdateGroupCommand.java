@@ -1,52 +1,53 @@
 package com.infinities.keystone4j.identity.api.command.group;
 
 import com.google.common.base.Strings;
-import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.identity.IdMappingApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
-import com.infinities.keystone4j.identity.IdentityUtils;
 import com.infinities.keystone4j.identity.api.command.AbstractIdentityCommand;
-import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.model.identity.mapping.EntityType;
+import com.infinities.keystone4j.notification.NotifiableCommand;
 
-public class UpdateGroupCommand extends AbstractIdentityCommand<Group> {
+public class UpdateGroupCommand extends AbstractIdentityCommand implements NotifiableCommand<Group> {
 
-	private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
+	// private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
 	private final String groupid;
-	private final Group group;
-	private String domainid;
+	private final Group groupRef;
 
 
-	public UpdateGroupCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
-			IdentityDriver identityDriver, String groupid, Group group, String domainid) {
-		super(credentialApi, tokenApi, identityApi, identityDriver);
-		this.group = group;
+	public UpdateGroupCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, RevokeApi revokeApi,
+			IdentityApi identityApi, IdMappingApi idMappingApi, IdentityDriver identityDriver, String groupid, Group group) {
+		super(assignmentApi, credentialApi, revokeApi, identityApi, idMappingApi, identityDriver);
+		this.groupRef = group;
 		this.groupid = groupid;
-		this.domainid = domainid;
 	}
 
 	@Override
-	public Group execute() {
-		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
-		}
-		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
-		if (driver == null) {
-			driver = this.getIdentityDriver();
+	public Group execute() throws Exception {
+		if (Strings.isNullOrEmpty(groupRef.getDomainid())) {
+			this.getAssignmentApi().getDomain(groupRef.getDomainid());
 		}
 
-		if (!driver.isDomainAware()) {
-			new IdentityUtils().clearDomainid(group);
-		}
-		Group ret = driver.updateGroup(groupid, group);
-		if (!driver.isDomainAware()) {
-			Domain domain = new Domain();
-			domain.setId(domainid);
-			ret.setDomain(domain);
-		}
-		return ret;
+		DomainIdDriverAndEntityId domainIdDriverAndEntityId = getDomainDriverAndEntityId(groupid);
+		String domainId = domainIdDriverAndEntityId.getDomainId();
+		IdentityDriver driver = domainIdDriverAndEntityId.getDriver();
+		String entityId = domainIdDriverAndEntityId.getLocalId();
+		Group group = clearDomainIdIfDomainUnaware(driver, groupRef);
+		Group ref = driver.updateGroup(entityId, group);
+		return setDomainIdAndMapping(ref, domainId, driver, EntityType.GROUP);
 	}
 
+	@Override
+	public Object getArgs(int index) {
+		if (index == 1) {
+			return groupid;
+		} else if (index == 2) {
+			return groupRef;
+		}
+		throw new IllegalArgumentException("invalid index");
+	}
 }

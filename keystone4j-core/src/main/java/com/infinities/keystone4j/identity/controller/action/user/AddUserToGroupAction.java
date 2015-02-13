@@ -23,7 +23,7 @@ public class AddUserToGroupAction extends AbstractUserAction implements Protecte
 	}
 
 	@Override
-	public MemberWrapper<User> execute(ContainerRequestContext request) {
+	public MemberWrapper<User> execute(ContainerRequestContext request) throws Exception {
 		this.getIdentityApi().addUserToGroup(userid, groupid);
 		return null;
 	}

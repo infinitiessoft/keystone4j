@@ -58,7 +58,7 @@ public class SimpleCertV3ControllerImpl extends BaseController implements Simple
 		try {
 			// URL url = getClass().getResource(text);
 			// File file = new File(text);
-			URL url = new KeystoneUtils().getURL(text);
+			URL url = KeystoneUtils.getURL(text);
 			return Response.status(200).type("application/x-pem-file").entity(getBytesFromFile(url)).build();
 		} catch (Exception e) {
 			throw Exceptions.CertificateFilesUnavailableException.getInstance(null);

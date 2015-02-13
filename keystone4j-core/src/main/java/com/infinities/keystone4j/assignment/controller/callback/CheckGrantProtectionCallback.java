@@ -1,12 +1,9 @@
 package com.infinities.keystone4j.assignment.controller.callback;
 
-import java.util.Map;
-
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
 import com.infinities.keystone4j.Callback;
 import com.infinities.keystone4j.ControllerAction;
 import com.infinities.keystone4j.KeystoneContext;
@@ -18,7 +15,6 @@ import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -37,12 +33,12 @@ public class CheckGrantProtectionCallback extends ControllerAction implements Ca
 
 
 	public CheckGrantProtectionCallback(TokenProviderApi tokenProviderApi, PolicyApi policyApi, IdentityApi identityApi,
-			AssignmentApi assignmentApi, String userid, String roleid, String groupid, String projectid, String domainid) {
-		this(tokenProviderApi, policyApi, identityApi, assignmentApi, userid, roleid, groupid, projectid, domainid, false);
+			AssignmentApi assignmentApi, String roleid, String userid, String groupid, String domainid, String projectid) {
+		this(tokenProviderApi, policyApi, identityApi, assignmentApi, roleid, userid, groupid, domainid, projectid, false);
 	}
 
 	public CheckGrantProtectionCallback(TokenProviderApi tokenProviderApi, PolicyApi policyApi, IdentityApi identityApi,
-			AssignmentApi assignmentApi, String userid, String roleid, String groupid, String projectid, String domainid,
+			AssignmentApi assignmentApi, String roleid, String userid, String groupid, String domainid, String projectid,
 			boolean allowNoUser) {
 		super(tokenProviderApi, policyApi);
 		this.identityApi = identityApi;
@@ -56,36 +52,35 @@ public class CheckGrantProtectionCallback extends ControllerAction implements Ca
 	}
 
 	@Override
-	public void execute(ContainerRequestContext request, ProtectedAction<?> command) {
-		Map<String, PolicyEntity> target = Maps.newHashMap();
+	public void execute(ContainerRequestContext request, ProtectedAction<?> command) throws Exception {
+		Target target = new Target();
 		if (!Strings.isNullOrEmpty(roleid)) {
 			Role role = this.assignmentApi.getRole(roleid);
-			target.put("role", role);
+			target.setRole(role);
 		}
 		if (!Strings.isNullOrEmpty(userid)) {
 			try {
 				User user = this.identityApi.getUser(userid);
-				target.put("user", user);
+				target.setUser(user);
 			} catch (WebApplicationException e) {
 				if (!allowNoUser) {
 					throw e;
 				}
 			}
 		} else {
-			Group group = this.identityApi.getGroup(groupid, null);
-			target.put("group", group);
+			Group group = this.identityApi.getGroup(groupid);
+			target.setGroup(group);
 		}
 
 		if (!Strings.isNullOrEmpty(domainid)) {
 			Domain domain = this.assignmentApi.getDomain(domainid);
-			target.put("domain", domain);
+			target.setDomain(domain);
 		} else {
 			Project project = this.assignmentApi.getProject(projectid);
-			target.put("project", project);
+			target.setProject(project);
 		}
 
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		checkProtection(context, request, command, target);
 	}
-
 }

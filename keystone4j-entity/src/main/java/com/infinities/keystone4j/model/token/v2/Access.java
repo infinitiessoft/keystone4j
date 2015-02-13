@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinities.keystone4j.model.common.Link;
 import com.infinities.keystone4j.model.identity.IUser;
 import com.infinities.keystone4j.model.token.ITokenData;
+import com.infinities.keystone4j.model.token.Metadata;
 
 @XmlRootElement(name = "access")
 public class Access implements Serializable, ITokenData {
@@ -21,11 +22,24 @@ public class Access implements Serializable, ITokenData {
 	private static final long serialVersionUID = 1L;
 
 
-	public static final class Service {
+	public static final class Service implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 
 		@JsonIgnoreProperties(ignoreUnknown = true)
-		public static final class Endpoint {
+		public static final class Endpoint implements Serializable {
 
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			private String id;
+			private String name;
+			private String type;
 			private String region;
 
 			private String publicURL;
@@ -77,6 +91,30 @@ public class Access implements Serializable, ITokenData {
 
 			public void setAdminURL(String adminURL) {
 				this.adminURL = adminURL;
+			}
+
+			public String getId() {
+				return id;
+			}
+
+			public void setId(String id) {
+				this.id = id;
+			}
+
+			public String getName() {
+				return name;
+			}
+
+			public void setName(String name) {
+				this.name = name;
+			}
+
+			public String getType() {
+				return type;
+			}
+
+			public void setType(String type) {
+				this.type = type;
 			}
 
 			/*
@@ -381,34 +419,32 @@ public class Access implements Serializable, ITokenData {
 		return user;
 	}
 
-
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static final class Metadata {
-
-		@XmlElement(name = "is_admin")
-		private int isAdmin;
-		@XmlElement(name = "roles")
-		private List<String> roles = new ArrayList<String>();
-
-
-		public int getIsAdmin() {
-			return isAdmin;
-		}
-
-		public void setIsAdmin(int isAdmin) {
-			this.isAdmin = isAdmin;
-		}
-
-		public List<String> getRoles() {
-			return roles;
-		}
-
-		public void setRoles(List<String> roles) {
-			this.roles = roles;
-		}
-
-	}
-
+	// @JsonIgnoreProperties(ignoreUnknown = true)
+	// public static final class Metadata {
+	//
+	// @XmlElement(name = "is_admin")
+	// private int isAdmin;
+	// @XmlElement(name = "roles")
+	// private List<String> roles = new ArrayList<String>();
+	//
+	//
+	// public int getIsAdmin() {
+	// return isAdmin;
+	// }
+	//
+	// public void setIsAdmin(int isAdmin) {
+	// this.isAdmin = isAdmin;
+	// }
+	//
+	// public List<String> getRoles() {
+	// return roles;
+	// }
+	//
+	// public void setRoles(List<String> roles) {
+	// this.roles = roles;
+	// }
+	//
+	// }
 
 	/**
 	 * @return the metadata

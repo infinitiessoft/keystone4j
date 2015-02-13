@@ -1,42 +1,46 @@
 package com.infinities.keystone4j.identity.api.command.user;
 
-import com.google.common.base.Strings;
-import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.identity.IdMappingApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
-import com.infinities.keystone4j.identity.IdentityUtils;
 import com.infinities.keystone4j.identity.api.command.AbstractIdentityCommand;
 import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.notification.NotifiableCommand;
 
-public class DeleteUserCommand extends AbstractIdentityCommand<User> {
+public class DeleteUserCommand extends AbstractIdentityCommand implements NotifiableCommand<User> {
 
-	private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
+	// private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
 	private final String userid;
-	private String domainid;
 
 
-	public DeleteUserCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
-			IdentityDriver identityDriver, String userid, String domainid) {
-		super(credentialApi, tokenApi, identityApi, identityDriver);
+	public DeleteUserCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, RevokeApi revokeApi,
+			IdentityApi identityApi, IdMappingApi idMappingApi, IdentityDriver identityDriver, String userid, String domainid) {
+		super(assignmentApi, credentialApi, revokeApi, identityApi, idMappingApi, identityDriver);
 		this.userid = userid;
-		this.domainid = domainid;
 	}
 
 	@Override
-	public User execute() {
-		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
-		}
-		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
-		if (driver == null) {
-			driver = this.getIdentityDriver();
-		}
-		driver.deleteUser(userid);
+	public User execute() throws Exception {
+		DomainIdDriverAndEntityId domainIdDriverAndEntityId = getDomainDriverAndEntityId(userid);
+		// String domainId = domainIdDriverAndEntityId.getDomainId();
+		IdentityDriver driver = domainIdDriverAndEntityId.getDriver();
+		String entityId = domainIdDriverAndEntityId.getLocalId();
+		driver.deleteUser(entityId);
+		this.getAssignmentApi().deleteUser(userid);
 		this.getCredentialApi().deleteCredentialsForUser(userid);
-		this.getTokenApi().deleteTokensForUser(userid, null);
+		this.getIdMappingApi().deleteIdMapping(userid);
 		return null;
+	}
+
+	@Override
+	public Object getArgs(int index) {
+		if (index == 1) {
+			return userid;
+		}
+		throw new IllegalArgumentException("invalid index");
 	}
 
 }

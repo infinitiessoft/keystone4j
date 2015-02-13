@@ -1,0 +1,39 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/domains | python -mjson.tool
+
+response:
+{
+    "domains": [
+        {
+            "description": "Owns users and tenants (i.e. projects) available on Identity API v2.", 
+            "enabled": true, 
+            "id": "default", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/domains/default"
+            }, 
+            "name": "Default"
+        }, 
+        {
+            "enabled": true, 
+            "id": "bd1c7002de9146af8355a89ccd55f545", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/domains/bd1c7002de9146af8355a89ccd55f545"
+            }, 
+            "name": "default"
+        }, 
+        {
+            "description": "demo", 
+            "enabled": true, 
+            "id": "5b473a7c5ff0435b8f1e216e62b8e4e0", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/domains/5b473a7c5ff0435b8f1e216e62b8e4e0"
+            }, 
+            "name": "demo"
+        }
+    ], 
+    "links": {
+        "next": null, 
+        "previous": null, 
+        "self": "http://192.168.126.2:5000/v3/domains"
+    }
+}

@@ -1,19 +1,19 @@
 package com.infinities.keystone4j.jpa.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.jpa.AbstractDao;
-import com.infinities.keystone4j.model.assignment.UserProjectGrant;
 import com.infinities.keystone4j.model.identity.User;
 
 public class UserDao extends AbstractDao<User> {
@@ -22,19 +22,20 @@ public class UserDao extends AbstractDao<User> {
 		super(User.class);
 	}
 
-	public List<User> listUsersForProject(String projectid) {
-		EntityManager em = getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<User> cq = cb.createQuery(User.class);
-		Root<User> root = cq.from(User.class);
-		Join<User, UserProjectGrant> grant = root.join("userProjectGrants");
-		cq.select(root).where(cb.equal(grant.get("project").get("id"), projectid));
-		TypedQuery<User> q = em.createQuery(cq);
-		List<User> users = q.getResultList();
-
-		return users;
-
-	}
+	// public List<User> listUsersForProject(String projectid) {
+	// EntityManager em = getEntityManager();
+	// CriteriaBuilder cb = em.getCriteriaBuilder();
+	// CriteriaQuery<User> cq = cb.createQuery(User.class);
+	// Root<User> root = cq.from(User.class);
+	// Join<User, UserProjectGrant> grant = root.join("userProjectGrants");
+	// cq.select(root).where(cb.equal(grant.get("project").get("id"),
+	// projectid));
+	// TypedQuery<User> q = em.createQuery(cq);
+	// List<User> users = q.getResultList();
+	//
+	// return users;
+	//
+	// }
 
 	public User findByName(String name, String domainid) {
 
@@ -69,5 +70,10 @@ public class UserDao extends AbstractDao<User> {
 		// em.close();
 		// }
 
+	}
+
+	public List<User> listUsers(Hints hints) throws SecurityException, IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
+		return filterLimitQuery(User.class, hints);
 	}
 }

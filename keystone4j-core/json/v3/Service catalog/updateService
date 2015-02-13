@@ -1,0 +1,16 @@
+request:
+curl -X "PATCH" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN" -d '{"service":{"type":"demo2"}}' http://localhost:5000/v3/services/7bcc585420264cf499ab5e56a1632471 ; echo
+
+response:
+{
+   "service":{
+      "name":"demo",
+      "links":{
+         "self":"http://192.168.126.2:5000/v3/services/7bcc585420264cf499ab5e56a1632471"
+      },
+      "enabled":true,
+      "type":"demo2",
+      "id":"7bcc585420264cf499ab5e56a1632471",
+      "description":"demo"
+   }
+}

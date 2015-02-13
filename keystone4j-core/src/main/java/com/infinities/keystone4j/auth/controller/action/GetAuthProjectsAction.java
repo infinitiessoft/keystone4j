@@ -38,7 +38,7 @@ public class GetAuthProjectsAction extends AbstractAuthAction implements FilterP
 	@Override
 	public CollectionWrapper<Project> execute(ContainerRequestContext context, String... filters) throws Exception {
 		Authorization.AuthContext authContext = AbstractAction.getAuthContext(context);
-		String userid = authContext.getUserid();
+		String userid = authContext.getUserId();
 		List<Project> userRefs = new ArrayList<Project>();
 		if (!Strings.isNullOrEmpty(userid)) {
 			try {
@@ -57,6 +57,11 @@ public class GetAuthProjectsAction extends AbstractAuthAction implements FilterP
 		List<Project> refs = combineListsUniquely(userRefs, groupRefs);
 
 		return new AbstractProjectAction(assignmentApi, tokenProviderApi, policyApi) {
+
+			@Override
+			public String getName() {
+				return null;
+			}
 
 		}.wrapCollection(context, refs);
 	}

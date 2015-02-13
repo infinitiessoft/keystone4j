@@ -6,24 +6,20 @@ import org.glassfish.hk2.api.Factory;
 
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
-import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.token.TokenApi;
 
 public class AssignmentApiFactory implements Factory<AssignmentApi> {
 
 	private final CredentialApi credentialApi;
-	private final IdentityApi identityApi;
-	private final TokenApi tokenApi;
+	private final RevokeApi revokeApi;
 	private final AssignmentDriver assignmentDriver;
 
 
 	@Inject
-	public AssignmentApiFactory(CredentialApi credentialApi, IdentityApi identityApi, TokenApi tokenApi,
-			AssignmentDriver assignmentDriver) {
+	public AssignmentApiFactory(CredentialApi credentialApi, RevokeApi revokeApi, AssignmentDriver assignmentDriver) {
 		this.credentialApi = credentialApi;
-		this.identityApi = identityApi;
-		this.tokenApi = tokenApi;
+		this.revokeApi = revokeApi;
 		this.assignmentDriver = assignmentDriver;
 	}
 
@@ -34,7 +30,7 @@ public class AssignmentApiFactory implements Factory<AssignmentApi> {
 
 	@Override
 	public AssignmentApi provide() {
-		return new AssignmentApiImpl(credentialApi, identityApi, tokenApi, assignmentDriver);
+		return new AssignmentApiImpl(credentialApi, revokeApi, assignmentDriver);
 	}
 
 }

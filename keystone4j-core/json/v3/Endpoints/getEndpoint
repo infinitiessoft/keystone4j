@@ -1,0 +1,18 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"  http://localhost:5000/v3/endpoints/db7d5b002d1247aa960709c099a929c7 | python -mjson.tool
+
+response:
+{
+    "endpoint": {
+        "enabled": true, 
+        "id": "db7d5b002d1247aa960709c099a929c7", 
+        "interface": "public", 
+        "links": {
+            "self": "http://192.168.126.2:5000/v3/endpoints/db7d5b002d1247aa960709c099a929c7"
+        }, 
+        "name": "demo", 
+        "region": "RegionOne", 
+        "service_id": "3f813b99431e46c0af877393f6ad91d7", 
+        "url": "http://d00-0c-29-37-0b-41.cloud.default.net:2121/v2.0/"
+    }
+}

@@ -21,11 +21,9 @@ import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.assignment.controller.ProjectV3Controller;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.MemberWrapper;
-import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.assignment.ProjectWrapper;
-import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.assignment.wrapper.ProjectWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.ProjectsWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RolesWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 
 //keystone.assignment.routers 20141209
@@ -47,36 +45,69 @@ public class ProjectResource {
 	@POST
 	@JsonView(Views.Basic.class)
 	public Response createProject(ProjectWrapper projectWrapper) throws Exception {
-		return Response.status(Status.CREATED).entity(projectController.createProject(projectWrapper.getProject())).build();
+		return Response.status(Status.CREATED).entity(projectController.createProject(projectWrapper.getRef())).build();
 	}
 
 	@GET
 	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Project> listProject(@QueryParam("domain_id") String domainid, @QueryParam("name") String name,
+	public ProjectsWrapper listProject(@QueryParam("domain_id") String domainid, @QueryParam("name") String name,
 			@QueryParam("enabled") Boolean enabled, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
-		return projectController.listProjects();
+		return (ProjectsWrapper) projectController.listProjects();
 	}
 
 	@GET
 	@Path("/{projectid}")
 	@JsonView(Views.Basic.class)
-	public MemberWrapper<Project> getProject(@PathParam("projectid") String projectid) throws Exception {
-		return projectController.getProject(projectid);
+	public ProjectWrapper getProject(@PathParam("projectid") String projectid) throws Exception {
+		return (ProjectWrapper) projectController.getProject(projectid);
 	}
 
 	@PATCH
 	@Path("/{projectid}")
 	@JsonView(Views.Basic.class)
-	public MemberWrapper<Project> updateProject(@PathParam("projectid") String projectid, ProjectWrapper projectWrapper)
+	public ProjectWrapper updateProject(@PathParam("projectid") String projectid, ProjectWrapper projectWrapper)
 			throws Exception {
-		return projectController.updateProject(projectid, projectWrapper.getProject());
+		return (ProjectWrapper) projectController.updateProject(projectid, projectWrapper.getRef());
 	}
 
 	@DELETE
 	@Path("/{projectid}")
 	public Response deleteProject(@PathParam("projectid") String projectid) throws Exception {
 		projectController.deleteProject(projectid);
+		return Response.status(CustomResponseStatus.NO_CONTENT).build();
+	}
+
+	@GET
+	@Path("/{projectid}/users/{userid}/roles")
+	@JsonView(Views.Basic.class)
+	public RolesWrapper listGrantByUser(@PathParam("projectid") String projectid, @PathParam("userid") String userid,
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws Exception {
+		return (RolesWrapper) roleController.listGrants(userid, null, null, projectid);
+	}
+
+	@PUT
+	@Path("/{projectid}/users/{userid}/roles/{roleid}")
+	public Response createGrantByUser(@PathParam("projectid") String projectid, @PathParam("userid") String userid,
+			@PathParam("roleid") String roleid) throws Exception {
+		roleController.createGrant(roleid, userid, null, null, projectid);
+		return Response.status(CustomResponseStatus.NO_CONTENT).build();
+	}
+
+	@HEAD
+	@Path("/{projectid}/users/{userid}/roles/{roleid}")
+	public Response checkGrantByUser(@PathParam("projectid") String projectid, @PathParam("userid") String userid,
+			@PathParam("roleid") String roleid) throws Exception {
+		roleController.checkGrant(roleid, userid, null, null, projectid);
+		return Response.status(CustomResponseStatus.NO_CONTENT).build();
+	}
+
+	@DELETE
+	@Path("/{projectid}/users/{userid}/roles/{roleid}")
+	public Response revokeGrantByUser(@PathParam("projectid") String projectid, @PathParam("userid") String userid,
+			@PathParam("roleid") String roleid) throws Exception {
+		roleController.revokeGrant(roleid, userid, null, null, projectid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -93,26 +124,10 @@ public class ProjectResource {
 	// }
 
 	@PUT
-	@Path("/{projectid}/users/{userid}/roles/{roleid}")
-	public Response createGrantByUser(@PathParam("projectid") String projectid, @PathParam("userid") String userid,
-			@PathParam("roleid") String roleid) throws Exception {
-		roleController.createGrantByUserProject(roleid, userid, projectid);
-		return Response.status(CustomResponseStatus.NO_CONTENT).build();
-	}
-
-	@PUT
 	@Path("/{projectid}/groups/{groupid}/roles/{roleid}")
 	public Response createGrantByGroup(@PathParam("projectid") String projectid, @PathParam("groupid") String groupid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.createGrantByGroupProject(roleid, groupid, projectid);
-		return Response.status(CustomResponseStatus.NO_CONTENT).build();
-	}
-
-	@HEAD
-	@Path("/{projectid}/users/{userid}/roles/{roleid}")
-	public Response checkGrantByUser(@PathParam("projectid") String projectid, @PathParam("userid") String userid,
-			@PathParam("roleid") String roleid) throws Exception {
-		roleController.checkGrantByUserProject(roleid, userid, projectid);
+		roleController.createGrant(roleid, null, groupid, null, projectid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -120,41 +135,24 @@ public class ProjectResource {
 	@Path("/{projectid}/groups/{groupid}/roles/{roleid}")
 	public Response checkGrantByGroup(@PathParam("projectid") String projectid, @PathParam("groupid") String groupid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.checkGrantByGroupProject(roleid, groupid, projectid);
+		roleController.checkGrant(roleid, null, groupid, null, projectid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
-	}
-
-	@GET
-	@Path("/{projectid}/users/{userid}/roles")
-	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Role> listGrantByUser(@PathParam("projectid") String projectid,
-			@PathParam("userid") String userid, @DefaultValue("1") @QueryParam("page") int page,
-			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
-		return roleController.listGrantsByUserProject(userid, projectid);
 	}
 
 	@GET
 	@Path("/{projectid}/groups/{groupid}/roles")
 	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Role> listGrantByGroup(@PathParam("projectid") String projectid,
-			@PathParam("groupid") String groupid, @DefaultValue("1") @QueryParam("page") int page,
-			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
-		return roleController.listGrantsByGroupProject(groupid, projectid);
-	}
-
-	@DELETE
-	@Path("/{projectid}/users/{userid}/roles/{roleid}")
-	public Response revokeGrantByUser(@PathParam("projectid") String projectid, @PathParam("userid") String userid,
-			@PathParam("roleid") String roleid) throws Exception {
-		roleController.revokeGrantByUserProject(roleid, userid, projectid);
-		return Response.status(CustomResponseStatus.NO_CONTENT).build();
+	public RolesWrapper listGrantByGroup(@PathParam("projectid") String projectid, @PathParam("groupid") String groupid,
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws Exception {
+		return (RolesWrapper) roleController.listGrants(null, groupid, null, projectid);
 	}
 
 	@DELETE
 	@Path("/{projectid}/groups/{groupid}/roles/{roleid}")
 	public Response revokeGrantByGroup(@PathParam("projectid") String projectid, @PathParam("groupid") String groupid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.revokeGrantByGroupProject(roleid, groupid, projectid);
+		roleController.revokeGrant(roleid, null, groupid, null, projectid);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 }

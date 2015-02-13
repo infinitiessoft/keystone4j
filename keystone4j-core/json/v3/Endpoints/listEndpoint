@@ -1,0 +1,253 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/endpoints | python -mjson.tool
+
+response:
+{
+    "endpoints": [
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "9775f17cbc814f8d8097a524680bb33c", 
+            "interface": "admin", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/9775f17cbc814f8d8097a524680bb33c"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "3f813b99431e46c0af877393f6ad91d7", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:35357/v2.0/"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "65c3e0f83cdb4156a0d9bc6e442ba0ac", 
+            "interface": "internal", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/65c3e0f83cdb4156a0d9bc6e442ba0ac"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "3f813b99431e46c0af877393f6ad91d7", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:5000/v2.0/"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "b36f57923aee4088a36ac8956897ddaa", 
+            "interface": "public", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/b36f57923aee4088a36ac8956897ddaa"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "3f813b99431e46c0af877393f6ad91d7", 
+            "url": "http://192.168.126.2:5000/v2.0/"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "a02bb4bf19954487b7afa01fc78ad740", 
+            "interface": "admin", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/a02bb4bf19954487b7afa01fc78ad740"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "d6f130fd64324b93b0b6e3d8fb12d53f", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:9292"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "f5f7c3a8931b4683b783511e2023bd13", 
+            "interface": "internal", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/f5f7c3a8931b4683b783511e2023bd13"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "d6f130fd64324b93b0b6e3d8fb12d53f", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:9292"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "c5f2e2c0ba154e93ab8a91c20075e845", 
+            "interface": "public", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/c5f2e2c0ba154e93ab8a91c20075e845"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "d6f130fd64324b93b0b6e3d8fb12d53f", 
+            "url": "http://192.168.126.2:9292"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "4cba952f64cb479082763bc83aefa160", 
+            "interface": "admin", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/4cba952f64cb479082763bc83aefa160"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "1b95f9b67f4e417b89b659c467e0ab73", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:8776/v1/$(tenant_id)s"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "23a594bced5f4bebad7c99cdefcdd2ce", 
+            "interface": "internal", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/23a594bced5f4bebad7c99cdefcdd2ce"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "1b95f9b67f4e417b89b659c467e0ab73", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:8776/v1/$(tenant_id)s"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "42053cdf4f1643068b0fe3c9bbf77cc8", 
+            "interface": "public", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/42053cdf4f1643068b0fe3c9bbf77cc8"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "1b95f9b67f4e417b89b659c467e0ab73", 
+            "url": "http://192.168.126.2:8776/v1/$(tenant_id)s"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "da847a0a1fd04e4db0874a68c5ac6cfe", 
+            "interface": "admin", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/da847a0a1fd04e4db0874a68c5ac6cfe"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "8b3e7697b6054d8aba587e72ade17f10", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:9696/"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "9feed8b068ae40b1aae003926eaf2f29", 
+            "interface": "internal", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/9feed8b068ae40b1aae003926eaf2f29"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "8b3e7697b6054d8aba587e72ade17f10", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:9696/"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "653c307fc65b4db3ba7895d2726122a6", 
+            "interface": "public", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/653c307fc65b4db3ba7895d2726122a6"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "8b3e7697b6054d8aba587e72ade17f10", 
+            "url": "http://192.168.126.2:9696/"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "4a5ad94597514ddaa4285b5406949f01", 
+            "interface": "admin", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/4a5ad94597514ddaa4285b5406949f01"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "4586eae18b6a486e8dd3974c238985ed", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:8774/v2/$(tenant_id)s"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "fc9239a4c35444fa8f7ad935659d7fd8", 
+            "interface": "internal", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/fc9239a4c35444fa8f7ad935659d7fd8"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "4586eae18b6a486e8dd3974c238985ed", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:8774/v2/$(tenant_id)s"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "8a4462062be1409994a63797cccf9e9b", 
+            "interface": "public", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/8a4462062be1409994a63797cccf9e9b"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "4586eae18b6a486e8dd3974c238985ed", 
+            "url": "http://192.168.126.2:8774/v2/$(tenant_id)s"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "c0cc64a6480f461fbd8028bed5230c7e", 
+            "interface": "admin", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/c0cc64a6480f461fbd8028bed5230c7e"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "ac7cdd8b254a4ece9e5d8fe5e67e78ed", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:8773/services/Admin"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "854433cffbde4024a2fb07567f48986e", 
+            "interface": "internal", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/854433cffbde4024a2fb07567f48986e"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "ac7cdd8b254a4ece9e5d8fe5e67e78ed", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:8773/services/Cloud"
+        }, 
+        {
+            "enabled": true, 
+            "global": "True", 
+            "id": "068af52b7dd54308a834e5f056dcf046", 
+            "interface": "public", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/068af52b7dd54308a834e5f056dcf046"
+            }, 
+            "region": "RegionOne", 
+            "service_id": "ac7cdd8b254a4ece9e5d8fe5e67e78ed", 
+            "url": "http://192.168.126.2:8773/services/Cloud"
+        }, 
+        {
+            "enabled": true, 
+            "id": "e8b005fddfc84365b739dc53fe29bb0e", 
+            "interface": "public", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/e8b005fddfc84365b739dc53fe29bb0e"
+            }, 
+            "name": "demo", 
+            "region": null, 
+            "service_id": "3f813b99431e46c0af877393f6ad91d7", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:2121/v2.0/"
+        }, 
+        {
+            "enabled": true, 
+            "id": "db7d5b002d1247aa960709c099a929c7", 
+            "interface": "public", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/endpoints/db7d5b002d1247aa960709c099a929c7"
+            }, 
+            "name": "demo", 
+            "region": "RegionOne", 
+            "service_id": "3f813b99431e46c0af877393f6ad91d7", 
+            "url": "http://d00-0c-29-37-0b-41.cloud.default.net:2121/v2.0/"
+        }
+    ], 
+    "links": {
+        "next": null, 
+        "previous": null, 
+        "self": "http://192.168.126.2:5000/v3/endpoints"
+    }
+}

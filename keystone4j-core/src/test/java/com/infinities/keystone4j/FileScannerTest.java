@@ -25,9 +25,9 @@ public class FileScannerTest {
 		// "keystone.conf");
 		// File file = new File(KeystoneApplication.CONF_DIR + "keystone.conf");
 		// URL url = FileScannerTest.class.getResource("/keystone.conf");
-		System.out.println(new KeystoneUtils().getURL(KeystoneApplication.CONF_DIR + "keystone.conf"));
+		System.out.println(KeystoneUtils.getURL(KeystoneApplication.CONF_DIR + "keystone.conf"));
 
-		scanner = new FileScanner(new KeystoneUtils().getURL(KeystoneApplication.CONF_DIR + "keystone.conf"));
+		scanner = new FileScanner(KeystoneUtils.getURL(KeystoneApplication.CONF_DIR + "keystone.conf"));
 	}
 
 	@After

@@ -1,0 +1,15 @@
+request:
+curl -X "PATCH" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN" -d '{"domain":{"name":"demo2","description":"demo2","enabled":false}}' http://localhost:5000/v3/domains/5b473a7c5ff0435b8f1e216e62b8e4e0
+
+response:
+{
+   "domain":{
+      "links":{
+         "self":"http://192.168.126.2:5000/v3/domains/5b473a7c5ff0435b8f1e216e62b8e4e0"
+      },
+      "enabled":false,
+      "description":"demo2",
+      "name":"demo2",
+      "id":"5b473a7c5ff0435b8f1e216e62b8e4e0"
+   }
+}

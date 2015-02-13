@@ -23,7 +23,7 @@ public class CreateGroupAction extends AbstractGroupAction implements ProtectedA
 	}
 
 	@Override
-	public MemberWrapper<Group> execute(ContainerRequestContext request) {
+	public MemberWrapper<Group> execute(ContainerRequestContext request) throws Exception {
 		// require_attribute(user, 'name')
 		if (Strings.isNullOrEmpty(group.getName())) {
 			String msg = String.format("%s field is required and cannot be empty", "name");

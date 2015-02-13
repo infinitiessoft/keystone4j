@@ -26,4 +26,9 @@ public class IntegerOption extends Option {
 		intValue = Integer.parseInt(value);
 	}
 
+	@Override
+	public Option clone() {
+		return new IntegerOption(this.getName(), intValue);
+	}
+
 }

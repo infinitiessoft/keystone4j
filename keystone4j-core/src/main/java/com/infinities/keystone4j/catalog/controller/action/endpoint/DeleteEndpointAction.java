@@ -21,7 +21,7 @@ public class DeleteEndpointAction extends AbstractEndpointAction implements Prot
 	}
 
 	@Override
-	public MemberWrapper<Endpoint> execute(ContainerRequestContext context) {
+	public MemberWrapper<Endpoint> execute(ContainerRequestContext context) throws Exception {
 		this.getCatalogApi().deleteEndpoint(endpointid);
 		return null;
 	}

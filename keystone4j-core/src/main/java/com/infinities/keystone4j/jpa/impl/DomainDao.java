@@ -1,5 +1,7 @@
 package com.infinities.keystone4j.jpa.impl;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,9 +12,13 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.jpa.AbstractDao;
 import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.RoleAssignment;
+import com.infinities.keystone4j.model.assignment.RoleAssignment.AssignmentType;
 
 public class DomainDao extends AbstractDao<Domain> {
 
@@ -22,10 +28,6 @@ public class DomainDao extends AbstractDao<Domain> {
 
 	public Domain findByName(String name) {
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Domain> cq = cb.createQuery(getEntityType());
 		Root<Domain> root = cq.from(getEntityType());
@@ -37,15 +39,67 @@ public class DomainDao extends AbstractDao<Domain> {
 		cq.select(root);
 		TypedQuery<Domain> q = em.createQuery(cq);
 		Domain domain = q.getSingleResult();
-		// tx.commit();
 		return domain;
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
+	}
+
+	public List<Domain> listDomainsForUser(String userid, List<String> groupids) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Domain> cq = cb.createQuery(Domain.class);
+		Root<Domain> root = cq.from(Domain.class);
+		Root<RoleAssignment> roleAssignmentRoot = cq.from(RoleAssignment.class);
+
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate targetIdPredicate = cb.equal(root.get("id"), roleAssignmentRoot.get("targetId"));
+		predicates.add(targetIdPredicate);
+
+		List<Predicate> filters = Lists.newArrayList();
+		if (!Strings.isNullOrEmpty(userid)) {
+			filters.add(cb.and(cb.equal(roleAssignmentRoot.get("actorId"), userid),
+					cb.equal(roleAssignmentRoot.get("inherited"), false),
+					cb.equal(roleAssignmentRoot.get("type"), AssignmentType.USER_DOMAIN)));
+		}
+
+		if (groupids != null) {
+			filters.add(cb.and(roleAssignmentRoot.get("actorId").in(groupids),
+					cb.equal(roleAssignmentRoot.get("inherited"), false),
+					cb.equal(roleAssignmentRoot.get("type"), AssignmentType.GROUP_DOMAIN)));
+		}
+
+		if (filters.isEmpty()) {
+			return new ArrayList<Domain>();
+		}
+
+		cq.select(root);
+		predicates.add(cb.or(filters.toArray(new Predicate[filters.size()])));
+		cq.where(predicates.toArray(new Predicate[predicates.size()]));
+		TypedQuery<Domain> q = em.createQuery(cq);
+		List<Domain> domains = q.getResultList();
+
+		return domains;
+	}
+
+	public List<Domain> listDomainsForGroups(List<String> groupids) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Domain> cq = cb.createQuery(Domain.class);
+		Root<Domain> root = cq.from(Domain.class);
+		Root<RoleAssignment> roleAssignmentRoot = cq.from(RoleAssignment.class);
+
+		Predicate predicate = cb.and(cb.equal(root.get("id"), roleAssignmentRoot.get("targetId")),
+				cb.isFalse(roleAssignmentRoot.<Boolean> get("inherited")),
+				cb.equal(roleAssignmentRoot.get("type"), AssignmentType.GROUP_DOMAIN),
+				roleAssignmentRoot.get("actorId").in(groupids));
+		cq.select(root);
+		cq.where(predicate);
+		TypedQuery<Domain> q = em.createQuery(cq);
+		List<Domain> domains = q.getResultList();
+
+		return domains;
+	}
+
+	public List<Domain> listDomain(Hints hints) throws SecurityException, IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
+		return filterLimitQuery(Domain.class, hints);
 	}
 }

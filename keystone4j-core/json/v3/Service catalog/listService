@@ -1,0 +1,83 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/services | python -mjson.tool
+
+response:
+{
+   "links":{
+      "next":null,
+      "previous":null,
+      "self":"http://192.168.126.2:5000/v3/services"
+   },
+   "services":[
+      {
+         "description":"Openstack Identity Service",
+         "enabled":true,
+         "id":"3f813b99431e46c0af877393f6ad91d7",
+         "links":{
+            "self":"http://192.168.126.2:5000/v3/services/3f813b99431e46c0af877393f6ad91d7"
+         },
+         "name":"keystone",
+         "type":"identity"
+      },
+      {
+         "description":"Openstack Glance Service",
+         "enabled":true,
+         "id":"d6f130fd64324b93b0b6e3d8fb12d53f",
+         "links":{
+            "self":"http://192.168.126.2:5000/v3/services/d6f130fd64324b93b0b6e3d8fb12d53f"
+         },
+         "name":"glance",
+         "type":"image"
+      },
+      {
+         "description":"Openstack Cinder Service",
+         "enabled":true,
+         "id":"1b95f9b67f4e417b89b659c467e0ab73",
+         "links":{
+            "self":"http://192.168.126.2:5000/v3/services/1b95f9b67f4e417b89b659c467e0ab73"
+         },
+         "name":"cinder",
+         "type":"volume"
+      },
+      {
+         "description":"Openstack Neutron Service",
+         "enabled":true,
+         "id":"8b3e7697b6054d8aba587e72ade17f10",
+         "links":{
+            "self":"http://192.168.126.2:5000/v3/services/8b3e7697b6054d8aba587e72ade17f10"
+         },
+         "name":"neutron",
+         "type":"network"
+      },
+      {
+         "description":"Openstack Nova Service",
+         "enabled":true,
+         "id":"4586eae18b6a486e8dd3974c238985ed",
+         "links":{
+            "self":"http://192.168.126.2:5000/v3/services/4586eae18b6a486e8dd3974c238985ed"
+         },
+         "name":"nova",
+         "type":"compute"
+      },
+      {
+         "description":"EC2 Compatibility Layer",
+         "enabled":true,
+         "id":"ac7cdd8b254a4ece9e5d8fe5e67e78ed",
+         "links":{
+            "self":"http://192.168.126.2:5000/v3/services/ac7cdd8b254a4ece9e5d8fe5e67e78ed"
+         },
+         "name":"ec2",
+         "type":"ec2"
+      },
+      {
+         "description":"demo",
+         "enabled":true,
+         "id":"7bcc585420264cf499ab5e56a1632471",
+         "links":{
+            "self":"http://192.168.126.2:5000/v3/services/7bcc585420264cf499ab5e56a1632471"
+         },
+         "name":"demo",
+         "type":"demo"
+      }
+   ]
+}

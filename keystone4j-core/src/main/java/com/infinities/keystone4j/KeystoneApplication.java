@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 
+import com.infinities.keystone4j.admin.AdminResource;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.AssignmentDriver;
 import com.infinities.keystone4j.assignment.api.AssignmentApiFactory;
@@ -50,14 +51,11 @@ import com.infinities.keystone4j.identity.controller.impl.GroupV3ControllerFacto
 import com.infinities.keystone4j.identity.controller.impl.UserV3ControllerFactory;
 import com.infinities.keystone4j.identity.driver.IdentityDriverFactory;
 import com.infinities.keystone4j.jpa.EntityManagerInterceptor;
-import com.infinities.keystone4j.main.AdminResource;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.PolicyDriver;
 import com.infinities.keystone4j.policy.api.PolicyApiFactory;
 import com.infinities.keystone4j.policy.driver.PolicyDriverFactory;
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.TokenDriver;
-import com.infinities.keystone4j.token.api.TokenApiFactory;
 import com.infinities.keystone4j.token.driver.TokenDriverFactory;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
@@ -117,7 +115,7 @@ public class KeystoneApplication extends ResourceConfig {
 				bindFactory(PolicyDriverFactory.class).to(PolicyDriver.class);
 				//
 				// // token
-				bindFactory(TokenApiFactory.class).to(TokenApi.class).in(Singleton.class);
+				// bindFactory(TokenApiFactory.class).to(TokenApi.class).in(Singleton.class);
 				bindFactory(TokenDriverFactory.class).to(TokenDriver.class);
 				bindFactory(TokenProviderApiFactory.class).to(TokenProviderApi.class).in(Singleton.class);
 				bindFactory(TokenProviderDriverFactory.class).to(TokenProviderDriver.class);

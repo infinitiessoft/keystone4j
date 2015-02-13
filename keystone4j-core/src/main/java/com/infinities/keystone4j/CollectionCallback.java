@@ -4,5 +4,5 @@ import javax.ws.rs.container.ContainerRequestContext;
 
 public interface CollectionCallback {
 
-	void execute(ContainerRequestContext request, FilterProtectedAction<?> command);
+	void execute(ContainerRequestContext request, FilterProtectedAction<?> command) throws Exception;
 }

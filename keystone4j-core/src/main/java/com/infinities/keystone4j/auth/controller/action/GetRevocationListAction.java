@@ -10,9 +10,10 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.auth.RevokedWrapper;
 import com.infinities.keystone4j.model.token.Token;
-import com.infinities.keystone4j.model.trust.SignedWrapper;
+import com.infinities.keystone4j.model.trust.wrapper.SignedWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.utils.Cms;
@@ -27,7 +28,7 @@ public class GetRevocationListAction extends AbstractAuthAction implements Prote
 	}
 
 	@Override
-	public SignedWrapper execute(ContainerRequestContext request) {
+	public SignedWrapper execute(ContainerRequestContext request) throws Exception {
 		if (!Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 			throw Exceptions.Gone.getInstance();
 		}
@@ -54,4 +55,8 @@ public class GetRevocationListAction extends AbstractAuthAction implements Prote
 		return "revocation_list";
 	}
 
+	@Override
+	public MemberWrapper<String> getMemberWrapper() {
+		return new SignedWrapper();
+	}
 }

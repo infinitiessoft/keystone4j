@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.glassfish.hk2.api.Factory;
 
+import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.common.BaseControllerFactory;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
@@ -20,8 +21,10 @@ public class GroupV3ControllerFactory extends BaseControllerFactory implements F
 
 
 	@Inject
-	public GroupV3ControllerFactory(IdentityApi identityApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+	public GroupV3ControllerFactory(IdentityApi identityApi, AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi,
+			PolicyApi policyApi) {
 		this.identityApi = identityApi;
+		this.identityApi.setAssignmentApi(assignmentApi);
 		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
 	}

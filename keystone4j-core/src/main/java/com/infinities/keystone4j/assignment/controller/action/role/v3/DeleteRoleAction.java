@@ -21,7 +21,7 @@ public class DeleteRoleAction extends AbstractRoleAction implements ProtectedAct
 	}
 
 	@Override
-	public MemberWrapper<Role> execute(ContainerRequestContext context) {
+	public MemberWrapper<Role> execute(ContainerRequestContext context) throws Exception {
 		this.getAssignmentApi().deleteRole(roleid);
 		return null;
 	}

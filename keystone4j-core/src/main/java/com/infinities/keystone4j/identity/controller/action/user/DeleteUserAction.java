@@ -20,7 +20,7 @@ public class DeleteUserAction extends AbstractUserAction implements ProtectedAct
 	}
 
 	@Override
-	public MemberWrapper<User> execute(ContainerRequestContext request) {
+	public MemberWrapper<User> execute(ContainerRequestContext request) throws Exception {
 		this.getIdentityApi().deleteUser(userid);
 		return null;
 	}

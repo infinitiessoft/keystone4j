@@ -20,7 +20,7 @@ public class GetRegionAction extends AbstractRegionAction implements ProtectedAc
 	}
 
 	@Override
-	public MemberWrapper<Region> execute(ContainerRequestContext context) {
+	public MemberWrapper<Region> execute(ContainerRequestContext context) throws Exception {
 		Region ref = this.getCatalogApi().getRegion(regionid);
 		return this.wrapMember(context, ref);
 	}

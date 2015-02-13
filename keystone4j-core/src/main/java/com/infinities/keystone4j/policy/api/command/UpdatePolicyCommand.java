@@ -3,9 +3,10 @@ package com.infinities.keystone4j.policy.api.command;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.policy.Policy;
+import com.infinities.keystone4j.notification.NotifiableCommand;
 import com.infinities.keystone4j.policy.PolicyDriver;
 
-public class UpdatePolicyCommand extends AbstractPolicyCommand<Policy> {
+public class UpdatePolicyCommand extends AbstractPolicyCommand implements NotifiableCommand<Policy> {
 
 	private final static String CANNOT_CHANGE_POLICY_ID = "Cannot change policy ID";
 	private final String policyid;
@@ -20,7 +21,7 @@ public class UpdatePolicyCommand extends AbstractPolicyCommand<Policy> {
 
 	@Override
 	public Policy execute() {
-		if (!Strings.isNullOrEmpty(policy.getId()) && policyid.equals(policy.getId())) {
+		if (!Strings.isNullOrEmpty(policy.getId()) && !policyid.equals(policy.getId())) {
 			throw Exceptions.ValidationException.getInstance(CANNOT_CHANGE_POLICY_ID);
 		}
 		try {
@@ -28,6 +29,16 @@ public class UpdatePolicyCommand extends AbstractPolicyCommand<Policy> {
 		} catch (Exception e) {
 			throw Exceptions.PolicyNotFoundException.getInstance(null, policyid);
 		}
+	}
+
+	@Override
+	public Object getArgs(int index) {
+		if (index == 1) {
+			return policyid;
+		} else if (index == 2) {
+			return policy;
+		}
+		throw new IllegalArgumentException("invalid index");
 	}
 
 }

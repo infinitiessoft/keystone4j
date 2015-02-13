@@ -36,7 +36,7 @@ public class Hints {
 	}
 
 	public void setLimit(int limit) {
-		setLimit(limit, false);
+		setLimit(limit, true);
 	}
 
 	public void setLimit(int limit, boolean truncated) {
@@ -143,4 +143,13 @@ public class Hints {
 
 	}
 
+
+	public Filter getExactFilterByName(String name) {
+		for (Filter entry : filters) {
+			if ("filter".equals(entry.getType()) && name.equals(entry.getName()) && "equals".equals(entry.getComparator())) {
+				return entry;
+			}
+		}
+		return null;
+	}
 }

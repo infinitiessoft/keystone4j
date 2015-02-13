@@ -43,4 +43,7 @@ public abstract class Option {
 
 	public abstract void resetValue(String value);
 
+	@Override
+	public abstract Option clone();
+
 }

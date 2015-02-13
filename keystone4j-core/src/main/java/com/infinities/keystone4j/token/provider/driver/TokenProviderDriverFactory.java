@@ -15,7 +15,6 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.token.provider.TokenProviderDriver;
 import com.infinities.keystone4j.trust.TrustApi;
 
@@ -24,20 +23,20 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 	private final Logger logger = LoggerFactory.getLogger(TokenProviderDriverFactory.class);
 	private final static String PKI_PROVIDER = "com.infinities.keystone4j.token.provider.driver.PkiProvider";
 	private final static String UUID_PROVIDER = "com.infinities.keystone4j.token.provider.driver.UuidProvider";
+	// private final static String PKIZ_PROVIDER =
+	// "com.infinities.keystone4j.token.provider.driver.PkizProvider";
 	private final IdentityApi identityApi;
 	private final AssignmentApi assignmentApi;
 	private final CatalogApi catalogApi;
-	private final TokenApi tokenApi;
 	private final TrustApi trustApi;
 
 
 	@Inject
 	public TokenProviderDriverFactory(IdentityApi identityApi, AssignmentApi assignmentApi, CatalogApi catalogApi,
-			TokenApi tokenApi, TrustApi trustApi) {
+			TrustApi trustApi) {
 		this.identityApi = identityApi;
 		this.assignmentApi = assignmentApi;
 		this.catalogApi = catalogApi;
-		this.tokenApi = tokenApi;
 		this.trustApi = trustApi;
 	}
 
@@ -106,16 +105,14 @@ public class TokenProviderDriverFactory implements Factory<TokenProviderDriver> 
 		oParam[0] = IdentityApi.class;
 		oParam[1] = AssignmentApi.class;
 		oParam[2] = CatalogApi.class;
-		oParam[3] = TokenApi.class;
-		oParam[4] = TrustApi.class;
+		oParam[3] = TrustApi.class;
 
 		Constructor<?> constructor = c.getConstructor(oParam);
 		Object[] paramObjs = new Object[4];
 		paramObjs[0] = identityApi;
 		paramObjs[1] = assignmentApi;
 		paramObjs[2] = catalogApi;
-		paramObjs[3] = tokenApi;
-		paramObjs[4] = trustApi;
+		paramObjs[3] = trustApi;
 		return constructor.newInstance(paramObjs);
 	}
 }

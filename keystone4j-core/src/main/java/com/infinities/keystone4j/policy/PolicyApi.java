@@ -1,25 +1,26 @@
 package com.infinities.keystone4j.policy;
 
 import java.util.List;
+import java.util.Map;
 
 import com.infinities.keystone4j.Api;
-import com.infinities.keystone4j.common.Authorization.AuthContext;
 import com.infinities.keystone4j.common.Hints;
+import com.infinities.keystone4j.model.policy.Context;
 import com.infinities.keystone4j.model.policy.Policy;
-import com.infinities.keystone4j.model.policy.TargetWrapper;
 
 public interface PolicyApi extends Api {
 
-	Policy createPolicy(Policy policy);
+	Policy createPolicy(String policyid, Policy policy) throws Exception;
 
-	List<Policy> listPolicies(Hints hints);
+	List<Policy> listPolicies(Hints hints) throws Exception;
 
-	Policy getPolicy(String policyid);
+	Policy getPolicy(String policyid) throws Exception;
 
-	Policy updatePolicy(String policyid, Policy policy);
+	Policy updatePolicy(String policyid, Policy policy) throws Exception;
 
-	Policy deletePolicy(String policyid);
+	Policy deletePolicy(String policyid) throws Exception;
 
-	void enforce(AuthContext creds, String action, TargetWrapper target, boolean doRaise);
+	// doRaise=true
+	void enforce(Context creds, String action, Map<String, Object> target) throws Exception;
 
 }

@@ -24,7 +24,7 @@ public class CreateProjectAction extends AbstractProjectAction implements Protec
 	}
 
 	@Override
-	public MemberWrapper<Project> execute(ContainerRequestContext request) {
+	public MemberWrapper<Project> execute(ContainerRequestContext request) throws Exception {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		assignUniqueId(project);
 		normalizeDomainid(context, project);

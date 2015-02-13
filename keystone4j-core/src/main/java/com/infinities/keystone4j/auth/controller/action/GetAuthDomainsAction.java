@@ -38,11 +38,11 @@ public class GetAuthDomainsAction extends AbstractAuthAction implements FilterPr
 	@Override
 	public CollectionWrapper<Domain> execute(ContainerRequestContext context, String... filters) throws Exception {
 		Authorization.AuthContext authContext = AbstractAction.getAuthContext(context);
-		String userid = authContext.getUserid();
+		String userid = authContext.getUserId();
 		List<Domain> userRefs = new ArrayList<Domain>();
 		if (!Strings.isNullOrEmpty(userid)) {
 			try {
-				userRefs = this.assignmentApi.listDomainsForUser(userid);
+				userRefs = this.assignmentApi.listDomainsForUser(userid, null);
 			} catch (Exception e) {
 				logger.debug("ignore", e);
 			}
@@ -57,6 +57,11 @@ public class GetAuthDomainsAction extends AbstractAuthAction implements FilterPr
 		List<Domain> refs = combineListsUniquely(userRefs, groupRefs);
 
 		return new AbstractDomainAction(assignmentApi, tokenProviderApi, policyApi) {
+
+			@Override
+			public String getName() {
+				return null;
+			}
 
 		}.wrapCollection(context, refs);
 	}

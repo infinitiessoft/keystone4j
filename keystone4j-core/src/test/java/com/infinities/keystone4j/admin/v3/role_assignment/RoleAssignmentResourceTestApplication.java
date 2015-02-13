@@ -1,0 +1,123 @@
+package com.infinities.keystone4j.admin.v3.role_assignment;
+
+import javax.inject.Singleton;
+
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.server.ResourceConfig;
+
+import com.infinities.keystone4j.admin.AdminResource;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.assignment.AssignmentDriver;
+import com.infinities.keystone4j.assignment.api.AssignmentApiFactory;
+import com.infinities.keystone4j.assignment.controller.RoleAssignmentV3Controller;
+import com.infinities.keystone4j.assignment.controller.impl.RoleAssignmentV3ControllerFactory;
+import com.infinities.keystone4j.assignment.driver.AssignmentDriverFactory;
+import com.infinities.keystone4j.auth.controller.AuthController;
+import com.infinities.keystone4j.auth.controller.impl.AuthControllerFactory;
+import com.infinities.keystone4j.catalog.CatalogApi;
+import com.infinities.keystone4j.catalog.CatalogDriver;
+import com.infinities.keystone4j.catalog.api.CatalogApiFactory;
+import com.infinities.keystone4j.catalog.driver.CatalogDriverFactory;
+import com.infinities.keystone4j.common.api.VersionApi;
+import com.infinities.keystone4j.common.api.VersionApiFactory;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
+import com.infinities.keystone4j.contrib.revoke.driver.RevokeDriver;
+import com.infinities.keystone4j.contrib.revoke.driver.impl.RevokeDriverFactory;
+import com.infinities.keystone4j.contrib.revoke.impl.RevokeApiFactory;
+import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.credential.CredentialDriver;
+import com.infinities.keystone4j.credential.api.CredentialApiFactory;
+import com.infinities.keystone4j.credential.driver.CredentialDriverFactory;
+import com.infinities.keystone4j.filter.AdminTokenAuthMiddleware;
+import com.infinities.keystone4j.filter.AuthContextMiddleware;
+import com.infinities.keystone4j.filter.TokenAuthMiddleware;
+import com.infinities.keystone4j.identity.IdGenerator;
+import com.infinities.keystone4j.identity.IdGeneratorApi;
+import com.infinities.keystone4j.identity.IdMappingApi;
+import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.identity.IdentityDriver;
+import com.infinities.keystone4j.identity.MappingDriver;
+import com.infinities.keystone4j.identity.api.IdGeneratorApiFactory;
+import com.infinities.keystone4j.identity.api.IdMappingApiFactory;
+import com.infinities.keystone4j.identity.api.IdentityApiFactory;
+import com.infinities.keystone4j.identity.driver.IdentityDriverFactory;
+import com.infinities.keystone4j.identity.driver.mapping.IdMappingDriverFactory;
+import com.infinities.keystone4j.identity.id_generators.Sha256IdGeneratorFactory;
+import com.infinities.keystone4j.jpa.EntityManagerInterceptor;
+import com.infinities.keystone4j.policy.PolicyApi;
+import com.infinities.keystone4j.policy.PolicyDriver;
+import com.infinities.keystone4j.policy.api.PolicyApiFactory;
+import com.infinities.keystone4j.policy.driver.PolicyDriverFactory;
+import com.infinities.keystone4j.token.TokenDriver;
+import com.infinities.keystone4j.token.driver.TokenDriverFactory;
+import com.infinities.keystone4j.token.persistence.PersistenceManager;
+import com.infinities.keystone4j.token.persistence.manager.PersistenceManagerFactory;
+import com.infinities.keystone4j.token.provider.TokenProviderApi;
+import com.infinities.keystone4j.token.provider.TokenProviderDriver;
+import com.infinities.keystone4j.token.provider.api.TokenProviderApiFactory;
+import com.infinities.keystone4j.token.provider.driver.TokenProviderDriverFactory;
+import com.infinities.keystone4j.trust.TrustApi;
+import com.infinities.keystone4j.trust.TrustDriver;
+import com.infinities.keystone4j.trust.api.TrustApiFactory;
+import com.infinities.keystone4j.trust.driver.TrustDriverFactory;
+import com.infinities.keystone4j.utils.jackson.JacksonFeature;
+
+public class RoleAssignmentResourceTestApplication extends ResourceConfig {
+
+	public RoleAssignmentResourceTestApplication() {
+		// register(JacksonFeature.class);
+		this.register(new AbstractBinder() {
+
+			@Override
+			protected void configure() {
+				// // roleAssignment
+				bindFactory(RoleAssignmentV3ControllerFactory.class).to(RoleAssignmentV3Controller.class);
+
+				// // assignment
+				bindFactory(AssignmentApiFactory.class).to(AssignmentApi.class);
+				bindFactory(AssignmentDriverFactory.class).to(AssignmentDriver.class);
+				// auth
+				bindFactory(AuthControllerFactory.class).to(AuthController.class);
+				// catalog
+				bindFactory(CatalogApiFactory.class).to(CatalogApi.class);
+				bindFactory(CatalogDriverFactory.class).to(CatalogDriver.class);
+				// credential
+				bindFactory(CredentialApiFactory.class).to(CredentialApi.class);
+				bindFactory(CredentialDriverFactory.class).to(CredentialDriver.class);
+				// identity
+				bindFactory(IdentityApiFactory.class).to(IdentityApi.class);
+				bindFactory(IdentityDriverFactory.class).to(IdentityDriver.class);
+				bindFactory(IdMappingApiFactory.class).to(IdMappingApi.class);
+				bindFactory(IdMappingDriverFactory.class).to(MappingDriver.class);
+				bindFactory(IdGeneratorApiFactory.class).to(IdGeneratorApi.class);
+				bindFactory(Sha256IdGeneratorFactory.class).to(IdGenerator.class);
+				// policy
+				bindFactory(PolicyApiFactory.class).to(PolicyApi.class);
+				bindFactory(PolicyDriverFactory.class).to(PolicyDriver.class);
+				// token
+				bindFactory(TokenProviderApiFactory.class).to(TokenProviderApi.class);
+				bindFactory(TokenProviderDriverFactory.class).to(TokenProviderDriver.class);
+				bindFactory(PersistenceManagerFactory.class).to(PersistenceManager.class);
+				bindFactory(TokenDriverFactory.class).to(TokenDriver.class);
+				// trust
+				bindFactory(TrustApiFactory.class).to(TrustApi.class);
+				bindFactory(TrustDriverFactory.class).to(TrustDriver.class);
+				// version
+				bindFactory(VersionApiFactory.class).to(VersionApi.class).in(Singleton.class);
+				// revoke
+				bindFactory(RevokeApiFactory.class).to(RevokeApi.class);
+				bindFactory(RevokeDriverFactory.class).to(RevokeDriver.class);
+			}
+
+		});
+		this.register(EntityManagerInterceptor.class);
+		this.register(AuthContextMiddleware.class);
+		this.register(TokenAuthMiddleware.class);
+		this.register(AdminTokenAuthMiddleware.class);
+		// this.register(RequestBodySizeLimiter.class);
+		this.register(AdminResource.class);
+		// this.register(ObjectMapperResolver.class);
+		this.register(JacksonFeature.class);
+		// this.register(ObjectMapperResolver.class);
+	}
+}

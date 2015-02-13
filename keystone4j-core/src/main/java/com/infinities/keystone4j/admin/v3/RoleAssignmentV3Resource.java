@@ -14,9 +14,8 @@ import javax.ws.rs.core.Response;
 import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.assignment.controller.RoleAssignmentV3Controller;
 import com.infinities.keystone4j.exception.Exceptions;
-import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.assignment.RoleAssignment;
-import com.infinities.keystone4j.model.assignment.RoleAssignmentWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RoleAssignmentWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RoleAssignmentsWrapper;
 
 //keystone.assignment.routers 20141210
 
@@ -39,8 +38,8 @@ public class RoleAssignmentV3Resource {
 	}
 
 	@GET
-	public CollectionWrapper<RoleAssignment> listRoleAssignment() throws Exception {
-		return roleAssignmentController.listRoleAssignments();
+	public RoleAssignmentsWrapper listRoleAssignment() throws Exception {
+		return (RoleAssignmentsWrapper) roleAssignmentController.listRoleAssignments();
 	}
 
 	@GET

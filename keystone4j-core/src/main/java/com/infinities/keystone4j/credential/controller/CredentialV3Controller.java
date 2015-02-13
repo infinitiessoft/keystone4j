@@ -1,19 +1,19 @@
 package com.infinities.keystone4j.credential.controller;
 
+import com.infinities.keystone4j.model.CollectionWrapper;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.credential.Credential;
-import com.infinities.keystone4j.model.credential.CredentialWrapper;
-import com.infinities.keystone4j.model.credential.CredentialsWrapper;
 
 public interface CredentialV3Controller {
 
-	CredentialWrapper createCredential(Credential credential);
+	MemberWrapper<Credential> createCredential(Credential credential) throws Exception;
 
-	CredentialsWrapper listCredentials(int page, int perPage);
+	CollectionWrapper<Credential> listCredentials() throws Exception;
 
-	CredentialWrapper getCredential(String credentialid);
+	MemberWrapper<Credential> getCredential(String credentialid) throws Exception;
 
-	CredentialWrapper updateCredential(String credentialid, Credential credential);
+	MemberWrapper<Credential> updateCredential(String credentialid, Credential credential) throws Exception;
 
-	void deleteCredential(String credentialid);
+	void deleteCredential(String credentialid) throws Exception;
 
 }

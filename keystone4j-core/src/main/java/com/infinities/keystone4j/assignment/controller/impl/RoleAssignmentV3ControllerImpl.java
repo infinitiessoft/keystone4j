@@ -5,12 +5,12 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.controller.RoleAssignmentV3Controller;
 import com.infinities.keystone4j.assignment.controller.action.roleassignment.ListRoleAssignmentsAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.FilterProtectedDecorator;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.assignment.RoleAssignment;
-import com.infinities.keystone4j.model.assignment.RoleAssignmentWrapper;
+import com.infinities.keystone4j.model.assignment.FormattedRoleAssignment;
+import com.infinities.keystone4j.model.assignment.wrapper.RoleAssignmentWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -33,11 +33,11 @@ public class RoleAssignmentV3ControllerImpl extends BaseController implements Ro
 	}
 
 	@Override
-	public CollectionWrapper<RoleAssignment> listRoleAssignments() throws Exception {
-		FilterProtectedAction<RoleAssignment> command = new FilterProtectedDecorator<RoleAssignment>(
+	public CollectionWrapper<FormattedRoleAssignment> listRoleAssignments() throws Exception {
+		FilterProtectedAction<FormattedRoleAssignment> command = new FilterProtectedDecorator<FormattedRoleAssignment>(
 				new ListRoleAssignmentsAction(assignmentApi, identityApi), tokenProviderApi, policyApi);
-		CollectionWrapper<RoleAssignment> ret = command.execute(getRequest(), "group.id", "role.id", "scope.domain.id",
-				"scope.project.id", "scope.OS-INHERIT:inherited_to", "user.id");
+		CollectionWrapper<FormattedRoleAssignment> ret = command.execute(getRequest(), "group.id", "role.id",
+				"scope.domain.id", "scope.project.id", "scope.OS-INHERIT:inherited_to", "user.id");
 		return ret;
 	}
 

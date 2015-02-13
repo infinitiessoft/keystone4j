@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.policy.check.BaseCheck;
 import com.infinities.keystone4j.policy.reducer.ExtendAndExprReducer;
 import com.infinities.keystone4j.policy.reducer.ExtendOrExprReducer;
 import com.infinities.keystone4j.policy.reducer.MakeAndExprReducer;

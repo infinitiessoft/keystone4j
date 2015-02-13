@@ -21,11 +21,9 @@ import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.assignment.controller.DomainV3Controller;
 import com.infinities.keystone4j.assignment.controller.RoleV3Controller;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
-import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.MemberWrapper;
-import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.assignment.DomainWrapper;
-import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.assignment.wrapper.DomainWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.DomainsWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RolesWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 
 //keystone.assignment.routers 20141209
@@ -45,32 +43,31 @@ public class DomainResource {
 	}
 
 	@POST
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public Response createDomain(DomainWrapper domainWrapper) throws Exception {
-		return Response.status(Status.CREATED).entity(domainController.createDomain(domainWrapper.getDomain())).build();
+		return Response.status(Status.CREATED).entity(domainController.createDomain(domainWrapper.getRef())).build();
 	}
 
 	@GET
-	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Domain> listDomain(@QueryParam("name") String name, @QueryParam("enabled") Boolean enabled,
+	@JsonView(Views.Advance.class)
+	public DomainsWrapper listDomain(@QueryParam("name") String name, @QueryParam("enabled") Boolean enabled,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
 			throws Exception {
-		return domainController.listDomains();
+		return (DomainsWrapper) domainController.listDomains();
 	}
 
 	@GET
 	@Path("/{domainid}")
-	@JsonView(Views.Basic.class)
-	public MemberWrapper<Domain> getDomain(@PathParam("domainid") String domainid) throws Exception {
-		return domainController.getDomain(domainid);
+	@JsonView(Views.Advance.class)
+	public DomainWrapper getDomain(@PathParam("domainid") String domainid) throws Exception {
+		return (DomainWrapper) domainController.getDomain(domainid);
 	}
 
 	@PATCH
 	@Path("/{domainid}")
-	@JsonView(Views.Basic.class)
-	public MemberWrapper<Domain> updateDomain(@PathParam("domainid") String domainid, DomainWrapper domainWrapper)
-			throws Exception {
-		return domainController.updateDomain(domainid, domainWrapper.getDomain());
+	@JsonView(Views.Advance.class)
+	public DomainWrapper updateDomain(@PathParam("domainid") String domainid, DomainWrapper domainWrapper) throws Exception {
+		return (DomainWrapper) domainController.updateDomain(domainid, domainWrapper.getRef());
 	}
 
 	@DELETE
@@ -80,11 +77,29 @@ public class DomainResource {
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
+	@GET
+	@Path("/{domainid}/users/{userid}/roles")
+	@JsonView(Views.Advance.class)
+	public RolesWrapper listGrantByUser(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws Exception {
+		return (RolesWrapper) roleController.listGrants(userid, null, domainid, null);
+	}
+
+	@GET
+	@Path("/{domainid}/groups/{groupid}/roles")
+	@JsonView(Views.Advance.class)
+	public RolesWrapper listGrantByGroup(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
+			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
+			throws Exception {
+		return (RolesWrapper) roleController.listGrants(null, groupid, domainid, null);
+	}
+
 	@PUT
 	@Path("/{domainid}/users/{userid}/roles/{roleid}")
 	public Response createGrantByUser(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.createGrantByUserDomain(roleid, userid, domainid);
+		roleController.createGrant(roleid, userid, null, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -92,7 +107,7 @@ public class DomainResource {
 	@Path("/{domainid}/groups/{groupid}/roles/{roleid}")
 	public Response createGrantByGroup(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.createGrantByGroupDomain(roleid, groupid, domainid);
+		roleController.createGrant(roleid, null, groupid, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -100,7 +115,7 @@ public class DomainResource {
 	@Path("/{domainid}/users/{userid}/roles/{roleid}")
 	public Response checkGrantByUser(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.checkGrantByUserDomain(roleid, userid, domainid);
+		roleController.checkGrant(roleid, userid, null, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -108,33 +123,15 @@ public class DomainResource {
 	@Path("/{domainid}/groups/{groupid}/roles/{roleid}")
 	public Response checkGrantByGroup(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.checkGrantByGroupDomain(roleid, groupid, domainid);
+		roleController.checkGrant(roleid, null, groupid, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
-	}
-
-	@GET
-	@Path("/{domainid}/users/{userid}/roles")
-	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Role> listGrantByUser(@PathParam("domainid") String domainid,
-			@PathParam("userid") String userid, @DefaultValue("1") @QueryParam("page") int page,
-			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
-		return roleController.listGrantsByUserDomain(userid, domainid);
-	}
-
-	@GET
-	@Path("/{domainid}/groups/{groupid}/roles")
-	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Role> listGrantByGroup(@PathParam("domainid") String domainid,
-			@PathParam("groupid") String groupid, @DefaultValue("1") @QueryParam("page") int page,
-			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
-		return roleController.listGrantsByGroupDomain(groupid, domainid);
 	}
 
 	@DELETE
 	@Path("/{domainid}/users/{userid}/roles/{roleid}")
 	public Response revokeGrantByUser(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.revokeGrantByUserDomain(roleid, userid, domainid);
+		roleController.revokeGrant(roleid, userid, null, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -142,7 +139,7 @@ public class DomainResource {
 	@Path("/{domainid}/groups/{groupid}/roles/{roleid}")
 	public Response revokeGrantByGroup(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.revokeGrantByGroupDomain(roleid, groupid, domainid);
+		roleController.revokeGrant(roleid, null, groupid, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 

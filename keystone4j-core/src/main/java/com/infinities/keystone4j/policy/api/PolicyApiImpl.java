@@ -3,9 +3,13 @@ package com.infinities.keystone4j.policy.api;
 import java.util.List;
 import java.util.Map;
 
+import com.infinities.keystone4j.NonTruncatedCommand;
+import com.infinities.keystone4j.TruncatedCommand;
+import com.infinities.keystone4j.api.command.decorator.ResponseTruncatedCommand;
+import com.infinities.keystone4j.common.Hints;
+import com.infinities.keystone4j.model.policy.Context;
 import com.infinities.keystone4j.model.policy.Policy;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.notification.Notifications;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.policy.PolicyDriver;
 import com.infinities.keystone4j.policy.api.command.CreatePolicyCommand;
@@ -18,6 +22,7 @@ import com.infinities.keystone4j.policy.api.command.UpdatePolicyCommand;
 public class PolicyApiImpl implements PolicyApi {
 
 	private final PolicyDriver policyDriver;
+	private final static String _POLICY = "policy";
 
 
 	public PolicyApiImpl(PolicyDriver policyDriver) {
@@ -26,15 +31,17 @@ public class PolicyApiImpl implements PolicyApi {
 	}
 
 	@Override
-	public Policy createPolicy(Policy policy) {
-		CreatePolicyCommand command = new CreatePolicyCommand(policyDriver, policy);
+	public Policy createPolicy(String policyid, Policy policy) throws Exception {
+		NonTruncatedCommand<Policy> command = Notifications.created(new CreatePolicyCommand(policyDriver, policyid, policy),
+				_POLICY, false, 1, null);
 		return command.execute();
 	}
 
 	@Override
-	public List<Policy> listPolicies() {
-		ListPoliciesCommand command = new ListPoliciesCommand(policyDriver);
-		return command.execute();
+	public List<Policy> listPolicies(Hints hints) throws Exception {
+		TruncatedCommand<Policy> command = new ResponseTruncatedCommand<Policy>(new ListPoliciesCommand(policyDriver),
+				policyDriver);
+		return command.execute(hints);
 	}
 
 	@Override
@@ -44,21 +51,22 @@ public class PolicyApiImpl implements PolicyApi {
 	}
 
 	@Override
-	public Policy updatePolicy(String policyid, Policy policy) {
-		UpdatePolicyCommand command = new UpdatePolicyCommand(policyDriver, policyid, policy);
+	public Policy updatePolicy(String policyid, Policy policy) throws Exception {
+		NonTruncatedCommand<Policy> command = Notifications.updated(new UpdatePolicyCommand(policyDriver, policyid, policy),
+				_POLICY, false, 1, null);
 		return command.execute();
 	}
 
 	@Override
-	public Policy deletePolicy(String policyid) {
-		DeletePolicyCommand command = new DeletePolicyCommand(policyDriver, policyid);
+	public Policy deletePolicy(String policyid) throws Exception {
+		NonTruncatedCommand<Policy> command = Notifications.deleted(new DeletePolicyCommand(policyDriver, policyid),
+				_POLICY, false, 1, null);
 		return command.execute();
 	}
 
 	@Override
-	public void enforce(Token token, String action, Map<String, PolicyEntity> target, Map<String, Object> parMap,
-			boolean doRaise) {
-		EnforceCommand command = new EnforceCommand(policyDriver, token, action, target, parMap, doRaise);
+	public void enforce(Context context, String action, Map<String, Object> target) throws Exception {
+		EnforceCommand command = new EnforceCommand(policyDriver, context, action, target);
 		command.execute();
 	}
 

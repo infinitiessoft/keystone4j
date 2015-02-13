@@ -1,11 +1,16 @@
 package com.infinities.keystone4j.token.driver;
 
 import org.glassfish.hk2.api.Factory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.token.TokenDriver;
 
 public class TokenDriverFactory implements Factory<TokenDriver> {
+
+	private final static Logger logger = LoggerFactory.getLogger(TokenDriverFactory.class);
+
 
 	public TokenDriverFactory() {
 	}
@@ -22,6 +27,7 @@ public class TokenDriverFactory implements Factory<TokenDriver> {
 			Class<?> c = Class.forName(driver);
 			return (TokenDriver) c.newInstance();
 		} catch (Exception e) {
+			logger.error("reflect driver failed", e);
 			throw new RuntimeException(e);
 		}
 	}

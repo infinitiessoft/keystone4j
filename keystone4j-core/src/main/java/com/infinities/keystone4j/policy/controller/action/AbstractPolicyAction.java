@@ -3,9 +3,9 @@ package com.infinities.keystone4j.policy.controller.action;
 import com.infinities.keystone4j.AbstractAction;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
-import com.infinities.keystone4j.model.policy.PoliciesWrapper;
 import com.infinities.keystone4j.model.policy.Policy;
-import com.infinities.keystone4j.model.policy.PolicyWrapper;
+import com.infinities.keystone4j.model.policy.wrapper.PoliciesWrapper;
+import com.infinities.keystone4j.model.policy.wrapper.PolicyWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -28,12 +28,12 @@ public abstract class AbstractPolicyAction extends AbstractAction<Policy> {
 	}
 
 	@Override
-	protected CollectionWrapper<Policy> getCollectionWrapper() {
+	public CollectionWrapper<Policy> getCollectionWrapper() {
 		return new PoliciesWrapper();
 	}
 
 	@Override
-	protected MemberWrapper<Policy> getMemberWrapper() {
+	public MemberWrapper<Policy> getMemberWrapper() {
 		return new PolicyWrapper();
 	}
 

@@ -23,6 +23,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.infinities.keystone4j</groupId>
+			<artifactId>keystone4j-commons</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>

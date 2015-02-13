@@ -21,15 +21,15 @@ import com.infinities.keystone4j.auth.model.AuthResponse;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.auth.AuthData;
 import com.infinities.keystone4j.model.auth.AuthV3;
 import com.infinities.keystone4j.model.auth.TokenIdAndData;
 import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.model.token.Token;
-import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.token.Metadata;
+import com.infinities.keystone4j.model.token.wrapper.TokenDataWrapper;
 import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
@@ -63,16 +63,9 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 
 	@Override
 	public TokenIdAndData execute(ContainerRequestContext request) {
-		// logger.debug("--------------------------2");
-		// try {
-		// loadAuthMethods();
-		// } catch (Exception e) {
-		// throw new RuntimeException(e);
-		// }
-		// logger.debug("--------------------------3");
+
 		boolean includeCatalog = !request.getUriInfo().getQueryParameters().containsKey(AuthController.NOCATALOG);
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		// logger.debug("--------------------------4");
 		try {
 			AuthInfo authInfo = new AuthInfo(context, auth, this.getAssignmentApi(), this.getTrustApi());
 			AuthContext authContext = new AuthContext();
@@ -94,9 +87,8 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 			// make sure the list is unique
 			methodNames = Lists.newArrayList(Sets.newHashSet(methodNames));
 			Calendar expiresAt = authContext.getExpiresAt();
-			// logger.debug("--------------------------5");
 
-			Token metadataRef = null;
+			Metadata metadataRef = null;
 
 			String tokenAuditid = authContext.getAuditid();
 			TokenIdAndData entry = tokenProviderApi.issueV3Token(authContext.getUserid(), methodNames, expiresAt, projectid,
@@ -121,7 +113,7 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 		Trust trust = scope.getTrustRef();
 
 		if (trust != null) {
-			projectid = trust.getProject().getId();
+			projectid = trust.getProjectId();
 		}
 		if (!Strings.isNullOrEmpty(domainid) || !Strings.isNullOrEmpty(projectid) || trust != null) {
 			// scope is specified
@@ -140,7 +132,7 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 			throw Exceptions.UnauthorizedException.getInstance(e);
 		}
 
-		Project defaultProject = userRef.getDefault_project();
+		Project defaultProject = userRef.getDefaultProject();
 		if (defaultProject == null || Strings.isNullOrEmpty(defaultProject.getId())) {
 			// User has no default project. He shall get an unscoped token.
 			return;
@@ -151,7 +143,7 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 			Project defaultProjectRef = assignmentApi.getProject(defaultProjectid);
 			Domain defaultDomainRef = assignmentApi.getDomain(defaultProjectRef.getDomain().getId());
 			if (defaultProject.getEnabled() && defaultDomainRef.getEnabled()) {
-				List<Role> roles = this.getAssignmentApi().getRolesForUserAndProject(userRef.getId(), defaultProjectid);
+				List<String> roles = this.getAssignmentApi().getRolesForUserAndProject(userRef.getId(), defaultProjectid);
 				if (!roles.isEmpty()) {
 					AuthInfo.Scope newScope = new AuthInfo.Scope();
 					newScope.setProjectid(defaultProject.getId());
@@ -171,8 +163,7 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 
 	}
 
-	private void authenticate(KeystoneContext context, AuthInfo authInfo, AuthContext authContext)
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	private void authenticate(KeystoneContext context, AuthInfo authInfo, AuthContext authContext) throws Exception {
 
 		if (!Strings.isNullOrEmpty(context.getEnvironment().getRemoteUser())) {
 			AuthDriver external = getAuthMethod(EXTERNAL_DRIVER);
@@ -186,12 +177,14 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 			try {
 				method.authenticate(context, methodData, authContext, tokenProviderApi, identityApi, assignmentApi);
 			} catch (Exception e) {
+				logger.debug("authenticate fail", e);
 				authResponse.getMethods().add(name);
 				authResponse.set(name, e);
 			}
 		}
 
 		if (!authResponse.getMethods().isEmpty()) {
+			logger.warn("auth response methods: {}", authResponse.getMethods());
 			throw Exceptions.AdditionalAuthRequiredException.getInstance(authResponse.toString());
 		}
 
@@ -211,6 +204,11 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 	@Override
 	public String getName() {
 		return "authenticate_token";
+	}
+
+	@Override
+	public MemberWrapper<TokenDataWrapper> getMemberWrapper() {
+		return new TokenIdAndData();
 	}
 
 }

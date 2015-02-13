@@ -20,7 +20,7 @@ public class GetRoleAction extends AbstractRoleAction implements ProtectedAction
 	}
 
 	@Override
-	public MemberWrapper<Role> execute(ContainerRequestContext context) {
+	public MemberWrapper<Role> execute(ContainerRequestContext context) throws Exception {
 		Role ref = this.getAssignmentApi().getRole(roleid);
 		return this.wrapMember(context, ref);
 	}

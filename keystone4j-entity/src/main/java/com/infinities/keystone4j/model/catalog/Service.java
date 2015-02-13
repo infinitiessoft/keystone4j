@@ -26,16 +26,21 @@ public class Service extends BaseEntity implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 4200989587558979285L;
+	private Set<Endpoint> endpoints = new HashSet<Endpoint>(0); // keystone.catalog.backends.sql.Endpoint
+	// 20150112
 	@NotNull(message = "type field is required and cannot be empty")
 	private String type;
 	private String name;
 	private String extra;
-	private Set<Endpoint> endpoints = new HashSet<Endpoint>(0);
+	private Boolean enabled = true;
+
 	private boolean typeUpdated = false;
 	private boolean extraUpdated = false;
 	private boolean nameUpdated = false;
+	private boolean enabledUpdated = false;
 
 
+	@JsonView(Views.Advance.class)
 	@Column(name = "NAME", length = 255)
 	public String getName() {
 		return name;
@@ -46,6 +51,7 @@ public class Service extends BaseEntity implements java.io.Serializable {
 		setNameUpdated(true);
 	}
 
+	@JsonView(Views.Basic.class)
 	@Column(name = "TYPE", length = 255)
 	public String getType() {
 		return type;
@@ -68,7 +74,7 @@ public class Service extends BaseEntity implements java.io.Serializable {
 		extraUpdated = true;
 	}
 
-	@JsonView(Views.All.class)
+	@JsonView(Views.Basic.class)
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "service", cascade = CascadeType.ALL)
 	public Set<Endpoint> getEndpoints() {
 		return endpoints;
@@ -119,6 +125,27 @@ public class Service extends BaseEntity implements java.io.Serializable {
 	@Transient
 	public void setNameUpdated(boolean nameUpdated) {
 		this.nameUpdated = nameUpdated;
+	}
+
+	@JsonView(Views.Advance.class)
+	@Column(name = "ENABLED", nullable = false)
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+		enabledUpdated = true;
+	}
+
+	@XmlTransient
+	@Transient
+	public boolean isEnabledUpdated() {
+		return enabledUpdated;
+	}
+
+	public void setEnabledUpdated(boolean enabledUpdated) {
+		this.enabledUpdated = enabledUpdated;
 	}
 
 }

@@ -7,6 +7,7 @@ import org.glassfish.hk2.api.Factory;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.controller.DomainV3Controller;
 import com.infinities.keystone4j.common.BaseControllerFactory;
+import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -20,8 +21,10 @@ public class DomainV3ControllerFactory extends BaseControllerFactory implements 
 
 
 	@Inject
-	public DomainV3ControllerFactory(AssignmentApi assignmentApi, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+	public DomainV3ControllerFactory(AssignmentApi assignmentApi, IdentityApi identityApi,
+			TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
+		this.assignmentApi.setIdentityApi(identityApi);
 		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
 	}

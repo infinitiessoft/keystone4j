@@ -1,11 +1,12 @@
 package com.infinities.keystone4j.catalog.api.command.service;
 
+import com.infinities.keystone4j.NonTruncatedCommand;
 import com.infinities.keystone4j.catalog.CatalogDriver;
 import com.infinities.keystone4j.catalog.api.command.AbstractCatalogCommand;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.catalog.Service;
 
-public class GetServiceCommand extends AbstractCatalogCommand<Service> {
+public class GetServiceCommand extends AbstractCatalogCommand implements NonTruncatedCommand<Service> {
 
 	private final String serviceid;
 

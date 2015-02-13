@@ -3,7 +3,7 @@ package com.infinities.keystone4j.model.auth;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.infinities.keystone4j.model.MemberWrapper;
-import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.token.wrapper.TokenDataWrapper;
 
 public class TokenIdAndData implements MemberWrapper<TokenDataWrapper> {
 
@@ -12,6 +12,10 @@ public class TokenIdAndData implements MemberWrapper<TokenDataWrapper> {
 	@XmlElement(name = "token_data")
 	private TokenDataWrapper tokenData;
 
+
+	public TokenIdAndData() {
+
+	}
 
 	public TokenIdAndData(String tokenid, TokenDataWrapper tokenData) {
 		super();
@@ -38,6 +42,11 @@ public class TokenIdAndData implements MemberWrapper<TokenDataWrapper> {
 	@Override
 	public void setRef(TokenDataWrapper ref) {
 		this.tokenData = ref;
+	}
+
+	@Override
+	public TokenDataWrapper getRef() {
+		return tokenData;
 	}
 
 }

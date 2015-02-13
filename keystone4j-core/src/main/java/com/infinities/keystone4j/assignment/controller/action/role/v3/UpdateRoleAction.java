@@ -23,7 +23,7 @@ public class UpdateRoleAction extends AbstractRoleAction implements ProtectedAct
 	}
 
 	@Override
-	public MemberWrapper<Role> execute(ContainerRequestContext context) {
+	public MemberWrapper<Role> execute(ContainerRequestContext context) throws Exception {
 		requireMatchingId(roleid, role);
 		Role ref = this.getAssignmentApi().updateRole(roleid, role);
 		return this.wrapMember(context, ref);

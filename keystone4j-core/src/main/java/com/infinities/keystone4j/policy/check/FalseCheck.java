@@ -2,9 +2,7 @@ package com.infinities.keystone4j.policy.check;
 
 import java.util.Map;
 
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.token.Token;
-import com.infinities.keystone4j.policy.BaseCheck;
+import com.infinities.keystone4j.model.policy.Context;
 import com.infinities.keystone4j.policy.Enforcer;
 
 public class FalseCheck implements BaseCheck {
@@ -15,8 +13,13 @@ public class FalseCheck implements BaseCheck {
 	}
 
 	@Override
-	public boolean check(Map<String, PolicyEntity> target, Token token, Map<String, Object> parMap, Enforcer enforcer) {
+	public boolean check(Map<String, Object> target, Context creds, Enforcer enforcer) {
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "!";
 	}
 
 }

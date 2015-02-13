@@ -1,9 +1,8 @@
 package com.infinities.keystone4j.policy.api.command;
 
-import com.infinities.keystone4j.Command;
 import com.infinities.keystone4j.policy.PolicyDriver;
 
-public abstract class AbstractPolicyCommand<T> implements Command<T> {
+public abstract class AbstractPolicyCommand {
 
 	private final PolicyDriver policyDriver;
 

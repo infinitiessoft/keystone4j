@@ -2,10 +2,11 @@ package com.infinities.keystone4j.trust.api.command;
 
 import java.util.List;
 
+import com.infinities.keystone4j.NonTruncatedCommand;
 import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.trust.TrustDriver;
 
-public class ListTrustsForTrusteeCommand extends AbstractTrustCommand<List<Trust>> {
+public class ListTrustsForTrusteeCommand extends AbstractTrustCommand implements NonTruncatedCommand<List<Trust>> {
 
 	private final String trusteeid;
 

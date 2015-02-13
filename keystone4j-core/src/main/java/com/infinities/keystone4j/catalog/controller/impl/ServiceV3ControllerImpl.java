@@ -10,8 +10,8 @@ import com.infinities.keystone4j.catalog.controller.action.service.GetServiceAct
 import com.infinities.keystone4j.catalog.controller.action.service.ListServicesAction;
 import com.infinities.keystone4j.catalog.controller.action.service.UpdateServiceAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
-import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Service;
@@ -37,7 +37,7 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 	@Override
 	public MemberWrapper<Service> createService(Service service) throws Exception {
 		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new CreateServiceAction(catalogApi,
-				tokenProviderApi, policyApi, service), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, service), tokenProviderApi, policyApi, null, service);
 		MemberWrapper<Service> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -51,33 +51,33 @@ public class ServiceV3ControllerImpl extends BaseController implements ServiceV3
 	}
 
 	@Override
-	public MemberWrapper<Service> getService(String serviceid) {
+	public MemberWrapper<Service> getService(String serviceid) throws Exception {
 		Service ref = getMemberFromDriver(serviceid);
 		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new GetServiceAction(catalogApi,
-				tokenProviderApi, policyApi, serviceid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, serviceid), tokenProviderApi, policyApi, ref, null);
 		MemberWrapper<Service> ret = command.execute(getRequest());
 		return ret;
 	}
 
 	// TODO Ignore validation.validated(schema.service_update,'service')
 	@Override
-	public MemberWrapper<Service> updateService(String serviceid, Service service) {
+	public MemberWrapper<Service> updateService(String serviceid, Service service) throws Exception {
 		Service ref = getMemberFromDriver(serviceid);
 		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new UpdateServiceAction(catalogApi,
-				tokenProviderApi, policyApi, serviceid, service), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, serviceid, service), tokenProviderApi, policyApi, ref, service);
 		MemberWrapper<Service> ret = command.execute(getRequest());
 		return ret;
 	}
 
 	@Override
-	public void deleteService(String serviceid) {
+	public void deleteService(String serviceid) throws Exception {
 		Service ref = getMemberFromDriver(serviceid);
 		ProtectedAction<Service> command = new ProtectedDecorator<Service>(new DeleteServiceAction(catalogApi,
-				tokenProviderApi, policyApi, serviceid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, serviceid), tokenProviderApi, policyApi, ref, null);
 		command.execute(getRequest());
 	}
 
-	public Service getMemberFromDriver(String serviceid) {
+	public Service getMemberFromDriver(String serviceid) throws Exception {
 		return catalogApi.getService(serviceid);
 	}
 

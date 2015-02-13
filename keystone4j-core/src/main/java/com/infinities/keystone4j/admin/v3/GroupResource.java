@@ -21,11 +21,9 @@ import com.infinities.keystone4j.PATCH;
 import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
-import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.MemberWrapper;
-import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.model.identity.GroupWrapper;
-import com.infinities.keystone4j.model.identity.User;
+import com.infinities.keystone4j.model.identity.wrapper.GroupWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.GroupsWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UsersWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 
 //keystone.identity.routers 20141211
@@ -47,30 +45,29 @@ public class GroupResource {
 	@POST
 	@JsonView(Views.Basic.class)
 	public Response createGroup(GroupWrapper groupWrapper) throws Exception {
-		return Response.status(Status.CREATED).entity(groupController.createGroup(groupWrapper.getGroup())).build();
+		return Response.status(Status.CREATED).entity(groupController.createGroup(groupWrapper.getRef())).build();
 	}
 
 	@GET
 	@JsonView(Views.Basic.class)
-	public CollectionWrapper<Group> listGroups(@QueryParam("domain_id") String domainid, @QueryParam("name") String name,
+	public GroupsWrapper listGroups(@QueryParam("domain_id") String domainid, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
 			throws Exception {
-		return groupController.listGroups();
+		return (GroupsWrapper) groupController.listGroups();
 	}
 
 	@GET
 	@Path("/{groupid}")
 	@JsonView(Views.Basic.class)
-	public MemberWrapper<Group> getGroup(@PathParam("groupid") String groupid) throws Exception {
-		return groupController.getGroup(groupid);
+	public GroupWrapper getGroup(@PathParam("groupid") String groupid) throws Exception {
+		return (GroupWrapper) groupController.getGroup(groupid);
 	}
 
 	@PATCH
 	@Path("/{groupid}")
 	@JsonView(Views.Basic.class)
-	public MemberWrapper<Group> updateGroup(@PathParam("groupid") String groupid, GroupWrapper groupWrapper)
-			throws Exception {
-		return groupController.updateGroup(groupid, groupWrapper.getGroup());
+	public GroupWrapper updateGroup(@PathParam("groupid") String groupid, GroupWrapper groupWrapper) throws Exception {
+		return (GroupWrapper) groupController.updateGroup(groupid, groupWrapper.getRef());
 	}
 
 	@DELETE
@@ -83,12 +80,11 @@ public class GroupResource {
 	@GET
 	@Path("/{groupid}/users")
 	@JsonView(Views.Basic.class)
-	public CollectionWrapper<User> listUsersInGroup(@PathParam("groupid") String groupid,
-			@QueryParam("domain_id") String domainid, @QueryParam("email") String email,
-			@QueryParam("enabled") Boolean enabled, @QueryParam("name") String name,
+	public UsersWrapper listUsersInGroup(@PathParam("groupid") String groupid, @QueryParam("domain_id") String domainid,
+			@QueryParam("email") String email, @QueryParam("enabled") Boolean enabled, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
 			throws Exception {
-		return userController.listUsersInGroup(groupid);
+		return (UsersWrapper) userController.listUsersInGroup(groupid);
 	}
 
 	@PUT

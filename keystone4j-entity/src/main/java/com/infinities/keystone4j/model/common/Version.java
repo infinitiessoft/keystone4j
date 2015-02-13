@@ -12,11 +12,11 @@ public class Version implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 8371864459227315816L;
 	private String id;
-	private String status;
-	private String updated;
 	private List<Link> links = new ArrayList<Link>(0);
 	@XmlElement(name = "media-types")
 	private List<MediaType> mediaTypes = new ArrayList<MediaType>(0);
+	private String status;
+	private String updated;
 
 
 	public String getId() {

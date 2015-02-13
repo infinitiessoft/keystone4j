@@ -1,15 +1,27 @@
 package com.infinities.keystone4j.jpa;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.infinities.keystone4j.common.Hints;
+import com.infinities.keystone4j.common.Hints.Filter;
+import com.infinities.keystone4j.utils.ReflectUtils;
 
 public abstract class AbstractDao<T> implements GenericDao<T> {
 
@@ -142,6 +154,151 @@ public abstract class AbstractDao<T> implements GenericDao<T> {
 		// } finally {
 		// em.close();
 		// }
+	}
+
+	protected <S> List<S> filterLimitQuery(Class<S> model, Hints hints) throws SecurityException, IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<S> cq = cb.createQuery(model);
+		Root<S> root = cq.from(model);
+		cq.select(root);
+		return filterLimitQuery(model, em, cq, cb, root, hints);
+	}
+
+	private <S> List<S> filterLimitQuery(Class<S> model, EntityManager em, CriteriaQuery<S> query, CriteriaBuilder cb,
+			Root<S> root, Hints hints) throws SecurityException, IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
+
+		if (hints == null) {
+			TypedQuery<S> q = em.createQuery(query);
+			return q.getResultList();
+		}
+		query = filter(model, query, cb, root, hints);
+		if (hints.getFilters().isEmpty()) {
+			return limit(em, query, hints);
+		} else {
+			TypedQuery<S> q = em.createQuery(query);
+			return q.getResultList();
+		}
+	}
+
+	private <S> List<S> limit(EntityManager em, CriteriaQuery<S> query, Hints hints) {
+		TypedQuery<S> q = em.createQuery(query);
+		if (hints.getLimit() != null) {
+			q.setMaxResults(hints.getLimit().getLimit());
+		}
+		return q.getResultList();
+	}
+
+	private <S> CriteriaQuery<S> filter(Class<S> model, CriteriaQuery<S> query, CriteriaBuilder cb, Root<S> root, Hints hints)
+			throws SecurityException, IllegalArgumentException, IllegalAccessException, InvocationTargetException,
+			NoSuchMethodException {
+		Map<String, Object> filterDict = new HashMap<String, Object>();
+		List<Predicate> predicates = new ArrayList<Predicate>();
+		for (Filter filter : hints.getFilters()) {
+			if (!ReflectUtils.hasProperty(model, filter.getName())) {
+				continue;
+			}
+			if ("equals".equals(filter.getComparator())) {
+				filterDict = exactFilter(model, filter, filterDict, hints);
+				for (Entry<String, Object> entry : filterDict.entrySet()) {
+					predicates.add(cb.equal(getColumnAttr(root, entry.getKey()), entry.getValue()));
+				}
+			} else {
+				query = inexactFilter(model, query, cb, root, filter, hints);
+			}
+		}
+
+		if (!predicates.isEmpty()) {
+			query = query.where(predicates.toArray(new Predicate[predicates.size()]));
+		}
+
+		return query;
+	}
+
+	private <S> CriteriaQuery<S> inexactFilter(Class<S> model, CriteriaQuery<S> query, CriteriaBuilder cb, Root<S> root,
+			Filter filter, Hints hints) {
+		if (filter.isCaseSensitive()) {
+			return query;
+		}
+
+		Predicate predicate = null;
+		Path<String> path = getColumnAttr(root, filter.getName());
+		if ("contains".equals(filter.getComparator())) {
+			predicate = cb.like(path, String.format("%%%s%%", filter.getValue()));
+		} else if ("startswith".equals(filter.getComparator())) {
+			predicate = cb.like(path, String.format("%s%%", filter.getValue()));
+		} else if ("endswith".equals(filter.getComparator())) {
+			predicate = cb.like(path, String.format("%%%s", filter.getValue()));
+		} else {
+			return query;
+		}
+
+		hints.getFilters().remove(filter);
+		Predicate oldPredicate = query.getRestriction();
+		if (oldPredicate != null) {
+			query.where(oldPredicate, predicate);
+		} else {
+			query.where(predicate);
+		}
+		return query;
+	}
+
+	private <S> Path<String> getColumnAttr(Root<S> root, String name) {
+		if (name.equals("domain_id")) {
+			return root.get("domain").<String> get("id");
+		} else if (name.equals("project_id")) {
+			return root.get("project").<String> get("id");
+		} else if (name.equals("group_id")) {
+			return root.get("group").<String> get("id");
+		} else if (name.equals("role_id")) {
+			return root.get("role").<String> get("id");
+		} else if (name.equals("user_id")) {
+			return root.get("user").<String> get("id");
+		} else if (name.equals("region_id")) {
+			return root.get("region").<String> get("id");
+		} else if (name.equals("service_id")) {
+			return root.get("service").<String> get("id");
+		} else if (name.equals("endpoint_id")) {
+			return root.get("endpoint").<String> get("id");
+		} else if (name.equals("catalog_id")) {
+			return root.get("catalog").<String> get("id");
+		} else if (name.equals("trust_id")) {
+			return root.get("trust").<String> get("id");
+		} else if (name.equals("parent_id")) {
+			return root.get("parent").<String> get("id");
+		} else {
+			return root.get(concentrateName(name));
+		}
+	}
+
+	private String concentrateName(String orig) {
+		if (orig.contains("_")) {
+			String[] split = orig.split("_");
+			orig = split[0];
+			if (split.length >= 2) {
+				for (String s : Arrays.copyOfRange(split, 1, split.length)) {
+					orig += Character.toUpperCase(s.charAt(0)) + s.substring(1);
+				}
+			}
+		}
+		return orig;
+	}
+
+	private <S> Map<String, Object> exactFilter(Class<S> model, Filter filter, Map<String, Object> cumulativeFilterDict,
+			Hints hints) throws SecurityException, IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
+		String key = filter.getName();
+
+		if (ReflectUtils.getReturnType(model, key).equals(Boolean.class)) {
+			cumulativeFilterDict.put(key, Boolean.parseBoolean(String.valueOf(filter.getValue())));
+		} else {
+			cumulativeFilterDict.put(key, filter.getValue());
+		}
+
+		hints.getFilters().remove(filter);
+		return cumulativeFilterDict;
 	}
 
 	protected Class<T> getEntityType() {

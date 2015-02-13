@@ -5,8 +5,8 @@ import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.model.identity.GroupWrapper;
-import com.infinities.keystone4j.model.identity.GroupsWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.GroupWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.GroupsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -29,12 +29,12 @@ public abstract class AbstractGroupAction extends AbstractAction<Group> {
 	}
 
 	@Override
-	protected CollectionWrapper<Group> getCollectionWrapper() {
+	public CollectionWrapper<Group> getCollectionWrapper() {
 		return new GroupsWrapper();
 	}
 
 	@Override
-	protected MemberWrapper<Group> getMemberWrapper() {
+	public MemberWrapper<Group> getMemberWrapper() {
 		return new GroupWrapper();
 	}
 

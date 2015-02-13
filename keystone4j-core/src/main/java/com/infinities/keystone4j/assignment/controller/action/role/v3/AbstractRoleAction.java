@@ -7,8 +7,8 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.assignment.RoleWrapper;
-import com.infinities.keystone4j.model.assignment.RolesWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RoleWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RolesWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -34,12 +34,12 @@ public abstract class AbstractRoleAction extends AbstractAction<Role> {
 	}
 
 	@Override
-	protected CollectionWrapper<Role> getCollectionWrapper() {
+	public CollectionWrapper<Role> getCollectionWrapper() {
 		return new RolesWrapper();
 	}
 
 	@Override
-	protected MemberWrapper<Role> getMemberWrapper() {
+	public MemberWrapper<Role> getMemberWrapper() {
 		return new RoleWrapper();
 	}
 

@@ -18,57 +18,56 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.model.BaseEntity;
-import com.infinities.keystone4j.model.DomainScoped;
+import com.infinities.keystone4j.model.DomainAwared;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.assignment.UserDomainGrant;
-import com.infinities.keystone4j.model.assignment.UserProjectGrant;
-import com.infinities.keystone4j.model.credential.Credential;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.token.Token;
-import com.infinities.keystone4j.model.trust.Trust;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
 @Table(name = "USER", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"DOMAINID", "NAME" }) })
-public class User extends BaseEntity implements java.io.Serializable, PolicyEntity, IUser, DomainScoped {
+public class User extends BaseEntity implements java.io.Serializable, DomainAwared, IUser {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6436954503286770674L;
+	private Domain domain; // keystone.identity.backends.sql.User 20150114
 	@NotNull(message = "name field is required and cannot be empty")
 	private String name;
-	private String email;
-	private Domain domain;
+	// private String email;
 	// TODO filter
 	private String password;
 	private Boolean enabled = true;
 	// TODO filter
 	private String extra;
-	private Project default_project;
+	@XmlElement(name = "default_project")
+	private Project defaultProject;
 	// TODO filter
 	private Set<UserGroupMembership> userGroupMemberships = new HashSet<UserGroupMembership>(0);
 	// TODO filter
-	private Set<UserProjectGrant> userProjectGrants = new HashSet<UserProjectGrant>(0);
+	// private Set<UserProjectGrant> userProjectGrants = new
+	// HashSet<UserProjectGrant>(0);
 	// TODO filter
-	private Set<UserDomainGrant> userDomainGrants = new HashSet<UserDomainGrant>(0);
-	private Set<Credential> credentials = new HashSet<Credential>(0);
-	private Set<Trust> trustsOwn = new HashSet<Trust>(0);
-	private Set<Trust> trustsProvide = new HashSet<Trust>(0);
-	private Set<Token> tokens = new HashSet<Token>(0);
+	// private Set<UserDomainGrant> userDomainGrants = new
+	// HashSet<UserDomainGrant>(0);
+	// private Set<Credential> credentials = new HashSet<Credential>(0);
+	// private final Set<Trust> trustsOwn = new HashSet<Trust>(0);
+	// private final Set<Trust> trustsProvide = new HashSet<Trust>(0);
+	// private Set<Token> tokens = new HashSet<Token>(0);
 
 	private boolean nameUpdated = false;
-	private boolean emailUpdated = false;
+	// private boolean emailUpdated = false;
 	private boolean domainUpdated = false;
 	private boolean passwordUpdated = false;
 	private boolean enabledUpdated = false;
 	private boolean extraUpdated = false;
 	private boolean defaultProjectUpdated = false;
+
+	private String tenantId;
+	private String username;
 
 
 	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
@@ -85,42 +84,46 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 		nameUpdated = true;
 	}
 
-	@Column(name = "EMAIL", length = 255, nullable = false)
-	@JsonView(Views.Basic.class)
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-		emailUpdated = true;
-	}
+	// @Column(name = "EMAIL", length = 255, nullable = false)
+	// @JsonView(Views.Basic.class)
+	// public String getEmail() {
+	// return email;
+	// }
+	//
+	// public void setEmail(String email) {
+	// this.email = email;
+	// emailUpdated = true;
+	// }
 
 	@Override
-	@JsonView(Views.AuthenticateForToken.class)
+	@JsonView(Views.Basic.class)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOMAINID", nullable = false)
 	public Domain getDomain() {
 		return domain;
 	}
 
+	@Override
 	public void setDomain(Domain domain) {
 		this.domain = domain;
 		domainUpdated = true;
 	}
 
+	@JsonView(Views.Advance.class)
 	@Transient
+	@Override
 	@XmlElement(name = "domain_id")
-	public String getDomainid() {
+	public String getDomainId() {
 		if (getDomain() != null) {
 			return getDomain().getId();
 		}
 		return null;
 	}
 
+	@Override
 	@Transient
 	@XmlElement(name = "domain_id")
-	public void setDomainid(String domainid) {
+	public void setDomainId(String domainid) {
 		if (!(domainid == null || domainid.length() == 0)) {
 			Domain domain = new Domain();
 			domain.setId(domainid);
@@ -128,8 +131,8 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 		}
 	}
 
-	@Column(name = "PASSWORD", length = 128)
 	@JsonView(Views.Advance.class)
+	@Column(name = "PASSWORD", length = 128)
 	public String getPassword() {
 		return password;
 	}
@@ -166,13 +169,13 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 	@XmlTransient
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DEFAULTPROJECTID", nullable = false)
-	public Project getDefault_project() {
-		return default_project;
+	public Project getDefaultProject() {
+		return defaultProject;
 	}
 
 	@XmlTransient
-	public void setDefault_project(Project default_project) {
-		this.default_project = default_project;
+	public void setDefaultProject(Project defaultProject) {
+		this.defaultProject = defaultProject;
 		defaultProjectUpdated = true;
 	}
 
@@ -186,65 +189,72 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 		this.userGroupMemberships = userGroupMemberships;
 	}
 
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-	public Set<UserProjectGrant> getUserProjectGrants() {
-		return userProjectGrants;
-	}
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =
+	// CascadeType.ALL)
+	// public Set<UserProjectGrant> getUserProjectGrants() {
+	// return userProjectGrants;
+	// }
+	//
+	// public void setUserProjectGrants(Set<UserProjectGrant> userProjectGrants)
+	// {
+	// this.userProjectGrants = userProjectGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =
+	// CascadeType.ALL)
+	// public Set<UserDomainGrant> getUserDomainGrants() {
+	// return userDomainGrants;
+	// }
+	//
+	// public void setUserDomainGrants(Set<UserDomainGrant> userDomainGrants) {
+	// this.userDomainGrants = userDomainGrants;
+	// }
 
-	public void setUserProjectGrants(Set<UserProjectGrant> userProjectGrants) {
-		this.userProjectGrants = userProjectGrants;
-	}
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =
+	// CascadeType.ALL)
+	// public Set<Credential> getCredentials() {
+	// return credentials;
+	// }
+	//
+	// public void setCredentials(Set<Credential> credentials) {
+	// this.credentials = credentials;
+	// }
 
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-	public Set<UserDomainGrant> getUserDomainGrants() {
-		return userDomainGrants;
-	}
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "trustee", cascade =
+	// CascadeType.ALL)
+	// public Set<Trust> getTrustsOwn() {
+	// return trustsOwn;
+	// }
+	//
+	// public void setTrustsOwn(Set<Trust> trustsOwn) {
+	// this.trustsOwn = trustsOwn;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "trustor", cascade =
+	// CascadeType.ALL)
+	// public Set<Trust> getTrustsProvide() {
+	// return trustsProvide;
+	// }
+	//
+	// public void setTrustsProvide(Set<Trust> trustsProvide) {
+	// this.trustsProvide = trustsProvide;
+	// }
 
-	public void setUserDomainGrants(Set<UserDomainGrant> userDomainGrants) {
-		this.userDomainGrants = userDomainGrants;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-	public Set<Credential> getCredentials() {
-		return credentials;
-	}
-
-	public void setCredentials(Set<Credential> credentials) {
-		this.credentials = credentials;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "trustee", cascade = CascadeType.ALL)
-	public Set<Trust> getTrustsOwn() {
-		return trustsOwn;
-	}
-
-	public void setTrustsOwn(Set<Trust> trustsOwn) {
-		this.trustsOwn = trustsOwn;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "trustor", cascade = CascadeType.ALL)
-	public Set<Trust> getTrustsProvide() {
-		return trustsProvide;
-	}
-
-	public void setTrustsProvide(Set<Trust> trustsProvide) {
-		this.trustsProvide = trustsProvide;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
-	public Set<Token> getTokens() {
-		return tokens;
-	}
-
-	public void setTokens(Set<Token> tokens) {
-		this.tokens = tokens;
-	}
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =
+	// CascadeType.ALL)
+	// public Set<Token> getTokens() {
+	// return tokens;
+	// }
+	//
+	// public void setTokens(Set<Token> tokens) {
+	// this.tokens = tokens;
+	// }
 
 	@XmlTransient
 	@Transient
@@ -258,17 +268,17 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 		this.nameUpdated = nameUpdated;
 	}
 
-	@XmlTransient
-	@Transient
-	public boolean isEmailUpdated() {
-		return emailUpdated;
-	}
-
-	@XmlTransient
-	@Transient
-	public void setEmailUpdated(boolean emailUpdated) {
-		this.emailUpdated = emailUpdated;
-	}
+	// @XmlTransient
+	// @Transient
+	// public boolean isEmailUpdated() {
+	// return emailUpdated;
+	// }
+	//
+	// @XmlTransient
+	// @Transient
+	// public void setEmailUpdated(boolean emailUpdated) {
+	// this.emailUpdated = emailUpdated;
+	// }
 
 	@XmlTransient
 	@Transient
@@ -330,29 +340,14 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 		this.defaultProjectUpdated = defaultProjectUpdated;
 	}
 
-	@XmlTransient
-	@Transient
-	@Override
-	@JsonIgnore
-	public Project getProject() {
-		return default_project;
-	}
-
-	@Transient
-	@Override
-	@XmlTransient
-	@JsonIgnore
-	public User getUser() {
-		throw new IllegalStateException("propert 'user' not exist");
-	}
-
+	@JsonView(Views.Advance.class)
 	@Transient
 	@XmlElement(name = "default_project_id")
 	public String getDefaultProjectId() {
-		if (getDefault_project() == null) {
+		if (getDefaultProject() == null) {
 			return null;
 		} else {
-			return getDefault_project().getId();
+			return getDefaultProject().getId();
 		}
 	}
 
@@ -361,7 +356,36 @@ public class User extends BaseEntity implements java.io.Serializable, PolicyEnti
 	public void setDefaultProjectId(String defaultProjectId) {
 		Project project = new Project();
 		project.setId(defaultProjectId);
-		setDefault_project(project);
+		setDefaultProject(project);
+	}
+
+	@Transient
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	@JsonView(Views.Advance.class)
+	@Transient
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	@JsonView(Views.Advance.class)
+	@Transient
+	public String getUsername() {
+		return username;
+	}
+
+	@Transient
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	@Override
+	public String toString() {
+		return "User [name=" + name + ", domain=" + domain + ", password=" + password + ", enabled=" + enabled + ", extra="
+				+ extra + ", defaultProject=" + defaultProject + ", userGroupMemberships=" + userGroupMemberships
+				+ ", tenantId=" + tenantId + ", username=" + username + "]";
 	}
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =

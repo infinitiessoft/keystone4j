@@ -18,21 +18,16 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.model.BaseEntity;
-import com.infinities.keystone4j.model.DomainScoped;
+import com.infinities.keystone4j.model.DomainAwared;
 import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.assignment.GroupDomainGrant;
-import com.infinities.keystone4j.model.assignment.GroupProjectGrant;
-import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
 @Table(name = "GROUP", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"DOMAINID", "NAME" }) })
-public class Group extends BaseEntity implements java.io.Serializable, PolicyEntity, DomainScoped {
+public class Group extends BaseEntity implements java.io.Serializable, DomainAwared {
 
 	/**
 	 * 
@@ -42,9 +37,12 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 	private String name;
 	private Domain domain;
 	private String extra;
-	private Set<UserGroupMembership> userGroupMemberships = new HashSet<UserGroupMembership>(0);
-	private Set<GroupProjectGrant> groupProjectGrants = new HashSet<GroupProjectGrant>(0);
-	private Set<GroupDomainGrant> groupDomainGrants = new HashSet<GroupDomainGrant>(0);
+	private Set<UserGroupMembership> userGroupMemberships = new HashSet<UserGroupMembership>(0); // keystone.identity.backends.sql.Group
+																									// 20150114
+	// private Set<GroupProjectGrant> groupProjectGrants = new
+	// HashSet<GroupProjectGrant>(0);
+	// private Set<GroupDomainGrant> groupDomainGrants = new
+	// HashSet<GroupDomainGrant>(0);
 	private boolean nameUpdated = false;
 	private boolean domainUpdated = false;
 	private boolean extraUpdated = false;
@@ -70,6 +68,7 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 		return domain;
 	}
 
+	@Override
 	@XmlTransient
 	public void setDomain(Domain domain) {
 		this.domain = domain;
@@ -85,9 +84,10 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 		return null;
 	}
 
+	@Override
 	@Transient
 	@XmlElement(name = "domain_id")
-	public void setDomainid(String domainid) {
+	public void setDomainId(String domainid) {
 		if (!(domainid == null || domainid.length() == 0)) {
 			Domain domain = new Domain();
 			domain.setId(domainid);
@@ -117,27 +117,31 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 		this.userGroupMemberships = userGroupMemberships;
 	}
 
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.ALL)
-	public Set<GroupProjectGrant> getGroupProjectGrants() {
-		return groupProjectGrants;
-	}
-
-	@JsonView(Views.All.class)
-	public void setGroupProjectGrants(Set<GroupProjectGrant> groupProjectGrants) {
-		this.groupProjectGrants = groupProjectGrants;
-	}
-
-	@JsonView(Views.All.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.ALL)
-	public Set<GroupDomainGrant> getGroupDomainGrants() {
-		return groupDomainGrants;
-	}
-
-	@JsonView(Views.All.class)
-	public void setGroupDomainGrants(Set<GroupDomainGrant> groupDomainGrants) {
-		this.groupDomainGrants = groupDomainGrants;
-	}
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade =
+	// CascadeType.ALL)
+	// public Set<GroupProjectGrant> getGroupProjectGrants() {
+	// return groupProjectGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// public void setGroupProjectGrants(Set<GroupProjectGrant>
+	// groupProjectGrants) {
+	// this.groupProjectGrants = groupProjectGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade =
+	// CascadeType.ALL)
+	// public Set<GroupDomainGrant> getGroupDomainGrants() {
+	// return groupDomainGrants;
+	// }
+	//
+	// @JsonView(Views.All.class)
+	// public void setGroupDomainGrants(Set<GroupDomainGrant> groupDomainGrants)
+	// {
+	// this.groupDomainGrants = groupDomainGrants;
+	// }
 
 	@Transient
 	@XmlTransient
@@ -175,20 +179,29 @@ public class Group extends BaseEntity implements java.io.Serializable, PolicyEnt
 		this.extraUpdated = extraUpdated;
 	}
 
-	@XmlTransient
-	@Transient
-	@JsonIgnore
-	@Override
-	public User getUser() {
-		throw new IllegalStateException("propert 'user' not exist");
-	}
+	// @XmlTransient
+	// @Transient
+	// @JsonIgnore
+	// @Override
+	// public User getUser() {
+	// throw new IllegalStateException("propert 'user' not exist");
+	// }
+	//
+	// @XmlTransient
+	// @Transient
+	// @JsonIgnore
+	// @Override
+	// public Project getProject() {
+	// throw new IllegalStateException("propert 'project' not exist");
+	// }
 
-	@XmlTransient
 	@Transient
-	@JsonIgnore
 	@Override
-	public Project getProject() {
-		throw new IllegalStateException("propert 'project' not exist");
+	public String getDomainId() {
+		if (getDomain() != null) {
+			return getDomain().getId();
+		}
+		return null;
 	}
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade =

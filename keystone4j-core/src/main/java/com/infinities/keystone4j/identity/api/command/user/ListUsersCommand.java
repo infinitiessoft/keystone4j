@@ -2,48 +2,43 @@ package com.infinities.keystone4j.identity.api.command.user;
 
 import java.util.List;
 
-import com.google.common.base.Strings;
-import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.TruncatedCommand;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.common.Hints;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.identity.IdMappingApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
-import com.infinities.keystone4j.identity.IdentityUtils;
 import com.infinities.keystone4j.identity.api.command.AbstractIdentityCommand;
-import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.model.identity.mapping.EntityType;
 
-public class ListUsersCommand extends AbstractIdentityCommand<List<User>> {
+public class ListUsersCommand extends AbstractIdentityCommand implements TruncatedCommand<User> {
 
-	private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
-	private String domainid;
+	// private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
+	private final String domainid;
 
 
-	public ListUsersCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
-			IdentityDriver identityDriver, String domainid) {
-		super(credentialApi, tokenApi, identityApi, identityDriver);
+	public ListUsersCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, RevokeApi revokeApi,
+			IdentityApi identityApi, IdMappingApi idMappingApi, IdentityDriver identityDriver, String domainid) {
+		super(assignmentApi, credentialApi, revokeApi, identityApi, idMappingApi, identityDriver);
 		this.domainid = domainid;
 	}
 
 	@Override
-	public List<User> execute() {
-		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
+	public List<User> execute(Hints hints) throws Exception {
+		IdentityDriver driver = selectIdentityDriver(domainid);
+		if (hints == null) {
+			hints = new Hints();
 		}
-		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
-		if (driver == null) {
-			driver = this.getIdentityDriver();
+		if (driver.isDomainAware()) {
+			ensureDomainIdInHints(hints, domainid);
+		} else {
+			markDomainIdFilterSatisfied(hints);
 		}
-		List<User> ret = driver.listUsers();
+		List<User> refList = driver.listUsers(hints);
 
-		if (!driver.isDomainAware()) {
-			Domain domain = new Domain();
-			domain.setId(domainid);
-			for (User user : ret) {
-				user.setDomain(domain);
-			}
-		}
-		return ret;
+		return setDomainIdAndMapping(refList, domainid, driver, EntityType.USER);
 	}
-
 }

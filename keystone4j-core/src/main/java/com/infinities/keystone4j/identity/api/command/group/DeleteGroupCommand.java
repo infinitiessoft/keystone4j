@@ -1,46 +1,57 @@
 package com.infinities.keystone4j.identity.api.command.group;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.base.Strings;
-import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.identity.IdMappingApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
-import com.infinities.keystone4j.identity.IdentityUtils;
 import com.infinities.keystone4j.identity.api.command.AbstractIdentityCommand;
 import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.notification.NotifiableCommand;
 
-public class DeleteGroupCommand extends AbstractIdentityCommand<Group> {
+public class DeleteGroupCommand extends AbstractIdentityCommand implements NotifiableCommand<Group> {
 
-	private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
+	// private final static String DEFAULT_DOMAIN_ID = "default_domain_id";
 	private final String groupid;
-	private String domainid;
 
 
-	public DeleteGroupCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
-			IdentityDriver identityDriver, String groupid, String domainid) {
-		super(credentialApi, tokenApi, identityApi, identityDriver);
+	public DeleteGroupCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, RevokeApi revokeApi,
+			IdentityApi identityApi, IdMappingApi idMappingApi, IdentityDriver identityDriver, String groupid) {
+		super(assignmentApi, credentialApi, revokeApi, identityApi, idMappingApi, identityDriver);
 		this.groupid = groupid;
-		this.domainid = domainid;
 	}
 
 	@Override
-	public Group execute() {
-		if (Strings.isNullOrEmpty(domainid)) {
-			domainid = Config.Instance.getOpt(Config.Type.identity, DEFAULT_DOMAIN_ID).asText();
+	public Group execute() throws Exception {
+		DomainIdDriverAndEntityId domainIdDriverAndEntityId = getDomainDriverAndEntityId(groupid);
+		// String domainId = domainIdDriverAndEntityId.getDomainId();
+		IdentityDriver driver = domainIdDriverAndEntityId.getDriver();
+		String entityId = domainIdDriverAndEntityId.getLocalId();
+		List<String> userIds = new ArrayList<String>();
+
+		for (User user : this.getIdentityApi().listUsersInGroup(groupid, null)) {
+			userIds.add(user.getId());
 		}
-		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domainid);
-		if (driver == null) {
-			driver = this.getIdentityDriver();
+
+		driver.deleteGroup(entityId);
+		this.getIdMappingApi().deleteIdMapping(groupid);
+		this.getAssignmentApi().deleteGroup(groupid);
+		for (String uid : userIds) {
+			this.getIdentityApi().emitInvalidateUserTokenPersistence(uid);
 		}
-		List<User> users = this.getIdentityApi().listUsersInGroup(groupid, domainid);
-		for (User user : users) {
-			this.getTokenApi().deleteTokensForUser(user.getId(), null);
-		}
-		driver.deleteGroup(groupid);
 		return null;
+	}
+
+	@Override
+	public Object getArgs(int index) {
+		if (index == 1) {
+			return groupid;
+		}
+		throw new IllegalArgumentException("invalid index");
 	}
 }

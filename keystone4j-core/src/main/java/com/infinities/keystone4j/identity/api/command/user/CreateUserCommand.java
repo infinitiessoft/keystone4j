@@ -1,41 +1,48 @@
 package com.infinities.keystone4j.identity.api.command.user;
 
+import java.util.UUID;
+
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.identity.IdMappingApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
-import com.infinities.keystone4j.identity.IdentityUtils;
 import com.infinities.keystone4j.identity.api.command.AbstractIdentityCommand;
-import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.model.identity.mapping.EntityType;
+import com.infinities.keystone4j.notification.NotifiableCommand;
 
-public class CreateUserCommand extends AbstractIdentityCommand<User> {
+public class CreateUserCommand extends AbstractIdentityCommand implements NotifiableCommand<User> {
 
 	private final User user;
 
 
-	public CreateUserCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
-			IdentityDriver identityDriver, User user) {
-		super(credentialApi, tokenApi, identityApi, identityDriver);
+	public CreateUserCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, RevokeApi revokeApi,
+			IdentityApi identityApi, IdMappingApi idMappingApi, IdentityDriver identityDriver, User user) {
+		super(assignmentApi, credentialApi, revokeApi, identityApi, idMappingApi, identityDriver);
 		this.user = user;
 	}
 
 	@Override
-	public User execute() {
-		Domain domain = user.getDomain();
-		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domain.getId());
-		if (driver == null) {
-			driver = this.getIdentityDriver();
-		}
+	public User execute() throws Exception {
+		String domainid = user.getDomainId();
+		this.getAssignmentApi().getDomain(domainid);
 
-		if (!driver.isDomainAware()) {
-			new IdentityUtils().clearDomainid(user);
+		IdentityDriver driver = selectIdentityDriver(domainid);
+		User user = clearDomainIdIfDomainUnaware(driver, this.user);
+		user.setId(UUID.randomUUID().toString());
+		User ref = driver.createUser(user.getId(), user);
+
+		return setDomainIdAndMapping(ref, domainid, driver, EntityType.USER);
+	}
+
+	@Override
+	public Object getArgs(int index) {
+		if (index == 1) {
+			return user;
 		}
-		User ret = driver.createUser(user);
-		if (!driver.isDomainAware()) {
-			ret.setDomain(domain);
-		}
-		return ret;
+		throw new IllegalArgumentException("invalid index");
 	}
 
 }

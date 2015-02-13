@@ -2,13 +2,13 @@ package com.infinities.keystone4j.model;
 
 import java.util.List;
 
-import com.infinities.keystone4j.model.common.Links;
+import com.infinities.keystone4j.model.common.CollectionLinks;
 
 public interface CollectionWrapper<T> extends Wrapper<T> {
 
-	Links getLinks();
+	CollectionLinks getLinks();
 
-	void setLinks(Links links);
+	void setLinks(CollectionLinks links);
 
 	boolean isTruncated();
 

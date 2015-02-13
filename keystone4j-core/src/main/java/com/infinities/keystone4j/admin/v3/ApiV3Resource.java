@@ -92,11 +92,11 @@ public class ApiV3Resource {
 		return RegionResource.class;
 	}
 
-	// @Path("/credentials")
-	// // credential user for ec2 auth
-	// public Class<CredentialResource> getCredentialResource() {
-	// return CredentialResource.class;
-	// }
+	@Path("/credentials")
+	// credential user for ec2 auth
+	public Class<CredentialResource> getCredentialResource() {
+		return CredentialResource.class;
+	}
 
 	@Path("/groups")
 	// identity

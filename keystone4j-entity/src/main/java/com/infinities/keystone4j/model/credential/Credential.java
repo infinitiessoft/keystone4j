@@ -2,67 +2,64 @@ package com.infinities.keystone4j.model.credential;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.infinities.keystone4j.model.BaseEntity;
-import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.identity.User;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
 
+@JsonInclude(Include.NON_NULL)
 @Entity
 @Table(name = "CREDENTIAL", schema = "PUBLIC", catalog = "PUBLIC")
-public class Credential extends BaseEntity implements java.io.Serializable, PolicyEntity {
+public class Credential extends BaseEntity implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7583519542746277864L;
-	private User user;
-	private Project project;
+	private String userId;
+	private String projectId;
 	private String blob;
 	private String type;
 	private String extra;
 	private boolean userUpdated = false;
 	private boolean projectUpdated = false;
-	private boolean blobUpdated = false;
 	private boolean typeUpdated = false;
 	private boolean extraUpdated = false;
+	private boolean blobUpdated = false;
 
 
-	@Override
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USERID", nullable = false)
-	public User getUser() {
-		return user;
+	@XmlElement(name = "user_id")
+	@Column(name = "USERID", length = 64)
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	@XmlElement(name = "user_id")
+	public void setUserId(String userId) {
+		this.userId = userId;
 		userUpdated = true;
 	}
 
-	@Override
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PROJECTID")
-	public Project getProject() {
-		return project;
+	@XmlElement(name = "project_id")
+	@Column(name = "PROJECTID", length = 64)
+	public String getProjectId() {
+		return projectId;
 	}
 
-	public void setProject(Project project) {
-		this.project = project;
+	@XmlElement(name = "project_id")
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
 		projectUpdated = true;
 	}
 
-	@Lob
-	@Column(name = "BLOB", nullable = false)
+	// @OneToOne(optional = false, cascade = CascadeType.REMOVE)
+	// @JoinColumn(name = "BLOBID", nullable = false)
+	@Column(name = "BLOB", length = 512)
 	public String getBlob() {
 		return blob;
 	}
@@ -83,7 +80,7 @@ public class Credential extends BaseEntity implements java.io.Serializable, Poli
 	}
 
 	@Lob
-	@Column(name = "EXTRA", nullable = false)
+	@Column(name = "EXTRA", nullable = true)
 	public String getExtra() {
 		return extra;
 	}
@@ -93,6 +90,8 @@ public class Credential extends BaseEntity implements java.io.Serializable, Poli
 		extraUpdated = true;
 	}
 
+	@XmlTransient
+	@Transient
 	public boolean isUserUpdated() {
 		return userUpdated;
 	}
@@ -101,6 +100,8 @@ public class Credential extends BaseEntity implements java.io.Serializable, Poli
 		this.userUpdated = userUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public boolean isProjectUpdated() {
 		return projectUpdated;
 	}
@@ -109,14 +110,8 @@ public class Credential extends BaseEntity implements java.io.Serializable, Poli
 		this.projectUpdated = projectUpdated;
 	}
 
-	public boolean isBlobUpdated() {
-		return blobUpdated;
-	}
-
-	public void setBlobUpdated(boolean blobUpdated) {
-		this.blobUpdated = blobUpdated;
-	}
-
+	@XmlTransient
+	@Transient
 	public boolean isTypeUpdated() {
 		return typeUpdated;
 	}
@@ -125,6 +120,8 @@ public class Credential extends BaseEntity implements java.io.Serializable, Poli
 		this.typeUpdated = typeUpdated;
 	}
 
+	@XmlTransient
+	@Transient
 	public boolean isExtraUpdated() {
 		return extraUpdated;
 	}
@@ -135,10 +132,12 @@ public class Credential extends BaseEntity implements java.io.Serializable, Poli
 
 	@XmlTransient
 	@Transient
-	@JsonIgnore
-	@Override
-	public Domain getDomain() {
-		throw new IllegalStateException("propert 'domain' not exist");
+	public boolean isBlobUpdated() {
+		return blobUpdated;
+	}
+
+	public void setBlobUpdated(boolean blobUpdated) {
+		this.blobUpdated = blobUpdated;
 	}
 
 }

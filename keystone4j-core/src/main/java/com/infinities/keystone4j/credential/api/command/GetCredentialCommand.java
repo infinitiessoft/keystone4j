@@ -1,10 +1,15 @@
 package com.infinities.keystone4j.credential.api.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.infinities.keystone4j.NonTruncatedCommand;
 import com.infinities.keystone4j.credential.CredentialDriver;
 import com.infinities.keystone4j.model.credential.Credential;
 
-public class GetCredentialCommand extends AbstractCredentialCommand<Credential> {
+public class GetCredentialCommand extends AbstractCredentialCommand implements NonTruncatedCommand<Credential> {
 
+	private final static Logger logger = LoggerFactory.getLogger(GetCredentialCommand.class);
 	private final String credentialid;
 
 
@@ -14,8 +19,9 @@ public class GetCredentialCommand extends AbstractCredentialCommand<Credential> 
 	}
 
 	@Override
-	public Credential execute() {
-		return this.getCredentialDriver().getCredential(credentialid);
+	public Credential execute() throws Exception {
+		logger.debug("get credential: {}", credentialid);
+		Credential c = this.getCredentialDriver().getCredential(credentialid);
+		return c;
 	}
-
 }

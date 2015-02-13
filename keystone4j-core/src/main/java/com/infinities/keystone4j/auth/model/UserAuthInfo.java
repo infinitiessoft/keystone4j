@@ -19,15 +19,15 @@ public class UserAuthInfo {
 	private String domainid;
 	private String userid;
 	private String password;
-	private User user;
+	private User userRef;
 	private final IdentityApi identityApi;
 	private final AssignmentApi assignmentApi;
 
 
-	public UserAuthInfo(AuthData authData, IdentityApi identityApi, AssignmentApi assignmentApi) {
+	public UserAuthInfo(AuthData authPayload, IdentityApi identityApi, AssignmentApi assignmentApi) {
 		this.identityApi = identityApi;
 		this.assignmentApi = assignmentApi;
-		validateAndNormalizeAuthData(authData);
+		validateAndNormalizeAuthData(authPayload);
 	}
 
 	private void validateAndNormalizeAuthData(AuthData authData) {
@@ -44,35 +44,38 @@ public class UserAuthInfo {
 		}
 
 		this.password = userInfo.getPassword();
-		Domain domain;
-		User user;
+		Domain domainRef = null;
+		User userRef = null;
 
 		try {
 			if (!Strings.isNullOrEmpty(userName)) {
 				if (userInfo.getDomain() == null) {
 					throw Exceptions.ValidationException.getInstance(null, "domain", "user");
 				}
-				domain = lookupDomain(userInfo.getDomain());
-				user = identityApi.getUserByName(userName, domain.getId());
+				domainRef = lookupDomain(userInfo.getDomain());
+				userRef = identityApi.getUserByName(userName, domainRef.getId());
 			} else {
-				user = identityApi.getUser(userid, null);
-				domain = user.getDomain();
-				assertDomainIsEnabled(domain);
+				userRef = identityApi.getUser(userid);
+				domainRef = assignmentApi.getDomain(userRef.getDomainId());
+				assertDomainIsEnabled(domainRef);
 			}
 		} catch (Exception e) {
 			logger.error("user not found", e);
 			throw Exceptions.UnauthorizedException.getInstance();
 		}
 
-		assertUserIsEnabled(user);
-		this.user = user;
-		this.userid = user.getId();
-		this.domainid = domain.getId();
+		assertUserIsEnabled(userRef);
+		this.userRef = userRef;
+		this.userid = userRef.getId();
+		this.domainid = domainRef.getId();
 
 	}
 
 	private void assertUserIsEnabled(User user) {
-		if (!user.getEnabled()) {
+		try {
+			identityApi.assertUserEnabled(user.getId(), user);
+		} catch (Exception e) {
+			logger.warn("user is disabled", e);
 			String msgf = "User is disabled: {0}";
 			String msg = MessageFormat.format(msgf, user.getId());
 			logger.warn(msg);
@@ -80,11 +83,13 @@ public class UserAuthInfo {
 		}
 	}
 
-	private void assertDomainIsEnabled(Domain domain) {
-		if (!domain.getEnabled()) {
+	private void assertDomainIsEnabled(Domain domainRef) {
+		try {
+			assignmentApi.assertDomainEnabled(domainRef.getId(), domainRef);
+		} catch (Exception e) {
 			String msgf = "Domain is disabled: {0}";
-			String msg = MessageFormat.format(msgf, domain.getId());
-			logger.warn(msg);
+			String msg = MessageFormat.format(msgf, domainRef.getId());
+			logger.warn(msg, e);
 			throw Exceptions.UnauthorizedException.getInstance(msg);
 		}
 	}
@@ -92,23 +97,23 @@ public class UserAuthInfo {
 	private Domain lookupDomain(Domain domain) {
 		String domainid = domain.getId();
 		String domainName = domain.getName();
-		Domain ret;
+		Domain domainRef;
 		if (Strings.isNullOrEmpty(domainid) && Strings.isNullOrEmpty(domainName)) {
 			throw Exceptions.ValidationException.getInstance(null, "id or name", "domain");
 		}
 
 		try {
 			if (!Strings.isNullOrEmpty(domainName)) {
-				ret = assignmentApi.getDomainByName(domainName);
+				domainRef = assignmentApi.getDomainByName(domainName);
 			} else {
-				ret = assignmentApi.getDomain(domainid);
+				domainRef = assignmentApi.getDomain(domainid);
 			}
 		} catch (Exception e) {
 			logger.error("domain not found", e);
 			throw Exceptions.UnauthorizedException.getInstance();
 		}
-		assertDomainIsEnabled(ret);
-		return ret;
+		assertDomainIsEnabled(domainRef);
+		return domainRef;
 	}
 
 	public String getDomainid() {
@@ -136,11 +141,11 @@ public class UserAuthInfo {
 	}
 
 	public User getUser() {
-		return user;
+		return userRef;
 	}
 
 	public void setUser(User user) {
-		this.user = user;
+		this.userRef = user;
 	}
 
 }

@@ -17,8 +17,8 @@ import com.infinities.keystone4j.auth.controller.action.RevokeTokenAction;
 import com.infinities.keystone4j.auth.controller.action.ValidateTokenAction;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.ProtectedCollectionDecorator;
-import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedCollectionDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
@@ -26,8 +26,8 @@ import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.auth.AuthV3;
 import com.infinities.keystone4j.model.auth.TokenIdAndData;
-import com.infinities.keystone4j.model.catalog.Catalog;
-import com.infinities.keystone4j.model.token.TokenDataWrapper;
+import com.infinities.keystone4j.model.catalog.Service;
+import com.infinities.keystone4j.model.token.wrapper.TokenDataWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
@@ -55,6 +55,8 @@ public class AuthControllerImpl extends BaseController implements AuthController
 		this.tokenProviderApi = tokenProviderApi;
 		this.trustApi = trustApi;
 		this.policyApi = policyApi;
+		this.assignmentApi.setIdentityApi(identityApi);
+		this.identityApi.setAssignmentApi(assignmentApi);
 	}
 
 	@Override
@@ -108,9 +110,9 @@ public class AuthControllerImpl extends BaseController implements AuthController
 	}
 
 	@Override
-	public MemberWrapper<Catalog> getAuthCatalog() throws Exception {
-		ProtectedAction<Catalog> command = new ProtectedDecorator<Catalog>(new GetAuthCatalogAction(assignmentApi,
-				catalogApi, identityApi, tokenProviderApi, policyApi), tokenProviderApi, policyApi);
+	public CollectionWrapper<Service> getAuthCatalog() throws Exception {
+		FilterProtectedAction<Service> command = new ProtectedCollectionDecorator<Service>(new GetAuthCatalogAction(
+				assignmentApi, catalogApi, identityApi, tokenProviderApi, policyApi), tokenProviderApi, policyApi);
 		return command.execute(getRequest());
 	}
 

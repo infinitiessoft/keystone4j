@@ -8,4 +8,6 @@ public interface ProtectedAction<T> extends Action {
 
 	MemberWrapper<T> execute(ContainerRequestContext context) throws Exception;
 
+	MemberWrapper<T> getMemberWrapper();
+
 }

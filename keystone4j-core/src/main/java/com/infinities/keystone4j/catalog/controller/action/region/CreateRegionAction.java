@@ -21,7 +21,7 @@ public class CreateRegionAction extends AbstractRegionAction implements Protecte
 	}
 
 	@Override
-	public MemberWrapper<Region> execute(ContainerRequestContext context) {
+	public MemberWrapper<Region> execute(ContainerRequestContext context) throws Exception {
 		if (!Strings.isNullOrEmpty(region.getId())) {
 			assignUniqueId(region);
 		}

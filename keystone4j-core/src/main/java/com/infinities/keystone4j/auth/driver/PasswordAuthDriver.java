@@ -1,10 +1,11 @@
 package com.infinities.keystone4j.auth.driver;
 
-import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.auth.AuthDriver;
-import com.infinities.keystone4j.auth.model.AuthContext;
 import com.infinities.keystone4j.auth.model.AuthInfo;
 import com.infinities.keystone4j.auth.model.UserAuthInfo;
 import com.infinities.keystone4j.exception.Exceptions;
@@ -14,37 +15,35 @@ import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class PasswordAuthDriver implements AuthDriver {
 
-	// private final static Logger logger =
-	// LoggerFactory.getLogger(PasswordAuthDriver.class);
+	private final static Logger logger = LoggerFactory.getLogger(PasswordAuthDriver.class);
 	private final static String METHOD = "password";
 
 
 	@Override
-	public void authenticate(KeystoneContext context, AuthData authPayload, AuthContext userContext,
+	public void authenticate(KeystoneContext context, AuthData authPayload,
+			com.infinities.keystone4j.auth.controller.action.AbstractAuthAction.AuthContext authContext,
 			TokenProviderApi tokenProviderApi, IdentityApi identityApi, AssignmentApi assignmentApi) {
-		// Identity authPayload = authInfo.getMethodData(METHOD);
 		UserAuthInfo userInfo = new UserAuthInfo(authPayload, identityApi, assignmentApi);
 
 		try {
-			identityApi.authenticate(userInfo.getUserid(), userInfo.getPassword(), userInfo.getDomainid());
+			identityApi.authenticate(userInfo.getUserid(), userInfo.getPassword());
 		} catch (Exception e) {
+			logger.warn("authenticate fail", e);
 			throw Exceptions.UnauthorizedException.getInstance("Invalid username or password");
 		}
+		authContext.setUserid(userInfo.getUserid());
 
-		if (Strings.isNullOrEmpty(userContext.getUserid())) {
-			userContext.setUserid(userInfo.getUserid());
-		}
+	}
+
+	@Override
+	public void authenticate(KeystoneContext context, AuthInfo authInfo,
+			com.infinities.keystone4j.auth.controller.action.AbstractAuthAction.AuthContext authContext,
+			TokenProviderApi tokenProviderApi, IdentityApi identityApi, AssignmentApi assignmentApi) {
+		throw Exceptions.NotImplementedException.getInstance();
 	}
 
 	@Override
 	public String getMethod() {
 		return METHOD;
-	}
-
-	@Override
-	public void authenticate(KeystoneContext context, AuthInfo authInfo, AuthContext authContext,
-			TokenProviderApi tokenProviderApi, IdentityApi identityApi, AssignmentApi assignmentApi) {
-		AuthData methodData = authInfo.getMethodData(METHOD);
-		authenticate(context, methodData, authContext, tokenProviderApi, identityApi, assignmentApi);
 	}
 }

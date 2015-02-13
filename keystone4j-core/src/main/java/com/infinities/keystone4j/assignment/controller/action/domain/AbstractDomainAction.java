@@ -5,8 +5,8 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.assignment.DomainWrapper;
-import com.infinities.keystone4j.model.assignment.DomainsWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.DomainWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.DomainsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -31,12 +31,12 @@ public abstract class AbstractDomainAction extends AbstractAction<Domain> {
 	}
 
 	@Override
-	protected CollectionWrapper<Domain> getCollectionWrapper() {
+	public CollectionWrapper<Domain> getCollectionWrapper() {
 		return new DomainsWrapper();
 	}
 
 	@Override
-	protected MemberWrapper<Domain> getMemberWrapper() {
+	public MemberWrapper<Domain> getMemberWrapper() {
 		return new DomainWrapper();
 	}
 

@@ -1,9 +1,10 @@
 package com.infinities.keystone4j.credential.api.command;
 
+import com.infinities.keystone4j.NonTruncatedCommand;
 import com.infinities.keystone4j.credential.CredentialDriver;
 import com.infinities.keystone4j.model.credential.Credential;
 
-public class DeleteCredentialsForProjectCommand extends AbstractCredentialCommand<Credential> {
+public class DeleteCredentialsForProjectCommand extends AbstractCredentialCommand implements NonTruncatedCommand<Credential> {
 
 	private final String projectid;
 
@@ -14,7 +15,7 @@ public class DeleteCredentialsForProjectCommand extends AbstractCredentialComman
 	}
 
 	@Override
-	public Credential execute() {
+	public Credential execute() throws Exception {
 		this.getCredentialDriver().deleteCredentialsForProject(projectid);
 		return null;
 	}

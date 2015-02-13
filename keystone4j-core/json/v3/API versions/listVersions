@@ -1,0 +1,62 @@
+request:
+curl -H "Content-Type: application/json" http://localhost:5000/ | python -mjson.tool
+
+response:
+{
+    "versions": {
+        "values": [
+            {
+                "id": "v3.0", 
+                "links": [
+                    {
+                        "href": "http://192.168.126.2:5000/v3/", 
+                        "rel": "self"
+                    }
+                ], 
+                "media-types": [
+                    {
+                        "base": "application/json", 
+                        "type": "application/vnd.openstack.identity-v3+json"
+                    }, 
+                    {
+                        "base": "application/xml", 
+                        "type": "application/vnd.openstack.identity-v3+xml"
+                    }
+                ], 
+                "status": "stable", 
+                "updated": "2013-03-06T00:00:00Z"
+            }, 
+            {
+                "id": "v2.0", 
+                "links": [
+                    {
+                        "href": "http://192.168.126.2:5000/v2.0/", 
+                        "rel": "self"
+                    }, 
+                    {
+                        "href": "http://docs.openstack.org/api/openstack-identity-service/2.0/content/", 
+                        "rel": "describedby", 
+                        "type": "text/html"
+                    }, 
+                    {
+                        "href": "http://docs.openstack.org/api/openstack-identity-service/2.0/identity-dev-guide-2.0.pdf", 
+                        "rel": "describedby", 
+                        "type": "application/pdf"
+                    }
+                ], 
+                "media-types": [
+                    {
+                        "base": "application/json", 
+                        "type": "application/vnd.openstack.identity-v2.0+json"
+                    }, 
+                    {
+                        "base": "application/xml", 
+                        "type": "application/vnd.openstack.identity-v2.0+xml"
+                    }
+                ], 
+                "status": "stable", 
+                "updated": "2014-04-17T00:00:00Z"
+            }
+        ]
+    }
+}

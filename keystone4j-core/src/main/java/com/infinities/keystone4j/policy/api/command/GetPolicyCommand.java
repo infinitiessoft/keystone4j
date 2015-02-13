@@ -1,10 +1,11 @@
 package com.infinities.keystone4j.policy.api.command;
 
+import com.infinities.keystone4j.NonTruncatedCommand;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.policy.Policy;
 import com.infinities.keystone4j.policy.PolicyDriver;
 
-public class GetPolicyCommand extends AbstractPolicyCommand<Policy> {
+public class GetPolicyCommand extends AbstractPolicyCommand implements NonTruncatedCommand<Policy> {
 
 	private final String policyid;
 

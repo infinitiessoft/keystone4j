@@ -1,15 +1,11 @@
 package com.infinities.keystone4j.trust.controller.action;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.ws.rs.container.ContainerRequestContext;
-
-import org.apache.commons.codec.DecoderException;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -21,15 +17,17 @@ import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.common.Authorization.AuthContext;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.trust.Trust;
-import com.infinities.keystone4j.model.trust.TrustRole;
+import com.infinities.keystone4j.model.trust.wrapper.TrustWrapper;
+import com.infinities.keystone4j.model.trust.wrapper.TrustsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
-public class CreateTrustAction extends AbstractTrustAction implements ProtectedAction<Trust> {
+public class CreateTrustAction extends AbstractTrustAction<Trust> implements ProtectedAction<Trust> {
 
 	private final static String TRUST = "trust";
 	private final static String REQUEST = "request";
@@ -46,8 +44,7 @@ public class CreateTrustAction extends AbstractTrustAction implements ProtectedA
 	}
 
 	@Override
-	public MemberWrapper<Trust> execute(ContainerRequestContext request) throws UnsupportedEncodingException,
-			NoSuchAlgorithmException, DecoderException {
+	public MemberWrapper<Trust> execute(ContainerRequestContext request) throws Exception {
 		AuthContext authContext = new AuthContext();
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 
@@ -66,7 +63,7 @@ public class CreateTrustAction extends AbstractTrustAction implements ProtectedA
 			requireRole(trust);
 		}
 		requireUserIsTrustor(context, trust);
-		requireTrusteeExists(trust.getTrustee().getId());
+		requireTrusteeExists(trust.getTrusteeUserId());
 		List<Role> allRoles = this.getAssignmentApi().listRoles(null);
 		List<Role> cleanRoles = cleanRoleList(trust, allRoles);
 		requireTrustorHasRoleInProject(trust, cleanRoles);
@@ -81,14 +78,14 @@ public class CreateTrustAction extends AbstractTrustAction implements ProtectedA
 		return wrapMember(request, newTrust);
 	}
 
-	private void requireTrustorHasRoleInProject(Trust trust, List<Role> cleanRoles) {
-		List<Role> userRoles = getUserRole(trust);
+	private void requireTrustorHasRoleInProject(Trust trust, List<Role> cleanRoles) throws Exception {
+		List<String> userRoles = getUserRole(trust);
 
 		for (Role trustRole : cleanRoles) {
-			List<Role> matchingRoles = Lists.newArrayList();
+			List<String> matchingRoles = Lists.newArrayList();
 
-			for (Role role : userRoles) {
-				if (role.getId().equals(trustRole.getId())) {
+			for (String role : userRoles) {
+				if (role.equals(trustRole.getId())) {
 					matchingRoles.add(role);
 				}
 			}
@@ -99,19 +96,18 @@ public class CreateTrustAction extends AbstractTrustAction implements ProtectedA
 		}
 	}
 
-	private List<Role> getUserRole(Trust trust) {
+	private List<String> getUserRole(Trust trust) throws Exception {
 		if (!Strings.isNullOrEmpty(trust.getProjectId())) {
 			return assignmentApi.getRolesForUserAndProject(trust.getTrustorUserId(), trust.getProjectId());
 		}
-		return new ArrayList<Role>();
+		return new ArrayList<String>();
 	}
 
-	private void requireTrusteeExists(String trusteeUserId) {
+	private void requireTrusteeExists(String trusteeUserId) throws Exception {
 		identityApi.getUser(trusteeUserId);
 	}
 
-	private void requireUserIsTrustor(KeystoneContext context, Trust trust) throws UnsupportedEncodingException,
-			NoSuchAlgorithmException, DecoderException {
+	private void requireUserIsTrustor(KeystoneContext context, Trust trust) throws Exception {
 		String userid = getUserId(context);
 		if (!userid.equals(trust.getTrustorUserId())) {
 			throw Exceptions.ForbiddenException.getInstance("The authenticated user should match the trustor.");
@@ -120,7 +116,7 @@ public class CreateTrustAction extends AbstractTrustAction implements ProtectedA
 	}
 
 	private void requireRole(Trust trust) {
-		if (trust.getTrustRoles() == null || trust.getTrustRoles().isEmpty()) {
+		if (trust.getRoles() == null || trust.getRoles().isEmpty()) {
 			throw Exceptions.ForbiddenException.getInstance("At least one role should be specified.");
 		}
 	}
@@ -128,14 +124,14 @@ public class CreateTrustAction extends AbstractTrustAction implements ProtectedA
 	private List<Role> cleanRoleList(Trust trust, List<Role> allRoles) {
 		List<Role> trustRoles = Lists.newArrayList();
 		Map<String, Role> allRoleNames = Maps.newHashMap();
-		for (TrustRole trustRole : trust.getTrustRoles()) {
-			allRoleNames.put(trustRole.getRole().getName(), trustRole.getRole());
+		for (Role role : allRoles) {
+			allRoleNames.put(role.getName(), role);
 		}
-		for (TrustRole trustRole : trust.getTrustRoles()) {
-			if (trustRole.getRole() != null && !Strings.isNullOrEmpty(trustRole.getRole().getId())) {
-				trustRoles.add(trustRole.getRole());
-			} else if (trustRole.getRole() != null && !Strings.isNullOrEmpty(trustRole.getRole().getName())) {
-				String roleName = trustRole.getRole().getName();
+		for (Role role : trust.getRoles()) {
+			if (!Strings.isNullOrEmpty(role.getId())) {
+				trustRoles.add(role);
+			} else if (!Strings.isNullOrEmpty(role.getName())) {
+				String roleName = role.getName();
 				if (allRoleNames.containsKey(roleName)) {
 					trustRoles.add(allRoleNames.get(roleName));
 				} else {
@@ -152,5 +148,15 @@ public class CreateTrustAction extends AbstractTrustAction implements ProtectedA
 	@Override
 	public String getName() {
 		return "create_trust";
+	}
+
+	@Override
+	public CollectionWrapper<Trust> getCollectionWrapper() {
+		return new TrustsWrapper();
+	}
+
+	@Override
+	public MemberWrapper<Trust> getMemberWrapper() {
+		return new TrustWrapper();
 	}
 }

@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.jpa.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Root;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.jpa.AbstractDao;
 import com.infinities.keystone4j.model.identity.Group;
 
@@ -84,5 +86,10 @@ public class GroupDao extends AbstractDao<Group> {
 		// em.close();
 		// }
 
+	}
+
+	public List<Group> listGroups(Hints hints) throws SecurityException, IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
+		return filterLimitQuery(Group.class, hints);
 	}
 }

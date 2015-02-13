@@ -1,7 +1,7 @@
 package com.infinities.keystone4j.assignment.controller;
 
-import com.infinities.keystone4j.model.assignment.RoleWrapper;
-import com.infinities.keystone4j.model.assignment.RolesWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RoleWrapper;
+import com.infinities.keystone4j.model.assignment.wrapper.RolesWrapper;
 
 public interface RoleController {
 

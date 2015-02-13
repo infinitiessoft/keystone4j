@@ -1,0 +1,8 @@
+request:
+curl -X "HEAD" -i  -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/domains/f938b93cc0454ad686eb3481ba71d276/users/e7912c2225e84ac5905d8cf0b5040a6d/roles/d903936e7bbd4183b8cd35816d2cf88b
+
+response:
+HTTP/1.1 204 No Content
+Vary: X-Auth-Token
+Content-Length: 0
+Date: Mon, 02 Mar 2009 12:45:13 GMT

@@ -19,7 +19,7 @@ public class DeletePolicyAction extends AbstractPolicyAction implements Protecte
 	}
 
 	@Override
-	public MemberWrapper<Policy> execute(ContainerRequestContext request) {
+	public MemberWrapper<Policy> execute(ContainerRequestContext request) throws Exception {
 		this.getPolicyApi().deletePolicy(policyid);
 		return null;
 	}

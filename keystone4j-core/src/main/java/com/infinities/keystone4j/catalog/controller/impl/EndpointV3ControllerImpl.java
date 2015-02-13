@@ -10,12 +10,11 @@ import com.infinities.keystone4j.catalog.controller.action.endpoint.GetEndpointA
 import com.infinities.keystone4j.catalog.controller.action.endpoint.ListEndpointsAction;
 import com.infinities.keystone4j.catalog.controller.action.endpoint.UpdateEndpointAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
-import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Endpoint;
-import com.infinities.keystone4j.model.catalog.EndpointWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -37,7 +36,7 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 	@Override
 	public MemberWrapper<Endpoint> createEndpoint(Endpoint endpoint) throws Exception {
 		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new CreateEndpointAction(catalogApi,
-				tokenProviderApi, policyApi, endpoint), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, endpoint), tokenProviderApi, policyApi, null, endpoint);
 		MemberWrapper<Endpoint> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -51,32 +50,32 @@ public class EndpointV3ControllerImpl extends BaseController implements Endpoint
 	}
 
 	@Override
-	public MemberWrapper<Endpoint> getEndpoint(String endpointid) {
+	public MemberWrapper<Endpoint> getEndpoint(String endpointid) throws Exception {
 		Endpoint ref = getMemberFromDriver(endpointid);
 		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new GetEndpointAction(catalogApi,
-				tokenProviderApi, policyApi, endpointid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, endpointid), tokenProviderApi, policyApi, ref, null);
 		MemberWrapper<Endpoint> ret = command.execute(getRequest());
 		return ret;
 	}
 
 	@Override
-	public EndpointWrapper updateEndpoint(String endpointid, Endpoint endpoint) {
+	public MemberWrapper<Endpoint> updateEndpoint(String endpointid, Endpoint endpoint) throws Exception {
 		Endpoint ref = getMemberFromDriver(endpointid);
 		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new UpdateEndpointAction(catalogApi,
-				tokenProviderApi, policyApi, endpointid, endpoint), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, endpointid, endpoint), tokenProviderApi, policyApi, ref, endpoint);
 		MemberWrapper<Endpoint> ret = command.execute(getRequest());
 		return ret;
 	}
 
 	@Override
-	public void deleteEndpoint(String endpointid) {
+	public void deleteEndpoint(String endpointid) throws Exception {
 		Endpoint ref = getMemberFromDriver(endpointid);
 		ProtectedAction<Endpoint> command = new ProtectedDecorator<Endpoint>(new DeleteEndpointAction(catalogApi,
-				tokenProviderApi, policyApi, endpointid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, endpointid), tokenProviderApi, policyApi, ref, null);
 		command.execute(getRequest());
 	}
 
-	public Endpoint getMemberFromDriver(String endpointid) {
+	public Endpoint getMemberFromDriver(String endpointid) throws Exception {
 		return catalogApi.getEndpoint(endpointid);
 	}
 

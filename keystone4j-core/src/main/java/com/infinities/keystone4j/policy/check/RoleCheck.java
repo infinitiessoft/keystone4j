@@ -7,9 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.token.Token;
-import com.infinities.keystone4j.model.token.TokenRole;
+import com.infinities.keystone4j.model.policy.Context;
 import com.infinities.keystone4j.policy.Enforcer;
 
 public class RoleCheck extends Check {
@@ -23,12 +21,10 @@ public class RoleCheck extends Check {
 	}
 
 	@Override
-	public boolean check(Map<String, PolicyEntity> target, Token token, Map<String, Object> parMap, Enforcer enforcer) {
-		// TODO are roles from trust?
+	public boolean check(Map<String, Object> target, Context creds, Enforcer enforcer) {
 		Set<String> roles = Sets.newHashSet();
-		Set<TokenRole> tokenRoles = token.getTokenRoles();
-		for (TokenRole tokenRole : tokenRoles) {
-			roles.add(tokenRole.getRole().getName());
+		for (String role : creds.getRoles()) {
+			roles.add(role.toLowerCase());
 		}
 		return roles.contains(this.getMatch().toLowerCase());
 	}

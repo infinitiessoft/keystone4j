@@ -98,7 +98,9 @@ public class EntityManagerListener implements LifeCycle.Listener {
 	}
 
 	public static EntityManagerFactory getEntityManagerFactory() {
+		if (emf == null) {
+			setupEntityManagerFactory();
+		}
 		return emf;
 	}
-
 }

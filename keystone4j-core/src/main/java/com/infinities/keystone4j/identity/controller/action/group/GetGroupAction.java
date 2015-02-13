@@ -20,7 +20,7 @@ public class GetGroupAction extends AbstractGroupAction implements ProtectedActi
 	}
 
 	@Override
-	public MemberWrapper<Group> execute(ContainerRequestContext request) {
+	public MemberWrapper<Group> execute(ContainerRequestContext request) throws Exception {
 		Group ref = this.getIdentityApi().getGroup(groupid);
 		return wrapMember(request, ref);
 	}

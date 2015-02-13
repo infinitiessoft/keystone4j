@@ -20,7 +20,7 @@ public class CreateServiceAction extends AbstractServiceAction implements Protec
 	}
 
 	@Override
-	public MemberWrapper<Service> execute(ContainerRequestContext context) {
+	public MemberWrapper<Service> execute(ContainerRequestContext context) throws Exception {
 		assignUniqueId(service);
 		Service ref = catalogApi.createService(service.getId(), service);
 		return this.wrapMember(context, ref);

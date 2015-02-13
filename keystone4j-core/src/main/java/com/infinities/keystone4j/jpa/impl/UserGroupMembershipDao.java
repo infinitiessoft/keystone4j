@@ -51,6 +51,21 @@ public class UserGroupMembershipDao extends AbstractDao<UserGroupMembership> {
 		return ret;
 	}
 
+	public List<UserGroupMembership> listByUser(String userid) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<UserGroupMembership> cq = cb.createQuery(UserGroupMembership.class);
+		Root<UserGroupMembership> root = cq.from(UserGroupMembership.class);
+		Predicate predicate = cb.equal(root.get("user").get("id"), userid);
+		cq.where(predicate);
+		cq.select(root);
+
+		TypedQuery<UserGroupMembership> q = em.createQuery(cq);
+		List<UserGroupMembership> ret = q.getResultList();
+
+		return ret;
+	}
+
 	public List<Group> listGroupsByUser(String userid) {
 		EntityManager em = getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();

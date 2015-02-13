@@ -36,7 +36,15 @@ public enum Exceptions {
 			401, "The request you have made requires authentication."), UnexpectedException(500,
 			"An unexpected error prevented the server from fulfilling your request. {0}"), UnsupportedTokenVersionException(
 			500, "Unsupported token version."), Gone(410,
-			"The service you have requested is no longer available on this server.");
+			"The service you have requested is no longer available on this server."), RegionNotFoundException(404,
+			"Could not find region, {0}."), MultipleSQLDriversInConfigException(500,
+			"The Keystone domain configuration file {0} defines an additional SQL driver - only one is permitted."), CrossBackendNotAllowedException(
+			403, "Group membership across backend boundaries is not allowed, group in question is {0}, user is {1}"), RegionDeletionError(
+			403, "Unable to delete region {0} because it or its child regions have associated endpoints."), PasswordVerificationError(
+			403,
+			"The password length must be less than or equal to {0}. The server could not comply with the request because the password is invalid."), TrustUseLimitReached(
+			403, "No remaining uses for trust: {0}"), TrustConsumeMaximumAttempt(500,
+			"Unable to consume trust {0}, unable to acquire lock.");
 
 	private String messageFormat;
 	private int status;

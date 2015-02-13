@@ -1,13 +1,10 @@
 package com.infinities.keystone4j.trust.controller.action;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.container.ContainerRequestContext;
-
-import org.apache.commons.codec.DecoderException;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -18,21 +15,17 @@ import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.assignment.controller.action.role.v3.AbstractRoleAction;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
-import com.infinities.keystone4j.model.CollectionWrapper;
-import com.infinities.keystone4j.model.MemberWrapper;
+import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.assignment.RoleWrapper;
-import com.infinities.keystone4j.model.token.IToken;
+import com.infinities.keystone4j.model.assignment.wrapper.RoleWrapper;
+import com.infinities.keystone4j.model.token.wrapper.ITokenDataWrapper;
 import com.infinities.keystone4j.model.trust.Trust;
-import com.infinities.keystone4j.model.trust.TrustRole;
-import com.infinities.keystone4j.model.trust.TrustWrapper;
-import com.infinities.keystone4j.model.trust.TrustsWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.model.KeystoneToken;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 
-public abstract class AbstractTrustAction extends AbstractAction<Trust> {
+public abstract class AbstractTrustAction<T extends BaseEntity> extends AbstractAction<T> {
 
 	protected AssignmentApi assignmentApi;
 	protected IdentityApi identityApi;
@@ -73,16 +66,6 @@ public abstract class AbstractTrustAction extends AbstractAction<Trust> {
 	}
 
 	@Override
-	protected CollectionWrapper<Trust> getCollectionWrapper() {
-		return new TrustsWrapper();
-	}
-
-	@Override
-	protected MemberWrapper<Trust> getMemberWrapper() {
-		return new TrustWrapper();
-	}
-
-	@Override
 	public String getCollectionName() {
 		return "trusts";
 	}
@@ -99,34 +82,38 @@ public abstract class AbstractTrustAction extends AbstractAction<Trust> {
 	}
 
 	protected void fillInRoles(ContainerRequestContext request, Trust trust, List<Role> allRoles) {
-		Set<TrustRole> trustFullRoles = Sets.newHashSet();
+		Set<Role> trustFullRoles = Sets.newHashSet();
 		AbstractRoleAction roleV3 = new AbstractRoleAction(assignmentApi, tokenProviderApi, policyApi) {
+
+			@Override
+			public String getName() {
+				return null;
+			}
 
 		};
 
-		for (TrustRole trustRole : trust.getTrustRoles()) {
+		for (Role trustRole : trust.getRoles()) {
 			List<Role> matchingRoles = Lists.newArrayList();
 
 			for (Role role : allRoles) {
-				if (role.getId().equals(trustRole.getRole().getId())) {
+				if (role.getId().equals(trustRole.getId())) {
 					matchingRoles.add(role);
 				}
 			}
 			if (!matchingRoles.isEmpty()) {
-				Role fullRole = ((RoleWrapper) roleV3.wrapMember(request, matchingRoles.get(0))).getRole();
-				trustFullRoles.add(new TrustRole(trust, fullRole));
+				Role fullRole = ((RoleWrapper) roleV3.wrapMember(request, matchingRoles.get(0))).getRef();
+				trustFullRoles.add(fullRole);
 			}
 		}
-		trust.setTrustRoles(trustFullRoles);
+		trust.setRoles(new ArrayList<Role>(trustFullRoles));
 		trust.getRolesLinks().setSelf(getBaseUrl(request, null) + String.format("/%s/roles", trust.getId()));
 
 	}
 
-	protected String getUserId(KeystoneContext context) throws UnsupportedEncodingException, NoSuchAlgorithmException,
-			DecoderException {
+	protected String getUserId(KeystoneContext context) throws Exception {
 		if (!Strings.isNullOrEmpty(context.getTokenid())) {
 			String tokenid = context.getTokenid();
-			IToken tokenData = tokenProviderApi.validToken(tokenid);
+			ITokenDataWrapper tokenData = tokenProviderApi.validateToken(tokenid, null);
 			KeystoneToken tokenRef = new KeystoneToken(tokenid, tokenData);
 			return tokenRef.getUserId();
 		}
@@ -140,14 +127,13 @@ public abstract class AbstractTrustAction extends AbstractAction<Trust> {
 	}
 
 	protected void trustorTrusteeOnly(Trust trust, String userid) {
-		if (!userid.equals(trust.getTrustee().getId()) && !userid.equals(trust.getTrustor().getId())) {
+		if (!userid.equals(trust.getTrusteeUserId()) && !userid.equals(trust.getTrustorUserId())) {
 			throw Exceptions.ForbiddenException.getInstance();
 		}
 	}
 
-	protected void checkRoleForTrust(ContainerRequestContext request, String trustid, String roleid)
-			throws UnsupportedEncodingException, NoSuchAlgorithmException, DecoderException {
-		Trust trust = this.getTrustApi().getTrust(trustid);
+	protected void checkRoleForTrust(ContainerRequestContext request, String trustid, String roleid) throws Exception {
+		Trust trust = this.getTrustApi().getTrust(trustid, false);
 		if (trust == null) {
 			throw Exceptions.TrustNotFoundException.getInstance(null, trustid);
 		}
@@ -155,8 +141,8 @@ public abstract class AbstractTrustAction extends AbstractAction<Trust> {
 		String userid = getUserId(context);
 		trustorTrusteeOnly(trust, userid);
 
-		for (TrustRole trustRole : trust.getTrustRoles()) {
-			if (roleid.equals(trustRole.getRole().getId())) {
+		for (Role role : trust.getRoles()) {
+			if (roleid.equals(role.getId())) {
 				return;
 			}
 		}
@@ -164,11 +150,10 @@ public abstract class AbstractTrustAction extends AbstractAction<Trust> {
 		throw Exceptions.RoleNotFoundException.getInstance(null, roleid);
 	}
 
-	protected Trust getTrust(ContainerRequestContext request, String trustid) throws UnsupportedEncodingException,
-			NoSuchAlgorithmException, DecoderException {
+	protected Trust getTrust(ContainerRequestContext request, String trustid) throws Exception {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
 		String userid = getUserId(context);
-		Trust trust = this.getTrustApi().getTrust(trustid);
+		Trust trust = this.getTrustApi().getTrust(trustid, false);
 		if (trust != null) {
 			throw Exceptions.TrustNotFoundException.getInstance(null, trustid);
 		}

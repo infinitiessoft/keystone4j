@@ -19,6 +19,7 @@ import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.model.common.Link;
 import com.infinities.keystone4j.model.common.MediaType;
 import com.infinities.keystone4j.model.common.Version;
+import com.infinities.keystone4j.model.common.VersionValuesWrapper;
 import com.infinities.keystone4j.model.common.VersionWrapper;
 import com.infinities.keystone4j.model.common.VersionsWrapper;
 
@@ -100,11 +101,16 @@ public class VersionApi {
 		identity_link.setRel("self");
 		identity_link.setHref(identityUrl.toExternalForm());
 		metadata.getLinks().add(identity_link);
-		Link describeby = new Link();
-		describeby.setRel("describeby");
-		describeby.setType("text/html");
-		describeby.setHref("http://docs.openstack.org/");
-		metadata.getLinks().add(describeby);
+		Link describeby1 = new Link();
+		describeby1.setRel("describeby");
+		describeby1.setType("text/html");
+		describeby1.setHref("http://docs.openstack.org/api/openstack-identity-service/v2.0/content/");
+		metadata.getLinks().add(describeby1);
+		Link describeby2 = new Link();
+		describeby2.setRel("describeby");
+		describeby2.setType("application/pdf");
+		describeby2.setHref("http://docs.openstack.org/api/openstack-identity-service/2.0/identity-dev-guide-2.0.pdf");
+		metadata.getLinks().add(describeby2);
 		MediaType jsonType = new MediaType();
 		jsonType.setBase("application/json");
 		jsonType.setType(String.format(MEDIA_TYPE_JSON, V2));
@@ -118,7 +124,8 @@ public class VersionApi {
 
 	public Response getVersions(ContainerRequestContext context) throws MalformedURLException {
 		Collection<Version> versions = getVersionList(context).values();
-		VersionsWrapper versionsWrapper = new VersionsWrapper(versions);
+		VersionValuesWrapper valuesWrapper = new VersionValuesWrapper(versions);
+		VersionsWrapper versionsWrapper = new VersionsWrapper(valuesWrapper);
 		return Response.status(CustomResponseStatus.MULTIPLE_CHOICES).entity(versionsWrapper).build();
 	}
 

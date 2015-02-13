@@ -3,9 +3,8 @@ package com.infinities.keystone4j.policy.check;
 import java.util.List;
 import java.util.Map;
 
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.token.Token;
-import com.infinities.keystone4j.policy.BaseCheck;
+import com.google.common.base.Joiner;
+import com.infinities.keystone4j.model.policy.Context;
 import com.infinities.keystone4j.policy.Enforcer;
 
 public class OrCheck implements BaseCheck {
@@ -23,10 +22,10 @@ public class OrCheck implements BaseCheck {
 	}
 
 	@Override
-	public boolean check(Map<String, PolicyEntity> target, Token token, Map<String, Object> parMap, Enforcer enforcer) {
+	public boolean check(Map<String, Object> target, Context creds, Enforcer enforcer) {
 
 		for (BaseCheck rule : rules) {
-			if (rule.check(target, token, parMap, enforcer)) {
+			if (rule.check(target, creds, enforcer)) {
 				return true;
 			}
 		}
@@ -35,5 +34,11 @@ public class OrCheck implements BaseCheck {
 
 	public void addCheck(BaseCheck check) {
 		this.rules.add(check);
+	}
+
+	@Override
+	public String toString() {
+		String join = Joiner.on(" or ").join(rules);
+		return String.format("(%s)", join);
 	}
 }

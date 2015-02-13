@@ -21,7 +21,7 @@ public class CreateDomainAction extends AbstractDomainAction implements Protecte
 	}
 
 	@Override
-	public MemberWrapper<Domain> execute(ContainerRequestContext context) {
+	public MemberWrapper<Domain> execute(ContainerRequestContext context) throws Exception {
 		assignUniqueId(domain);
 		Domain ref = assignmentApi.createDomain(domain.getId(), domain);
 		return this.wrapMember(context, ref);

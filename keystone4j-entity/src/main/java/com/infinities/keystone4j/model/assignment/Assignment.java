@@ -1,88 +1,74 @@
 package com.infinities.keystone4j.model.assignment;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 
 import com.infinities.keystone4j.model.BaseEntity;
-import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.model.identity.User;
 
-@Entity
-@Table(name = "ASSIGNMENT", schema = "PUBLIC", catalog = "PUBLIC")
 public class Assignment extends BaseEntity implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8976543300305304271L;
-	private Role role;
-	private User user;
-	private Project project;
-	private Group group;
-	private Domain domain;
-	private Boolean inheritedToProjects;
+	@XmlElement(name = "role_id")
+	private String roleId;
+	@XmlElement(name = "user_id")
+	private String userId;
+	@XmlElement(name = "project_id")
+	private String projectId;
+	@XmlElement(name = "group_id")
+	private String groupId;
+	@XmlElement(name = "domain_id")
+	private String domainId;
+	@XmlElement(name = "inherited_to_projects")
+	private String inheritedToProjects;
 
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "GROUPID", nullable = false)
-	public Group getGroup() {
-		return group;
+	public String getRoleId() {
+		return roleId;
 	}
 
-	public void setGroup(Group group) {
-		this.group = group;
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DOMAINID", nullable = false)
-	public Domain getDomain() {
-		return domain;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setDomain(Domain domain) {
-		this.domain = domain;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ROLEID", nullable = false)
-	public Role getRole() {
-		return role;
+	public String getProjectId() {
+		return projectId;
 	}
 
-	public void setRole(Role role) {
-		this.role = role;
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USERID", nullable = false)
-	public User getUser() {
-		return user;
+	public String getGroupId() {
+		return groupId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PROJECTID", nullable = false)
-	public Project getProject() {
-		return project;
+	public String getDomainId() {
+		return domainId;
 	}
 
-	public void setProject(Project project) {
-		this.project = project;
+	public void setDomainId(String domainId) {
+		this.domainId = domainId;
 	}
 
-	@Column(name = "INHERITEDTO", nullable = false)
-	public Boolean getInheritedToProjects() {
+	public String getInheritedToProjects() {
 		return inheritedToProjects;
 	}
 
-	public void setInheritedToProjects(Boolean inheritedToProjects) {
+	public void setInheritedToProjects(String inheritedToProjects) {
 		this.inheritedToProjects = inheritedToProjects;
 	}
 

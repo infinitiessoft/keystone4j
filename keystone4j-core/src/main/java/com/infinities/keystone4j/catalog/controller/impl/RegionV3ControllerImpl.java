@@ -5,13 +5,14 @@ import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.catalog.controller.RegionV3Controller;
 import com.infinities.keystone4j.catalog.controller.action.region.CreateRegionAction;
+import com.infinities.keystone4j.catalog.controller.action.region.CreateRegionWithIdAction;
 import com.infinities.keystone4j.catalog.controller.action.region.DeleteRegionAction;
 import com.infinities.keystone4j.catalog.controller.action.region.GetRegionAction;
 import com.infinities.keystone4j.catalog.controller.action.region.ListRegionsAction;
 import com.infinities.keystone4j.catalog.controller.action.region.UpdateRegionAction;
 import com.infinities.keystone4j.common.BaseController;
-import com.infinities.keystone4j.decorator.FilterProtectedDecorator;
-import com.infinities.keystone4j.decorator.ProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.FilterProtectedDecorator;
+import com.infinities.keystone4j.controller.action.decorator.ProtectedDecorator;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.catalog.Region;
@@ -36,7 +37,7 @@ public class RegionV3ControllerImpl extends BaseController implements RegionV3Co
 	@Override
 	public MemberWrapper<Region> createRegion(Region region) throws Exception {
 		ProtectedAction<Region> command = new ProtectedDecorator<Region>(new CreateRegionAction(catalogApi,
-				tokenProviderApi, policyApi, region), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, region), tokenProviderApi, policyApi, null, region);
 		MemberWrapper<Region> ret = command.execute(getRequest());
 		return ret;
 	}
@@ -50,33 +51,40 @@ public class RegionV3ControllerImpl extends BaseController implements RegionV3Co
 	}
 
 	@Override
-	public MemberWrapper<Region> getRegion(String regionid) {
+	public MemberWrapper<Region> getRegion(String regionid) throws Exception {
 		Region ref = getMemberFromDriver(regionid);
 		ProtectedAction<Region> command = new ProtectedDecorator<Region>(new GetRegionAction(catalogApi, tokenProviderApi,
-				policyApi, regionid), tokenProviderApi, policyApi, ref);
+				policyApi, regionid), tokenProviderApi, policyApi, ref, null);
 		MemberWrapper<Region> ret = command.execute(getRequest());
 		return ret;
 	}
 
 	@Override
-	public MemberWrapper<Region> updateRegion(String regionid, Region region) {
+	public MemberWrapper<Region> updateRegion(String regionid, Region region) throws Exception {
 		Region ref = getMemberFromDriver(regionid);
 		ProtectedAction<Region> command = new ProtectedDecorator<Region>(new UpdateRegionAction(catalogApi,
-				tokenProviderApi, policyApi, regionid, region), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, regionid, region), tokenProviderApi, policyApi, ref, region);
 		MemberWrapper<Region> ret = command.execute(getRequest());
 		return ret;
 	}
 
 	@Override
-	public void deleteRegion(String regionid) {
+	public void deleteRegion(String regionid) throws Exception {
 		Region ref = getMemberFromDriver(regionid);
 		ProtectedAction<Region> command = new ProtectedDecorator<Region>(new DeleteRegionAction(catalogApi,
-				tokenProviderApi, policyApi, regionid), tokenProviderApi, policyApi, ref);
+				tokenProviderApi, policyApi, regionid), tokenProviderApi, policyApi, ref, null);
 		command.execute(getRequest());
 	}
 
-	public Region getMemberFromDriver(String regionid) {
+	public Region getMemberFromDriver(String regionid) throws Exception {
 		return catalogApi.getRegion(regionid);
 	}
 
+	@Override
+	public MemberWrapper<Region> createRegionWithId(String regionid, Region region) throws Exception {
+		ProtectedAction<Region> command = new ProtectedDecorator<Region>(new CreateRegionWithIdAction(catalogApi,
+				tokenProviderApi, policyApi, regionid, region), tokenProviderApi, policyApi);
+		MemberWrapper<Region> ret = command.execute(getRequest());
+		return ret;
+	}
 }

@@ -46,4 +46,9 @@ public class ListOption extends Option {
 		listValue.clear();
 		listValue.addAll(Lists.newArrayList(value.split(regex)));
 	}
+
+	@Override
+	public Option clone() {
+		return new ListOption(this.getName(), this.listValue);
+	}
 }

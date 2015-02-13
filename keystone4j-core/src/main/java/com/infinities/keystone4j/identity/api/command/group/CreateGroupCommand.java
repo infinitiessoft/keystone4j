@@ -1,41 +1,47 @@
 package com.infinities.keystone4j.identity.api.command.group;
 
+import java.util.UUID;
+
+import com.infinities.keystone4j.assignment.AssignmentApi;
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.identity.IdMappingApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
-import com.infinities.keystone4j.identity.IdentityUtils;
 import com.infinities.keystone4j.identity.api.command.AbstractIdentityCommand;
-import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.token.TokenApi;
+import com.infinities.keystone4j.model.identity.mapping.EntityType;
+import com.infinities.keystone4j.notification.NotifiableCommand;
 
-public class CreateGroupCommand extends AbstractIdentityCommand<Group> {
+public class CreateGroupCommand extends AbstractIdentityCommand implements NotifiableCommand<Group> {
 
-	private final Group group;
+	private final Group groupRef;
 
 
-	public CreateGroupCommand(CredentialApi credentialApi, TokenApi tokenApi, IdentityApi identityApi,
-			IdentityDriver identityDriver, Group group) {
-		super(credentialApi, tokenApi, identityApi, identityDriver);
-		this.group = group;
+	public CreateGroupCommand(AssignmentApi assignmentApi, CredentialApi credentialApi, RevokeApi revokeApi,
+			IdentityApi identityApi, IdMappingApi idMappingApi, IdentityDriver identityDriver, Group group) {
+		super(assignmentApi, credentialApi, revokeApi, identityApi, idMappingApi, identityDriver);
+		this.groupRef = group;
 	}
 
 	@Override
-	public Group execute() {
-		Domain domain = group.getDomain();
-		IdentityDriver driver = new IdentityUtils().selectIdentityDirver(domain.getId());
-		if (driver == null) {
-			driver = this.getIdentityDriver();
-		}
+	public Group execute() throws Exception {
+		String domainid = groupRef.getDomainid();
+		this.getAssignmentApi().getDomain(domainid);
+		IdentityDriver driver = selectIdentityDriver(domainid);
+		Group group = clearDomainIdIfDomainUnaware(driver, groupRef);
+		group.setId(UUID.randomUUID().toString());
 
-		if (!driver.isDomainAware()) {
-			new IdentityUtils().clearDomainid(group);
+		Group ref = driver.createGroup(group.getId(), group);
+		return setDomainIdAndMapping(ref, domainid, driver, EntityType.GROUP);
+	}
+
+	@Override
+	public Object getArgs(int index) {
+		if (index == 1) {
+			return groupRef;
 		}
-		Group ret = driver.createGroup(group);
-		if (!driver.isDomainAware()) {
-			ret.setDomain(domain);
-		}
-		return ret;
+		throw new IllegalArgumentException("invalid index");
 	}
 
 }

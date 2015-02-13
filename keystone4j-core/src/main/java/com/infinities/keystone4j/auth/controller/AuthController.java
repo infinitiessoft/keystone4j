@@ -7,7 +7,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.auth.AuthV3;
-import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.catalog.Service;
 
 public interface AuthController {
 
@@ -24,7 +24,7 @@ public interface AuthController {
 
 	MemberWrapper<String> getRevocationList() throws Exception;
 
-	MemberWrapper<Catalog> getAuthCatalog() throws Exception;
+	CollectionWrapper<Service> getAuthCatalog() throws Exception;
 
 	CollectionWrapper<Project> getAuthProjects() throws Exception;
 

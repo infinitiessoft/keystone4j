@@ -23,7 +23,7 @@ public class UpdateProjectAction extends AbstractProjectAction implements Protec
 	}
 
 	@Override
-	public MemberWrapper<Project> execute(ContainerRequestContext context) {
+	public MemberWrapper<Project> execute(ContainerRequestContext context) throws Exception {
 		requireMatchingId(projectid, project);
 		requireMatchingDomainId(project, assignmentApi.getProject(projectid));
 		Project ref = this.getAssignmentApi().updateProject(projectid, project);

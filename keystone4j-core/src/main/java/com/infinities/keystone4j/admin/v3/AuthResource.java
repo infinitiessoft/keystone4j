@@ -18,7 +18,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.auth.AuthV3Wrapper;
-import com.infinities.keystone4j.model.catalog.Catalog;
+import com.infinities.keystone4j.model.catalog.Service;
 import com.infinities.keystone4j.model.utils.Views;
 
 //keystone.auth.routers 20141210
@@ -40,7 +40,7 @@ public class AuthResource {
 
 	@POST
 	@Path("/tokens")
-	@JsonView(Views.AuthenticateForToken.class)
+	@JsonView(Views.Basic.class)
 	public Response authenticateForToken(AuthV3Wrapper authWrapper) throws Exception {
 		return authController.authenticateForToken(authWrapper.getAuth());
 	}
@@ -73,7 +73,7 @@ public class AuthResource {
 
 	@GET
 	@Path("/catalog")
-	public MemberWrapper<Catalog> getAuthCatalog() throws Exception {
+	public CollectionWrapper<Service> getAuthCatalog() throws Exception {
 		return authController.getAuthCatalog();
 	}
 

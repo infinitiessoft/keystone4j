@@ -1,5 +1,6 @@
 package com.infinities.keystone4j;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.container.ContainerRequestContext;
@@ -11,8 +12,11 @@ import com.infinities.keystone4j.common.Authorization;
 import com.infinities.keystone4j.common.Authorization.AuthContext;
 import com.infinities.keystone4j.common.Wsgi;
 import com.infinities.keystone4j.exception.Exceptions;
-import com.infinities.keystone4j.model.policy.PolicyEntity;
-import com.infinities.keystone4j.model.policy.TargetWrapper;
+import com.infinities.keystone4j.model.assignment.Domain;
+import com.infinities.keystone4j.model.assignment.Project;
+import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.model.KeystoneToken;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
@@ -32,19 +36,19 @@ public abstract class ControllerAction {
 	}
 
 	protected void checkProtection(KeystoneContext context, ContainerRequestContext request, Action command,
-			Map<String, PolicyEntity> targetAttr) {
+			Target targetAttr) throws Exception {
 		if (context.isAdmin()) {
 			logger.warn("RBAC: Bypassing authorization");
 		} else {
 			String action = String.format("identity:%s", command.getName());
 			Authorization.AuthContext creds = buildPolicyCheckCredentials(action, context, request);
 
-			TargetWrapper policyDict = new TargetWrapper();
+			Map<String, Object> policyDict = new HashMap<String, Object>();
 			if (targetAttr != null) {
-				policyDict.setTarget(targetAttr);
+				policyDict.put("target", targetAttr);
 			}
 
-			policyApi.enforce(creds, action, policyDict, true);
+			policyApi.enforce(creds, action, policyDict);
 			logger.debug("RBAC: Authorization granted");
 		}
 	}
@@ -63,14 +67,66 @@ public abstract class ControllerAction {
 
 		try {
 			logger.debug("RBAC: building auth context from the incoming auth token");
-			KeystoneToken tokenRef = new KeystoneToken(context.getTokenid(), tokenProviderApi.validToken(context
-					.getTokenid()));
+			KeystoneToken tokenRef = new KeystoneToken(context.getTokenid(), tokenProviderApi.validateToken(
+					context.getTokenid(), null));
 			Wsgi.validateTokenBind(context, tokenRef);
 			AuthContext authContext = Authorization.tokenToAuthContext(tokenRef);
 			return authContext;
 		} catch (Exception e) {
 			logger.warn("RBAC:Invalid token");
 			throw Exceptions.UnauthorizedException.getInstance();
+		}
+
+	}
+
+
+	public static class Target {
+
+		private Role role;
+		private Group group;
+		private Domain domain;
+		private Project project;
+		private User user;
+
+
+		public Role getRole() {
+			return role;
+		}
+
+		public void setRole(Role role) {
+			this.role = role;
+		}
+
+		public Group getGroup() {
+			return group;
+		}
+
+		public void setGroup(Group group) {
+			this.group = group;
+		}
+
+		public Domain getDomain() {
+			return domain;
+		}
+
+		public void setDomain(Domain domain) {
+			this.domain = domain;
+		}
+
+		public Project getProject() {
+			return project;
+		}
+
+		public void setProject(Project project) {
+			this.project = project;
+		}
+
+		public User getUser() {
+			return user;
+		}
+
+		public void setUser(User user) {
+			this.user = user;
 		}
 
 	}

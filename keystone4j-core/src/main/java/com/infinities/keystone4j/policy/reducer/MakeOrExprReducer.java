@@ -5,8 +5,8 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.infinities.keystone4j.policy.BaseCheck;
 import com.infinities.keystone4j.policy.BaseReducer;
+import com.infinities.keystone4j.policy.check.BaseCheck;
 import com.infinities.keystone4j.policy.check.OrCheck;
 
 public class MakeOrExprReducer extends AbstractReducer {

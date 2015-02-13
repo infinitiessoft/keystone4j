@@ -21,7 +21,7 @@ public class CreateEndpointAction extends AbstractEndpointAction implements Prot
 	}
 
 	@Override
-	public MemberWrapper<Endpoint> execute(ContainerRequestContext context) {
+	public MemberWrapper<Endpoint> execute(ContainerRequestContext context) throws Exception {
 		assignUniqueId(endpoint);
 		catalogApi.getService(endpoint.getServiceid());
 		endpoint = validateEndpointRegion(endpoint);

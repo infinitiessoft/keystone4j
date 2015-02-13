@@ -1,13 +1,11 @@
 package com.infinities.keystone4j.model.trust;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 
 import com.infinities.keystone4j.model.BaseEntity;
-import com.infinities.keystone4j.model.assignment.Role;
 
 @Entity
 @Table(name = "TRUST_ROLE", schema = "PUBLIC", catalog = "PUBLIC")
@@ -17,37 +15,32 @@ public class TrustRole extends BaseEntity implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 7707735497658817097L;
-	private Trust trust;
-	private Role role;
+	@XmlElement(name = "trust_id")
+	private String trustId;
+	@XmlElement(name = "role_id")
+	private String roleId;
 
 
 	public TrustRole() {
 
 	}
 
-	public TrustRole(Trust trust, Role role) {
-		this.trust = trust;
-		this.role = role;
+	@Column(name = "TRUST_ID", length = 64, nullable = false)
+	public String getTrustId() {
+		return trustId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TRUSTID", nullable = false)
-	public Trust getTrust() {
-		return trust;
+	public void setTrustId(String trustId) {
+		this.trustId = trustId;
 	}
 
-	public void setTrust(Trust trust) {
-		this.trust = trust;
+	@Column(name = "ROLE_ID", length = 64, nullable = false)
+	public String getRoleId() {
+		return roleId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ROLEID", nullable = false)
-	public Role getRole() {
-		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
 
 }

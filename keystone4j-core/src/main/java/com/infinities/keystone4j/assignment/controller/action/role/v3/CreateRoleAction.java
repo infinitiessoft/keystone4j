@@ -20,7 +20,7 @@ public class CreateRoleAction extends AbstractRoleAction implements ProtectedAct
 	}
 
 	@Override
-	public MemberWrapper<Role> execute(ContainerRequestContext request) {
+	public MemberWrapper<Role> execute(ContainerRequestContext request) throws Exception {
 		assignUniqueId(role);
 		Role ref = assignmentApi.createRole(role.getId(), role);
 		return this.wrapMember(request, ref);

@@ -17,13 +17,15 @@ import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.CollectionWrapper;
 import com.infinities.keystone4j.model.assignment.Assignment;
+import com.infinities.keystone4j.model.assignment.FormattedRoleAssignment;
+import com.infinities.keystone4j.model.assignment.FormattedRoleAssignment.DomainScope;
+import com.infinities.keystone4j.model.assignment.FormattedRoleAssignment.ProjectScope;
 import com.infinities.keystone4j.model.assignment.Project;
-import com.infinities.keystone4j.model.assignment.RoleAssignment;
-import com.infinities.keystone4j.model.assignment.RoleAssignment.DomainScope;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.utils.TextUtils;
 
-public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction implements FilterProtectedAction<RoleAssignment> {
+public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction implements
+		FilterProtectedAction<FormattedRoleAssignment> {
 
 	private final static Logger logger = LoggerFactory.getLogger(ListRoleAssignmentsAction.class);
 
@@ -33,11 +35,12 @@ public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction impl
 	}
 
 	@Override
-	public CollectionWrapper<RoleAssignment> execute(ContainerRequestContext request, String... filters) throws Exception {
+	public CollectionWrapper<FormattedRoleAssignment> execute(ContainerRequestContext request, String... filters)
+			throws Exception {
 		Hints hints = AbstractAction.buildDriverHints(request, filters);
 		List<Assignment> refs = assignmentApi.listRoleAssignments();
 
-		List<RoleAssignment> formattedRefs = new ArrayList<RoleAssignment>();
+		List<FormattedRoleAssignment> formattedRefs = new ArrayList<FormattedRoleAssignment>();
 
 		for (Assignment ref : refs) {
 			if (filterInherited(ref)) {
@@ -53,15 +56,33 @@ public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction impl
 		return this.wrapCollection(request, formattedRefs, hints);
 	}
 
-	private List<RoleAssignment> expandIndirectAssignments(ContainerRequestContext request, List<RoleAssignment> refs) {
-		List<RoleAssignment> newRefs = new ArrayList<RoleAssignment>();
-		for (RoleAssignment ref : refs) {
+	private List<FormattedRoleAssignment> expandIndirectAssignments(ContainerRequestContext request,
+			List<FormattedRoleAssignment> refs) throws Exception {
+		List<FormattedRoleAssignment> newRefs = new ArrayList<FormattedRoleAssignment>();
+		for (FormattedRoleAssignment ref : refs) {
 			if (!Strings.isNullOrEmpty(ref.getScope().getInheritedTo())) {
 				List<String> projectids = new ArrayList<String>();
-				RoleAssignment.DomainScope domainScope = (DomainScope) (ref.getScope());
-				String domainid = domainScope.getDomain().getId();
-				for (Project project : this.assignmentApi.listProjectsInDomain(domainid)) {
-					projectids.add(project.getId());
+				String targetType;
+				String targetId;
+				String domainId;
+				String projectId;
+				if (ref.getScope() instanceof FormattedRoleAssignment.DomainScope) {
+
+					FormattedRoleAssignment.DomainScope domainScope = (DomainScope) (ref.getScope());
+					domainId = domainScope.getDomain().getId();
+					for (Project project : this.assignmentApi.listProjectsInDomain(domainId)) {
+						projectids.add(project.getId());
+					}
+					targetType = "domains";
+					targetId = domainId;
+				} else {
+					FormattedRoleAssignment.ProjectScope projectScope = (ProjectScope) (ref.getScope());
+					projectId = projectScope.getProject().getId();
+					for (Project project : this.assignmentApi.listProjectsInSubtree(projectId, null)) {
+						projectids.add(project.getId());
+					}
+					targetType = "projects";
+					targetId = projectId;
 				}
 
 				for (String p : projectids) {
@@ -70,12 +91,13 @@ public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction impl
 						String groupid = ref.getGroup().getId();
 
 						for (User m : members) {
-							RoleAssignment newEntry = buildProjectEquivalentOfGroupDomainRole(request, m.getId(), groupid,
-									p, domainid, ref);
+							FormattedRoleAssignment newEntry = buildProjectEquivalentOfGroupTargetRole(request, m.getId(),
+									groupid, p, targetId, targetType, ref);
 							newRefs.add(newEntry);
 						}
 					} else {
-						RoleAssignment newEntry = buildProjectEquivalentOfUserDomainRole(request, p, domainid, ref);
+						FormattedRoleAssignment newEntry = buildProjectEquivalentOfUserTargetRole(request, p, targetId,
+								targetType, ref);
 						newRefs.add(newEntry);
 					}
 				}
@@ -84,7 +106,7 @@ public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction impl
 				List<User> members = getGroupMembers(ref);
 				String groupid = ref.getGroup().getId();
 				for (User m : members) {
-					RoleAssignment newEntry = buildUserAssignmentEquivalentOfGroup(request, m, groupid, ref);
+					FormattedRoleAssignment newEntry = buildUserAssignmentEquivalentOfGroup(request, m, groupid, ref);
 					newRefs.add(newEntry);
 				}
 			} else {
@@ -94,60 +116,55 @@ public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction impl
 		return refs;
 	}
 
-	private RoleAssignment buildUserAssignmentEquivalentOfGroup(ContainerRequestContext request, User user, String groupid,
-			RoleAssignment template) {
-		RoleAssignment userEntry = new RoleAssignment();
-		userEntry.setId(template.getId());
+	private FormattedRoleAssignment buildUserAssignmentEquivalentOfGroup(ContainerRequestContext request, User user,
+			String groupid, FormattedRoleAssignment template) {
+		FormattedRoleAssignment userEntry = new FormattedRoleAssignment();
 		userEntry.setRole(template.getRole());
 		userEntry.setScope(template.getScope());
-
-		RoleAssignment.User u = new RoleAssignment.User();
+		FormattedRoleAssignment.User u = new FormattedRoleAssignment.User();
 		u.setId(user.getId());
 		userEntry.setUser(u);
-
 		userEntry.getLinks().setMembership(getBaseUrl(request, String.format("/groups/%s/users/%s", groupid, user.getId())));
 
 		return userEntry;
 	}
 
-	private RoleAssignment buildProjectEquivalentOfUserDomainRole(ContainerRequestContext request, String projectid,
-			String domainid, RoleAssignment template) {
-		RoleAssignment projectEntry = new RoleAssignment();
-		projectEntry.setId(template.getId());
+	private FormattedRoleAssignment buildProjectEquivalentOfUserTargetRole(ContainerRequestContext request,
+			String projectid, String targetid, String targetType, FormattedRoleAssignment template) {
+		FormattedRoleAssignment projectEntry = new FormattedRoleAssignment();
 		projectEntry.setUser(template.getUser());
 		projectEntry.setRole(template.getRole());
-		RoleAssignment.ProjectScope scope = new RoleAssignment.ProjectScope();
+		FormattedRoleAssignment.ProjectScope scope = new FormattedRoleAssignment.ProjectScope();
 		scope.getProject().setId(projectid);
 		projectEntry.setScope(scope);
 		projectEntry.getLinks().setAssignment(
-				getBaseUrl(request, String.format("/OS-INHERIT/domains/%s/users/%s/roles/%s/inherited_to_projects",
-						domainid, projectEntry.getUser().getId(), projectEntry.getRole().getId())));
+				getBaseUrl(request, String.format("/OS-INHERIT/%s/%s/users/%s/roles/%s/inherited_to_projects", targetType,
+						targetid, projectEntry.getUser().getId(), projectEntry.getRole().getId())));
 
 		return projectEntry;
 	}
 
-	private RoleAssignment buildProjectEquivalentOfGroupDomainRole(ContainerRequestContext request, String userid,
-			String groupid, String projectid, String domainid, RoleAssignment template) {
-		RoleAssignment projectEntry = new RoleAssignment();
-		projectEntry.setId(template.getId());
+	private FormattedRoleAssignment buildProjectEquivalentOfGroupTargetRole(ContainerRequestContext request, String userid,
+			String groupid, String projectid, String targetId, String targetType, FormattedRoleAssignment template) {
+		FormattedRoleAssignment projectEntry = new FormattedRoleAssignment();
 		projectEntry.setRole(template.getRole());
-		RoleAssignment.User user = new RoleAssignment.User();
+		FormattedRoleAssignment.User user = new FormattedRoleAssignment.User();
 		user.setId(userid);
 		projectEntry.setUser(user);
-		RoleAssignment.ProjectScope scope = new RoleAssignment.ProjectScope();
+		FormattedRoleAssignment.ProjectScope scope = new FormattedRoleAssignment.ProjectScope();
 		scope.getProject().setId(projectid);
 		projectEntry.setScope(scope);
 
 		projectEntry.getLinks().setAssignment(
-				getBaseUrl(request, String.format("/OS-INHERIT/domains/%s/groups/%s/roles/%s/inherited_to_projects",
-						domainid, groupid, projectEntry.getRole().getId())));
+				getBaseUrl(request, String.format("/OS-INHERIT/%s/%s/groups/%s/roles/%s/inherited_to_projects", targetType,
+						targetId, groupid, projectEntry.getRole().getId())));
 
 		projectEntry.getLinks().setMembership(getBaseUrl(request, String.format("/groups/%s/users/%s", groupid, userid)));
 
 		return projectEntry;
 	}
 
-	private List<User> getGroupMembers(RoleAssignment ref) {
+	private List<User> getGroupMembers(FormattedRoleAssignment ref) {
 		List<User> members;
 		try {
 			members = identityApi.listUsersInGroup(ref.getGroup().getId(), null);
@@ -156,13 +173,13 @@ public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction impl
 			String target = "Unknown";
 
 			if (ref.getScope() != null) {
-				if (ref.getScope() instanceof RoleAssignment.DomainScope) {
-					String domid = TextUtils.get(((RoleAssignment.DomainScope) ref.getScope()).getDomain().getId(),
+				if (ref.getScope() instanceof FormattedRoleAssignment.DomainScope) {
+					String domid = TextUtils.get(((FormattedRoleAssignment.DomainScope) ref.getScope()).getDomain().getId(),
 							"Unknown");
 					target = String.format("Domain: %s", domid);
-				} else if (ref.getScope() instanceof RoleAssignment.ProjectScope) {
-					String projid = TextUtils.get(((RoleAssignment.ProjectScope) ref.getScope()).getProject().getId(),
-							"Unknown");
+				} else if (ref.getScope() instanceof FormattedRoleAssignment.ProjectScope) {
+					String projid = TextUtils.get(((FormattedRoleAssignment.ProjectScope) ref.getScope()).getProject()
+							.getId(), "Unknown");
 					target = String.format("Project: %s", projid);
 				}
 			}
@@ -177,47 +194,53 @@ public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction impl
 		return members;
 	}
 
-	private RoleAssignment formatEntity(ContainerRequestContext context, Assignment entity) {
+	private FormattedRoleAssignment formatEntity(ContainerRequestContext context, Assignment entity) {
 		String suffix = "";
 		String actorLink = "";
 		String targetLink = "";
-		RoleAssignment formattedEntity = new RoleAssignment();
-		if (entity.getUser() != null) {
-			RoleAssignment.User user = new RoleAssignment.User();
-			user.setId(entity.getUser().getId());
+		FormattedRoleAssignment formattedEntity = new FormattedRoleAssignment();
+		if (!Strings.isNullOrEmpty(entity.getUserId())) {
+			FormattedRoleAssignment.User user = new FormattedRoleAssignment.User();
+			user.setId(entity.getUserId());
 			formattedEntity.setUser(user);
-			actorLink = String.format("users/%s", entity.getUser().getId());
+			actorLink = String.format("users/%s", entity.getUserId());
 		}
-		if (entity.getGroup() != null) {
-			RoleAssignment.Group group = new RoleAssignment.Group();
-			group.setId(entity.getGroup().getId());
+		if (!Strings.isNullOrEmpty(entity.getGroupId())) {
+			FormattedRoleAssignment.Group group = new FormattedRoleAssignment.Group();
+			group.setId(entity.getGroupId());
 			formattedEntity.setGroup(group);
-			actorLink = String.format("groups/%s", entity.getGroup().getId());
+			actorLink = String.format("groups/%s", entity.getGroupId());
 		}
-		if (entity.getRole() != null) {
-			RoleAssignment.Role role = new RoleAssignment.Role();
-			role.setId(entity.getRole().getId());
+		if (!Strings.isNullOrEmpty(entity.getRoleId())) {
+			FormattedRoleAssignment.Role role = new FormattedRoleAssignment.Role();
+			role.setId(entity.getRoleId());
 			formattedEntity.setRole(role);
 		}
-		if (entity.getProject() != null) {
-			RoleAssignment.ProjectScope scope = new RoleAssignment.ProjectScope();
-			scope.getProject().setId(entity.getProject().getId());
+		if (!Strings.isNullOrEmpty(entity.getProjectId())) {
+			FormattedRoleAssignment.ProjectScope scope = new FormattedRoleAssignment.ProjectScope();
+			scope.getProject().setId(entity.getProjectId());
 			formattedEntity.setScope(scope);
-			targetLink = String.format("/projects/%s", entity.getProject().getId());
+			if (!Strings.isNullOrEmpty(entity.getInheritedToProjects())) {
+				scope.setInheritedTo("projects");
+				targetLink = String.format("/OS-INHERIT/projects/%s", entity.getProjectId());
+				suffix = "/inherited_to_projects";
+			} else {
+				targetLink = String.format("/projects/%s", entity.getProjectId());
+			}
 		}
-		if (entity.getDomain() != null) {
-			RoleAssignment.DomainScope scope = new RoleAssignment.DomainScope();
-			scope.getDomain().setId(entity.getDomain().getId());
+		if (!Strings.isNullOrEmpty(entity.getDomainId())) {
+			FormattedRoleAssignment.DomainScope scope = new FormattedRoleAssignment.DomainScope();
+			scope.getDomain().setId(entity.getDomainId());
 			formattedEntity.setScope(scope);
 			if (entity.getInheritedToProjects() != null) {
 				formattedEntity.getScope().setInheritedTo("projects");
-				targetLink = String.format("/OS-INHERIT/domain/%s", entity.getDomain().getId());
+				targetLink = String.format("/OS-INHERIT/domains/%s", entity.getDomainId());
 				suffix = "/inherited_to_projects";
 			} else {
-				targetLink = String.format("/domain/%s", entity.getDomain().getId());
+				targetLink = String.format("/domains/%s", entity.getDomainId());
 			}
 		}
-		String path = String.format("%s/%s/roles/%s/%s", targetLink, actorLink, entity.getRole().getId(), suffix);
+		String path = String.format("%s/%s/roles/%s/%s", targetLink, actorLink, entity.getRoleId(), suffix);
 		formattedEntity.getLinks().setAssignment(getBaseUrl(context, path));
 
 		return formattedEntity;

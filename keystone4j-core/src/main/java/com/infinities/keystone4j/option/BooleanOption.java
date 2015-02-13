@@ -26,4 +26,9 @@ public class BooleanOption extends Option {
 		boolValue = Boolean.parseBoolean(value);
 	}
 
+	@Override
+	public Option clone() {
+		return new BooleanOption(this.getName(), this.boolValue);
+	}
+
 }

@@ -26,6 +26,7 @@ public class RoleAssignmentV3ControllerFactory extends BaseControllerFactory imp
 			TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
 		this.assignmentApi = assignmentApi;
 		this.identityApi = identityApi;
+		this.assignmentApi.setIdentityApi(identityApi);
 		this.tokenProviderApi = tokenProviderApi;
 		this.policyApi = policyApi;
 	}

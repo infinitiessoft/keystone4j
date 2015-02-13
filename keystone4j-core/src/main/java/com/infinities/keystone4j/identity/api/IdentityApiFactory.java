@@ -4,23 +4,27 @@ import javax.inject.Inject;
 
 import org.glassfish.hk2.api.Factory;
 
+import com.infinities.keystone4j.contrib.revoke.RevokeApi;
 import com.infinities.keystone4j.credential.CredentialApi;
+import com.infinities.keystone4j.identity.IdMappingApi;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.identity.IdentityDriver;
-import com.infinities.keystone4j.token.TokenApi;
 
 public class IdentityApiFactory implements Factory<IdentityApi> {
 
 	private final CredentialApi credentialApi;
-	private final TokenApi tokenApi;
 	private final IdentityDriver identityDriver;
+	private final RevokeApi revokeApi;
+	private final IdMappingApi idMappingApi;
 
 
 	@Inject
-	public IdentityApiFactory(CredentialApi credentialApi, TokenApi tokenApi, IdentityDriver identityDriver) {
+	public IdentityApiFactory(RevokeApi revokeApi, CredentialApi credentialApi, IdMappingApi idMappingApi,
+			IdentityDriver identityDriver) {
 		this.credentialApi = credentialApi;
-		this.tokenApi = tokenApi;
 		this.identityDriver = identityDriver;
+		this.revokeApi = revokeApi;
+		this.idMappingApi = idMappingApi;
 	}
 
 	@Override
@@ -30,7 +34,7 @@ public class IdentityApiFactory implements Factory<IdentityApi> {
 
 	@Override
 	public IdentityApi provide() {
-		IdentityApi identityApi = new IdentityApiImpl(credentialApi, tokenApi, identityDriver);
+		IdentityApi identityApi = new IdentityApiImpl(credentialApi, revokeApi, idMappingApi, identityDriver);
 		return identityApi;
 	}
 

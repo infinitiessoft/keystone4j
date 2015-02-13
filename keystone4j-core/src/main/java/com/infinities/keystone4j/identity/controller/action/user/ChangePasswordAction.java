@@ -2,6 +2,9 @@ package com.infinities.keystone4j.identity.controller.action.user;
 
 import javax.ws.rs.container.ContainerRequestContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.KeystoneContext;
 import com.infinities.keystone4j.ProtectedAction;
@@ -15,6 +18,7 @@ import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class ChangePasswordAction extends AbstractUserAction implements ProtectedAction<User> {
 
+	private final static Logger logger = LoggerFactory.getLogger(ChangePasswordAction.class);
 	private final static String ORIGINAL_PASSWORD = "original_password";
 	private final static String USER = "user";
 	private final static String PASSWORD = "password";
@@ -48,6 +52,7 @@ public class ChangePasswordAction extends AbstractUserAction implements Protecte
 		try {
 			this.getIdentityApi().changePassword(context, userid, originalPassword, password);
 		} catch (Exception e) {
+			logger.debug("change password failed", e);
 			throw Exceptions.UnauthorizedException.getInstance(e);
 		}
 		return null;

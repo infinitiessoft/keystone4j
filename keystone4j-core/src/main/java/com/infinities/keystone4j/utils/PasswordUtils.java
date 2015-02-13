@@ -9,6 +9,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
 import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.exception.Exceptions;
+import com.infinities.keystone4j.model.identity.User;
 
 public class PasswordUtils {
 
@@ -31,41 +33,56 @@ public class PasswordUtils {
 	}
 
 	public static boolean checkPassword(String password, String hashed) {
+		logger.debug("password: {}, hashed: {}", new Object[] { password, hashed });
 		if (Strings.isNullOrEmpty(password) || Strings.isNullOrEmpty(hashed)) {
 			return false;
 		}
 
 		String passwordUtf8 = null;
 		try {
-			passwordUtf8 = new String(truncPassword(password).getBytes(UTF8), UTF8);
+			passwordUtf8 = new String(verifyLengthAndtruncPassword(password).getBytes(UTF8), UTF8);
 		} catch (UnsupportedEncodingException e) {
 			logger.error(ENCODE_FAILED, e);
 			return false;
 		}
 		String passwordSha512 = Hashing.sha512().hashString(passwordUtf8, Charsets.UTF_8).toString();
+		logger.debug("password sha512: {}, hashed: {}", new Object[] { passwordSha512, hashed });
 		return passwordSha512.equals(hashed);
+	}
+
+	public static User hashUserPassword(User user) {
+		String password = user.getPassword();
+		if (Strings.isNullOrEmpty(password)) {
+			return user;
+		}
+
+		user.setPassword(hashPassword(password));
+		return user;
 	}
 
 	public static String hashPassword(String password) {
 		if (Strings.isNullOrEmpty(password)) {
 			throw new IllegalArgumentException();
 		}
-		String passwordUtf8 = truncPassword(password);
+		String passwordUtf8 = verifyLengthAndtruncPassword(password);
 
 		// hash round? and identify
 		String hashed = Hashing.sha512().hashString(passwordUtf8, Charsets.UTF_8).toString();
 		return hashed;
 	}
 
-	private static String truncPassword(String password) {
-		int length = Config.Instance.getOpt(Config.Type.identity, MAX_PASSWORD_LENGTH).asInteger();
+	private static String verifyLengthAndtruncPassword(String password) {
+		int maxLength = Config.Instance.getOpt(Config.Type.identity, MAX_PASSWORD_LENGTH).asInteger();
 
-		if (password.length() > length) {
-			logger.warn(TRUNCATE_USER_PASSWORD, length);
+		if (password.length() > maxLength) {
+			if (Config.Instance.getOpt(Config.Type.DEFAULT, "strict_password_check").asBoolean()) {
+				throw Exceptions.PasswordVerificationError.getInstance(null, maxLength);
+			} else {
+				logger.warn(TRUNCATE_USER_PASSWORD, maxLength);
+				return password.substring(0, maxLength);
+			}
 		} else {
-			length = password.length();
+			return password;
 		}
-
-		return password.substring(0, length);
 	}
 }

@@ -37,7 +37,7 @@ public class OSInheritResource {
 	@Path("/domains/{domainid}/users/{userid}/roles/{roleid}/inherited_to_projects")
 	public Response createGrantByUserDomain(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.createGrantByUserDomain(roleid, userid, domainid);
+		roleController.createGrant(roleid, userid, null, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -45,7 +45,7 @@ public class OSInheritResource {
 	@Path("/domains/{domainid}/groups/{groupid}/roles/{roleid}/inherited_to_projects")
 	public Response createGrantByGroupDomain(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.createGrantByGroupDomain(roleid, groupid, domainid);
+		roleController.createGrant(roleid, null, groupid, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -53,7 +53,7 @@ public class OSInheritResource {
 	@Path("/domains/{domainid}/users/{userid}/roles/{roleid}/inherited_to_projects")
 	public Response checkGrantByUserDomain(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.checkGrantByUserDomain(roleid, userid, domainid);
+		roleController.checkGrant(roleid, userid, null, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -61,7 +61,7 @@ public class OSInheritResource {
 	@Path("/domains/{domainid}/groups/{groupid}/roles/{roleid}/inherited_to_projects")
 	public Response checkGrantByGroupDomain(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.checkGrantByGroupDomain(roleid, groupid, domainid);
+		roleController.checkGrant(roleid, null, groupid, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -70,7 +70,7 @@ public class OSInheritResource {
 	public CollectionWrapper<Role> listGrantByUserDomain(@PathParam("domainid") String domainid,
 			@PathParam("userid") String userid, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
-		return roleController.listGrantsByUserDomain(userid, domainid);
+		return roleController.listGrants(userid, null, domainid, null);
 	}
 
 	@GET
@@ -78,14 +78,14 @@ public class OSInheritResource {
 	public CollectionWrapper<Role> listGrantByGroupDomain(@PathParam("domainid") String domainid,
 			@PathParam("groupid") String groupid, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
-		return roleController.listGrantsByGroupDomain(groupid, domainid);
+		return roleController.listGrants(null, groupid, domainid, null);
 	}
 
 	@DELETE
 	@Path("/domains/{domainid}/users/{userid}/roles/{roleid}/inherited_to_projects")
 	public Response revokeGrantByUserDomain(@PathParam("domainid") String domainid, @PathParam("userid") String userid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.revokeGrantByUserDomain(roleid, userid, domainid);
+		roleController.revokeGrant(roleid, userid, null, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 
@@ -93,7 +93,7 @@ public class OSInheritResource {
 	@Path("/domains/{domainid}/groups/{groupid}/roles/{roleid}/inherited_to_projects")
 	public Response revokeGrantByGroupDomain(@PathParam("domainid") String domainid, @PathParam("groupid") String groupid,
 			@PathParam("roleid") String roleid) throws Exception {
-		roleController.revokeGrantByGroupDomain(roleid, groupid, domainid);
+		roleController.revokeGrant(roleid, null, groupid, domainid, null);
 		return Response.status(CustomResponseStatus.NO_CONTENT).build();
 	}
 

@@ -1,6 +1,8 @@
 package com.infinities.keystone4j.jpa.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,6 +14,7 @@ import javax.persistence.criteria.Root;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.jpa.AbstractDao;
 import com.infinities.keystone4j.model.assignment.Project;
 
@@ -24,10 +27,6 @@ public class ProjectDao extends AbstractDao<Project> {
 	public Project findByName(String name, String domainid) {
 
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Project> cq = cb.createQuery(getEntityType());
 		Root<Project> root = cq.from(getEntityType());
@@ -44,52 +43,79 @@ public class ProjectDao extends AbstractDao<Project> {
 
 		TypedQuery<Project> q = em.createQuery(cq);
 		Project project = q.getSingleResult();
-
-		// tx.commit();
 		return project;
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
-
 	}
 
-	public List<Project> listProject(String domainid) {
-
+	public List<Project> listProjectsInDomain(String domainid) {
 		EntityManager em = getEntityManager();
-		// EntityTransaction tx = null;
-		// try {
-		// tx = em.getTransaction();
-		// tx.begin();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Project> cq = cb.createQuery(getEntityType());
 		Root<Project> root = cq.from(getEntityType());
 		List<Predicate> predicates = Lists.newArrayList();
-		if (!Strings.isNullOrEmpty(domainid)) {
-			Predicate domainidPredicate = cb.equal(root.get("domain").get("id"), domainid);
-			predicates.add(domainidPredicate);
-		}
+		Predicate domainidPredicate = cb.equal(root.get("domain").get("id"), domainid);
+		predicates.add(domainidPredicate);
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
 
 		TypedQuery<Project> q = em.createQuery(cq);
 		List<Project> projects = q.getResultList();
-		// tx.commit();
 		return projects;
+	}
 
-		// } catch (RuntimeException e) {
-		// if (tx != null && tx.isActive()) {
-		// tx.rollback();
-		// }
-		// throw e;
-		// } finally {
-		// em.close();
-		// }
+	public List<Project> listProject(Hints hints) throws SecurityException, IllegalArgumentException,
+			IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		return filterLimitQuery(Project.class, hints);
+	}
 
+	public List<Project> listProjectsInDomains(Set<String> domainIds) {
+		EntityManager em = getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Project> cq = cb.createQuery(getEntityType());
+		Root<Project> root = cq.from(getEntityType());
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate domainidPredicate = root.get("domain").get("id").in(domainIds);
+		predicates.add(domainidPredicate);
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Project> q = em.createQuery(cq);
+		List<Project> projects = q.getResultList();
+		return projects;
+	}
+
+	public List<Project> listProjectsInProjectIds(Set<String> ids) {
+		EntityManager em = getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Project> cq = cb.createQuery(getEntityType());
+		Root<Project> root = cq.from(getEntityType());
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate idPredicate = root.get("id").in(ids);
+		predicates.add(idPredicate);
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Project> q = em.createQuery(cq);
+		List<Project> projects = q.getResultList();
+		return projects;
+	}
+
+	public List<Project> getChildren(List<String> projectIds) {
+		EntityManager em = getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Project> cq = cb.createQuery(getEntityType());
+		Root<Project> root = cq.from(getEntityType());
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate idPredicate = root.get("parent").get("id").in(projectIds);
+		predicates.add(idPredicate);
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Project> q = em.createQuery(cq);
+		List<Project> projects = q.getResultList();
+		return projects;
 	}
 }

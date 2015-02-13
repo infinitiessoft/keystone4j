@@ -6,9 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.infinities.keystone4j.exception.Exceptions;
-import com.infinities.keystone4j.model.token.TokenData;
-import com.infinities.keystone4j.model.token.TokenDataWrapper;
-import com.infinities.keystone4j.model.trust.TrustRole;
+import com.infinities.keystone4j.model.policy.Context;
 import com.infinities.keystone4j.token.model.KeystoneToken;
 
 public class Authorization {
@@ -17,38 +15,39 @@ public class Authorization {
 	private final static Logger logger = LoggerFactory.getLogger(Authorization.class);
 
 
-	@Deprecated
-	public static com.infinities.keystone4j.auth.model.AuthContext tokenToAuthContext(TokenDataWrapper token) {
-		return v3TokenToAuthContext(token);
-	}
+	// @Deprecated
+	// public static com.infinities.keystone4j.auth.model.AuthContext
+	// tokenToAuthContext(TokenDataWrapper token) {
+	// return v3TokenToAuthContext(token);
+	// }
 
 	public static AuthContext tokenToAuthContext(KeystoneToken token) {
 		AuthContext authContext = new AuthContext(token, false);
 
 		try {
-			authContext.setUserid(token.getUserId());
+			authContext.setUserId(token.getUserId());
 		} catch (Exception e) {
 			logger.warn("RBAC: Invalid user data in token");
 			throw Exceptions.UnauthorizedException.getInstance();
 		}
 
 		if (token.isProjectScoped()) {
-			authContext.setProjectid(token.getProjectId());
+			authContext.setProjectId(token.getProjectId());
 		} else if (token.isDomainScoped()) {
-			authContext.setDomainid(token.getDomainId());
+			authContext.setDomainId(token.getDomainId());
 		} else {
 			logger.debug("RBAC: Proceeding without project or domain scope");
 		}
 
 		if (token.isTrustScoped()) {
 			authContext.setIsDelegatedAuth(true);
-			authContext.setTrustid(token.getTrustId());
+			authContext.setTrustId(token.getTrustId());
 			authContext.setTrustorid(token.getTrustorUserId());
-			authContext.setTrusteeid(token.getTrusteeUserId());
+			authContext.setTrusteeId(token.getTrusteeUserId());
 		} else {
-			authContext.setTrustid(null);
+			authContext.setTrustId(null);
 			authContext.setTrustorid(null);
-			authContext.setTrusteeid(null);
+			authContext.setTrusteeId(null);
 		}
 
 		List<String> roles = token.getRoleNames();
@@ -59,8 +58,8 @@ public class Authorization {
 		if (token.isOauthScoped()) {
 			authContext.setIsDelegatedAuth(true);
 		}
-		authContext.setConsumerid(token.getOauthConsumerId());
-		authContext.setAccessTokenid(token.getOauthAccessTokenId());
+		authContext.setConsumerId(token.getOauthConsumerId());
+		authContext.setAccessTokenId(token.getOauthAccessTokenId());
 
 		if (token.isFederatedUser()) {
 			authContext.setGroupIds(token.getFederatedGroupIds());
@@ -68,44 +67,48 @@ public class Authorization {
 		return authContext;
 	}
 
-	@Deprecated
-	private static com.infinities.keystone4j.auth.model.AuthContext v3TokenToAuthContext(TokenDataWrapper token) {
-		TokenData tokenData = token.getToken();
-		com.infinities.keystone4j.auth.model.AuthContext context = new com.infinities.keystone4j.auth.model.AuthContext();
-		context.setUserid(tokenData.getUser().getId());
-		if (tokenData.getProject() != null) {
-			context.setProjectid(tokenData.getProject().getId());
-		} else {
-			logger.debug("RBAC: Procedding without project");
-		}
 
-		if (tokenData.getDomain() != null) {
-			context.setDomainid(tokenData.getUser().getDomain().getId());
-		}
-		if (!tokenData.getTrust().getTrustRoles().isEmpty()) {
-			for (TrustRole trustRole : tokenData.getTrust().getTrustRoles()) {
-				context.getRoles().add(trustRole.getRole());
-			}
-		}
+	// @Deprecated
+	// private static com.infinities.keystone4j.auth.model.AuthContext
+	// v3TokenToAuthContext(TokenDataWrapper token) {
+	// TokenData tokenData = token.getToken();
+	// com.infinities.keystone4j.auth.model.AuthContext context = new
+	// com.infinities.keystone4j.auth.model.AuthContext();
+	// context.setUserid(tokenData.getUser().getId());
+	// if (tokenData.getProject() != null) {
+	// context.setProjectid(tokenData.getProject().getId());
+	// } else {
+	// logger.debug("RBAC: Procedding without project");
+	// }
+	//
+	// if (tokenData.getDomain() != null) {
+	// context.setDomainid(tokenData.getUser().getDomain().getId());
+	// }
+	// if (!tokenData.getTrust().getTrustRoles().isEmpty()) {
+	// for (TrustRole trustRole : tokenData.getTrust().getTrustRoles()) {
+	// context.getRoles().add(trustRole.getRole());
+	// }
+	// }
+	//
+	// return context;
+	// }
 
-		return context;
-	}
-
-
-	public static class AuthContext {
+	public static class AuthContext implements Context {
 
 		private KeystoneToken token;
 		private boolean isDelegatedAuth;
-		private String userid;
-		private String projectid;
-		private String domainid;
-		private String trustid;
-		private String trustorid;
-		private String trusteeid;
+		private String userId;
+		private String projectId;
+		private String domainId;
+		private String trustId;
+		private String trustorId;
+		private String trusteeId;
 		private List<String> roles;
-		private String consumerid;
-		private String accessTokenid;
+		private String consumerId;
+		private String accessTokenId;
 		private List<String> groupIds;
+
+		private String tenantId;
 
 
 		public AuthContext() {
@@ -125,54 +128,55 @@ public class Authorization {
 			this.token = token;
 		}
 
-		public String getUserid() {
-			return userid;
+		public String getUserId() {
+			return userId;
 		}
 
-		public void setUserid(String userid) {
-			this.userid = userid;
+		public void setUserId(String userId) {
+			this.userId = userId;
 		}
 
-		public String getProjectid() {
-			return projectid;
+		public String getProjectId() {
+			return projectId;
 		}
 
-		public void setProjectid(String projectid) {
-			this.projectid = projectid;
+		public void setProjectId(String projectId) {
+			this.projectId = projectId;
 		}
 
-		public String getDomainid() {
-			return domainid;
+		public String getDomainId() {
+			return domainId;
 		}
 
-		public void setDomainid(String domainid) {
-			this.domainid = domainid;
+		public void setDomainId(String domainId) {
+			this.domainId = domainId;
 		}
 
-		public String getTrustid() {
-			return trustid;
+		public String getTrustId() {
+			return trustId;
 		}
 
-		public void setTrustid(String trustid) {
-			this.trustid = trustid;
+		public void setTrustId(String trustId) {
+			this.trustId = trustId;
 		}
 
-		public String getTrustorid() {
-			return trustorid;
+		public String getTrustorId() {
+			return trustorId;
 		}
 
-		public void setTrustorid(String trustorid) {
-			this.trustorid = trustorid;
+		public void setTrustorid(String trustorId) {
+			this.trustorId = trustorId;
 		}
 
-		public String getTrusteeid() {
-			return trusteeid;
+		public String getTrusteeId() {
+			return trusteeId;
 		}
 
-		public void setTrusteeid(String trusteeid) {
-			this.trusteeid = trusteeid;
+		public void setTrusteeId(String trusteeId) {
+			this.trusteeId = trusteeId;
 		}
 
+		@Override
 		public List<String> getRoles() {
 			return roles;
 		}
@@ -181,20 +185,20 @@ public class Authorization {
 			this.roles = roles;
 		}
 
-		public String getConsumerid() {
-			return consumerid;
+		public String getConsumerId() {
+			return consumerId;
 		}
 
-		public void setConsumerid(String consumerid) {
-			this.consumerid = consumerid;
+		public void setConsumerId(String consumerId) {
+			this.consumerId = consumerId;
 		}
 
-		public String getAccessTokenid() {
-			return accessTokenid;
+		public String getAccessTokenId() {
+			return accessTokenId;
 		}
 
-		public void setAccessTokenid(String accessTokenid) {
-			this.accessTokenid = accessTokenid;
+		public void setAccessTokenId(String accessTokenId) {
+			this.accessTokenId = accessTokenId;
 		}
 
 		public List<String> getGroupIds() {
@@ -215,10 +219,18 @@ public class Authorization {
 
 		@Override
 		public String toString() {
-			return "AuthContext [token=" + token + ", isDelegatedAuth=" + isDelegatedAuth + ", userid=" + userid
-					+ ", projectid=" + projectid + ", domainid=" + domainid + ", trustid=" + trustid + ", trustorid="
-					+ trustorid + ", trusteeid=" + trusteeid + ", roles=" + roles + ", consumerid=" + consumerid
-					+ ", accessTokenid=" + accessTokenid + ", groupIds=" + groupIds + "]";
+			return "AuthContext [token=" + token + ", isDelegatedAuth=" + isDelegatedAuth + ", userid=" + userId
+					+ ", projectid=" + projectId + ", domainid=" + domainId + ", trustid=" + trustId + ", trustorid="
+					+ trustorId + ", trusteeid=" + trusteeId + ", roles=" + roles + ", consumerid=" + consumerId
+					+ ", accessTokenid=" + accessTokenId + ", groupIds=" + groupIds + "]";
+		}
+
+		public String getTenantId() {
+			return tenantId;
+		}
+
+		public void setTenantId(String tenantId) {
+			this.tenantId = tenantId;
 		}
 
 	}

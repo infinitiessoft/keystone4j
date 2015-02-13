@@ -1,0 +1,15 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"  http://localhost:5000/v3/domains/default | python -mjson.tool
+
+response:
+{
+    "domain": {
+        "description": "Owns users and tenants (i.e. projects) available on Identity API v2.", 
+        "enabled": true, 
+        "id": "default", 
+        "links": {
+            "self": "http://192.168.126.2:5000/v3/domains/default"
+        }, 
+        "name": "Default"
+    }
+}

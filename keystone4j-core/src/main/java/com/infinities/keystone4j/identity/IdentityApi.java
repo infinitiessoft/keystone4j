@@ -4,46 +4,58 @@ import java.util.List;
 
 import com.infinities.keystone4j.Api;
 import com.infinities.keystone4j.KeystoneContext;
+import com.infinities.keystone4j.assignment.AssignmentApi;
 import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.model.identity.User;
 
 public interface IdentityApi extends Api {
 
-	User authenticate(String userid, String password, String domainid);
+	User authenticate(String userid, String password) throws Exception;
 
-	User getUser(String userid);
+	User getUser(String userid) throws Exception;
 
-	Group getGroup(String groupid);
+	Group getGroup(String groupid) throws Exception;
 
-	Group createGroup(Group group);
+	Group getGroupByName(String groupName, String domainid) throws Exception;
 
-	List<Group> listGroups(String domainid, Hints hints);
+	Group createGroup(Group group) throws Exception;
 
-	Group updateGroup(String groupid, Group group);
+	List<Group> listGroups(String domainid, Hints hints) throws Exception;
 
-	Group deleteGroup(String groupid);
+	Group updateGroup(String groupid, Group group) throws Exception;
 
-	List<Group> listGroupsForUser(String userid, Hints hints);
+	Group deleteGroup(String groupid) throws Exception;
 
-	User createUser(User user);
+	List<Group> listGroupsForUser(String userid, Hints hints) throws Exception;
 
-	List<User> listUsers(String domainScope, Hints hints);
+	User createUser(User user) throws Exception;
 
-	User updateUser(String userid, User user);
+	List<User> listUsers(String domainScope, Hints hints) throws Exception;
 
-	User deleteUser(String userid);
+	User updateUser(String userid, User user) throws Exception;
 
-	List<User> listUsersInGroup(String groupid, Hints hints);
+	User deleteUser(String userid) throws Exception;
 
-	User removeUserFromGroup(String userid, String groupid);
+	List<User> listUsersInGroup(String groupid, Hints hints) throws Exception;
 
-	User checkUserInGroup(String userid, String groupid);
+	User removeUserFromGroup(String userid, String groupid) throws Exception;
 
-	User addUserToGroup(String userid, String groupid);
+	User checkUserInGroup(String userid, String groupid) throws Exception;
 
-	User getUserByName(String userName, String domainid);
+	User addUserToGroup(String userid, String groupid) throws Exception;
 
-	void changePassword(KeystoneContext context, String userid, String originalPassword, String password);
+	User getUserByName(String userName, String domainid) throws Exception;
+
+	void changePassword(KeystoneContext context, String userid, String originalPassword, String password) throws Exception;
+
+	void emitInvalidateUserTokenPersistence(String userid) throws Exception;
+
+	boolean isMultipleDomainsSupported() throws Exception;
+
+	// user=null
+	void assertUserEnabled(String id, User user) throws Exception;
+
+	void setAssignmentApi(AssignmentApi assignmentApi);
 
 }

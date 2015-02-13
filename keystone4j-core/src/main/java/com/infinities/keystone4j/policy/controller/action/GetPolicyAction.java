@@ -19,7 +19,7 @@ public class GetPolicyAction extends AbstractPolicyAction implements ProtectedAc
 	}
 
 	@Override
-	public MemberWrapper<Policy> execute(ContainerRequestContext context) {
+	public MemberWrapper<Policy> execute(ContainerRequestContext context) throws Exception {
 		Policy ref = this.getPolicyApi().getPolicy(policyid);
 		return this.wrapMember(context, ref);
 	}

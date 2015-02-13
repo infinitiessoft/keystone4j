@@ -9,19 +9,17 @@ import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.utils.Views;
-import com.infinities.keystone4j.token.TokenApi;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.utils.Cms;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 
-public class PkiProvider extends TokenProviderBaseDriver {
+public class PkiProvider extends BaseProvider {
 
 	private final static Logger logger = LoggerFactory.getLogger(PkiProvider.class);
 
 
-	public PkiProvider(IdentityApi identityApi, AssignmentApi assignmentApi, CatalogApi catalogApi, TokenApi tokenApi,
-			TrustApi trustApi) {
-		super(identityApi, assignmentApi, catalogApi, tokenApi, trustApi);
+	public PkiProvider(IdentityApi identityApi, AssignmentApi assignmentApi, CatalogApi catalogApi, TrustApi trustApi) {
+		super(assignmentApi, catalogApi, identityApi, trustApi);
 	}
 
 	@Override

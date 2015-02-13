@@ -2,35 +2,25 @@ package com.infinities.keystone4j.assignment;
 
 import java.util.List;
 
+import com.infinities.keystone4j.Driver;
+import com.infinities.keystone4j.common.Hints;
 import com.infinities.keystone4j.model.assignment.Assignment;
 import com.infinities.keystone4j.model.assignment.Domain;
-import com.infinities.keystone4j.model.assignment.GroupDomainGrant;
-import com.infinities.keystone4j.model.assignment.GroupProjectGrant;
+import com.infinities.keystone4j.model.assignment.Metadata;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
-import com.infinities.keystone4j.model.assignment.UserDomainGrant;
-import com.infinities.keystone4j.model.assignment.UserProjectGrant;
-import com.infinities.keystone4j.model.identity.User;
 
-public interface AssignmentDriver {
+public interface AssignmentDriver extends Driver {
 
 	Project getProject(String projectid);
 
 	Project getProjectByName(String projectName, String domainid);
 
-	List<User> listUsersForProject(String projectid);
+	// List<User> listUsersForProject(String projectid);
 
-	// void createGrant();
+	List<Project> listProjects(Hints hints) throws Exception;
 
-	// List<Role> listGrants();
-
-	// Role getGrant();
-
-	// void deleteGrant();
-
-	List<Project> listProjects(String domainid);
-
-	List<Project> listProjectsForUser(String userid, List<String> groupids);
+	List<Project> listProjectsForUser(String userid, List<String> groupids, Hints hints);
 
 	void addRoleToUserAndProject(String userid, String projectid, String roleid);
 
@@ -38,15 +28,15 @@ public interface AssignmentDriver {
 
 	List<Assignment> listRoleAssignments();
 
-	Project createProject(Project project);
+	Project createProject(String tenantid, Project tenant);
 
 	Project updateProject(String projectid, Project project);
 
-	void deleteProject(String projectid);
+	Project deleteProject(String projectid);
 
-	Domain createDomain(Domain domain);
+	Domain createDomain(String domainid, Domain domain);
 
-	List<Domain> listDomains();
+	List<Domain> listDomains(Hints hints) throws Exception;
 
 	Domain getDomain(String domainid);
 
@@ -56,9 +46,9 @@ public interface AssignmentDriver {
 
 	void deleteDomain(String domainid);
 
-	Role createRole(Role role);
+	Role createRole(String id, Role role);
 
-	List<Role> listRoles();
+	List<Role> listRoles(Hints hints) throws Exception;
 
 	Role getRole(String roleid);
 
@@ -71,52 +61,68 @@ public interface AssignmentDriver {
 	// void deleteGroup();
 
 	// _get_metadata
-	GroupProjectGrant getGroupProjectGrant(String groupid, String projectid, String roleid);
+	// GroupProjectGrant getGroupProjectGrant(String groupid, String projectid,
+	// String roleid);
 
-	GroupDomainGrant getGroupDomainGrant(String groupid, String domainid, String roleid);
+	// GroupDomainGrant getGroupDomainGrant(String groupid, String domainid,
+	// String roleid);
 
-	List<GroupDomainGrant> getGroupDomainGrants(String groupid, String domainid);
+	// List<GroupDomainGrant> getGroupDomainGrants(String groupid, String
+	// domainid);
 
-	List<UserDomainGrant> getUserDomainGrants(String userid, String domainid);
+	// List<UserDomainGrant> getUserDomainGrants(String userid, String
+	// domainid);
 
-	List<GroupProjectGrant> getGroupProjectGrants(String groupid, String projectid);
+	// List<GroupProjectGrant> getGroupProjectGrants(String groupid, String
+	// projectid);
 
-	List<UserProjectGrant> getUserProjectGrants(String userid, String projectid);
+	// List<UserProjectGrant> getUserProjectGrants(String userid, String
+	// projectid);
 
-	UserProjectGrant getUserProjectGrant(String userid, String projectid, String roleid);
+	// UserProjectGrant getUserProjectGrant(String userid, String projectid,
+	// String roleid);
 
-	UserDomainGrant getUserDomainGrant(String userid, String domainid, String roleid);
+	// UserDomainGrant getUserDomainGrant(String userid, String domainid, String
+	// roleid);
 
-	void deleteGrantByGroupDomain(String roleid, String groupid, String domainid, boolean inherited);
+	List<Project> listProjectsInSubtree(String projectid) throws Exception;
 
-	void deleteGrantByGroupProject(String roleid, String groupid, String projectid, boolean inherited);
+	boolean isLeafProject(String tenantid);
 
-	void deleteGrantByUserDomain(String roleid, String userid, String domainid, boolean inherited);
+	List<String> getGroupProjectRoles(List<String> groupids, String projectid, String domainid) throws Exception;
 
-	void deleteGrantByUserProject(String roleid, String userid, String projectid, boolean inherited);
+	// inheritedToProjects = false
+	void createGrant(String roleid, String userid, String groupid, String projectid, String domainid,
+			boolean inheritedToProjects);
 
-	Role getGrantByGroupDomain(String roleid, String groupid, String domainid, boolean inherited);
+	void deleteGrant(String roleid, String userid, String groupid, String domainid, String projectid, boolean inherited);
 
-	Role getGrantByGroupProject(String roleid, String groupid, String projectid, boolean inherited);
+	List<Project> listProjectParents(String projectid) throws Exception;
 
-	Role getGrantByUserDomain(String roleid, String userid, String domainid, boolean inherited);
+	List<Domain> listDomainsForUser(String userid, List<String> groupids, Hints hints);
 
-	Role getGrantByUserProject(String roleid, String userid, String projectid, boolean inherited);
+	List<Project> listProjectsInDomain(String domainid) throws Exception;
 
-	void createGrantByGroupDomain(String roleid, String groupid, String domainid, boolean inherited);
+	List<Project> listUserProjects(String userid, Hints hints);
 
-	void createGrantByGroupProject(String roleid, String groupid, String projectid);
+	List<String> listUserIdsForProject(String projectid);
 
-	void createGrantByUserDomain(String roleid, String userid, String domainid, boolean inherited);
+	// inheritedToProjects=false
+	Role getGrant(String roleid, String userid, String groupid, String domainid, String projectid, boolean inherited);
 
-	void createGrantByUserProject(String roleid, String userid, String projectid);
+	// inheritedToProjects= false
+	List<Role> listGrants(String userid, String groupid, String domainid, String projectid, boolean inherited);
 
-	List<Role> listGrantsByGroupDomain(String groupid, String domainid, boolean inherited);
+	List<Project> listProjectsForGroups(List<String> groupids);
 
-	List<Role> listGrantsByGroupProject(String groupid, String projectid, boolean inherited);
+	List<Domain> listDomainsForGroups(List<String> groupids);
 
-	List<Role> listGrantsByUserProject(String userid, String projectid, boolean inherited);
+	void deleteUser(String userid);
 
-	List<Role> listGrantsByUserDomain(String userid, String domainid, boolean inherited);
+	void deleteGroup(String groupid);
+
+	Metadata getMetadata(String userid, String tenantid, String domainid, String groupid);
+
+	List<String> rolesFromRoleDicts(List<com.infinities.keystone4j.model.assignment.Metadata.Role> roles, boolean b);
 
 }

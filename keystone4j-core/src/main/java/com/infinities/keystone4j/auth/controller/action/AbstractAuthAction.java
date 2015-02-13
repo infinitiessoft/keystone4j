@@ -2,7 +2,9 @@ package com.infinities.keystone4j.auth.controller.action;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.container.ContainerRequestContext;
 
@@ -16,6 +18,7 @@ import com.infinities.keystone4j.catalog.CatalogApi;
 import com.infinities.keystone4j.common.Wsgi;
 import com.infinities.keystone4j.exception.Exceptions;
 import com.infinities.keystone4j.identity.IdentityApi;
+import com.infinities.keystone4j.model.token.Bind;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
@@ -85,7 +88,11 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 		if (Strings.isNullOrEmpty(path)) {
 			path = getCollectionName();
 		}
-		return String.format("%s/%s/s", endpoint, "v3", StringUtils.removeStart(path, "/"));
+		String ret = String.format("%s/%s/%s", endpoint, "v3", StringUtils.removeStart(path, "/"));
+		if (ret.endsWith("/")) {
+			ret = ret.substring(0, ret.length() - 1);
+		}
+		return ret;
 	}
 
 
@@ -97,6 +104,8 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 		private String domainid;
 		private Calendar expiresAt;
 		private List<String> methodNames = new ArrayList<String>();
+		private Bind bind = new Bind();
+		private Map<String, String> extras = new HashMap<String, String>();
 
 		private String auditid;
 
@@ -106,7 +115,8 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 		}
 
 		public void setUserid(String userid) {
-			if (!Strings.isNullOrEmpty(userid) && !userid.equals(this.userid)) {
+			logger.debug("userid: {}, this.userid: {}", new Object[] { userid, this.userid });
+			if (!Strings.isNullOrEmpty(this.userid) && !userid.equals(this.userid)) {
 				String msg = String.format(
 						"Unable to reconcile identity attribute %s as it has conflicting values %s and %s", "user_id",
 						userid, this.userid);
@@ -120,7 +130,7 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 		}
 
 		public void setProjectid(String projectid) {
-			if (!Strings.isNullOrEmpty(projectid) && !projectid.equals(this.projectid)) {
+			if (!Strings.isNullOrEmpty(this.projectid) && !projectid.equals(this.projectid)) {
 				String msg = String.format(
 						"Unable to reconcile identity attribute %s as it has conflicting values %s and %s", "project_id",
 						projectid, this.projectid);
@@ -134,7 +144,7 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 		}
 
 		public void setAccessTokenid(String accessTokenid) {
-			if (!Strings.isNullOrEmpty(accessTokenid) && !accessTokenid.equals(this.accessTokenid)) {
+			if (!Strings.isNullOrEmpty(this.accessTokenid) && !accessTokenid.equals(this.accessTokenid)) {
 				String msg = String.format(
 						"Unable to reconcile identity attribute %s as it has conflicting values %s and %s",
 						"access_token_id", accessTokenid, this.accessTokenid);
@@ -148,7 +158,7 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 		}
 
 		public void setDomainid(String domainid) {
-			if (!Strings.isNullOrEmpty(domainid) && !domainid.equals(this.domainid)) {
+			if (!Strings.isNullOrEmpty(this.domainid) && !domainid.equals(this.domainid)) {
 				String msg = String.format(
 						"Unable to reconcile identity attribute %s as it has conflicting values %s and %s", "domain_id",
 						domainid, this.domainid);
@@ -162,16 +172,16 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 		}
 
 		public void setExpiresAt(Calendar expiresAt) {
-			if (this.expiresAt != null) {
-				if (expiresAt == null) {
-					expiresAt = this.expiresAt;
-				}
-				if (this.expiresAt.compareTo(expiresAt) != 0) {
-					logger.info("expires_at has conflicting values {} and {}. Will use the earlist value.", new Object[] {
+			if (this.expiresAt != null && expiresAt != null) {
+				int compare = this.expiresAt.compareTo(expiresAt);
+				if (compare != 0) {
+					logger.info("expire_at has conflicting values {} and {}. Will use the earliest value.", new Object[] {
 							this.expiresAt, expiresAt });
+					if (compare > 0) {
+						this.expiresAt = expiresAt;
+					}
 				}
-			}
-			if (this.expiresAt.compareTo(expiresAt) >= 0) {
+			} else if (this.expiresAt == null && expiresAt != null) {
 				this.expiresAt = expiresAt;
 			}
 		}
@@ -190,6 +200,22 @@ public abstract class AbstractAuthAction extends AbstractControllerAction {
 
 		public void setAuditid(String auditid) {
 			this.auditid = auditid;
+		}
+
+		public Bind getBind() {
+			return bind;
+		}
+
+		public void setBind(Bind bind) {
+			this.bind = bind;
+		}
+
+		public Map<String, String> getExtras() {
+			return extras;
+		}
+
+		public void setExtras(Map<String, String> extras) {
+			this.extras = extras;
 		}
 
 	}

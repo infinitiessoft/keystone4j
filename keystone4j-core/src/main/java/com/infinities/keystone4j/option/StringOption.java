@@ -18,4 +18,9 @@ public class StringOption extends Option {
 	public void resetValue(String value) {
 		setValue(value);
 	}
+
+	@Override
+	public Option clone() {
+		return new StringOption(this.getName(), secret, this.getValue());
+	}
 }

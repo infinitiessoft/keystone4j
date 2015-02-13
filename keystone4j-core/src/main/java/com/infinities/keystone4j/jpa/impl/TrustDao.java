@@ -1,6 +1,6 @@
 package com.infinities.keystone4j.jpa.impl;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -21,19 +21,19 @@ public class TrustDao extends AbstractDao<Trust> {
 		super(Trust.class);
 	}
 
-	@Override
-	public Trust findById(Object id) {
-		Trust trust = this.findById(id);
-		if (trust.getDeletedAt() == null) {
-			return null;
-		}
-		if (trust.getExpiresAt() != null) {
-			if (new Date().after(trust.getExpiresAt())) {
-				return null;
-			}
-		}
-		return trust;
-	}
+	// @Override
+	// public Trust findById(Object id) {
+	// Trust trust = this.findById(id);
+	// if (trust.getDeletedAt() == null) {
+	// return null;
+	// }
+	// if (trust.getExpiresAt() != null) {
+	// if (new Date().after(trust.getExpiresAt())) {
+	// return null;
+	// }
+	// }
+	// return trust;
+	// }
 
 	@Override
 	public List<Trust> findAll() {
@@ -79,7 +79,7 @@ public class TrustDao extends AbstractDao<Trust> {
 		List<Predicate> predicates = Lists.newArrayList();
 		Predicate domainidPredicate = cb.isNull(root.get("deletedAt"));
 		predicates.add(domainidPredicate);
-		Predicate trusteePredicate = cb.equal(root.get("trustee").get("id"), trusteeid);
+		Predicate trusteePredicate = cb.equal(root.get("trusteeUserId"), trusteeid);
 		predicates.add(trusteePredicate);
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
@@ -113,7 +113,7 @@ public class TrustDao extends AbstractDao<Trust> {
 		List<Predicate> predicates = Lists.newArrayList();
 		Predicate domainidPredicate = cb.isNull(root.get("deletedAt"));
 		predicates.add(domainidPredicate);
-		Predicate trusteePredicate = cb.equal(root.get("trustor").get("id"), trustorid);
+		Predicate trusteePredicate = cb.equal(root.get("trustorUserId"), trustorid);
 		predicates.add(trusteePredicate);
 		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 		cq.select(root);
@@ -139,7 +139,81 @@ public class TrustDao extends AbstractDao<Trust> {
 		if (trust == null) {
 			throw Exceptions.TrustNotFoundException.getInstance(null, trustid);
 		}
-		trust.setDeletedAt(new Date());
+		trust.setDeletedAt(Calendar.getInstance());
 		this.merge(trust);
+	}
+
+	public Trust findByIdWithNonDeleted(String trustid) {
+		EntityManager em = getEntityManager();
+		// EntityTransaction tx = null;
+		// try {
+		// tx = em.getTransaction();
+		// tx.begin();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Trust> cq = cb.createQuery(getEntityType());
+		Root<Trust> root = cq.from(getEntityType());
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate deletedPredicate = cb.isNull(root.get("deletedAt"));
+		predicates.add(deletedPredicate);
+		Predicate idPredicate = cb.equal(root.get("id"), trustid);
+		predicates.add(idPredicate);
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Trust> q = em.createQuery(cq);
+		return q.getSingleResult();
+	}
+
+	public List<Trust> findByIdWithRemainingUses(String trustid, Integer remainingUses) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Trust> cq = cb.createQuery(getEntityType());
+		Root<Trust> root = cq.from(getEntityType());
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate deletedPredicate = cb.isNull(root.get("deletedAt"));
+		predicates.add(deletedPredicate);
+		Predicate idPredicate = cb.equal(root.get("id"), trustid);
+		predicates.add(idPredicate);
+		Predicate remainingUsesPredicate = cb.equal(root.get("remainingUses"), remainingUses);
+		predicates.add(remainingUsesPredicate);
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Trust> q = em.createQuery(cq);
+		return q.getResultList();
+	}
+
+	public Trust findById(String trustid, boolean deleted) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Trust> cq = cb.createQuery(getEntityType());
+		Root<Trust> root = cq.from(getEntityType());
+		List<Predicate> predicates = Lists.newArrayList();
+		if (!deleted) {
+			Predicate deletedPredicate = cb.isNull(root.get("deletedAt"));
+			predicates.add(deletedPredicate);
+		}
+		Predicate idPredicate = cb.equal(root.get("id"), trustid);
+		predicates.add(idPredicate);
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Trust> q = em.createQuery(cq);
+		return q.getSingleResult();
+	}
+
+	public List<Trust> listUndeleted() {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Trust> cq = cb.createQuery(getEntityType());
+		Root<Trust> root = cq.from(getEntityType());
+		List<Predicate> predicates = Lists.newArrayList();
+		Predicate deletedPredicate = cb.isNull(root.get("deletedAt"));
+		predicates.add(deletedPredicate);
+		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.select(root);
+
+		TypedQuery<Trust> q = em.createQuery(cq);
+		return q.getResultList();
 	}
 }

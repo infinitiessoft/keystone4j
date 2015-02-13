@@ -1,9 +1,8 @@
 package com.infinities.keystone4j.credential.api.command;
 
-import com.infinities.keystone4j.Command;
 import com.infinities.keystone4j.credential.CredentialDriver;
 
-public abstract class AbstractCredentialCommand<T> implements Command<T> {
+public abstract class AbstractCredentialCommand {
 
 	private final CredentialDriver credentialDriver;
 
