@@ -321,6 +321,7 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "strict_password_check", Options.newBoolOpt("strict_password_check", false));
 		FILE_OPTIONS.put(Config.Type.revoke, "expiration_buffer", Options.newIntOpt("expiration_buffer", 1800));
 		FILE_OPTIONS.put(Config.Type.token, "hash_algorithm", Options.newStrOpt("hash_algorithm", "md5"));
+		FILE_OPTIONS.put(Config.Type.DEFAULT, "policy_default_rule", Options.newStrOpt("policy_default_rule", "default"));
 
 	}
 
