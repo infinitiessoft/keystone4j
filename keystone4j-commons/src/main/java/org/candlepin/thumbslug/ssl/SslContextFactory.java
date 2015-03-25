@@ -1,17 +1,17 @@
 /**
-* Copyright (c) 2011 Red Hat, Inc.
-*
-* This software is licensed to you under the GNU General Public License,
-* version 2 (GPLv2). There is NO WARRANTY for this software, express or
-* implied, including the implied warranties of MERCHANTABILITY or FITNESS
-* FOR A PARTICULAR PURPOSE. You should have received a copy of GPLv2
-* along with this software; if not, see
-* http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
-*
-* Red Hat trademarks are not licensed under GPLv2. No permission is
-* granted to use or replicate Red Hat trademarks that are incorporated
-* in this software or its documentation.
-*/
+ * Copyright (c) 2011 Red Hat, Inc.
+ *
+ * This software is licensed to you under the GNU General Public License,
+ * version 2 (GPLv2). There is NO WARRANTY for this software, express or
+ * implied, including the implied warranties of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. You should have received a copy of GPLv2
+ * along with this software; if not, see
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+ *
+ * Red Hat trademarks are not licensed under GPLv2. No permission is
+ * granted to use or replicate Red Hat trademarks that are incorporated
+ * in this software or its documentation.
+ */
 package org.candlepin.thumbslug.ssl;
 
 import java.io.File;
@@ -30,133 +30,131 @@ import javax.net.ssl.SSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
-* SslContextFactory
-*/
+ * SslContextFactory
+ */
 public class SslContextFactory {
-    private static Logger log = LoggerFactory.getLogger(SslContextFactory.class);
 
-    private static final String PROTOCOL = "TLS";
+	private static Logger log = LoggerFactory.getLogger(SslContextFactory.class);
 
-    private static KeyStore ks;
-    private static X509Certificate [] chain;
+	private static final String PROTOCOL = "TLS";
 
-    private SslContextFactory() {
-        // for checkstyle
-    }
+	private static KeyStore ks;
+	private static X509Certificate[] chain;
 
-    public static SSLContext getServerContext(String keystoreUrl, String keystorePassword,
-        String caUrl) throws SslKeystoreException, SslPemException {
 
-        SSLContext serverContext;
+	private SslContextFactory() {
+		// for checkstyle
+	}
 
-        String algorithm = Security.getProperty("ssl.KeyManagerFactory.algorithm");
-        if (algorithm == null) {
-            algorithm = "SunX509";
-        }
+	public static SSLContext getServerContext(String keystoreUrl, String keystorePassword, String caUrl)
+			throws SslKeystoreException, SslPemException {
 
-        FileInputStream fis = null;
-        try {
-            if (ks == null) {
-                log.info("reading keystore");
-                fis = new FileInputStream(new File(keystoreUrl));
-                ks = KeyStore.getInstance("PKCS12");
-                ks.load(fis, keystorePassword.toCharArray());
+		SSLContext serverContext;
 
-                Scanner scanner = new Scanner(new File(caUrl));
-                scanner.useDelimiter("\\Z");
-                String caPem = scanner.next();
-                chain = PemChainLoader.loadChain(caPem);
-            }
+		String algorithm = Security.getProperty("ssl.KeyManagerFactory.algorithm");
+		if (algorithm == null) {
+			algorithm = "SunX509";
+		}
 
-            // Set up key manager factory to use our key store
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(algorithm);
-            kmf.init(ks, keystorePassword.toCharArray());
+		FileInputStream fis = null;
+		try {
+			if (ks == null) {
+				log.info("reading keystore");
+				fis = new FileInputStream(new File(keystoreUrl));
+				ks = KeyStore.getInstance("PKCS12");
+				ks.load(fis, keystorePassword.toCharArray());
 
-            // Initialize the SSLContext to work with our key managers.
-            serverContext = SSLContext.getInstance(PROTOCOL);
-            serverContext.init(kmf.getKeyManagers(),
-                ServerContextTrustManager.getTrustManagers(chain), null);
-        }
-        catch (SslPemException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            throw new SslKeystoreException(
-                    "Failed to initialize the server-side SSLContext.", e);
-        }
-        finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                }
-                catch (IOException e) {
-                    throw new Error(
-                        "Failed to initialize the client-side SSLContext", e);
-                }
+				Scanner scanner = null;
+				try {
+					scanner = new Scanner(new File(caUrl));
+					scanner.useDelimiter("\\Z");
+					String caPem = scanner.next();
+					chain = PemChainLoader.loadChain(caPem);
+				} finally {
+					if (scanner != null) {
+						scanner.close();
+					}
+				}
+			}
 
-            }
-        }
+			// Set up key manager factory to use our key store
+			KeyManagerFactory kmf = KeyManagerFactory.getInstance(algorithm);
+			kmf.init(ks, keystorePassword.toCharArray());
 
-        return serverContext;
-    }
+			// Initialize the SSLContext to work with our key managers.
+			serverContext = SSLContext.getInstance(PROTOCOL);
+			serverContext.init(kmf.getKeyManagers(), ServerContextTrustManager.getTrustManagers(chain), null);
+		} catch (SslPemException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new SslKeystoreException("Failed to initialize the server-side SSLContext.", e);
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					throw new Error("Failed to initialize the client-side SSLContext", e);
+				}
 
-    public static SSLContext getClientContext(String pem, String caUrl)
-        throws SslPemException {
-        SSLContext clientContext = null;
+			}
+		}
 
-        try {
-            log.debug("loading thumbslug to cdn entitlement certificate (pem encoded)");
+		return serverContext;
+	}
 
-            CertParser parser = new CertParser(pem);
-            String certificate = parser.getCert();
-            String privateKey = parser.getKey();
+	public static SSLContext getClientContext(String pem, String caUrl) throws SslPemException {
+		SSLContext clientContext = null;
 
-            PEMx509KeyManager [] managers = new PEMx509KeyManager[1];
-            managers[0] = new PEMx509KeyManager();
-            managers[0].addPEM(certificate, privateKey);
+		try {
+			log.debug("loading thumbslug to cdn entitlement certificate (pem encoded)");
 
-            Scanner scanner = new Scanner(new File(caUrl));
-            scanner.useDelimiter("\\Z");
-            String caPem = scanner.next();
+			CertParser parser = new CertParser(pem);
+			String certificate = parser.getCert();
+			String privateKey = parser.getKey();
 
-            // Initialize the SSLContext to work with our key managers.
-            clientContext = SSLContext.getInstance(PROTOCOL);
-            clientContext.init(managers,
-                    ClientContextTrustManager.getTrustManagers(
-                        PemChainLoader.loadChain(caPem)), null);
-            log.debug("SSL context initialized!");
-        }
-        catch (Exception e) {
-            log.error("Unable to load pem file!", e);
-            throw new SslPemException(
-                    "Failed to initialize the client-side SSLContext", e);
-        }
+			PEMx509KeyManager[] managers = new PEMx509KeyManager[1];
+			managers[0] = new PEMx509KeyManager();
+			managers[0].addPEM(certificate, privateKey);
 
-        return clientContext;
-    }
+			Scanner scanner = null;
+			String caPem = null;
+			try {
+				scanner = new Scanner(new File(caUrl));
+				scanner.useDelimiter("\\Z");
+				caPem = scanner.next();
+			} finally {
+				if (scanner != null) {
+					scanner.close();
+				}
+			}
+			// Initialize the SSLContext to work with our key managers.
+			clientContext = SSLContext.getInstance(PROTOCOL);
+			clientContext.init(managers, ClientContextTrustManager.getTrustManagers(PemChainLoader.loadChain(caPem)), null);
+			log.debug("SSL context initialized!");
+		} catch (Exception e) {
+			log.error("Unable to load pem file!", e);
+			throw new SslPemException("Failed to initialize the client-side SSLContext", e);
+		}
 
-    public static SSLContext getCandlepinClientContext() {
-        // Candlepin client context, we won't be sending up an ssl cert,
-        // just verifying that of candlepin
+		return clientContext;
+	}
 
-        SSLContext candlepinClientContext;
+	public static SSLContext getCandlepinClientContext() {
+		// Candlepin client context, we won't be sending up an ssl cert,
+		// just verifying that of candlepin
 
-        try {
-            candlepinClientContext = SSLContext.getInstance(PROTOCOL);
-            candlepinClientContext.init(null,
-                ClientContextTrustManager.getTrustManagers(null), null);
-        }
-        catch (NoSuchAlgorithmException e) {
-            throw new Error("Failed to initialize the thumbslug to candlepin ssl context",
-                e);
-        }
-        catch (KeyManagementException e) {
-            throw new Error("Failed to initialize the thumbslug to candlepin ssl context",
-                e);
-        }
+		SSLContext candlepinClientContext;
 
-        return candlepinClientContext;
-    }
+		try {
+			candlepinClientContext = SSLContext.getInstance(PROTOCOL);
+			candlepinClientContext.init(null, ClientContextTrustManager.getTrustManagers(null), null);
+		} catch (NoSuchAlgorithmException e) {
+			throw new Error("Failed to initialize the thumbslug to candlepin ssl context", e);
+		} catch (KeyManagementException e) {
+			throw new Error("Failed to initialize the thumbslug to candlepin ssl context", e);
+		}
+
+		return candlepinClientContext;
+	}
 }
