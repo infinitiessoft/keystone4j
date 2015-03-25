@@ -24,6 +24,7 @@ public class GenericCheck extends Check {
 	@Override
 	public boolean check(Map<String, Object> target, Context creds, Enforcer enforcer) {
 		// try {
+		logger.debug("match: {}, kind:{}", new Object[] { this.getMatch(), this.getKind() });
 		String match = this.getMatch();
 		Object expect = null;
 		Pattern pattern = Pattern.compile("%\\((.+?)\\)s");
@@ -39,7 +40,7 @@ public class GenericCheck extends Check {
 			expect = ReflectUtils.reflact(target, match);
 		} catch (Exception e) {
 			logger.warn("reflect value from tartget failed", e);
-			return false;
+			expect = match;
 		}
 
 		if (expect == null) {

@@ -64,6 +64,9 @@ public class ReflectUtils {
 
 		if (target instanceof Map) {
 			value = ((Map<String, Object>) target).get(split[0]);
+			if (value == null) {
+				throw new NullPointerException("value is null");
+			}
 		} else {
 			Method m = null;
 			String methodName = concentrateMethodName(split[0]);

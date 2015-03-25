@@ -26,7 +26,7 @@ public class PolicyJpaDriver implements PolicyDriver {
 	private final static String ENFORCE_ACTION_CREDENTIALS = "enforce {}: {}";
 	private final static String POLICY_FILE = "policy_file";
 	private final PolicyDao policyDao;
-	private static String POLICY_PATH;
+	private static String POLICY_PATH = "";
 	private static EnforcerImpl enforcer;
 
 

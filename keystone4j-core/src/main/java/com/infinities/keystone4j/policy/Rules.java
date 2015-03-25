@@ -71,6 +71,7 @@ public class Rules implements Map<String, BaseCheck> {
 			rules.put(entry.getKey(), parseRule(entry.getValue()));
 		}
 
+		logger.debug("defaultRule: {}", defaultRule);
 		return new Rules(rules, defaultRule);
 	}
 

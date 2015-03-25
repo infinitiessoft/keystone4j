@@ -29,8 +29,8 @@ public class EnforcerImpl implements Enforcer {
 	// useConf = true
 	public EnforcerImpl(String policyFile, Map<String, BaseCheck> rules, String defaultRule, boolean useConf) {
 		this.defaultRule = defaultRule;
-		if (Strings.isNullOrEmpty(defaultRule)) {
-			defaultRule = Config.Instance.getOpt(Config.Type.DEFAULT, "policy_default_rule").asText();
+		if (Strings.isNullOrEmpty(this.defaultRule)) {
+			this.defaultRule = Config.Instance.getOpt(Config.Type.DEFAULT, "policy_default_rule").asText();
 		}
 		this.rules = new Rules(rules, defaultRule);
 
@@ -40,6 +40,7 @@ public class EnforcerImpl implements Enforcer {
 			this.policyFile = Config.Instance.getOpt(Config.Type.DEFAULT, "policy_file").asText();
 		}
 		this.useConf = useConf;
+		logger.debug("defaultRule in enforcer: {}", defaultRule);
 	}
 
 	// overwrite=true, useConf=false
@@ -87,7 +88,7 @@ public class EnforcerImpl implements Enforcer {
 
 	// overwrite=true
 	private void loadPolicyFile(String path, boolean forceReload, boolean overwrite) throws IOException {
-		if (forceReload) {
+		if (forceReload || rules.isEmpty() || !overwrite) {
 			String data = Files.asCharSource(new File(policyPath), Charsets.UTF_8).read();
 			Rules rules = Rules.loadJson(data, defaultRule);
 			setRules(rules.getRules(), true, false);
