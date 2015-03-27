@@ -1,0 +1,15 @@
+request:
+curl -X "POST" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN" -d '{"group" : {"name" : "demo","description" : "description","domain_id" : "default"}}' http://localhost:5000/v3/groups;
+
+response:
+{
+    "group": {
+        "domain_id": "default",
+        "description": "description",
+        "id": "15de80d06a4c4d35abb3dcb7ea5561a3",
+        "links": {
+            "self": "http://192.168.126.2:5000/v3/groups/15de80d06a4c4d35abb3dcb7ea5561a3"
+        },
+        "name": "demo"
+    }
+}

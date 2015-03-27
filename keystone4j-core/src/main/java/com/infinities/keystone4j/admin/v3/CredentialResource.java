@@ -52,7 +52,8 @@ public class CredentialResource {
 	@Path("/{credentialid}")
 	@JsonView(Views.Advance.class)
 	public CredentialWrapper getCredential(@PathParam("credentialid") String credentialid) throws Exception {
-		return (CredentialWrapper) credentialController.getCredential(credentialid);
+		CredentialWrapper wrapper = (CredentialWrapper) credentialController.getCredential(credentialid);
+		return wrapper;
 	}
 
 	@PATCH

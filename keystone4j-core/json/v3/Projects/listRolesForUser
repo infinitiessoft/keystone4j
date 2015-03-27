@@ -1,0 +1,29 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/projects/88e550a135bb4e6da68e79e5b7c4b2f2/users/e7912c2225e84ac5905d8cf0b5040a6d/roles | python -mjson.tool
+
+response:
+{
+    "links": {
+        "next": null, 
+        "previous": null, 
+        "self": "http://192.168.126.2:5000/v3/projects/88e550a135bb4e6da68e79e5b7c4b2f2/users/e7912c2225e84ac5905d8cf0b5040a6d/roles"
+    }, 
+    "roles": [
+        {
+            "description": "Default role for project membership", 
+            "enabled": "True", 
+            "id": "9fe2ff9ee4384b1894a90878d3e92bab", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/roles/9fe2ff9ee4384b1894a90878d3e92bab"
+            }, 
+            "name": "_member_"
+        }, 
+        {
+            "id": "d903936e7bbd4183b8cd35816d2cf88b", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/roles/d903936e7bbd4183b8cd35816d2cf88b"
+            }, 
+            "name": "admin"
+        }
+    ]
+}

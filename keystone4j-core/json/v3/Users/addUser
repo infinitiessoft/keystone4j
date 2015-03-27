@@ -1,0 +1,17 @@
+request:
+curl -X "POST" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN" -d '{"user" : {"name" : "testing","password" : "password","enabled" : true,"description" : "description","domain_id" : "default","default_project_id" : "88e550a135bb4e6da68e79e5b7c4b2f2"}}' http://localhost:5000/v3/users;
+
+response:
+{
+    "user": {
+        "default_project_id": "88e550a135bb4e6da68e79e5b7c4b2f2", 
+        "domain_id": "default", 
+        "email": null, 
+        "enabled": true, 
+        "id": "e7912c2225e84ac5905d8cf0b5040a6d", 
+        "links": {
+            "self": "http://192.168.126.2:5000/v3/users/e7912c2225e84ac5905d8cf0b5040a6d"
+        }, 
+        "name": "admin"
+    }
+}

@@ -40,6 +40,7 @@ public class RevocationEventDao extends AbstractDao<RevocationEvent> {
 		TypedQuery<RevocationEvent> q = em.createQuery(cq);
 		List<RevocationEvent> events = q.getResultList();
 		return events;
+		// return new ArrayList<RevocationEvent>();
 	}
 
 	public int removeByCutoffTime(Calendar oldest) {
@@ -48,5 +49,6 @@ public class RevocationEventDao extends AbstractDao<RevocationEvent> {
 		query.setParameter("oldest", oldest);
 		int deleted = query.executeUpdate();
 		return deleted;
+		// return 0;
 	}
 }

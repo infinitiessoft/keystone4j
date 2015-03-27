@@ -1,0 +1,24 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/groups/15de80d06a4c4d35abb3dcb7ea5561a3/users | python -mjson.tool
+
+response:
+{
+    "links": {
+        "next": null, 
+        "previous": null, 
+        "self": "http://192.168.126.2:5000/v3/groups/15de80d06a4c4d35abb3dcb7ea5561a3/users"
+    }, 
+    "users": [
+        {
+            "default_project_id": "d4a1902fb7024e0cb04e84160ef28246", 
+            "domain_id": "default", 
+            "email": null, 
+            "enabled": true, 
+            "id": "d2e2ba5225794e21bdd79f6b214263fc", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/users/d2e2ba5225794e21bdd79f6b214263fc"
+            }, 
+            "name": "crowbar"
+        }
+    ]
+}

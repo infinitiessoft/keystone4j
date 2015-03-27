@@ -21,6 +21,7 @@ import com.infinities.keystone4j.common.model.CustomResponseStatus;
 import com.infinities.keystone4j.identity.controller.GroupV3Controller;
 import com.infinities.keystone4j.identity.controller.UserV3Controller;
 import com.infinities.keystone4j.model.assignment.wrapper.ProjectsWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.CreateUserParamWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.GroupsWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.UserParamWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.UserWrapper;
@@ -48,13 +49,13 @@ public class UserV3Resource {
 	}
 
 	@POST
-	@JsonView(Views.Basic.class)
-	public Response createUser(UserWrapper userWrapper) throws Exception {
+	@JsonView(Views.Advance.class)
+	public Response createUser(CreateUserParamWrapper userWrapper) throws Exception {
 		return Response.status(Status.CREATED).entity(userController.createUser(userWrapper.getRef())).build();
 	}
 
 	@GET
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public UsersWrapper listUsers(@QueryParam("domain_id") String domainid, @QueryParam("email") String email,
 			@QueryParam("enabled") Boolean enabled, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
@@ -64,15 +65,15 @@ public class UserV3Resource {
 
 	@GET
 	@Path("/{userid}")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public UserWrapper getUser(@PathParam("userid") String userid) throws Exception {
 		return (UserWrapper) userController.getUser(userid);
 	}
 
 	@PATCH
 	@Path("/{userid}")
-	@JsonView(Views.Basic.class)
-	public UserWrapper updateUser(@PathParam("userid") String userid, UserWrapper userWrapper) throws Exception {
+	@JsonView(Views.Advance.class)
+	public UserWrapper updateUser(@PathParam("userid") String userid, CreateUserParamWrapper userWrapper) throws Exception {
 		return (UserWrapper) userController.updateUser(userid, userWrapper.getRef());
 	}
 
@@ -92,7 +93,7 @@ public class UserV3Resource {
 
 	@GET
 	@Path("/{userid}/groups")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public GroupsWrapper listGroupsForUser(@PathParam("userid") String userid, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
 			throws Exception {
@@ -101,7 +102,7 @@ public class UserV3Resource {
 
 	@GET
 	@Path("/{userid}/projects")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public ProjectsWrapper listUserProjects(@PathParam("userid") String userid, @QueryParam("name") String name,
 			@QueryParam("enabled") Boolean enabled, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {

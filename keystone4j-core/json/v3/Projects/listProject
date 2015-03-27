@@ -1,0 +1,43 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/projects | python -mjson.tool
+
+response:
+{
+    "links": {
+        "next": null, 
+        "previous": null, 
+        "self": "http://192.168.126.2:5000/v3/projects"
+    }, 
+    "projects": [
+        {
+            "description": "", 
+            "domain_id": "default", 
+            "enabled": true, 
+            "id": "88e550a135bb4e6da68e79e5b7c4b2f2", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/projects/88e550a135bb4e6da68e79e5b7c4b2f2"
+            }, 
+            "name": "admin"
+        }, 
+        {
+            "description": "", 
+            "domain_id": "default", 
+            "enabled": true, 
+            "id": "7c03223d1bf04a87a1fca46fee292da4", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/projects/7c03223d1bf04a87a1fca46fee292da4"
+            }, 
+            "name": "service"
+        }, 
+        {
+            "description": "", 
+            "domain_id": "default", 
+            "enabled": true, 
+            "id": "d4a1902fb7024e0cb04e84160ef28246", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/projects/d4a1902fb7024e0cb04e84160ef28246"
+            }, 
+            "name": "openstack"
+        }
+    ]
+}

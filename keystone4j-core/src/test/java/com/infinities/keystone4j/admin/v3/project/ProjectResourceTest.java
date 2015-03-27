@@ -1,6 +1,7 @@
 package com.infinities.keystone4j.admin.v3.project;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -13,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.client.ClientProtocolException;
-import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
 
@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.PatchClient;
 import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.intergrated.v3.AbstractIntegratedTest;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
@@ -33,7 +34,7 @@ import com.infinities.keystone4j.utils.jackson.JacksonFeature;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
-public class ProjectResourceTest extends JerseyTest {
+public class ProjectResourceTest extends AbstractIntegratedTest {
 
 	private Domain defaultDomain;
 	private User user;
@@ -56,6 +57,7 @@ public class ProjectResourceTest extends JerseyTest {
 		project.setId("88e550a135bb4e6da68e79e5b7c4b2f2");
 		project.setDomain(defaultDomain);
 		project.setName("admin");
+		project.setDescription("description");
 
 		user = new User();
 		user.setId("e7912c2225e84ac5905d8cf0b5040a6d");
@@ -102,6 +104,9 @@ public class ProjectResourceTest extends JerseyTest {
 		assertEquals(project.getName(), projectJ.get("name").asText());
 		assertEquals(project.getDescription(), projectJ.get("description").asText());
 		assertEquals(project.getDomain().getId(), projectJ.get("domain_id").asText());
+		assertNotNull(projectJ.get("enabled").asText());
+		assertNotNull(projectJ.get("links"));
+		assertNotNull(projectJ.get("links").get("self").asText());
 	}
 
 	@Test
@@ -120,7 +125,11 @@ public class ProjectResourceTest extends JerseyTest {
 		JsonNode projectJ = projectsJ.get(0);
 		assertEquals(project.getId(), projectJ.get("id").asText());
 		assertEquals(project.getName(), projectJ.get("name").asText());
+		assertEquals(project.getDescription(), projectJ.get("description").asText());
 		assertEquals(project.getDomainId(), projectJ.get("domain_id").asText());
+		assertNotNull(projectJ.get("enabled").asText());
+		assertNotNull(projectJ.get("links"));
+		assertNotNull(projectJ.get("links").get("self").asText());
 	}
 
 	@Test
@@ -136,22 +145,29 @@ public class ProjectResourceTest extends JerseyTest {
 		assertEquals(project.getId(), projectJ.get("id").asText());
 		assertEquals(project.getName(), projectJ.get("name").asText());
 		assertEquals(project.getDomainId(), projectJ.get("domain_id").asText());
+		assertNotNull(projectJ.get("enabled").asText());
+		assertNotNull(projectJ.get("links"));
+		assertNotNull(projectJ.get("links").get("self").asText());
 	}
 
 	@Test
 	public void testUpdateProject() throws ClientProtocolException, IOException {
 		project.setName("project1");
 		project.setDescription("desc");
+		project.setEnabled(false);
 
 		ProjectWrapper wrapper = new ProjectWrapper(project);
 		PatchClient client = new PatchClient("http://localhost:9998/v3/projects/" + project.getId());
 		JsonNode node = client.connect(wrapper);
-
+		System.err.println(node.toString());
 		JsonNode projectJ = node.get("project");
 		assertEquals(project.getId(), projectJ.get("id").asText());
 		assertEquals(project.getName(), projectJ.get("name").asText());
 		assertEquals(project.getDescription(), projectJ.get("description").asText());
 		assertEquals(project.getDomainId(), projectJ.get("domain_id").asText());
+		assertFalse(projectJ.get("enabled").asBoolean());
+		assertNotNull(projectJ.get("links"));
+		assertNotNull(projectJ.get("links").get("self").asText());
 	}
 
 	@Test

@@ -43,13 +43,13 @@ public class GroupResource {
 	}
 
 	@POST
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public Response createGroup(GroupWrapper groupWrapper) throws Exception {
 		return Response.status(Status.CREATED).entity(groupController.createGroup(groupWrapper.getRef())).build();
 	}
 
 	@GET
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public GroupsWrapper listGroups(@QueryParam("domain_id") String domainid, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
 			throws Exception {
@@ -58,14 +58,14 @@ public class GroupResource {
 
 	@GET
 	@Path("/{groupid}")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public GroupWrapper getGroup(@PathParam("groupid") String groupid) throws Exception {
 		return (GroupWrapper) groupController.getGroup(groupid);
 	}
 
 	@PATCH
 	@Path("/{groupid}")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public GroupWrapper updateGroup(@PathParam("groupid") String groupid, GroupWrapper groupWrapper) throws Exception {
 		return (GroupWrapper) groupController.updateGroup(groupid, groupWrapper.getRef());
 	}
@@ -79,7 +79,7 @@ public class GroupResource {
 
 	@GET
 	@Path("/{groupid}/users")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public UsersWrapper listUsersInGroup(@PathParam("groupid") String groupid, @QueryParam("domain_id") String domainid,
 			@QueryParam("email") String email, @QueryParam("enabled") Boolean enabled, @QueryParam("name") String name,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
@@ -89,7 +89,6 @@ public class GroupResource {
 
 	@PUT
 	@Path("/{groupid}/users/{userid}")
-	@JsonView(Views.Basic.class)
 	public Response addUserToGroup(@PathParam("groupid") String groupid, @PathParam("userid") String userid)
 			throws Exception {
 		userController.addUserToGroup(groupid, userid);

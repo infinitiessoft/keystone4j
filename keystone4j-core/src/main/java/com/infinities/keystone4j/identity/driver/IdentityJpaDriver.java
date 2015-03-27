@@ -54,7 +54,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 
 	private User filterUser(User userRef) {
 		if (userRef != null) {
-			userRef.setPassword(null);
+			// userRef.setPassword(null);
 		}
 		return userRef;
 	}

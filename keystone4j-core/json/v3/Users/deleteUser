@@ -1,0 +1,8 @@
+request:
+curl -X "DELETE" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN"  http://localhost:5000/v3/users/d7e6b8fe787348ab8831936b12f63e66 ; echo
+
+response:
+HTTP/1.1 204 No Content
+Vary: X-Auth-Token
+Content-Length: 0
+Date: Thu, 16 Oct 2014 02:36:18 GMT

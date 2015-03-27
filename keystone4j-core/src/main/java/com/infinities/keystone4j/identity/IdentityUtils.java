@@ -3,11 +3,6 @@ package com.infinities.keystone4j.identity;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.common.base.Strings;
-import com.infinities.keystone4j.exception.Exceptions;
-import com.infinities.keystone4j.model.identity.Group;
-import com.infinities.keystone4j.model.identity.User;
-
 @Deprecated
 public class IdentityUtils {
 
@@ -24,23 +19,25 @@ public class IdentityUtils {
 		}
 	}
 
-	public User clearDomainid(User user) {
-		String domainid = user.getDomain().getId();
-		user.setDomain(null);
-		if (!Strings.isNullOrEmpty(domainid) && !driverMap.containsKey(domainid)) {
-			throw Exceptions.DomainNotFoundException.getInstance(null, domainid);
-		}
+	// public User clearDomainid(User user) {
+	// String domainid = user.getDomain().getId();
+	// // user.setDomain(null);
+	// if (!Strings.isNullOrEmpty(domainid) && !driverMap.containsKey(domainid))
+	// {
+	// throw Exceptions.DomainNotFoundException.getInstance(null, domainid);
+	// }
+	//
+	// return user;
+	// }
 
-		return user;
-	}
-
-	public Group clearDomainid(Group group) {
-		String domainid = group.getDomain().getId();
-		group.setDomain(null);
-		if (!Strings.isNullOrEmpty(domainid) && !driverMap.containsKey(domainid)) {
-			throw Exceptions.DomainNotFoundException.getInstance(null, domainid);
-		}
-
-		return group;
-	}
+	// public Group clearDomainid(Group group) {
+	// String domainid = group.getDomain().getId();
+	// // group.setDomain(null);
+	// if (!Strings.isNullOrEmpty(domainid) && !driverMap.containsKey(domainid))
+	// {
+	// throw Exceptions.DomainNotFoundException.getInstance(null, domainid);
+	// }
+	//
+	// return group;
+	// }
 }

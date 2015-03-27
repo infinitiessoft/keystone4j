@@ -1,71 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
-	<DOMAIN id="default" optlock="1" name="newdomain" enabled="true"
-		desc="my domain" />
-	<DOMAIN id="69ea2c65-4679-441f-a596-8aec16752a0f" optlock="1" name="newdomain2" enabled="false"
-		desc="my domain2" />
-	<SERVICE id="79ea2c65-4679-441f-a596-8aec16752a0f" optlock="1"
-		name="keystone" desc="identity service" type="identity" />
-	<ENDPOINT id="79ea2c65-4679-441f-a596-8aec16752a1f" optlock="1"
-		name="keystone_endpoint" desc="keystone endpoint" interface="public"
-		url="http://localhost:%(public_port)/" serviceid="79ea2c65-4679-441f-a596-8aec16752a0f" />
-	<PROJECT id="79ea2c65-4679-441f-a596-8aec16752a2f" optlock="1"
-		name="admin" enabled="true" desc="admin project" domainid="default" />
-	<PROJECT id="79ea2c65-4679-441f-a596-8aec16752a20" optlock="1"
-		name="demo" enabled="true" desc="demo project" domainid="default" />
-	<ROLE id="708bb4f9-9d3c-46af-b18c-7033dc022ffb" optlock="1" name="admin"
-		desc="admin role" />
-	<ROLE id="708bb4f9-9d3c-46af-b18c-7033dc022fff" optlock="1" name="demo"
-		desc="demo role" />
-	<GROUP id="708bb4f9-9d3c-46af-b18c-7033dc022ffc" optlock="1"
-		name="admin_group" desc="admin group" domainid="default" />
-	<GROUP id="708bb4f9-9d3c-46af-b18c-7033dc022ffd" optlock="1"
-		name="demo_group" desc="demo group" domainid="default" />
-	<USER id="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" enabled="true"
-		password="c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec"
-		email="admin@keystone4j.com" optlock="1" name="admin" desc="admin user"
-		domainid="default" defaultprojectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
-	<USER id="0f3328f8-a7e7-41b4-830d-be8fdd5186c8" enabled="true"
-		password="demo" email="demo@keystone4j.com" optlock="1" name="demo"
-		desc="demo user" domainid="default" defaultprojectid="79ea2c65-4679-441f-a596-8aec16752a20" />
-	<TRUST id="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" optlock="1"
-		trusteeid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" trustorid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7"
-		projectid="79ea2c65-4679-441f-a596-8aec16752a20" />
-	<TOKEN id="ecb51da13b5ed4e22378a7ac89b46c3c" optlock="1"
-		issueat="2014-03-27 00:00:00" expires="2015-03-27 00:00:00" valid="true"
-		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f"
-		trustid="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" />
-	<TOKEN id="c703579d683812020085f1804b423cac" optlock="1"
-		issueat="2014-03-27 00:00:00" expires="2015-03-27 00:00:00" valid="true"
-		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
-	<TOKEN id="708bb4f9-9d3c-46af-b18c-7033dc022f21" optlock="1"
-		issueat="2014-03-27 00:00:00" expires="2015-03-27 00:00:00" valid="false"
-		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
-	<TOKEN id="708bb4f9-9d3c-46af-b18c-7033dc022f31" optlock="1"
-		issueat="2014-03-20 00:00:00" expires="2014-03-25 00:00:00" valid="false"
-		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
-	<TOKEN_ROLE id="0f3318f8-a7e7-41b4-830d-be8fdd5486c8"
-		tokenid="ecb51da13b5ed4e22378a7ac89b46c3c" optlock="1"
-		roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" />
-	<TRUST_ROLE id="0f3328f8-a7e7-41b4-830d-be8fdd5486c8"
-		trustid="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" optlock="1"
-		roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" />
-	<USER_PROJECT_GRANT id="b5a71165-3e27-4085-b7ed-143630e58895" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb"
-		optlock="1" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
-	<!-- <USER_PROJECT_GRANT_METADATA id="b5a71165-3e27-4085-b7ed-143630e58899"
-		optlock="1" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" grantid="b5a71165-3e27-4085-b7ed-143630e58895" /> -->
-	<GROUP_PROJECT_GRANT id="b5a71165-3e27-4085-b7ed-143630e58896" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb"
-		optlock="1" groupid="708bb4f9-9d3c-46af-b18c-7033dc022ffd" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" />
-	<!-- <GROUP_PROJECT_GRANT_METADATA id="b5a71165-3e27-4085-b7ed-143630e58892"
-		optlock="1" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" grantid="b5a71165-3e27-4085-b7ed-143630e58896" /> -->
-	<GROUP_DOMAIN_GRANT id="b5a71165-3e27-4085-b7ed-143630e58897" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb"
-		optlock="1" groupid="708bb4f9-9d3c-46af-b18c-7033dc022ffd" domainid="default" />
-	<!-- <GROUP_DOMAIN_GRANT_METADATA id="b5a71165-3e27-4085-b7ed-143630e58891"
-		optlock="1" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" grantid="b5a71165-3e27-4085-b7ed-143630e58897" /> -->
-	<USER_DOMAIN_GRANT id="b5a71165-3e27-4085-b7ed-143630e58898" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb"
-		optlock="1" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" domainid="default" />
-	<!-- <USER_DOMAIN_GRANT_METADATA id="b5a71165-3e27-4085-b7ed-143630e58893"
-		optlock="1" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" grantid="b5a71165-3e27-4085-b7ed-143630e58898" /> -->
-	<USER_GROUP_MEMBERSHIP id="0f3328f8-a7e7-41b4-830d-be8fdd5186c8"
-		optlock="1" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c8" groupid="708bb4f9-9d3c-46af-b18c-7033dc022ffd" />
+	<DOMAIN id="default" optlock="1" name="Default" enabled="true"
+		desc="Owns users and tenants (i.e. projects) available on Identity API v2." />
+	<PROJECT id="88e550a135bb4e6da68e79e5b7c4b2f2" optlock="1"
+		name="admin" enabled="true" desc="description" domainid="default" />
+	<SERVICE id="3f813b99431e46c0af877393f6ad91d7" optlock="1"
+		name="keystone" type="identity" desc="Openstack Identity Service"
+		enabled="true" />
+	<REGION id="RegionOne" optlock="1" name="RegionOne" desc="RegionOne" />
+	<ENDPOINT id="9775f17cbc814f8d8097a524680bb33c" optlock="1"
+		name="keystone_endpoint" desc="keystone endpoint" interface="admin"
+		url="http://localhost:35357/v3.0/" serviceid="3f813b99431e46c0af877393f6ad91d7"
+		regionid="RegionOne" enabled="true" />
+	<ROLE id="9fe2ff9ee4384b1894a90878d3e92bab" optlock="1" name="_member_"
+		desc="Default role for project membership" />
+	<ROLE id="d903936e7bbd4183b8cd35816d2cf88b" optlock="1" name="demo"
+		desc="" />
+	<USER id="e7912c2225e84ac5905d8cf0b5040a6d" enabled="true"
+		password="8c4e22bac237346cd9db42727899547aa4af7239f8baa0b748c7acf41510f4714235c62089d0bec6af6ebb60ad617a60334dc58125230023af46297af909276e"
+		optlock="1" name="admin" desc="admin user" domainid="default"
+		defaultprojectid="88e550a135bb4e6da68e79e5b7c4b2f2" />
+	<IDMAPPING publicid="29beb2f1567642eb810b042b6719ea88"
+		entitytype="USER" localid="e7912c2225e84ac5905d8cf0b5040a6d" domainid="default" />
+	<ROLE_ASSIGNMENT id="9fe2ff9ee4384b1894a90878d3e92bac"
+		optlock="1" actorid="e7912c2225e84ac5905d8cf0b5040a6d" targetid="88e550a135bb4e6da68e79e5b7c4b2f2"
+		roleid="9fe2ff9ee4384b1894a90878d3e92bab" type="USER_PROJECT"
+		inherited="false" />
+
+	<USER id="e7912c2225e84ac5905d8cf0b5040a6f" enabled="true"
+		password="8c4e22bac237346cd9db42727899547aa4af7239f8baa0b748c7acf41510f4714235c62089d0bec6af6ebb60ad617a60334dc58125230023af46297af909276e"
+		optlock="1" name="demo" desc="demo user" domainid="default"
+		defaultprojectid="88e550a135bb4e6da68e79e5b7c4b2f2" />
+	<IDMAPPING publicid="29beb2f1567642eb810b042b6719ea89"
+		entitytype="USER" localid="e7912c2225e84ac5905d8cf0b5040a6f" domainid="default" />
+	<GROUP id="88e550a135bb4e6da68e79e5b7c4b2f3" optlock="1" name="demo"
+		desc="description" domainid="default" />
+	<USER_GROUP_MEMBERSHIP id="87e550a135bb4e6da68e79e5b7c4b2f3"
+		optlock="1" userid="e7912c2225e84ac5905d8cf0b5040a6f" groupid="88e550a135bb4e6da68e79e5b7c4b2f3" />
+	<ROLE_ASSIGNMENT id="9fe2ff9ee4384b1894a90878d3e92ba2"
+		optlock="1" actorid="e7912c2225e84ac5905d8cf0b5040a6d" targetid="default"
+		roleid="9fe2ff9ee4384b1894a90878d3e92bab" type="USER_DOMAIN"
+		inherited="false" />
+	<ROLE_ASSIGNMENT id="9fe2ff9ee4384b1894a90878d3e92ba1"
+		optlock="1" actorid="88e550a135bb4e6da68e79e5b7c4b2f3" targetid="default"
+		roleid="9fe2ff9ee4384b1894a90878d3e92bab" type="GROUP_DOMAIN"
+		inherited="false" />
+	<ROLE_ASSIGNMENT id="9fe2ff9ee4384b1894a90878d3e92ba3"
+		optlock="1" actorid="88e550a135bb4e6da68e79e5b7c4b2f3" targetid="88e550a135bb4e6da68e79e5b7c4b2f2"
+		roleid="9fe2ff9ee4384b1894a90878d3e92bab" type="GROUP_PROJECT"
+		inherited="false" />
+	<CREDENTIAL
+		id="e25be49f628f0a18a78db15d2b573d10fd9833f8d72f573b260b1e09b3bec637"
+		optlock="1" blob='{"access":"access","secret":"secret"}'
+		userid="e7912c2225e84ac5905d8cf0b5040a6d" projectid="88e550a135bb4e6da68e79e5b7c4b2f2"
+		type="ec2" />
+
+	<!-- <DOMAIN id="default" optlock="1" name="newdomain" enabled="true" desc="my 
+		domain" /> <DOMAIN id="69ea2c65-4679-441f-a596-8aec16752a0f" optlock="1" 
+		name="newdomain2" enabled="false" desc="my domain2" /> <SERVICE id="79ea2c65-4679-441f-a596-8aec16752a0f" 
+		optlock="1" name="keystone" desc="identity service" type="identity" /> <ENDPOINT 
+		id="79ea2c65-4679-441f-a596-8aec16752a1f" optlock="1" name="keystone_endpoint" 
+		desc="keystone endpoint" interface="public" url="http://localhost:%(public_port)/" 
+		serviceid="79ea2c65-4679-441f-a596-8aec16752a0f" /> <PROJECT id="79ea2c65-4679-441f-a596-8aec16752a2f" 
+		optlock="1" name="admin" enabled="true" desc="admin project" domainid="default" 
+		/> <PROJECT id="79ea2c65-4679-441f-a596-8aec16752a20" optlock="1" name="demo" 
+		enabled="true" desc="demo project" domainid="default" /> <ROLE id="708bb4f9-9d3c-46af-b18c-7033dc022ffb" 
+		optlock="1" name="admin" desc="admin role" /> <ROLE id="708bb4f9-9d3c-46af-b18c-7033dc022fff" 
+		optlock="1" name="demo" desc="demo role" /> <GROUP id="708bb4f9-9d3c-46af-b18c-7033dc022ffc" 
+		optlock="1" name="admin_group" desc="admin group" domainid="default" /> <GROUP 
+		id="708bb4f9-9d3c-46af-b18c-7033dc022ffd" optlock="1" name="demo_group" desc="demo 
+		group" domainid="default" /> <USER id="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" 
+		enabled="true" password="c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec" 
+		email="admin@keystone4j.com" optlock="1" name="admin" desc="admin user" domainid="default" 
+		defaultprojectid="79ea2c65-4679-441f-a596-8aec16752a2f" /> <USER id="0f3328f8-a7e7-41b4-830d-be8fdd5186c8" 
+		enabled="true" password="demo" email="demo@keystone4j.com" optlock="1" name="demo" 
+		desc="demo user" domainid="default" defaultprojectid="79ea2c65-4679-441f-a596-8aec16752a20" 
+		/> <TRUST id="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" optlock="1" trusteeid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" 
+		trustorid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a20" 
+		/> <TOKEN id="ecb51da13b5ed4e22378a7ac89b46c3c" optlock="1" issueat="2014-03-27 
+		00:00:00" expires="2015-03-27 00:00:00" valid="true" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" 
+		projectid="79ea2c65-4679-441f-a596-8aec16752a2f" trustid="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" 
+		/> <TOKEN id="c703579d683812020085f1804b423cac" optlock="1" issueat="2014-03-27 
+		00:00:00" expires="2015-03-27 00:00:00" valid="true" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" 
+		projectid="79ea2c65-4679-441f-a596-8aec16752a2f" /> <TOKEN id="708bb4f9-9d3c-46af-b18c-7033dc022f21" 
+		optlock="1" issueat="2014-03-27 00:00:00" expires="2015-03-27 00:00:00" valid="false" 
+		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" 
+		/> <TOKEN id="708bb4f9-9d3c-46af-b18c-7033dc022f31" optlock="1" issueat="2014-03-20 
+		00:00:00" expires="2014-03-25 00:00:00" valid="false" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" 
+		projectid="79ea2c65-4679-441f-a596-8aec16752a2f" /> <TOKEN_ROLE id="0f3318f8-a7e7-41b4-830d-be8fdd5486c8" 
+		tokenid="ecb51da13b5ed4e22378a7ac89b46c3c" optlock="1" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" 
+		/> <TRUST_ROLE id="0f3328f8-a7e7-41b4-830d-be8fdd5486c8" trustid="0f3328f8-a7e7-41b4-830d-be8fdd5086c8" 
+		optlock="1" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" /> <USER_PROJECT_GRANT 
+		id="b5a71165-3e27-4085-b7ed-143630e58895" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" 
+		optlock="1" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" 
+		/> <GROUP_PROJECT_GRANT id="b5a71165-3e27-4085-b7ed-143630e58896" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" 
+		optlock="1" groupid="708bb4f9-9d3c-46af-b18c-7033dc022ffd" projectid="79ea2c65-4679-441f-a596-8aec16752a2f" 
+		/> <GROUP_DOMAIN_GRANT id="b5a71165-3e27-4085-b7ed-143630e58897" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" 
+		optlock="1" groupid="708bb4f9-9d3c-46af-b18c-7033dc022ffd" domainid="default" 
+		/> <USER_DOMAIN_GRANT id="b5a71165-3e27-4085-b7ed-143630e58898" roleid="708bb4f9-9d3c-46af-b18c-7033dc022ffb" 
+		optlock="1" userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c7" domainid="default" 
+		/> <USER_GROUP_MEMBERSHIP id="0f3328f8-a7e7-41b4-830d-be8fdd5186c8" optlock="1" 
+		userid="0f3328f8-a7e7-41b4-830d-be8fdd5186c8" groupid="708bb4f9-9d3c-46af-b18c-7033dc022ffd" 
+		/> -->
 </dataset>

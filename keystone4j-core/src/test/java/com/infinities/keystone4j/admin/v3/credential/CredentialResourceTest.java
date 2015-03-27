@@ -11,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.client.ClientProtocolException;
-import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
 
@@ -21,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.PatchClient;
 import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.intergrated.v3.AbstractIntegratedTest;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
@@ -33,7 +33,7 @@ import com.infinities.keystone4j.utils.jackson.JacksonFeature;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
-public class CredentialResourceTest extends JerseyTest {
+public class CredentialResourceTest extends AbstractIntegratedTest {
 
 	private Domain defaultDomain;
 	private User user;
@@ -117,6 +117,7 @@ public class CredentialResourceTest extends JerseyTest {
 		credential.setType("ec2");
 		credential.setUserId(user.getId());
 		CredentialWrapper wrapper = new CredentialWrapper(credential);
+		System.err.println(JsonUtils.toJsonWithoutPrettyPrint(wrapper));
 
 		Response response = target("/v3/credentials").register(JacksonFeature.class).register(ObjectMapperResolver.class)
 				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
@@ -130,11 +131,14 @@ public class CredentialResourceTest extends JerseyTest {
 		assertEquals(blobStr, credentialJ.get("blob").asText());
 		assertEquals(credential.getUserId(), credentialJ.get("user_id").asText());
 		assertEquals(credential.getProjectId(), credentialJ.get("project_id").asText());
+		assertNotNull(credentialJ.get("links"));
+		assertNotNull(credentialJ.get("links").get("self").asText());
 	}
 
 	@Test
 	public void testListCredentials() throws JsonProcessingException, IOException {
 		String blobStr = JsonUtils.toJsonWithoutPrettyPrint(blob);
+		System.err.println("blob: " + blobStr);
 		Response response = target("/v3/credentials").register(JacksonFeature.class).register(ObjectMapperResolver.class)
 				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
@@ -149,6 +153,8 @@ public class CredentialResourceTest extends JerseyTest {
 		assertEquals(credential.getProjectId(), credentialJ.get("project_id").asText());
 		assertEquals(credential.getUserId(), credentialJ.get("user_id").asText());
 		assertEquals(blobStr, credentialJ.get("blob").asText());
+		assertNotNull(credentialJ.get("links"));
+		assertNotNull(credentialJ.get("links").get("self").asText());
 	}
 
 	@Test
@@ -159,8 +165,8 @@ public class CredentialResourceTest extends JerseyTest {
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
-		JsonNode node = JsonUtils.convertToJsonNode(ret);
 		System.err.println(ret);
+		JsonNode node = JsonUtils.convertToJsonNode(ret);
 		JsonNode credentialJ = node.get("credential");
 		assertEquals(credential.getId(), credentialJ.get("id").asText());
 		assertEquals(credential.getType(), credentialJ.get("type").asText());

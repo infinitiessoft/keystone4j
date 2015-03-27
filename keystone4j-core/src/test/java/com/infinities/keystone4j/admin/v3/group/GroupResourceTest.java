@@ -14,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.client.ClientProtocolException;
-import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
 
@@ -22,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.PatchClient;
 import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.intergrated.v3.AbstractIntegratedTest;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
@@ -33,7 +33,7 @@ import com.infinities.keystone4j.utils.jackson.JacksonFeature;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
-public class GroupResourceTest extends JerseyTest {
+public class GroupResourceTest extends AbstractIntegratedTest {
 
 	private Domain defaultDomain;
 	private User user, user2;
@@ -80,6 +80,7 @@ public class GroupResourceTest extends JerseyTest {
 		group.setId("88e550a135bb4e6da68e79e5b7c4b2f3");
 		group.setName("demo");
 		group.setDomain(defaultDomain);
+		group.setDescription("description");
 
 		role1 = new Role();
 		role1.setId("9fe2ff9ee4384b1894a90878d3e92bab");
@@ -117,6 +118,8 @@ public class GroupResourceTest extends JerseyTest {
 		assertEquals(group.getName(), groupJ.get("name").asText());
 		assertEquals(group.getDescription(), groupJ.get("description").asText());
 		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
+		assertNotNull(groupJ.get("links"));
+		assertNotNull(groupJ.get("links").get("self").asText());
 	}
 
 	@Test
@@ -133,7 +136,10 @@ public class GroupResourceTest extends JerseyTest {
 		JsonNode groupJ = groupsJ.get(0);
 		assertEquals(group.getId(), groupJ.get("id").asText());
 		assertEquals(group.getName(), groupJ.get("name").asText());
+		assertEquals(group.getDescription(), groupJ.get("description").asText());
 		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
+		assertNotNull(groupJ.get("links"));
+		assertNotNull(groupJ.get("links").get("self").asText());
 	}
 
 	@Test
@@ -143,23 +149,34 @@ public class GroupResourceTest extends JerseyTest {
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
+		System.err.println(node.toString());
 		JsonNode groupJ = node.get("group");
 		assertEquals(group.getId(), groupJ.get("id").asText());
 		assertEquals(group.getName(), groupJ.get("name").asText());
 		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
+		assertEquals(group.getDescription(), groupJ.get("description").asText());
+		assertNotNull(groupJ.get("links"));
+		assertNotNull(groupJ.get("links").get("self").asText());
 	}
 
 	@Test
 	public void testUpdateGroup() throws ClientProtocolException, IOException {
-		group.setDescription("description");
+		group.setDescription("updatedName");
+		group.setDescription("updatedDescription");
 		GroupWrapper wrapper = new GroupWrapper(group);
+		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
+		System.err.println(json);
+
 		PatchClient client = new PatchClient("http://localhost:9998/v3/groups/" + group.getId());
 		JsonNode node = client.connect(wrapper);
+		System.err.println(node.toString());
 		JsonNode groupJ = node.get("group");
 		assertEquals(group.getId(), groupJ.get("id").asText());
 		assertEquals(group.getName(), groupJ.get("name").asText());
 		assertEquals(group.getDescription(), groupJ.get("description").asText());
 		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
+		assertNotNull(groupJ.get("links"));
+		assertNotNull(groupJ.get("links").get("self").asText());
 	}
 
 	@Test

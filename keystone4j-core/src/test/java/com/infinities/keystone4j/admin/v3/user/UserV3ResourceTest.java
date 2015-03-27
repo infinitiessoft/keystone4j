@@ -14,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.http.client.ClientProtocolException;
-import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
 
@@ -24,20 +23,24 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.PatchClient;
 import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.intergrated.v3.AbstractIntegratedTest;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
+import com.infinities.keystone4j.model.identity.CreateUserParam;
 import com.infinities.keystone4j.model.identity.Group;
+import com.infinities.keystone4j.model.identity.UpdateUserParam;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.identity.UserParam;
+import com.infinities.keystone4j.model.identity.wrapper.CreateUserParamWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UpdateUserParamWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.UserParamWrapper;
-import com.infinities.keystone4j.model.identity.wrapper.UserWrapper;
 import com.infinities.keystone4j.model.utils.Views;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
 import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
-public class UserV3ResourceTest extends JerseyTest {
+public class UserV3ResourceTest extends AbstractIntegratedTest {
 
 	private Domain defaultDomain;
 	private User user;
@@ -92,19 +95,19 @@ public class UserV3ResourceTest extends JerseyTest {
 
 	@Test
 	public void testCreateUser() throws JsonGenerationException, JsonMappingException, IOException {
-		User user = new User();
+		CreateUserParam user = new CreateUserParam();
 		user.setDefaultProjectId(project.getId());
 		user.setDescription("description");
 		user.setDomainId("default");
 		user.setName("testing");
 		user.setPassword("password");
-		UserWrapper wrapper = new UserWrapper(user);
+		CreateUserParamWrapper wrapper = new CreateUserParamWrapper(user);
 		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
 		JsonNode node = JsonUtils.convertToJsonNode(json);
 		JsonNode userJ = node.get("user");
 		assertEquals(user.getName(), userJ.get("name").asText());
 		assertEquals(user.getDescription(), userJ.get("description").asText());
-		assertEquals(user.getDomain().getId(), userJ.get("domain_id").asText());
+		assertEquals(user.getDomainId(), userJ.get("domain_id").asText());
 		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
 		assertEquals(user.getPassword(), userJ.get("password").asText());
 		Response response = target("/v3/users").register(JacksonFeature.class).register(ObjectMapperResolver.class)
@@ -118,8 +121,9 @@ public class UserV3ResourceTest extends JerseyTest {
 		assertNotNull(userJ.get("id").asText());
 		assertEquals(user.getName(), userJ.get("name").asText());
 		assertEquals(user.getDescription(), userJ.get("description").asText());
-		assertEquals(user.getDomain().getId(), userJ.get("domain_id").asText());
+		assertEquals(user.getDomainId(), userJ.get("domain_id").asText());
 		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
+		assertEquals(user.getEnabled().booleanValue(), userJ.get("enabled").asBoolean());
 		assertNull(userJ.get("password"));
 
 	}
@@ -135,13 +139,16 @@ public class UserV3ResourceTest extends JerseyTest {
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		System.err.println(node.toString());
 		JsonNode usersJ = node.get("users");
-		assertEquals(1, usersJ.size());
+		assertEquals(2, usersJ.size());
 		JsonNode userJ = usersJ.get(0);
-		assertEquals(user.getId(), userJ.get("id").asText());
-		assertEquals(user.getName(), userJ.get("name").asText());
-		assertEquals(user.getDescription(), userJ.get("description").asText());
-		assertEquals(user.getDomain().getId(), userJ.get("domain_id").asText());
-		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
+		assertNotNull(userJ.get("id").asText());
+		assertNotNull(userJ.get("name").asText());
+		assertNotNull(userJ.get("description").asText());
+		assertNotNull(userJ.get("domain_id").asText());
+		assertNotNull(userJ.get("default_project_id").asText());
+		assertNotNull(userJ.get("enabled").asText());
+		assertNotNull(userJ.get("links"));
+		assertNotNull(userJ.get("links").get("self").asText());
 		assertNull(userJ.get("password"));
 	}
 
@@ -153,29 +160,41 @@ public class UserV3ResourceTest extends JerseyTest {
 		assertEquals(200, response.getStatus());
 
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
+		System.err.println(node.toString());
 		JsonNode userJ = node.get("user");
 		assertEquals(user.getId(), userJ.get("id").asText());
 		assertEquals(user.getName(), userJ.get("name").asText());
 		assertEquals(user.getDescription(), userJ.get("description").asText());
 		assertEquals(user.getDomain().getId(), userJ.get("domain_id").asText());
 		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
+		assertEquals(user.getEnabled().booleanValue(), userJ.get("enabled").asBoolean());
 		assertNull(userJ.get("password"));
 
 	}
 
 	@Test
 	public void testUpdateUser() throws ClientProtocolException, IOException {
+		String userid = this.user.getId();
+		UpdateUserParam user = new UpdateUserParam();
+		user.setDefaultProjectId(project.getId());
 		user.setDescription("description");
-		UserWrapper wrapper = new UserWrapper(user);
-		PatchClient client = new PatchClient("http://localhost:9998/v3/users/" + user.getId());
-		JsonNode node = client.connect(wrapper);
+		user.setName("testing");
+		user.setPassword("password");
+		user.setEnabled(false);
+		UpdateUserParamWrapper wrapper = new UpdateUserParamWrapper(user);
+		String json = JsonUtils.toJson(wrapper, Views.Advance.class);
+		System.err.println(json);
 
+		PatchClient client = new PatchClient("http://localhost:9998/v3/users/" + userid);
+		JsonNode node = client.connect(wrapper);
+		System.err.println(node.toString());
 		JsonNode userJ = node.get("user");
-		assertEquals(user.getId(), userJ.get("id").asText());
+		assertEquals(userid, userJ.get("id").asText());
 		assertEquals(user.getName(), userJ.get("name").asText());
 		assertEquals(user.getDescription(), userJ.get("description").asText());
-		assertEquals(user.getDomain().getId(), userJ.get("domain_id").asText());
+		assertEquals(this.user.getDomainId(), userJ.get("domain_id").asText());
 		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
+		assertEquals(user.getEnabled().booleanValue(), userJ.get("enabled").asBoolean());
 		assertNull(userJ.get("password"));
 	}
 
@@ -236,6 +255,7 @@ public class UserV3ResourceTest extends JerseyTest {
 				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
+		System.err.println(node.toString());
 		JsonNode projectsJ = node.get("projects");
 		assertEquals(1, projectsJ.size());
 		JsonNode projectJ = projectsJ.get(0);

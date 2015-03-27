@@ -72,7 +72,8 @@ public class Project extends BaseEntity implements java.io.Serializable, DomainA
 		setNameUpdate(true);
 	}
 
-	@JsonView(Views.Basic.class)
+	// list projects for user
+	@JsonView(Views.All.class)
 	@Override
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOMAINID", nullable = false)

@@ -43,7 +43,7 @@ public class User extends BaseEntity implements java.io.Serializable, DomainAwar
 	private Boolean enabled = true;
 	// TODO filter
 	private String extra;
-	@XmlElement(name = "default_project")
+	// @XmlElement(name = "default_project")
 	private Project defaultProject;
 	// TODO filter
 	private Set<UserGroupMembership> userGroupMemberships = new HashSet<UserGroupMembership>(0);
@@ -95,8 +95,9 @@ public class User extends BaseEntity implements java.io.Serializable, DomainAwar
 	// emailUpdated = true;
 	// }
 
+	// listUser
 	@Override
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.All.class)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOMAINID", nullable = false)
 	public Domain getDomain() {
@@ -131,7 +132,7 @@ public class User extends BaseEntity implements java.io.Serializable, DomainAwar
 		}
 	}
 
-	@JsonView(Views.Advance.class)
+	@JsonView(Views.All.class)
 	@Column(name = "PASSWORD", length = 128)
 	public String getPassword() {
 		return password;
@@ -142,7 +143,7 @@ public class User extends BaseEntity implements java.io.Serializable, DomainAwar
 		passwordUpdated = true;
 	}
 
-	@JsonView(Views.All.class)
+	@JsonView(Views.Advance.class)
 	@Column(name = "ENABLED", nullable = false)
 	public Boolean getEnabled() {
 		return enabled;
@@ -340,6 +341,7 @@ public class User extends BaseEntity implements java.io.Serializable, DomainAwar
 		this.defaultProjectUpdated = defaultProjectUpdated;
 	}
 
+	// listUser
 	@JsonView(Views.Advance.class)
 	@Transient
 	@XmlElement(name = "default_project_id")

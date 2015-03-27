@@ -2,8 +2,8 @@ package com.infinities.keystone4j.contrib.revoke;
 
 import java.util.Calendar;
 
-import com.infinities.keystone4j.contrib.revoke.model.RevokeEvent;
 import com.infinities.keystone4j.contrib.revoke.model.Model.TokenValues;
+import com.infinities.keystone4j.contrib.revoke.model.RevokeEvent;
 
 public interface RevokeApi {
 

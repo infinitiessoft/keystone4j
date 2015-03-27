@@ -43,13 +43,13 @@ public class ProjectResource {
 	}
 
 	@POST
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public Response createProject(ProjectWrapper projectWrapper) throws Exception {
 		return Response.status(Status.CREATED).entity(projectController.createProject(projectWrapper.getRef())).build();
 	}
 
 	@GET
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public ProjectsWrapper listProject(@QueryParam("domain_id") String domainid, @QueryParam("name") String name,
 			@QueryParam("enabled") Boolean enabled, @DefaultValue("1") @QueryParam("page") int page,
 			@DefaultValue("30") @QueryParam("per_page") int perPage) throws Exception {
@@ -58,14 +58,14 @@ public class ProjectResource {
 
 	@GET
 	@Path("/{projectid}")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public ProjectWrapper getProject(@PathParam("projectid") String projectid) throws Exception {
 		return (ProjectWrapper) projectController.getProject(projectid);
 	}
 
 	@PATCH
 	@Path("/{projectid}")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public ProjectWrapper updateProject(@PathParam("projectid") String projectid, ProjectWrapper projectWrapper)
 			throws Exception {
 		return (ProjectWrapper) projectController.updateProject(projectid, projectWrapper.getRef());
@@ -80,7 +80,7 @@ public class ProjectResource {
 
 	@GET
 	@Path("/{projectid}/users/{userid}/roles")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public RolesWrapper listGrantByUser(@PathParam("projectid") String projectid, @PathParam("userid") String userid,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
 			throws Exception {
@@ -141,7 +141,7 @@ public class ProjectResource {
 
 	@GET
 	@Path("/{projectid}/groups/{groupid}/roles")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.Advance.class)
 	public RolesWrapper listGrantByGroup(@PathParam("projectid") String projectid, @PathParam("groupid") String groupid,
 			@DefaultValue("1") @QueryParam("page") int page, @DefaultValue("30") @QueryParam("per_page") int perPage)
 			throws Exception {

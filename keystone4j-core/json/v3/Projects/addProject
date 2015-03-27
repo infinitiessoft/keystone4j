@@ -1,0 +1,16 @@
+request:
+curl -X "POST" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN" -d '{"project" : {"name" : "testing","description" : "desc of Project","domain_id" : "default","enabled":true}}' http://localhost:5000/v3/projects;
+
+response:
+{
+    "project": {
+        "description": "desc of Project",
+        "links": {
+            "self": "http://192.168.126.2:5000/v3/projects/83ac0a556ce84af6b253435109f6b147"
+        },
+        "enabled": true,
+        "id": "83ac0a556ce84af6b253435109f6b147",
+        "domain_id": "default",
+        "name": "testing"
+    }
+}

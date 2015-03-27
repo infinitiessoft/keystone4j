@@ -1,0 +1,22 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"   http://localhost:5000/v3/groups | python -mjson.tool
+
+response:
+{
+    "groups": [
+        {
+            "description": "description", 
+            "domain_id": "default", 
+            "id": "15de80d06a4c4d35abb3dcb7ea5561a3", 
+            "links": {
+                "self": "http://192.168.126.2:5000/v3/groups/15de80d06a4c4d35abb3dcb7ea5561a3"
+            }, 
+            "name": "demo"
+        }
+    ], 
+    "links": {
+        "next": null, 
+        "previous": null, 
+        "self": "http://192.168.126.2:5000/v3/groups"
+    }
+}
