@@ -40,5 +40,10 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.infinities.keystone4j</groupId>
+			<artifactId>keystone4j-commons</artifactId>
+		</dependency>
 	</dependencies>
 </project>

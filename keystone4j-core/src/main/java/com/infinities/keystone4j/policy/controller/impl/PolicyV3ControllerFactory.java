@@ -30,7 +30,9 @@ public class PolicyV3ControllerFactory extends BaseControllerFactory implements 
 
 	@Override
 	public PolicyV3Controller provide() {
-		return new PolicyV3ControllerImpl(policyApi, tokenProviderApi);
+		PolicyV3ControllerImpl controller = new PolicyV3ControllerImpl(policyApi, tokenProviderApi);
+		controller.setRequest(getRequest());
+		return controller;
 	}
 
 }

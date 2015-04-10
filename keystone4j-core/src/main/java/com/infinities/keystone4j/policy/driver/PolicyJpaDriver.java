@@ -71,6 +71,12 @@ public class PolicyJpaDriver implements PolicyDriver {
 		if (policy.isTypeUpdated()) {
 			oldPolicy.setType(policy.getType());
 		}
+		if (policy.isUserUpdated()) {
+			oldPolicy.setUserId(policy.getUserId());
+		}
+		if (policy.isProjectUpdated()) {
+			oldPolicy.setProjectId(policy.getProjectId());
+		}
 		return policyDao.merge(oldPolicy);
 	}
 

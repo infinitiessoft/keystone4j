@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
+@Deprecated
 public class JsonUtils {
 
 	private static ObjectMapper objectMapper = new ObjectMapper();

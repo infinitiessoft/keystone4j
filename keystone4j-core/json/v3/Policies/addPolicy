@@ -1,0 +1,5 @@
+request:
+curl -X "POST" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN" -d '{"policy":{"blob":{"default":false}, "project_id": "bf2272c4e38e41829e65db98b12de792", "type":"ec2", "user_id":"0edd17204f4b474e802bdd8bc7cb7b2b"}}' http://localhost:5000/v3/policies;
+
+response:
+{"policy": {"user_id": "0edd17204f4b474e802bdd8bc7cb7b2b", "links": {"self": "http://localhost:5000/v3/policies/d673d7962ce141e3bc907cc50b8aad19"}, "blob": {"default": false}, "project_id": "bf2272c4e38e41829e65db98b12de792", "type": "ec2", "id": "d673d7962ce141e3bc907cc50b8aad19"}}
