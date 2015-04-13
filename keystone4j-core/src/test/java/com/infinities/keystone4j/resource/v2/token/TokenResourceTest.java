@@ -30,8 +30,8 @@ import com.infinities.keystone4j.model.token.PasswordCredentials;
 import com.infinities.keystone4j.model.token.wrapper.AuthWrapper;
 import com.infinities.keystone4j.model.trust.wrapper.SignedWrapper;
 import com.infinities.keystone4j.utils.Cms;
+import com.infinities.keystone4j.utils.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
 public class TokenResourceTest extends JerseyTest {

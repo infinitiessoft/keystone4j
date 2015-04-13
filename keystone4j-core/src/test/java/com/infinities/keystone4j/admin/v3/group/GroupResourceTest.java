@@ -29,8 +29,8 @@ import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.identity.wrapper.GroupWrapper;
 import com.infinities.keystone4j.model.utils.Views;
+import com.infinities.keystone4j.utils.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
 public class GroupResourceTest extends AbstractIntegratedTest {

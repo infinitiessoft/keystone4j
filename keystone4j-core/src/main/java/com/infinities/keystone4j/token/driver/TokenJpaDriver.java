@@ -23,7 +23,7 @@ import com.infinities.keystone4j.model.token.wrapper.TokenDataWrapper;
 import com.infinities.keystone4j.token.TokenDriver;
 import com.infinities.keystone4j.token.provider.api.command.AbstractTokenProviderCommand.Data;
 import com.infinities.keystone4j.token.provider.driver.BaseProvider;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.JsonUtils;
 
 public class TokenJpaDriver implements TokenDriver {
 

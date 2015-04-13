@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.JsonUtils;
 
 public class ApiV3ResourceTest extends JerseyTest {
 

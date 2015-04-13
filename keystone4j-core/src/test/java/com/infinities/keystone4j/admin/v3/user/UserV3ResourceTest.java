@@ -36,8 +36,8 @@ import com.infinities.keystone4j.model.identity.wrapper.CreateUserParamWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.UpdateUserParamWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.UserParamWrapper;
 import com.infinities.keystone4j.model.utils.Views;
+import com.infinities.keystone4j.utils.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
 public class UserV3ResourceTest extends AbstractIntegratedTest {

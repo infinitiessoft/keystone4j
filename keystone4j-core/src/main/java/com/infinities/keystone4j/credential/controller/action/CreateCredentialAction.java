@@ -22,7 +22,7 @@ import com.infinities.keystone4j.model.credential.Credential;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.utils.Cms;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.JsonUtils;
 
 public class CreateCredentialAction extends AbstractCredentialAction implements ProtectedAction<Credential> {
 

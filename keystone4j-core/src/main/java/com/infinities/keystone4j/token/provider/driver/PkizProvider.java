@@ -11,7 +11,7 @@ import com.infinities.keystone4j.identity.IdentityApi;
 import com.infinities.keystone4j.model.utils.Views;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.utils.Cms;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.JsonUtils;
 
 public class PkizProvider extends BaseProvider {
 

@@ -25,7 +25,7 @@ import com.infinities.keystone4j.policy.check.RoleCheck;
 import com.infinities.keystone4j.policy.check.RuleCheck;
 import com.infinities.keystone4j.policy.check.StringCheck;
 import com.infinities.keystone4j.policy.check.TrueCheck;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.JsonUtils;
 
 public class Rules implements Map<String, BaseCheck> {
 

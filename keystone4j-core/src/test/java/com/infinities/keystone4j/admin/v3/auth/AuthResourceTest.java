@@ -28,8 +28,8 @@ import com.infinities.keystone4j.model.auth.Password;
 import com.infinities.keystone4j.model.auth.Scope;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.token.Token;
+import com.infinities.keystone4j.utils.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
 public class AuthResourceTest extends JerseyTest {

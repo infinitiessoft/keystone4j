@@ -18,7 +18,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.model.KeystoneToken;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.JsonUtils;
 
 //keystone.common.controller.protected 20141203
 //take care of callback of grant 
