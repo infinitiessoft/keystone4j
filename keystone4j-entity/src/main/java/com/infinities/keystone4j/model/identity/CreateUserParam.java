@@ -2,70 +2,75 @@ package com.infinities.keystone4j.model.identity;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class CreateUserParam implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6436954503286770674L;
+	private final User user = new User();
+
+
 	@XmlElement(name = "domain_id")
-	private String domainId; // keystone.identity.backends.sql.User 20150114
-	@NotNull(message = "name field is required and cannot be empty")
-	private String name;
-	private String password;
-	private Boolean enabled = true;
-	@XmlElement(name = "default_project_id")
-	private String defaultProjectId;
-	private String description;
-
-
 	public String getDomainId() {
-		return domainId;
+		return user.getDomainId();
 	}
 
 	public void setDomainId(String domainId) {
-		this.domainId = domainId;
+		this.user.setDomainId(domainId);
 	}
 
+	@NotNull(message = "name field is required and cannot be empty")
 	public String getName() {
-		return name;
+		return user.getName();
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.user.setName(name);
 	}
 
 	public String getPassword() {
-		return password;
+		return user.getPassword();
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		user.setPassword(password);
 	}
 
 	public Boolean getEnabled() {
-		return enabled;
+		return user.getEnabled();
 	}
 
 	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
+		user.setEnabled(enabled);
 	}
 
+	@XmlElement(name = "default_project_id")
 	public String getDefaultProjectId() {
-		return defaultProjectId;
+		return user.getDefaultProjectId();
 	}
 
 	public void setDefaultProjectId(String defaultProjectId) {
-		this.defaultProjectId = defaultProjectId;
+		user.setDefaultProjectId(defaultProjectId);
 	}
 
 	public String getDescription() {
-		return description;
+		return user.getDescription();
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		this.user.setDescription(description);
+	}
+
+	@XmlTransient
+	public User getUser() {
+		return user;
 	}
 
 }

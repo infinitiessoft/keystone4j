@@ -18,6 +18,8 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.DomainAwared;
@@ -25,6 +27,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.utils.Views;
 
+@JsonInclude(Include.NON_NULL)
 @Entity
 @Table(name = "PROJECT", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
 		"DOMAINID", "NAME" }) })
@@ -84,7 +87,6 @@ public class Project extends BaseEntity implements java.io.Serializable, DomainA
 	@Override
 	public void setDomain(Domain domain) {
 		this.domain = domain;
-		setDomainUpdated(true);
 	}
 
 	@Override
@@ -95,6 +97,7 @@ public class Project extends BaseEntity implements java.io.Serializable, DomainA
 			Domain domain = new Domain();
 			domain.setId(domainid);
 			setDomain(domain);
+			setDomainUpdated(true);
 		}
 	}
 
