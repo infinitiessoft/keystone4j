@@ -1,5 +1,9 @@
 package com.infinities.keystone4j.assignment.controller.impl;
 
+import java.util.Map.Entry;
+
+import jersey.repackaged.com.google.common.collect.Maps;
+
 import com.infinities.keystone4j.FilterProtectedAction;
 import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.assignment.AssignmentApi;
@@ -52,8 +56,9 @@ public class ProjectV3ControllerImpl extends BaseController implements ProjectV3
 
 	@Override
 	public CollectionWrapper<Project> listUserProjects(String userid) throws Exception {
+		Entry<String, String> entrys = Maps.immutableEntry("user_id", userid);
 		FilterProtectedAction<Project> command = new FilterProtectedDecorator<Project>(new ListUserProjectsAction(
-				assignmentApi, tokenProviderApi, policyApi, userid), tokenProviderApi, policyApi);
+				assignmentApi, tokenProviderApi, policyApi, userid), tokenProviderApi, policyApi, entrys);
 		CollectionWrapper<Project> ret = command.execute(getRequest(), "enabled", "name");
 		return ret;
 	}

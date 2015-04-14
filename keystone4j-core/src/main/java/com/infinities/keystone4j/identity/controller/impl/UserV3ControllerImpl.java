@@ -1,5 +1,8 @@
 package com.infinities.keystone4j.identity.controller.impl;
 
+import java.util.Map.Entry;
+
+import com.google.common.collect.Maps;
 import com.infinities.keystone4j.FilterProtectedAction;
 import com.infinities.keystone4j.ProtectedAction;
 import com.infinities.keystone4j.common.BaseController;
@@ -84,8 +87,9 @@ public class UserV3ControllerImpl extends BaseController implements UserV3Contro
 
 	@Override
 	public CollectionWrapper<User> listUsersInGroup(String groupid) throws Exception {
+		Entry<String, String> entrys = Maps.immutableEntry("group_id", groupid);
 		FilterProtectedAction<User> command = new FilterProtectedDecorator<User>(new ListUsersInGroupAction(identityApi,
-				tokenProviderApi, policyApi, groupid), tokenProviderApi, policyApi);
+				tokenProviderApi, policyApi, groupid), tokenProviderApi, policyApi, entrys);
 		CollectionWrapper<User> ret = command.execute(getRequest(), "domain_id", "enabled", "name");
 		return ret;
 	}

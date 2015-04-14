@@ -23,6 +23,7 @@ import com.infinities.keystone4j.identity.controller.UserV3Controller;
 import com.infinities.keystone4j.model.assignment.wrapper.ProjectsWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.CreateUserParamWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.GroupsWrapper;
+import com.infinities.keystone4j.model.identity.wrapper.UpdateUserParamWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.UserParamWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.UserWrapper;
 import com.infinities.keystone4j.model.identity.wrapper.UsersWrapper;
@@ -73,7 +74,7 @@ public class UserV3Resource {
 	@PATCH
 	@Path("/{userid}")
 	@JsonView(Views.Advance.class)
-	public UserWrapper updateUser(@PathParam("userid") String userid, CreateUserParamWrapper userWrapper) throws Exception {
+	public UserWrapper updateUser(@PathParam("userid") String userid, UpdateUserParamWrapper userWrapper) throws Exception {
 		return (UserWrapper) userController.updateUser(userid, userWrapper.getRef());
 	}
 
