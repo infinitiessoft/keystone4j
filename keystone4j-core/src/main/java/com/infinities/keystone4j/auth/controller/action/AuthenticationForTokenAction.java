@@ -138,6 +138,7 @@ public class AuthenticationForTokenAction extends AbstractAuthAction implements 
 			return;
 		}
 		String defaultProjectid = defaultProject.getId();
+		logger.debug("user default project: {}", defaultProjectid);
 
 		try {
 			Project defaultProjectRef = assignmentApi.getProject(defaultProjectid);

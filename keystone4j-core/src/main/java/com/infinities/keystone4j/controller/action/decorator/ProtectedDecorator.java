@@ -90,6 +90,7 @@ public class ProtectedDecorator<T> extends ControllerAction implements Protected
 
 				policyDict.put("target", target);
 				Map<String, Object> memberNameMap = new HashMap<String, Object>();
+				logger.debug("member name: {}, user_id: {}", new Object[] { this.getMemberName(), tokenRef.getUserId() });
 				target.put(this.getMemberName(), memberNameMap);
 				memberNameMap.put("user_id", tokenRef.getUserId());
 

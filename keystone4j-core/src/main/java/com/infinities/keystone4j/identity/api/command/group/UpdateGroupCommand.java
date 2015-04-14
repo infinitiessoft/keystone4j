@@ -28,7 +28,7 @@ public class UpdateGroupCommand extends AbstractIdentityCommand implements Notif
 
 	@Override
 	public Group execute() throws Exception {
-		if (Strings.isNullOrEmpty(groupRef.getDomainid())) {
+		if (!Strings.isNullOrEmpty(groupRef.getDomainid())) {
 			this.getAssignmentApi().getDomain(groupRef.getDomainid());
 		}
 

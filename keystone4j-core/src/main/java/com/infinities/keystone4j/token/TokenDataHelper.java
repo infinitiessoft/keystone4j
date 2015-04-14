@@ -90,8 +90,10 @@ public class TokenDataHelper {
 		}
 
 		List<Role> roles = Lists.newArrayList();
+		logger.debug("tokenDomainid: {}, tokenProjectid: {}", new Object[] { tokenDomainid, tokenProjectid });
 		if (!Strings.isNullOrEmpty(tokenDomainid) || !Strings.isNullOrEmpty(tokenProjectid)) {
 			roles = getRolesForUser(tokenUserid, tokenDomainid, tokenProjectid);
+			logger.debug("get Roles for user: {}", roles);
 			List<Role> filteredRoles = Lists.newArrayList();
 			if (enabled && trust != null) {
 				for (Role trustRole : trust.getRoles()) {
@@ -124,7 +126,6 @@ public class TokenDataHelper {
 					throw Exceptions.UnauthorizedException.getInstance(msg);
 				}
 			}
-
 			tokenData.setRoles(filteredRoles);
 		}
 
@@ -235,9 +236,11 @@ public class TokenDataHelper {
 			tokenData.setBind(bind);
 		}
 
+		logger.debug("userid: {}, domainid: {}, projectid: {}", new Object[] { userid, domainid, projectid });
 		populateScope(tokenData, domainid, projectid);
 		populateUser(tokenData, userid, trust);
 		populateRoles(tokenData, userid, domainid, projectid, trust);
+		logger.debug("roles: {}", tokenData.getRoles());
 		populateAuditInfo(tokenData, auditInfo);
 
 		if (includeCatalog) {
