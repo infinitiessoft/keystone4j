@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -34,6 +35,7 @@ public class JsonUtils {
 		// if using BOTH JAXB annotations AND Jackson annotations:
 		AnnotationIntrospector secondary = new JacksonAnnotationIntrospector();
 		objectMapper = objectMapper.setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
+		objectMapper = objectMapper.setSerializationInclusion(Include.NON_NULL);
 		// make deserializer use JAXB annotations (only)
 		objectMapper = objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		// objectMapper =
