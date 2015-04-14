@@ -47,7 +47,8 @@ public class FilterProtectedDecorator<T> extends ControllerAction implements Fil
 		if (context.isAdmin()) {
 			logger.warn("RBAC: Bypassing authorization");
 		} else {
-			String action = String.format("identity:{}", command.getName());
+			String action = String.format("identity:%s", command.getName());
+			logger.debug("action: {}", action);
 			Authorization.AuthContext creds = buildPolicyCheckCredentials(action, context, request);
 
 			Map<String, Object> target = new HashMap<String, Object>();
@@ -58,7 +59,7 @@ public class FilterProtectedDecorator<T> extends ControllerAction implements Fil
 						target.put(item, request.getUriInfo().getQueryParameters().getFirst(item));
 					}
 				}
-				logger.debug("RBAC: Adding query filters params (%s)", target);
+				logger.debug("RBAC: Adding query filters params ({})", target);
 			}
 
 			if (entrys != null) {

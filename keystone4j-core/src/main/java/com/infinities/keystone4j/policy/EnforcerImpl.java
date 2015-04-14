@@ -110,6 +110,7 @@ public class EnforcerImpl implements Enforcer {
 			throws Exception {
 		loadRules(false);
 		boolean result = false;
+		logger.debug("rule: {}", rule);
 		if (rule instanceof BaseCheck) {
 			result = ((BaseCheck) rule).check(target, creds, this);
 		} else if (rules == null) {
