@@ -18,7 +18,7 @@ import com.infinities.keystone4j.model.MemberWrapper;
 import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.model.KeystoneToken;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.JsonUtils;
 
 //keystone.common.controller.protected 20141203
 //take care of callback of grant 
@@ -90,6 +90,7 @@ public class ProtectedDecorator<T> extends ControllerAction implements Protected
 
 				policyDict.put("target", target);
 				Map<String, Object> memberNameMap = new HashMap<String, Object>();
+				logger.debug("member name: {}, user_id: {}", new Object[] { this.getMemberName(), tokenRef.getUserId() });
 				target.put(this.getMemberName(), memberNameMap);
 				memberNameMap.put("user_id", tokenRef.getUserId());
 

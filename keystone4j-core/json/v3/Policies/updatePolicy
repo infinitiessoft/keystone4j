@@ -1,0 +1,18 @@
+request:
+curl -X "PATCH" -i -H "Content-Type: application/json" -H "X-Auth-Token: $OS_TOKEN" -d '{"policy":{"blob":{"default":true},"type":"newtype","user_id":"efff19d883d24a05a7aa0b4941c4a4c2","project_id":"f129d9b4f05448878e3bc666c6cb838a"}}' http://localhost:5000/v3/policies/d673d7962ce141e3bc907cc50b8aad19
+
+response:
+{
+   "policy":{
+      "user_id":"efff19d883d24a05a7aa0b4941c4a4c2",
+      "links":{
+         "self":"http://localhost:5000/v3/policies/d673d7962ce141e3bc907cc50b8aad19"
+      },
+      "blob":{
+         "default":true
+      },
+      "project_id":"f129d9b4f05448878e3bc666c6cb838a",
+      "type":"newtype",
+      "id":"d673d7962ce141e3bc907cc50b8aad19"
+   }
+}

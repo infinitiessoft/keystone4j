@@ -27,7 +27,7 @@ public class ConfigTest {
 	@Test
 	public void testGetOpt_subpattern() {
 		Option endpoint = Config.Instance.getOpt(Config.Type.DEFAULT, "public_endpoint");
-		assertEquals("http://localhost:5000/", endpoint.asText());
+		assertEquals("http://localhost:9999/", endpoint.asText());
 	}
 
 }

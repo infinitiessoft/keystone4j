@@ -23,6 +23,7 @@ public class RoleCheck extends Check {
 	@Override
 	public boolean check(Map<String, Object> target, Context creds, Enforcer enforcer) {
 		Set<String> roles = Sets.newHashSet();
+		logger.debug("creds roles: {}", creds.getRoles());
 		for (String role : creds.getRoles()) {
 			roles.add(role.toLowerCase());
 		}

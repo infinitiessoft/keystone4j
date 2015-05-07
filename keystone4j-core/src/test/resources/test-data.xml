@@ -26,7 +26,6 @@
 		optlock="1" actorid="e7912c2225e84ac5905d8cf0b5040a6d" targetid="88e550a135bb4e6da68e79e5b7c4b2f2"
 		roleid="9fe2ff9ee4384b1894a90878d3e92bab" type="USER_PROJECT"
 		inherited="false" />
-
 	<USER id="e7912c2225e84ac5905d8cf0b5040a6f" enabled="true"
 		password="8c4e22bac237346cd9db42727899547aa4af7239f8baa0b748c7acf41510f4714235c62089d0bec6af6ebb60ad617a60334dc58125230023af46297af909276e"
 		optlock="1" name="demo" desc="demo user" domainid="default"
@@ -51,9 +50,14 @@
 		inherited="false" />
 	<CREDENTIAL
 		id="e25be49f628f0a18a78db15d2b573d10fd9833f8d72f573b260b1e09b3bec637"
-		optlock="1" blob='{"access":"access","secret":"secret"}'
-		userid="e7912c2225e84ac5905d8cf0b5040a6d" projectid="88e550a135bb4e6da68e79e5b7c4b2f2"
-		type="ec2" />
+		optlock="1" blob='{"access":"access","secret":"secret"}' userid="e7912c2225e84ac5905d8cf0b5040a6d"
+		projectid="88e550a135bb4e6da68e79e5b7c4b2f2" type="ec2" />
+	<POLICY
+		id="e25be49f628f0a18a78db15d2b574d10fd9833f8d72f573b260b1e09b3bec637"
+		optlock="1" userid="e7912c2225e84ac5905d8cf0b5040a6d" projectid="88e550a135bb4e6da68e79e5b7c4b2f2"
+		type="ec2" blob='{"default":false}'/>
+	<!-- <Policy_blob blob_KEY="default" blob="false" Policy_ID="e25be49f628f0a18a78db15d2b574d10fd9833f8d72f573b260b1e09b3bec637" 
+		/> -->
 
 	<!-- <DOMAIN id="default" optlock="1" name="newdomain" enabled="true" desc="my 
 		domain" /> <DOMAIN id="69ea2c65-4679-441f-a596-8aec16752a0f" optlock="1" 

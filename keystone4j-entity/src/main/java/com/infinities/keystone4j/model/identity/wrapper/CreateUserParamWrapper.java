@@ -29,14 +29,7 @@ public class CreateUserParamWrapper {
 
 	@XmlTransient
 	public User getRef() {
-		User ref = new User();
-		ref.setDefaultProjectId(user.getDefaultProjectId());
-		ref.setDescription(user.getDescription());
-		ref.setDomainId(user.getDomainId());
-		ref.setEnabled(user.getEnabled());
-		ref.setName(user.getName());
-		ref.setPassword(user.getPassword());
-		return ref;
+		return user.getUser();
 	}
 
 }

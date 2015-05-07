@@ -10,12 +10,14 @@ import com.infinities.keystone4j.token.provider.TokenProviderApi;
 
 public class UpdatePolicyAction extends AbstractPolicyAction implements ProtectedAction<Policy> {
 
-	private String policyid;
-	private Policy policy;
+	private final String policyid;
+	private final Policy policy;
 
 
 	public UpdatePolicyAction(PolicyApi policyApi, TokenProviderApi tokenProviderApi, String policyid, Policy policy) {
 		super(policyApi, tokenProviderApi);
+		this.policyid = policyid;
+		this.policy = policy;
 	}
 
 	@Override

@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.common.Config;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.JsonUtils;
 
 public class PatchClient {
 

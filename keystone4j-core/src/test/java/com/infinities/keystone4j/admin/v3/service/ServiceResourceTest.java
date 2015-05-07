@@ -23,8 +23,8 @@ import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.intergrated.v3.AbstractIntegratedTest;
 import com.infinities.keystone4j.model.catalog.Service;
 import com.infinities.keystone4j.model.catalog.wrapper.ServiceWrapper;
+import com.infinities.keystone4j.utils.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
 public class ServiceResourceTest extends AbstractIntegratedTest {

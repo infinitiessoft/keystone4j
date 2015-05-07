@@ -2,6 +2,7 @@ package com.infinities.keystone4j.controller.action.decorator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ws.rs.container.ContainerRequestContext;
 
@@ -22,12 +23,19 @@ public class FilterProtectedDecorator<T> extends ControllerAction implements Fil
 	private final static Logger logger = LoggerFactory.getLogger(FilterProtectedDecorator.class);
 	private final PolicyApi policyApi;
 	private final FilterProtectedAction<T> command;
+	private final Entry<String, String> entrys;
 
 
 	public FilterProtectedDecorator(FilterProtectedAction<T> command, TokenProviderApi tokenProviderApi, PolicyApi policyApi) {
+		this(command, tokenProviderApi, policyApi, null);
+	}
+
+	public FilterProtectedDecorator(FilterProtectedAction<T> command, TokenProviderApi tokenProviderApi,
+			PolicyApi policyApi, Entry<String, String> entrys) {
 		super(tokenProviderApi, policyApi);
 		this.command = command;
 		this.policyApi = policyApi;
+		this.entrys = entrys;
 	}
 
 	@Override
@@ -39,7 +47,8 @@ public class FilterProtectedDecorator<T> extends ControllerAction implements Fil
 		if (context.isAdmin()) {
 			logger.warn("RBAC: Bypassing authorization");
 		} else {
-			String action = String.format("identity:{}", command.getName());
+			String action = String.format("identity:%s", command.getName());
+			logger.debug("action: {}", action);
 			Authorization.AuthContext creds = buildPolicyCheckCredentials(action, context, request);
 
 			Map<String, Object> target = new HashMap<String, Object>();
@@ -50,10 +59,12 @@ public class FilterProtectedDecorator<T> extends ControllerAction implements Fil
 						target.put(item, request.getUriInfo().getQueryParameters().getFirst(item));
 					}
 				}
-				logger.debug("RBAC: Adding query filters params (%s)", target);
+				logger.debug("RBAC: Adding query filters params ({})", target);
 			}
 
-			// TODO ignore formal url parameters
+			if (entrys != null) {
+				target.put(entrys.getKey(), entrys.getValue());
+			}
 
 			policyApi.enforce(creds, action, target);
 

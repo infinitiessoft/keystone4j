@@ -145,14 +145,5 @@ public class KeystoneApplication extends ResourceConfig {
 		this.register(AdminResource.class);
 		// this.register(ObjectMapperResolver.class);
 		this.register(JacksonFeature.class);
-
-		// this.register(EntityManagerInterceptor.class);
-		// this.register(AuthContextMiddleware.class);
-		// this.register(TokenAuthMiddleware.class);
-		// this.register(AdminTokenAuthMiddleware.class);
-		// this.register(RequestBodySizeLimiter.class);
-		// this.register(ObjectMapperResolver.class);
-		// this.register(JacksonFeature.class);
-		// this.register(AdminResource.class);
 	}
 }

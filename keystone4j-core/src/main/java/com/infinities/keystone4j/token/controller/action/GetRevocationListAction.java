@@ -21,7 +21,7 @@ import com.infinities.keystone4j.policy.PolicyApi;
 import com.infinities.keystone4j.token.provider.TokenProviderApi;
 import com.infinities.keystone4j.trust.TrustApi;
 import com.infinities.keystone4j.utils.Cms;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
+import com.infinities.keystone4j.utils.JsonUtils;
 
 public class GetRevocationListAction extends AbstractTokenAction implements ProtectedAction<String> {
 

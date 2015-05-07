@@ -40,7 +40,7 @@ public class AuthResource {
 
 	@POST
 	@Path("/tokens")
-	@JsonView(Views.Basic.class)
+	@JsonView(Views.AuthenticateForToken.class)
 	public Response authenticateForToken(AuthV3Wrapper authWrapper) throws Exception {
 		return authController.authenticateForToken(authWrapper.getAuth());
 	}

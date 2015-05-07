@@ -188,6 +188,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 
 		if (tokenData == null || !(tokenData instanceof TokenDataWrapper) || tokenData.getToken() == null) {
 			String projectid = null;
+			logger.debug("tokenRef: {}", tokenRef);
 			Project projectRef = tokenRef.getTenant();
 			if (projectRef != null) {
 				projectid = projectRef.getId();
@@ -205,6 +206,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 			tokenData = v3TokenDataHelper.getTokenData(tokenRef.getUser().getId(), methodNames, extra, null, projectid,
 					tokenRef.getExpires(), null, null, null, true, issuedAt, audit);
 		}
+		logger.debug("tokenData roles: {}", tokenData.getToken().getRoles());
 		return tokenData;
 	}
 

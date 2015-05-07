@@ -7,24 +7,24 @@ import java.io.IOException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.common.Config;
+import com.infinities.keystone4j.intergrated.v3.AbstractIntegratedTest;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.identity.Group;
 import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.identity.UserGroupMembership;
+import com.infinities.keystone4j.utils.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.JacksonFeature;
-import com.infinities.keystone4j.utils.jackson.JsonUtils;
 import com.infinities.keystone4j.utils.jackson.ObjectMapperResolver;
 
-public class RoleAssignmentResourceTest extends JerseyTest {
+public class RoleAssignmentResourceTest extends AbstractIntegratedTest {
 
 	private Domain defaultDomain;
 	private User user, user2;

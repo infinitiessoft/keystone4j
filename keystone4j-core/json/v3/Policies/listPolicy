@@ -1,0 +1,25 @@
+request:
+curl -s   -H "X-Auth-Token: $OS_TOKEN"  http://localhost:5000/v3/policies | python -mjson.tool
+
+response:
+{
+    "links": {
+        "next": null, 
+        "previous": null, 
+        "self": "http://localhost:5000/v3/policies"
+    }, 
+    "policies": [
+        {
+            "blob": {
+                "default": false
+            }, 
+            "id": "d673d7962ce141e3bc907cc50b8aad19", 
+            "links": {
+                "self": "http://localhost:5000/v3/policies/d673d7962ce141e3bc907cc50b8aad19"
+            }, 
+            "project_id": "bf2272c4e38e41829e65db98b12de792", 
+            "type": "ec2", 
+            "user_id": "0edd17204f4b474e802bdd8bc7cb7b2b"
+        }
+    ]
+}
