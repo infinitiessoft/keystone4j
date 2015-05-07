@@ -1,11 +1,11 @@
 **Keystone4J - Keystone for java**
 
-Keystone4J is a pure Java implementation of openstack keystone component.
+Keystone4J is a pure Java implementation of openstack keystone component, it is built base on [OpenStack Keystone](https://github.com/openstack/keystone).
 Keystone4J allow you to construct a openstack identity server and manages tokens, the catalog of services, endpoints, domains, projects, users, etc., via [Openstack Identity V3 REST API](http://developer.openstack.org/api-ref-identity-v3.html), and you can integrate its functionality into your own Java programs.
 
 **Installation guide**
 
-Binary downloads of the Keystone4J are available from [https://bitbucket.org/cosmomed/keystone4j/downloads](https://bitbucket.org/cosmomed/keystone4j/downloads). Unpack the binary distribution so that it resides in its own directory (conventionally named "keystone4j-[version]"). Keystone4J can be run as a service using the **keystone4j** script located under bin/ location. The script accepts a single parameter with the following values:
+Binary downloads of the Keystone4J are available from "Dowloads" page. Unpack the binary distribution so that it resides in its own directory (conventionally named "keystone4j-[version]"). Keystone4J can be run as a service using the **keystone4j** script located under bin/ location. The script accepts a single parameter with the following values:
 
 * **console:** Run Keystone4J in the foreground.
 
