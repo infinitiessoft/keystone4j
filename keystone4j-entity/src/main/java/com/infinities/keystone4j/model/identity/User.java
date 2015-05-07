@@ -97,7 +97,7 @@ public class User extends BaseEntity implements java.io.Serializable, DomainAwar
 
 	// listUser
 	@Override
-	@JsonView(Views.All.class)
+	@JsonView(Views.AuthenticateForToken.class)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DOMAINID", nullable = false)
 	public Domain getDomain() {

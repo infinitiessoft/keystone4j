@@ -65,6 +65,8 @@ public class AuthResourceTest extends JerseyTest {
 	@Test
 	public void testAuthenticateForTokenAndCheckAndValidateAndRevokeAndCheck() throws JsonGenerationException,
 			JsonMappingException, IOException {
+		domain = new Domain();
+		domain.setId("default");
 		AuthV3 auth = new AuthV3();
 		auth.setIdentity(identity);
 		AuthV3Wrapper wrapper = new AuthV3Wrapper(auth);

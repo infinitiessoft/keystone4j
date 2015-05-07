@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.model.utils;
 
+
 public class Views {
 
 	public static class Basic {
@@ -8,10 +9,10 @@ public class Views {
 	public static class Advance extends Basic {
 	}
 
-	public static class All extends Advance {
+	public static class All extends AuthenticateForToken {
 	}
 
-	public static class AuthenticateForToken extends Basic {
+	public static class AuthenticateForToken extends Advance {
 
 	}
 }
