@@ -20,23 +20,6 @@ Binary downloads of the Keystone4J are available from [https://bitbucket.org/cos
 
 Keystone4J uses [Java Service Wrapper](http://wrapper.tanukisoftware.com/doc/english/download.jsp) which is a small native wrapper around the Java virtual machine which also monitors it. Note, passing JVM level configuration (such as -X parameters) should be set within the conf/wrapper.conf file.The wrapper.java.maxmemory environment variable controls the maximum memory allocation for the JVM (set in megabytes). It defaults to 512.
 
-**Compiling and Running**
-
-This project uses [Maven](http://maven.apache.org) for building. Clone the repo, then compile the project from the command line with:
-
-```
-#!Maven
-
-mvn compile
-```
-You can run the code from the command line with:
-
-```
-#!Maven
-
-mvn exec:java -Dexec.mainClass="com.infinities.keystone4j.Main"
-```
-
 **Using REST API**
 
 Keystone4J listens on port 9999, admin_token should be set in conf/keystone.conf. It defaults is ADMIN2.
