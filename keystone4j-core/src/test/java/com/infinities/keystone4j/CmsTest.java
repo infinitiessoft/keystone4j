@@ -1,6 +1,7 @@
 package com.infinities.keystone4j;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,9 +14,11 @@ import com.infinities.keystone4j.utils.Cms;
 
 public class CmsTest {
 
-	private final String text = "{" + "\"auth\":{" + "\"identity\":{" + "\"methods\":[" + "\"password\"" + "],"
-			+ "\"password\":{" + "\"user\":{" + "\"id\":\"0f3328f8-a7e7-41b4-830d-be8fdd5186c7\","
-			+ "\"password\":\"admin\"" + "}" + "}" + "}" + "}" + "}";
+	// private final String text = "{" + "\"auth\":{" + "\"identity\":{" +
+	// "\"methods\":[" + "\"password\"" + "],"
+	// + "\"password\":{" + "\"user\":{" +
+	// "\"id\":\"0f3328f8-a7e7-41b4-830d-be8fdd5186c7\","
+	// + "\"password\":\"admin\"" + "}" + "}" + "}" + "}" + "}";
 	private final static Logger logger = LoggerFactory.getLogger(CmsTest.class);
 	private String certFile;
 	private String keyFile;
@@ -35,25 +38,28 @@ public class CmsTest {
 
 	@Test
 	public void testSignToken() throws Exception {
-		String output = Cms.Instance.signToken(text, certFile, keyFile);
-		logger.debug("sign: {}", output);
+		String t = "1234567890";
+		logger.debug("text size:{}", t.length());
+		String output = Cms.Instance.signToken(t, certFile, keyFile);
+		logger.debug("byte size: {}, sign: {}", new Object[] { output.getBytes().length, output });
 		String input = Cms.Instance.verifySignature(output.getBytes(), certFile, caFile);
 		logger.debug("decrypt: {}", input);
-		assertEquals(text, input);
+		assertEquals(t, input);
 	}
 
-	// @Test
+	@Test
 	public void testSignAndHashToken() throws Exception {
-		String output = Cms.Instance.signToken(text, certFile, keyFile);
+		String output = Cms.Instance.signToken("12345", certFile, keyFile);
+		assertTrue(output.startsWith("MII"));
 		String hashed = Cms.Instance.hashToken(output, null);
 		logger.debug("hash: {}", hashed);
 	}
 
 	@Test
 	public void testHashToken() throws Exception {
-		String output = "gdzNq6+16+4sjNMHnVWKWEirKNIw7L4wDuzsDPcwIRjaRTq+vgBd9NgM1gdeg3KPaTdIJrNs2vHq/zLZCQzt09w6qD7x/ywSMZpjyW3R3ml5m4bOtO42SXvfyimY6qUNJ/x9qE0AC4eFfAdWyTesXruh9geuyBVNh3JPjIN2OGe2Hs3kKviIIyQse7b2nSYPEvyWhcQls6dWged8YEG8/G92U7GWDMiMBkbyo7/ACyLGMILJXo3uBUoeudS62iKFYKNWixfaUcCP9jNPQvWnLLDV++rQ1cmouoLroqoKVb0izKfJkNiZ5MEhVqkR00WKAQWONC/ssx19goE6F+Biv2i47T3ykCckWOhKdLsGe+akfPApvsgqqCPP+AtvfluFQ0kElED58bAzbiBeoJ1Rb84tzxyAiPgiAVd760RBCJYkRpN4gqjSH8YyKlWaqlKq3NEqH7H6dn4ekeIeHbFTWKFpRNfkqq4PSFwt7dQObdAWIaZPiiM7rLJUUHpTD4Q9h0xwRVlkeNDIXFwzrNsNUMmSSZ8sfyY5xP5BbIgyO3a5StcEIV5QpIZt0zSwvVeGC82O5RW4+etYzdoX3DrhWv4TAZgDGMh0QE670ioLLD6qb0TFv4RVjINGxwtaNcmToylto9ydQ/wxyyy6QYs6e31354wE6B3yP/yDGnYDE4Og/58d7SF2nrPGb/iDCkYcRv+Huc+4SXUKHQXN7xZmizU6Vz3iUWY1CPSQRLaLWXScXTdRNAF4JBnSMJXlEUBpPNw4O2JKCfeNVj0JGs33tzA2JyIQScacNg5jWAGc5OQELrcxWZlEob9DXreom1w1ECxakLYNEZ+mDfsMPupyb1v4V5b49kXaMRNT0iFZQpLvzmYFT1H4re+DSedIOALAUm2eeAKpaFhkrIbChA6zEN4/hHuuPgzP0yHDNlGHpMgAxoxZaVPtSADgcUepDSKYamzSZNMljdlhkPOiRViKpwP1D7hsMqj+VzR6ZQq4t9VuFMQKSbGZNv3pAaYRy4X8gubnlJXgD31peEZc7kOd5oANhVhmvBneqS28W3D9gPYj9CLyfcd3GbhDyUxe0zApXEhdxjrjEkUNyjF1vrl6O4ECMQYSEagUAJf0HduITVTT9cYqSIzmvj+XEtOFb+dEg148u+YS062GQMrT5Vq0Qc/TgpDn3RG6VXz0Q2rhwzhVn0JnMVxZE8TbL3dJZJc4ftlKy31KRWuyhccdx3/okZyCYhr/c5I4wJE7X++QapecGlc/6HGPbG6wJ2rIIdktXPvK6eLPDXd9S5uyUXM5AXje//t4N3r049Jtezq07myRW/KBeFSo/hNsIJw47KRdQBBJ+s+IvWA0ZudEZaxwNYS90Omlrx8zHlsFCHX7jRDJwJhk3my+inqGVMHLnJbOukznFWOX9culMecYYCBYGw7paUegwT9JhtPFpvOfuLl/Iczg0r7z0CEESy2IFbIc2EqiC419NzTJ/bVKGLDQquq3n0vrfNP6g3qgz9x82TdaeSVC1JmIil7nVAKk7qw3rMQ4ipRmJQ9SkydnzXxFzGKi1zDYwF9cW3STXFqtaZ2+CipXu2myEKm3/VEUiy07g2NBnsJoF++wEgL3ePr87xEeAuoUKYjI9LaD1QOB0YfP95rOyc9GU8+K3AehnRnTHBF95RdfTCvgE7qn3WXzcsiKi6SvayW0qEukf/AD7BKKiapasJUuZ5IykYVOkiJpwmOWDAmzwsnsoHSZmZXDDWtQKLAO9ZUtUAjWi5BFdsMyAn7gwALYJZtrLaDDsG7mdB8HZOH09UR7PRasA80ag3RzAhoWeOVl3LQpkpY0iaAikuqf2h1b2iDW/Brf67iP9qV+PTxeQBkxMdsxgJ2/SxD67PiNK1KgWb3Z/oHDeYGpNXEizXVhnpVeaQlEyW4GLQXB8imovCcpYo9t5PcuVsHsuYBu85Js8RW1UfJLHtlzWZvtXFD4iQR8VpWrDRNCe29wYOaFCXfrnEyHEsDwUEhU0/w7VMtgP77uwUJXHwoqKFVBKQBUU8kt0AO+R0plRfvurJDMuXQz7oUYC3Uq9yC6WK/qGRRRUVAYkfZ/qz5FL6HWMsT/d31aYABPkqqjzAiyrmLlE+PJNuoMxDbIGapRlzsrm/dRDK47D5TdvwWYFmgyhfH2vcyfGCXS9Y/PEUOSYlsD9rwfT1FQYc1Yau0IjNeumaEYi77L+DX3ps1QRfUPk2wt+FzmRMGE8VL4AePepyV/hJd062Hk8yqOf5xQno8tvBm82c4TCMVUwY2LawkWRzmQaddZwxARC9fJwzD/5an/4CqdIYq6oipP2CLZPP/VZf+TBFFxHHYGXrZC2JVhl6UibRLM9ilUZJDdzq7NFOVbToQmTaK5wPu13JbRYo/Zt6ldzHJdqcsaJuQ+hIWddxdgtJlhdFigHyvnh96uviLsiCxrShNPH3rVGFqRct4zX9+QtyV8xX9dNzM4Bz2iEVmszNRVYOlsL2AqIpFcUCeR4fuuSoQdMvhHWAM2yolAqAz4LqfAv6eOCZHOt1FfOIdI5ERnSsWBjeSja2K9jcT7/lmlFsWaIyvSao7QWvB6u+hbPONnj0sxdvOZL8GVl7WThqGnVZ42o+CyIqpvjmSz6sS9lFStMuXfba2lzwdpWOaroLrbF5ED994qPtXfnq+2bVZGmjyuhlIucKaFMQEXBHmxR7M4JHQHcL37P6wU0Zr7dkSR7bIi5SKesidG2JCeqWteAPj/8BBXgpNivgP20x//nkUFzifJsn636JlaA4DuNP7Mne+3ABCecWJroUsfFv6S11HBQPue2ib5q5wAWnvF04leAl2dckwEEoeKH8rv/VGOi5Fzfv23KvXj3XLHdjt6t+q4kxh8G3cAcIPZ769FER0QYl7oDMPgBzUKg5931q6qy3B+vb1b3Nt+JgBJ3kHzQG8QMdVQfaeBiMIblOcWxq6nrLHquoAfjUSGrDI3MvDyEf12CrZvf22PcZFs8i0RnN/fKLVsU7XpLR5WThCSiBiXOKl8qssVfgGsOEubyo2Qd5kEgGGwWPxDyTiPeR0pUPm0WTCUoB8cojqu0AsmBJJITLZH2bFlclHH2MNNJ+AJnv7mJPZbB6pMqJDSvLwe3vrEkCSubRINEL1jPN1l2+pwkBBxp0uc63PV66jMHI706f497EQP+At+IPHBkcCNFEZtbZPtR6uY0BcwbT3mbsrGwvekYRt7ndAzN7fa8vOOSmZi9CRB+Q8PjChbNVmpUqX7ChfORDMkTa3J2IV0m0mbwAIuc0KhA4RVPejtsUPA4C9acczeb5oFme6UwL6U526LvzH3/8X8vRgHr50574jybA/F3fDqMEsZ5lZed4knESSo35qtcj1XWMvzTH1Z7Llpt73oIvUuS5WYpfI5qqCR/IGK93g8KM0qyUG35VcEFIQ+Q3RSD66ax0+Kbj9dlJdaNihqSVFnlelvlA0ryEZex8LE3XhMm9afKdm+LHpcLYe0uPehALO7krgtQENvLzRMR/E0aYqLwp/BSJf4lFRkqKnCVVV4+VcFy9K0djm7Wk90gkO2M2LiTHxNsbRjFvXnvpXnMpKFIajlQU+MoLbp2h/7oysUIjplu1yRIYumiriWmCBw1Fs23npIQYWWnPVzpMo8wEzc7+vO5g8d4iS8CD7mVl9Jv01il/Pn00NmHSutxC3pjZCnOdUOpR6q5cGWw/iANkibZ0NrBN0uZcs8//bj5Ptddf1VI+kSeLSpuVCEebAmX+wG3QFx/N1WdJYIM+4XTPG0tH+hBSVHrYArK8Z7tEucudW5OyftgNuLSnw58mdKjDMEtln+sE+6uOSg/u87pphbYxgze39IXrKIFY8KRw35vFCuD219/IHQ9hxyYOYgJ6gj1Azhkn6V8VHIchWyeh5Fp/ugDOOPbRqDn2X8MfLsrDsgbTheQdKH78eV8lx0b84VcqE3EA+Bd5uGs65hM20/ZHq1fdgKHXmdWagNQ73dW6NXTXcp/9dOpdIiND5AF1sIJxmt8MuSgWrwDWT8CnlCHi7D2rGcnsnBOuWithYTllzSkD89XCP+zmMi/2jO2AR23P3WUjzX/q0Yulk6i3U5uDjiOAYmPxMCJc+i4SChIV5wH9blrZwPGaI2udadQ2jR7ppVSvII0zBZNzLgibRoySBr9n/msPDJc7meWtSesYS1n9MszU7uJ1hqJj1Rd2WQm0o0sPIVR7MEN6xIQJ7ZKregqTLVnoL6TSDqVmsYbAjiDMS3L0HNJW1APUUjCpYgK5+x90zByJDdpSTIe8X4++Ct32qLkIQBoA+IVg76cMgapauDkT0wL6OLz7CPZwG7ijgpcdPeFLvg0j1q9Vtzo1xjComYPXF5Y7RS6UKxIm70IWD4eriGwGv4d895acKTX8bEkCzdCCRzqnJKanc7z6tsSjAraLVWlItsIVmxtjke+4rG1L6qOAK74oJX1Gn/DcPb9BLDjLvYaQIVwaDSn1mKEV2NYL+QrS4oXjW4oa7woaUl6rZsNc479iu/8CgWS9VylW0mbBp3XZOJPhEFkYi5+6GCvVzzSnUGtWbhtxVCugadcL42qtEXLGg4tS/mPcdxuBpuYaS8FM2XwPOUwyyDLr+lBtluk83i9s2ghSxj8y2FH2hQ8mi/X9Dk5xL/XR+0IWfMpLSsuYPEib1J1b5q1mV57WLQwu6AU4XhvQMD7eyUElIAFGPRSsrgO8iS3PJiYjq6QNZFuqAVg7hO/b5cA8yUuQl7TlfTUJhpTmDDJDRY9ZbqlxZn6lBctlrfz3YAwPrGl8h2Ay4P1g37NUXVNb2sJ55dY1qn2owALRh0zSWjF1IESmV7mBm96h2oF28MPmda3a72DVOsLk2r3+KCVpe0SpPV9yObKrolgH/mFMFYNP6dJRTf6H9DXDblyHsZuGSr1nnZeja5DQkL3D+JEWlTxMV+1Aekr4GFae5fxsPFLLBez8zKEPEWOvWH7vi6gwS/ndyD5eY6xxBkNgRWFJZxtzMvR78xmF15uZihyspplsb9o4XOMeJLkizz55dWix4792lgw1K85APz++l6AYUfYzv9ZCk0n4Yrutp3qbdLn8HVfrfH3AnomKn71g/dsYQj6yrfOzMjSv6odp49hfXhHP7oRKXzERGs1vvVWgO31tckkXdlmLc5XWSJsXKrRpppWMaI2g4WGiUiioVUu7S4dWKQuTuJqIhmf6jhn9f1G96RO7lYH/IYzxrYeh9oKmVrCKZKFvbtZP8MNf7+fSOFI3k7Xuu0IS+WXSYtKobwjwewcgsMPSHEHDJlUH7xLqxiVK7pEIDmPlmp0S3EGZQ6LhyMEiK01KvM3dBO97vI1HpKkZO/nMfJFOA5dgIHFxSdzq6mSapyhaB9U8eDf3+JuSXnu6OiBEBnbhlYQwIZy7gCND/jliBdV/8jmi/e4mgB+YE8md1v4qIrE8Ynl2Uw3HsLpDWK1X2APzTEfuQNX3DE2mMNbQOq9sRoOzUHUobmYdxjG5hs8sTdsBcVvCOH0MAtv5xSdeseyrhz7omp09/C5VSe3nBGqk2ALxCwcvIovICYSlH/D0XQcWWcpjKMi6uqJQmk1vsP0gfdY1/bNbS+PaBwkS+St6rxLavOyvFpBouFh0nUofnW8O6YvP728wx8IBq3ZkSWKT5vh8g1Jou3tcbC6XFO0C1h11Tgx382MAVhBkzJhxTI4iMhAzWd/RiCsYqPcMvcly9DrPgBgSshjkdw6W3FMd2nb18zWa0eXzpjv6KD1GHWI0FbwUWjQNG0DWI7it7P4Or03kXMVOq6EF1RevRNDx1pHAUZ2/pdai7epftd9FVEj97E85cIS4DOY7GoKte2Xpbx6VnBGJ6f71lpwz8EAqUDIKxHwbjCIvTMlEcFvssSzJiasETbXusz0St9VOLxTn4eBVg4UQ0bellxpcW9dMFgi0KrYH2sRTjBhShMdbY0+a3Vi62xUC2t9qV1OqR/XWpg/6G0mUexADzBXfG0N5p4s5KCSBH1mr9mBPXxhK6sVjXAjDQmyLM7CZEjqFll5+8WwS0oN4sp22jQECQdvXLGQkIrAuiYDMVa7pbThh0f3jXIKsxRadpbEw/Zo4Ej+eC2UX+aANLsnLx39BK55fRITRA6xavctGZrYGwz";
+		String output = "MIIGDgYJKoZIhvcNAQcCoIIF-zCCBfsCAQExCzAJBgUrDgMCGgUAMIGUBgkqhkiG9w0BBwGggYYEgYN7ImF1dGgiOnsiaWRlbnRpdHkiOnsibWV0aG9kcyI6WyJwYXNzd29yZCJdLCJwYXNzd29yZCI6eyJ1c2VyIjp7ImlkIjoiMGYzMzI4ZjgtYTdlNy00MWI0LTgzMGQtYmU4ZmRkNTE4NmM3IiwicGFzc3dvcmQiOiJhZG1pbiJ9fX19faCCA2owggNmMIICTqADAgECAgEBMA0GCSqGSIb3DQEBBQUAMFcxCzAJBgNVBAYTAlVTMQ4wDAYDVQQIDAVVbnNldDEOMAwGA1UEBwwFVW5zZXQxDjAMBgNVBAoMBVVuc2V0MRgwFgYDVQQDDA93d3cuZXhhbXBsZS5jb20wHhcNMTQwNTMwMDIxMTAwWhcNMjQwNTI3MDIxMTAwWjBHMQswCQYDVQQGEwJVUzEOMAwGA1UECAwFVW5zZXQxDjAMBgNVBAoMBVVuc2V0MRgwFgYDVQQDDA93d3cuZXhhbXBsZS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFdmZ4wbfP0oQ0cU54ScYaYQlej0c+A1FqLOLPIfgUghn4bFfcCaEPWitNKpKXD2WnBUbn96XNyJb2ojRhTSJVrdTe5eqSc453QXmSCent23va5bVy4Xr+KWeyQSJSwv+WUQmOUFTcYjn16uN+3NVgpdaOBIZUrYy67ppDvJ3k0CSpuaXWaTdMgBMYpigSZOio0Z4OQ3VNlyEKfpQN2q3099yNn17oIdQCP2exip2QKvUec4wnlhnzmxwUhftMEuqgsCuucmJv95wXsWNo5T0gpSgiHPlmUcTi74DN8mYmI765nvYG5RQr3D+gLjqzmFD07d+PHao-sBmx1bGiF51xAgMBAAGjTTBLMAkGA1UdEwQCMAAwHQYDVR0OBBYEFOw7JcMePL3e3CIq2jcS4k2CGpt6MB8GA1UdIwQYMBaAFFqnNemKlgL1UaHqzeh9kJtDRlWtMA0GCSqGSIb3DQEBBQUAA4IBAQBKweD-P-5YWz56bNKe8Y7tOFwITBRbY-b6gB2cxpqMPeaqY3UETnGHAXy54Q762dqcvJztjwP5C8LuAMd4f+nNpcdGJxBUb5Eu7+VrRE85u41bbgbIhcNmZ8gSiZ7BFWdORdIA9YZFKaPJz4sR2E1KA-lWPq4Os-5lcGjFgux3IdffjfRrjwUdXFAWJFzxWLr0mtSONpbafjgudtUjH-mI59xPS7nptgrO4vMx0hdtEOBRMThAjRjGQ3rv2ej-GqfWYt9OZOVPP8cxirPw-JP3oJFdUKaWDdUZDYi8M-ju3cD9aVEZW9kujftPFTjjiP3QrxDcPzafSM7dgo0IhdsIMYIB4jCCAd4CAQEwXDBXMQswCQYDVQQGEwJVUzEOMAwGA1UECAwFVW5zZXQxDjAMBgNVBAcMBVVuc2V0MQ4wDAYDVQQKDAVVbnNldDEYMBYGA1UEAwwPd3d3LmV4YW1wbGUuY29tAgEBMAkGBSsOAwIaBQCgXTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xNTA1MDcwNzIxMzBaMCMGCSqGSIb3DQEJBDEWBBRwGuUlZ9O0cRA6HtmYxpgStsh9dTANBgkqhkiG9w0BAQEFAASCAQAf3WIopRYN1DXHNWyKGixVB-OotZVWcMKhHYxQF21eKA2A48-MU7-uwDUkLdCUfSiysxsWfkPvB10K8V2ZfvHcGatCV615iJvOG7GSsPGRSy3p3sKaB26c1eRTRDDVgjvCCpY7gIK2xZ9S5EC4ms9VAtkVFxASRvdzumaN4u5M1nv3szAM1sEF1-1dbi94Z6riNY-RpvTOv6mvTkdsMbhOnO3Vyz2TdlrJx5toD7aNUrFFpEMQkqJ4WQTMNaQCTLLjlCgH5q5koKbQM1rJUV2a52ZKGiCpOyTTnEQuGB5si3h3YXSsn5FBck-bPkGBWS2kDjeK5-ktLjcmmFkt6tLl";
 		String hashed = Cms.Instance.hashToken(output, null);
-		assertEquals("7af25b600d1ceb7c67e211b1373eb07b", hashed);
+		assertEquals("088E315EFE1519CB9BA31F1A1440B888", hashed);
 		logger.debug("hash test: {}", hashed);
 		// logger.debug(Cms.Instance.hashToken("708bb4f9-9d3c-46af-b18c-7033dc012f11"));
 	}

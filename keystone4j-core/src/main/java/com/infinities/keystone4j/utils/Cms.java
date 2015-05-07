@@ -1,5 +1,6 @@
 package com.infinities.keystone4j.utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.codec.DecoderException;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -31,7 +34,6 @@ import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
-import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -47,6 +49,9 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
+import com.infinities.keystone4j.ssl.Base64Verifier;
+import com.infinities.keystone4j.ssl.CertificateVerificationException;
+import com.infinities.keystone4j.ssl.CertificateVerifier;
 
 public enum Cms {
 	Instance;
@@ -128,7 +133,7 @@ public enum Cms {
 	@SuppressWarnings("rawtypes")
 	public String verifySignature(byte[] sigbytes, String signingCertFileName, String caFileName) throws CMSException,
 			CertificateException, OperatorCreationException, NoSuchAlgorithmException, NoSuchProviderException,
-			CertPathBuilderException, InvalidAlgorithmParameterException, IOException {
+			CertPathBuilderException, InvalidAlgorithmParameterException, IOException, CertificateVerificationException {
 		logger.debug("signingCertFile: {}, caFile:{}", new Object[] { signingCertFileName, caFileName });
 		Security.addProvider(new BouncyCastleProvider());
 		X509Certificate signercert = generateCertificate(signingCertFileName);
@@ -136,13 +141,27 @@ public enum Cms {
 		Set<X509Certificate> additionalCerts = new HashSet<X509Certificate>();
 		additionalCerts.add(cacert);
 
-		sigbytes = Base64.decode(sigbytes);
+		CertificateVerifier.verifyCertificate(signercert, additionalCerts, true); // .validateKeyChain(signercert,
+		// certs);
+		if (Base64Verifier.isBase64(sigbytes)) {
+			try {
+				sigbytes = Base64.decode(sigbytes);
+				logger.debug("Signature file is BASE64 encoded");
+			} catch (Exception ioe) {
+				logger.warn("Problem decoding from b64", ioe);
+			}
+		}
+
+		// sigbytes = Base64.decode(sigbytes);
 
 		// --- Use Bouncy Castle provider to verify included-content CSM/PKCS#7
 		// signature ---
+		ASN1InputStream in = null;
 		try {
 			logger.debug("sigbytes size: {}", sigbytes.length);
-			CMSSignedData s = new CMSSignedData(sigbytes);
+			in = new ASN1InputStream(new ByteArrayInputStream(sigbytes), Integer.MAX_VALUE);
+
+			CMSSignedData s = new CMSSignedData(ContentInfo.getInstance(in.readObject()));
 			Store store = s.getCertificates();
 			SignerInformationStore signers = s.getSignerInfos();
 			Collection c = signers.getSigners();
@@ -165,8 +184,9 @@ public enum Cms {
 					cert = (X509Certificate) certIt.next();
 				}
 
-				if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BC").build(cert)))
-					verified++;
+				// if (signer.verify(new
+				// JcaSimpleSignerInfoVerifierBuilder().setProvider("BC").build(cert)))
+				// verified++;
 			}
 
 			if (verified == 0) {
@@ -183,6 +203,10 @@ public enum Cms {
 		} catch (Exception ex) {
 			logger.error("Couldn't verify included-content CMS signature", ex);
 			throw new RuntimeException("Couldn't verify included-content CMS signature", ex);
+		} finally {
+			if (in != null) {
+				in.close();
+			}
 		}
 	}
 
