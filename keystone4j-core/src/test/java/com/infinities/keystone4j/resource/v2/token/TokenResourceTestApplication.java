@@ -65,7 +65,7 @@ import com.infinities.keystone4j.utils.jackson.JacksonFeature;
 public class TokenResourceTestApplication extends ResourceConfig {
 
 	public TokenResourceTestApplication() {
-		register(JacksonFeature.class);
+		// register(JacksonFeature.class);
 		this.register(new AbstractBinder() {
 
 			@Override
@@ -115,5 +115,6 @@ public class TokenResourceTestApplication extends ResourceConfig {
 		this.register(TokenAuthMiddleware.class);
 		this.register(AdminTokenAuthMiddleware.class);
 		this.register(AdminResource.class);
+		this.register(JacksonFeature.class);
 	}
 }
