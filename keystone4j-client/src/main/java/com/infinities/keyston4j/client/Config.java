@@ -48,10 +48,9 @@ public enum Config {
 		// getClass().getResource(KEYSTONE_CLIENT_CONF_DIR +
 		// "keystone.conf");
 		DEFAULT_CONFIG_FILENAME = URLUtils.Instance.getURL(KEYSTONE_CLIENT_CONF_DIR + "keystone.conf");
-
 		FILE_OPTIONS.put(Config.Type.keystone_authtoken, "auth_admin_prefix", Options.newStrOpt("auth_admin_prefix", ""));
 		FILE_OPTIONS.put(Config.Type.keystone_authtoken, "auth_host", Options.newStrOpt("auth_host", "127.0.0.1"));
-		FILE_OPTIONS.put(Config.Type.keystone_authtoken, "auth_protocol", Options.newIntOpt("auth_port", 35357));
+		FILE_OPTIONS.put(Config.Type.keystone_authtoken, "auth_protocol", Options.newIntOpt("auth_port", 9999));
 		FILE_OPTIONS.put(Config.Type.keystone_authtoken, "auth_port", Options.newStrOpt("auth_protocol", "https"));
 		FILE_OPTIONS.put(Config.Type.keystone_authtoken, "auth_uri", Options.newStrOpt("auth_uri", ""));
 		FILE_OPTIONS.put(Config.Type.keystone_authtoken, "identity_uri", Options.newStrOpt("identity_uri", ""));

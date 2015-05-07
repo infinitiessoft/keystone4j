@@ -58,8 +58,8 @@ public enum Config {
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "public_bind_host", Options.newStrOpt("public_bind_host", "0.0.0.0"));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "admin_bind_host", Options.newStrOpt("admin_bind_host", "0.0.0.0"));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "compute_port", Options.newIntOpt("compute_port", 8774));
-		FILE_OPTIONS.put(Config.Type.DEFAULT, "admin_port", Options.newIntOpt("admin_port", 35357));
-		FILE_OPTIONS.put(Config.Type.DEFAULT, "public_port", Options.newIntOpt("public_port", 5000));
+		FILE_OPTIONS.put(Config.Type.DEFAULT, "admin_port", Options.newIntOpt("admin_port", 9999));
+		FILE_OPTIONS.put(Config.Type.DEFAULT, "public_port", Options.newIntOpt("public_port", 9999));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "public_endpoint",
 				Options.newStrOpt("public_endpoint", "http://localhost:%(public_port)/"));
 		FILE_OPTIONS.put(Config.Type.DEFAULT, "admin_endpoint",
