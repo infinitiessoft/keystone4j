@@ -1,3 +1,5 @@
+![logo-keystone4j-2.png](https://bitbucket.org/repo/EaEgGa/images/1367235168-logo-keystone4j-2.png)
+
 **Keystone4J - Keystone for java**
 
 Keystone4J is a pure Java implementation of openstack keystone component, it is built base on [OpenStack Keystone](https://github.com/openstack/keystone).
