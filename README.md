@@ -5,7 +5,7 @@ Keystone4J allow you to construct a openstack identity server and manages tokens
 
 **Installation guide**
 
-Binary downloads of the Keystone4J are available from [https://bitbucket.org/cosmomed/keystone4j/downloads](https://bitbucket.org/cosmomed/keystone4j/downloads). Unpack the binary distribution so that it resides in its own directory (conventionally named "keystone4j-[version]"). Keystone4J can be run as a service using the **keystone4j** script located under bin/ location. The script accepts a single parameter with the following values:
+Binary downloads of the Keystone4J are available from [https://github.com/infinitiessoft/keystone4j/releases/download/v1.0.0/keystone4j.zip](https://github.com/infinitiessoft/keystone4j/releases/download/v1.0.0/keystone4j.zip). Unpack the binary distribution so that it resides in its own directory (conventionally named "keystone4j-[version]"). Keystone4J can be run as a service using the **keystone4j** script located under bin/ location. The script accepts a single parameter with the following values:
 
 * **console:** Run Keystone4J in the foreground.
 
