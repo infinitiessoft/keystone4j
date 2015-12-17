@@ -19,7 +19,9 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.glassfish.jersey.jetty.JettyHttpContainerFactory;
 
 import com.infinities.keystone4j.jpa.EntityManagerListener;
@@ -27,11 +29,16 @@ import com.infinities.keystone4j.jpa.EntityManagerListener;
 public class Main {
 
 	public static void main(String args[]) {
-		URI baseUri = UriBuilder.fromUri("http://localhost/").port(9999).build();
+		URI baseUri = UriBuilder.fromUri("http://localhost/").port(5000).build();
 		KeystoneApplication application = new KeystoneApplication();
 		Server server = JettyHttpContainerFactory.createServer(baseUri, application, false);
+		// server.getAttributeNames().setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize",
+		// 800000000);
 		server.addLifeCycleListener(new EntityManagerListener());
-
+		org.eclipse.jetty.server.ServerConnector connector = (ServerConnector) server.getConnectors()[0];
+		org.eclipse.jetty.server.HttpConnectionFactory factory = (HttpConnectionFactory) connector
+				.getDefaultConnectionFactory();
+		factory.getHttpConfiguration().setRequestHeaderSize(10000);
 		try {
 			server.start();
 			server.join();

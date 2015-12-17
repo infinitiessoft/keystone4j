@@ -281,6 +281,13 @@
 				<version>2.5.1</version>
 				<scope>test</scope>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-container-grizzly2-servlet</artifactId>
+				<version>${jerseyVersion}</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

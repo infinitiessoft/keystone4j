@@ -27,12 +27,14 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.infinities.keystone4j.JettyTestContainerFactory;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
@@ -131,8 +133,7 @@ public class AuthResourceTest extends JerseyTest {
 
 		// validate
 		response = target("/v3/auth/tokens").register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
-				.header("X-Subject-Token", tokenid).get();
+				.header("X-Auth-Token", tokenid).header("X-Subject-Token", tokenid).get();
 		assertEquals(200, response.getStatus());
 		assertEquals(tokenid, response.getHeaderString("X-Subject-Token"));
 
@@ -482,5 +483,10 @@ public class AuthResourceTest extends JerseyTest {
 	public void testGetRevocationList() {
 		// TODO no example in openstack api.
 		// fail("Not yet implemented");
+	}
+
+	@Override
+	protected TestContainerFactory getTestContainerFactory() {
+		return new JettyTestContainerFactory();
 	}
 }

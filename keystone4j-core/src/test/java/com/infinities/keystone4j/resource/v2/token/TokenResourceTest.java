@@ -36,12 +36,14 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.intergrated.v3.AbstractIntegratedTest;
 import com.infinities.keystone4j.model.token.Auth;
 import com.infinities.keystone4j.model.token.PasswordCredentials;
+import com.infinities.keystone4j.model.token.v2.wrapper.TokenV2DataWrapper;
 import com.infinities.keystone4j.model.token.wrapper.AuthWrapper;
 import com.infinities.keystone4j.model.trust.wrapper.SignedWrapper;
 import com.infinities.keystone4j.ssl.CertificateVerificationException;
@@ -74,7 +76,14 @@ public class TokenResourceTest extends AbstractIntegratedTest {
 				.post(Entity.entity(authWrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
+		TokenV2DataWrapper wrapper = JsonUtils.readJson(ret, new TypeReference<TokenV2DataWrapper>() {
+		});
 		System.err.println(ret);
+		String tokenid = wrapper.getAccess().getToken().getId();
+		// validate
+		response = target("v2.0/tokens/" + tokenid).register(JacksonFeature.class).register(ObjectMapperResolver.class)
+				.request().header("X-Auth-Token", tokenid).get();
+		assertEquals(200, response.getStatus());
 	}
 
 	@Test

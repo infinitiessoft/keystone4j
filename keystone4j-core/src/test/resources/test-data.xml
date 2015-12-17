@@ -12,7 +12,7 @@
 		name="keystone_endpoint" desc="keystone endpoint" interface="admin"
 		url="http://localhost:35357/v3.0/" serviceid="3f813b99431e46c0af877393f6ad91d7"
 		regionid="RegionOne" enabled="true" />
-	<ROLE id="9fe2ff9ee4384b1894a90878d3e92bab" optlock="1" name="_member_"
+	<ROLE id="9fe2ff9ee4384b1894a90878d3e92bab" optlock="1" name="admin"
 		desc="Default role for project membership" />
 	<ROLE id="d903936e7bbd4183b8cd35816d2cf88b" optlock="1" name="demo"
 		desc="" />
