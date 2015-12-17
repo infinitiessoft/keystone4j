@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.infinities.keystone4j.utils.jackson;
 
+import java.text.SimpleDateFormat;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +36,7 @@ public class JacksonProvider extends com.fasterxml.jackson.jaxrs.json.JacksonJso
 
 		ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module())
 				.setSerializationInclusion(Include.NON_NULL)
+				.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"))
 				.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).enable(SerializationFeature.INDENT_OUTPUT)
 				.setAnnotationIntrospector(new AnnotationIntrospectorPair(introspector, secondary));
 		// mapper = mapper.setSerializationInclusion(Include)

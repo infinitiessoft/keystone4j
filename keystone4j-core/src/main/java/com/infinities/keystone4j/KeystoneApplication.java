@@ -82,6 +82,8 @@ import com.infinities.keystone4j.policy.PolicyDriver;
 import com.infinities.keystone4j.policy.api.PolicyApiFactory;
 import com.infinities.keystone4j.policy.driver.PolicyDriverFactory;
 import com.infinities.keystone4j.token.TokenDriver;
+import com.infinities.keystone4j.token.controller.TokenController;
+import com.infinities.keystone4j.token.controller.impl.TokenV2ControllerFactory;
 import com.infinities.keystone4j.token.driver.TokenDriverFactory;
 import com.infinities.keystone4j.token.persistence.PersistenceManager;
 import com.infinities.keystone4j.token.persistence.manager.PersistenceManagerFactory;
@@ -141,6 +143,7 @@ public class KeystoneApplication extends ResourceConfig {
 				bindFactory(TokenProviderDriverFactory.class).to(TokenProviderDriver.class);
 				bindFactory(PersistenceManagerFactory.class).to(PersistenceManager.class);
 				bindFactory(TokenDriverFactory.class).to(TokenDriver.class);
+				bindFactory(TokenV2ControllerFactory.class).to(TokenController.class);
 				// trust
 				bindFactory(TrustApiFactory.class).to(TrustApi.class);
 				bindFactory(TrustDriverFactory.class).to(TrustDriver.class);
