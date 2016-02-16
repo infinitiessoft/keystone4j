@@ -254,12 +254,12 @@ public class CatalogJpaDriver implements CatalogDriver {
 
 	@Override
 	public Integer getListLimit() {
-		return Config.Instance.getOpt(Config.Type.catalog, "list_limit").asInteger();
+		return Config.getOpt(Config.Type.catalog, "list_limit").asInteger();
 	}
 
 	@Override
 	public Map<String, Map<String, Map<String, String>>> getCatalog(String userid, String tenantid, Metadata metadata) {
-		Table<Type, String, Option> substitutions = Config.Instance.getTable();
+		Table<Type, String, Option> substitutions = Config.getTable();
 		substitutions.put(Type.DEFAULT, "tenant_id", Options.newStrOpt("tenant_id", tenantid));
 		substitutions.put(Type.DEFAULT, "user_id", Options.newStrOpt("user_id", userid));
 
@@ -296,7 +296,7 @@ public class CatalogJpaDriver implements CatalogDriver {
 
 	@Override
 	public List<Service> getV3Catalog(String userid, String projectid) throws Exception {
-		Table<Type, String, Option> substitutions = Config.Instance.getTable();
+		Table<Type, String, Option> substitutions = Config.getTable();
 		substitutions.put(Type.DEFAULT, "tenant_id", Options.newStrOpt("tenant_id", projectid));
 		substitutions.put(Type.DEFAULT, "user_id", Options.newStrOpt("user_id", userid));
 		List<Service> services = serviceDao.listAllEnabled();

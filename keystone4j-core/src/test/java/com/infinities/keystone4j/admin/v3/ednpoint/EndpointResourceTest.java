@@ -92,7 +92,7 @@ public class EndpointResourceTest extends AbstractIntegratedTest {
 		assertEquals(endpoint.getUrl(), endpointJ.get("url").asText());
 
 		Response response = target("/v3/endpoints").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(201, response.getStatus());
 		String ret = response.readEntity(String.class);
@@ -112,7 +112,7 @@ public class EndpointResourceTest extends AbstractIntegratedTest {
 		final List<Endpoint> endpoints = new ArrayList<Endpoint>();
 		endpoints.add(endpoint);
 		Response response = target("/v3/endpoints").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		System.err.println(ret);
@@ -131,7 +131,7 @@ public class EndpointResourceTest extends AbstractIntegratedTest {
 	public void testGetEndpoint() throws JsonProcessingException, IOException {
 		Response response = target("/v3/endpoints").path(endpoint.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		System.err.println(ret);
@@ -164,7 +164,7 @@ public class EndpointResourceTest extends AbstractIntegratedTest {
 	public void testDeleteEndpoint() {
 		Response response = target("/v3").path("endpoints").path(endpoint.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 

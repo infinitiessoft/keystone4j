@@ -36,7 +36,7 @@ public class RequestBodySizeLimiter implements Middleware {
 
 
 	public RequestBodySizeLimiter() {
-		String maxSize = Config.Instance.getOpt(Config.Type.DEFAULT, "max_request_body_size").asText();
+		String maxSize = Config.getOpt(Config.Type.DEFAULT, "max_request_body_size").asText();
 		size = Integer.parseInt(maxSize);
 	}
 

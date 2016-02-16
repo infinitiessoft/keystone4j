@@ -42,9 +42,9 @@ public class PkiProvider extends BaseProvider {
 		try {
 			String jsonStr = JsonUtils.toJson(tokenData, Views.AuthenticateForToken.class);
 
-			String certfile = Config.Instance.getOpt(Config.Type.signing, "certfile").asText();
-			String keyfile = Config.Instance.getOpt(Config.Type.signing, "keyfile").asText();
-			String tokenid = Cms.Instance.signToken(jsonStr, certfile, keyfile);
+			String certfile = Config.getOpt(Config.Type.signing, "certfile").asText();
+			String keyfile = Config.getOpt(Config.Type.signing, "keyfile").asText();
+			String tokenid = Cms.signToken(jsonStr, certfile, keyfile);
 
 			return tokenid;
 		} catch (Exception e) {

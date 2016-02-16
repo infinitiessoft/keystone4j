@@ -206,7 +206,7 @@
 //
 //	@Test(expected = WebApplicationException.class)
 //	public void testDeleteDomainWithDefaultDomainId() {
-//		String defaultDomainid = Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText();
+//		String defaultDomainid = Config.getOpt(Config.Type.identity, "default_domain_id").asText();
 //		domain.setId(defaultDomainid);
 //		assignmentApi.deleteDomain(domain.getId());
 //	}
@@ -548,11 +548,11 @@
 //
 //			{
 //				exactly(1).of(driver).createGrantByUserDomain(role.getId(), user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //			}
 //		});
 //		assignmentApi.createGrantByUserDomain(role.getId(), user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //	}
 //
 //	@Test
@@ -565,11 +565,11 @@
 //
 //			{
 //				exactly(1).of(driver).createGrantByGroupDomain(role.getId(), group.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //			}
 //		});
 //		assignmentApi.createGrantByGroupDomain(role.getId(), group.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //	}
 //
 //	@Test
@@ -614,12 +614,12 @@
 //
 //			{
 //				exactly(1).of(driver).listGrantsByUserDomain(user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //				will(returnValue(roles));
 //			}
 //		});
 //		List<Role> rets = assignmentApi.listGrantsByUserDomain(user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //		assertEquals(1, rets.size());
 //		Role ret = rets.get(0);
 //		assertEquals(role.getName(), ret.getName());
@@ -639,12 +639,12 @@
 //
 //			{
 //				exactly(1).of(driver).listGrantsByGroupDomain(group.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //				will(returnValue(roles));
 //			}
 //		});
 //		List<Role> rets = assignmentApi.listGrantsByGroupDomain(group.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //		assertEquals(1, rets.size());
 //		Role ret = rets.get(0);
 //		assertEquals(role.getName(), ret.getName());
@@ -664,12 +664,12 @@
 //
 //			{
 //				exactly(1).of(driver).listGrantsByGroupProject(user.getId(), project.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //				will(returnValue(roles));
 //			}
 //		});
 //		List<Role> rets = assignmentApi.listGrantsByGroupProject(user.getId(), project.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //		assertEquals(1, rets.size());
 //		Role ret = rets.get(0);
 //		assertEquals(role.getName(), ret.getName());
@@ -689,12 +689,12 @@
 //
 //			{
 //				exactly(1).of(driver).listGrantsByUserProject(user.getId(), project.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //				will(returnValue(roles));
 //			}
 //		});
 //		List<Role> rets = assignmentApi.listGrantsByUserProject(user.getId(), project.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //		assertEquals(1, rets.size());
 //		Role ret = rets.get(0);
 //		assertEquals(role.getName(), ret.getName());
@@ -713,12 +713,12 @@
 //
 //			{
 //				exactly(1).of(driver).getGrantByUserDomain(role.getId(), user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //				will(returnValue(role));
 //			}
 //		});
 //		Role ret = assignmentApi.getGrantByUserDomain(role.getId(), user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //		assertEquals(role.getName(), ret.getName());
 //		assertEquals(role.getId(), ret.getId());
 //		assertEquals(role.getDescription(), ret.getDescription());
@@ -735,12 +735,12 @@
 //
 //			{
 //				exactly(1).of(driver).getGrantByGroupDomain(role.getId(), user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //				will(returnValue(role));
 //			}
 //		});
 //		Role ret = assignmentApi.getGrantByGroupDomain(role.getId(), user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //		assertEquals(role.getName(), ret.getName());
 //		assertEquals(role.getId(), ret.getId());
 //		assertEquals(role.getDescription(), ret.getDescription());
@@ -757,12 +757,12 @@
 //
 //			{
 //				exactly(1).of(driver).getGrantByGroupProject(role.getId(), user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //				will(returnValue(role));
 //			}
 //		});
 //		Role ret = assignmentApi.getGrantByGroupProject(role.getId(), user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //		assertEquals(role.getName(), ret.getName());
 //		assertEquals(role.getId(), ret.getId());
 //		assertEquals(role.getDescription(), ret.getDescription());
@@ -779,12 +779,12 @@
 //
 //			{
 //				exactly(1).of(driver).getGrantByUserProject(role.getId(), user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //				will(returnValue(role));
 //			}
 //		});
 //		Role ret = assignmentApi.getGrantByUserProject(role.getId(), user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //		assertEquals(role.getName(), ret.getName());
 //		assertEquals(role.getId(), ret.getId());
 //		assertEquals(role.getDescription(), ret.getDescription());
@@ -802,11 +802,11 @@
 //			{
 //				exactly(1).of(tokenApi).deleteTokensForUser(user.getId(), null);
 //				exactly(1).of(driver).deleteGrantByUserDomain(role.getId(), user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //			}
 //		});
 //		assignmentApi.deleteGrantByUserDomain(role.getId(), user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //	}
 //
 //	@Test
@@ -826,13 +826,13 @@
 //				will(returnValue(users));
 //
 //				exactly(1).of(driver).deleteGrantByGroupDomain(role.getId(), user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //
 //				exactly(1).of(tokenApi).deleteTokensForUser(user.getId(), null);
 //			}
 //		});
 //		assignmentApi.deleteGrantByGroupDomain(role.getId(), user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //	}
 //
 //	@Test
@@ -851,13 +851,13 @@
 //				exactly(1).of(identityApi).listUsersInGroup(user.getId(), null);
 //				will(returnValue(users));
 //				exactly(1).of(driver).deleteGrantByGroupProject(role.getId(), user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //
 //				exactly(1).of(tokenApi).deleteTokensForUser(user.getId(), null);
 //			}
 //		});
 //		assignmentApi.deleteGrantByGroupProject(role.getId(), user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //	}
 //
 //	@Test
@@ -872,11 +872,11 @@
 //			{
 //				exactly(1).of(tokenApi).deleteTokensForUser(user.getId(), null);
 //				exactly(1).of(driver).deleteGrantByUserProject(role.getId(), user.getId(), domain.getId(),
-//						Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//						Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //			}
 //		});
 //		assignmentApi.deleteGrantByUserProject(role.getId(), user.getId(), domain.getId(),
-//				Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
+//				Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean());
 //	}
 //
 //	@Test

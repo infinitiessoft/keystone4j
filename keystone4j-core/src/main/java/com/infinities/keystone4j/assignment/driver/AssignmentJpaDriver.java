@@ -237,7 +237,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			}
 		}
 
-		if (!Config.Instance.getOpt(Type.os_inherit, "enabled").asBoolean()) {
+		if (!Config.getOpt(Type.os_inherit, "enabled").asBoolean()) {
 			return projectIdsToDicts(projectIds);
 		}
 
@@ -268,7 +268,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 			}
 		}
 
-		if (!Config.Instance.getOpt(Type.os_inherit, "enabled").asBoolean()) {
+		if (!Config.getOpt(Type.os_inherit, "enabled").asBoolean()) {
 			return projectIdsToDicts(projectIds);
 		}
 
@@ -728,7 +728,7 @@ public class AssignmentJpaDriver implements AssignmentDriver {
 
 	@Override
 	public Integer getListLimit() {
-		return Config.Instance.getOpt(Config.Type.assignment, "list_limit").asInteger();
+		return Config.getOpt(Config.Type.assignment, "list_limit").asInteger();
 	}
 
 	@Override

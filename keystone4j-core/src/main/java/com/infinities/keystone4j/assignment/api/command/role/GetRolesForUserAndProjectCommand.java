@@ -75,7 +75,7 @@ public class GetRolesForUserAndProjectCommand extends AbstractAssignmentCommand 
 			// no group grant, skip
 		}
 
-		boolean enabled = Config.Instance.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
+		boolean enabled = Config.getOpt(Config.Type.os_inherit, ENABLED).asBoolean();
 		if (enabled) {
 			try {
 				Metadata metadataRef = this.getAssignmentDriver().getMetadata(userid, null, null, project.getDomainId());

@@ -49,10 +49,10 @@ public class PEMReader {
 
 	private static final String BEGIN_MARKER = "-----BEGIN ";
 
-	private final InputStream stream;
+	private InputStream stream;
 	private byte[] derBytes;
 	private String beginMarker;
-	private final StringBuffer buffer;
+	private StringBuffer buffer;
 
 
 	public PEMReader(InputStream inStream) throws IOException {

@@ -38,7 +38,7 @@ public class AbstractControllerAction {
 		if (AUTH_PLUGINS_LOADED) {
 			return;
 		}
-		List<String> methods = Config.Instance.getOpt(Config.Type.auth, "methods").asList();
+		List<String> methods = Config.getOpt(Config.Type.auth, "methods").asList();
 		AuthDriver driver;
 		for (String plugin : methods) {
 			if (plugin.contains(".")) {
@@ -50,7 +50,7 @@ public class AbstractControllerAction {
 							"Cannot load an auth-plugin by class-name without a 'method' attribute define:" + className);
 				}
 			} else {
-				String className = Config.Instance.getOpt(Config.Type.auth, plugin).asText();
+				String className = Config.getOpt(Config.Type.auth, plugin).asText();
 				Class<?> c = Class.forName(className);
 				driver = (AuthDriver) c.newInstance();
 				if (Strings.isNullOrEmpty(driver.getMethod())) {

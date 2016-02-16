@@ -34,7 +34,7 @@ public class AdminTokenAuthMiddleware implements Middleware {
 
 
 	public AdminTokenAuthMiddleware() {
-		adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText();
+		adminToken = Config.getOpt(Config.Type.DEFAULT, "admin_token").asText();
 	}
 
 	@Override

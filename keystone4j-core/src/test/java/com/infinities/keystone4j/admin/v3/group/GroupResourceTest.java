@@ -123,7 +123,7 @@ public class GroupResourceTest extends AbstractIntegratedTest {
 		assertEquals(group.getDescription(), groupJ.get("description").asText());
 		assertEquals(group.getDomain().getId(), groupJ.get("domain_id").asText());
 		Response response = target("/v3/groups").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(201, response.getStatus());
 		node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
@@ -143,7 +143,7 @@ public class GroupResourceTest extends AbstractIntegratedTest {
 		groups.add(group);
 
 		Response response = target("/v3/groups").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		JsonNode groupsJ = node.get("groups");
@@ -161,7 +161,7 @@ public class GroupResourceTest extends AbstractIntegratedTest {
 	public void testGetGroup() throws JsonProcessingException, IOException {
 		Response response = target("/v3/groups").path(group.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		System.err.println(node.toString());
@@ -198,7 +198,7 @@ public class GroupResourceTest extends AbstractIntegratedTest {
 	public void testDeleteGroup() {
 		Response response = target("/v3/groups").path(group.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 
@@ -206,7 +206,7 @@ public class GroupResourceTest extends AbstractIntegratedTest {
 	public void testListUsersInGroup() throws JsonProcessingException, IOException {
 		Response response = target("/v3/groups").path(group.getId()).path("users").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		JsonNode usersJ = node.get("users");
@@ -224,7 +224,7 @@ public class GroupResourceTest extends AbstractIntegratedTest {
 	public void testAddUserToGroup() {
 		Response response = target("/v3/groups").path(group.getId()).path("users").path(user.getId())
 				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.put(Entity.json(""));
 		assertEquals(204, response.getStatus());
 	}
@@ -233,7 +233,7 @@ public class GroupResourceTest extends AbstractIntegratedTest {
 	public void testCheckUserInGroup() {
 		Response response = target("/v3/groups").path(group.getId()).path("users").path(user2.getId())
 				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
 		assertEquals(204, response.getStatus());
 	}
 
@@ -241,7 +241,7 @@ public class GroupResourceTest extends AbstractIntegratedTest {
 	public void testRemoveUserFromGroup() {
 		Response response = target("/v3/groups").path(group.getId()).path("users").path(user2.getId())
 				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 

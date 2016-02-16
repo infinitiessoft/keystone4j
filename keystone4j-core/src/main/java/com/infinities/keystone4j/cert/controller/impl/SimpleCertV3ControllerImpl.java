@@ -61,12 +61,12 @@ public class SimpleCertV3ControllerImpl extends BaseController implements Simple
 
 	@Override
 	public Response getCaCertificate() {
-		return getCertificate(Config.Instance.getOpt(Config.Type.signing, "ca_certs").asText());
+		return getCertificate(Config.getOpt(Config.Type.signing, "ca_certs").asText());
 	}
 
 	@Override
 	public Response listCertificate() {
-		return getCertificate(Config.Instance.getOpt(Config.Type.signing, "certfile").asText());
+		return getCertificate(Config.getOpt(Config.Type.signing, "certfile").asText());
 	}
 
 	private Response getCertificate(String text) {

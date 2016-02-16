@@ -91,7 +91,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
 
 	@Override
 	public void deleteToken(String tokenId) throws Exception {
-		if (!Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+		if (!Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 			return;
 		}
 		String uniqueId = tokenProviderApi.getUniqueId(tokenId);
@@ -103,7 +103,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
 	// tenantId = null, trustId = null, consumerId = null
 	@Override
 	public void deleteTokens(String userId, String tenantId, String trustId, String consumerId) {
-		if (!Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+		if (!Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 			return;
 		}
 		// List<String> tokenList = tokenDriver.listTokens(userId, tenantId,
@@ -124,7 +124,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
 
 	@Override
 	public void deleteTokensForDomain(String domainId) throws Exception {
-		if (!Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+		if (!Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 			return;
 		}
 		List<Project> projects = assignmentApi.listProjects(null);
@@ -147,7 +147,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
 	// projectId = null
 	@Override
 	public void deleteTokensForUser(String userId, String projectId) {
-		if (!Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+		if (!Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 			return;
 		}
 		deleteTokens(userId, projectId, null, null);
@@ -162,7 +162,7 @@ public class PersistenceManagerImpl implements PersistenceManager {
 	// projectId = null
 	@Override
 	public void deleteTokensForUsers(List<String> userIds, String projectId) {
-		if (!Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+		if (!Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 			return;
 		}
 		for (String userId : userIds) {

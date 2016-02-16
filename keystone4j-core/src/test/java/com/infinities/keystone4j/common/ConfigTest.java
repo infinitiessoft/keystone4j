@@ -35,13 +35,13 @@ public class ConfigTest {
 
 	@Test
 	public void testGetOpt() {
-		Option adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token");
+		Option adminToken = Config.getOpt(Config.Type.DEFAULT, "admin_token");
 		assertEquals("ADMIN2", adminToken.asText());
 	}
 
 	@Test
 	public void testGetOpt_subpattern() {
-		Option endpoint = Config.Instance.getOpt(Config.Type.DEFAULT, "public_endpoint");
+		Option endpoint = Config.getOpt(Config.Type.DEFAULT, "public_endpoint");
 		assertEquals("http://localhost:9999/", endpoint.asText());
 	}
 

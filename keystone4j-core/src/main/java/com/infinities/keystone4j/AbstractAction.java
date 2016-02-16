@@ -200,7 +200,7 @@ public abstract class AbstractAction<T extends BaseEntity> implements Action {
 	public String getTrustIdForRequest(KeystoneContext context) throws UnsupportedEncodingException,
 			NoSuchAlgorithmException, DecoderException {
 		if (Strings.isNullOrEmpty(context.getTokenid())
-				|| Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText().equals(context.getTokenid())) {
+				|| Config.getOpt(Config.Type.DEFAULT, "admin_token").asText().equals(context.getTokenid())) {
 			logger.debug("will not lookup trust as the request auth token is either absent or it is the system admin token");
 			return null;
 		}
@@ -292,7 +292,7 @@ public abstract class AbstractAction<T extends BaseEntity> implements Action {
 	}
 
 	public void requireMatchingDomainId(DomainAwared ref, DomainAwared existingRef) {
-		boolean domainidImmutable = Config.Instance.getOpt(Config.Type.DEFAULT, "domain_id_immutable").asBoolean();
+		boolean domainidImmutable = Config.getOpt(Config.Type.DEFAULT, "domain_id_immutable").asBoolean();
 		if (domainidImmutable && ref.getDomain() != null && !Strings.isNullOrEmpty(ref.getDomain().getId())) {
 			if (!ref.getDomain().getId().equals(existingRef.getDomain().getId())) {
 				throw Exceptions.ValidationException.getInstance("Cannot change Domain ID");
@@ -343,14 +343,14 @@ public abstract class AbstractAction<T extends BaseEntity> implements Action {
 		if (tokenRef.isDomainScoped()) {
 			return tokenRef.getDomainId();
 		} else {
-			return Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText();
+			return Config.getOpt(Config.Type.identity, "default_domain_id").asText();
 		}
 	}
 
 	// keystone.common.controller.V3Controller
 	public String getDomainidForListRequest(ContainerRequestContext request) {
 		KeystoneContext context = (KeystoneContext) request.getProperty(KeystoneContext.CONTEXT_NAME);
-		if (!Config.Instance.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean()) {
+		if (!Config.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean()) {
 			return null;
 		}
 

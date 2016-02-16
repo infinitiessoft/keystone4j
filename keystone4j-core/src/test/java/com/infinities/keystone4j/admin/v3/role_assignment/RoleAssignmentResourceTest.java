@@ -111,7 +111,7 @@ public class RoleAssignmentResourceTest extends AbstractIntegratedTest {
 	public void testListRoleAssignment() throws JsonProcessingException, IOException {
 		Response response = target("/v3/role_assignments").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		JsonNode node = JsonUtils.convertToJsonNode(ret);

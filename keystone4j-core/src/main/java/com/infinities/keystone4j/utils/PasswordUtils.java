@@ -87,10 +87,10 @@ public class PasswordUtils {
 	}
 
 	private static String verifyLengthAndtruncPassword(String password) {
-		int maxLength = Config.Instance.getOpt(Config.Type.identity, MAX_PASSWORD_LENGTH).asInteger();
+		int maxLength = Config.getOpt(Config.Type.identity, MAX_PASSWORD_LENGTH).asInteger();
 
 		if (password.length() > maxLength) {
-			if (Config.Instance.getOpt(Config.Type.DEFAULT, "strict_password_check").asBoolean()) {
+			if (Config.getOpt(Config.Type.DEFAULT, "strict_password_check").asBoolean()) {
 				throw Exceptions.PasswordVerificationError.getInstance(null, maxLength);
 			} else {
 				logger.warn(TRUNCATE_USER_PASSWORD, maxLength);

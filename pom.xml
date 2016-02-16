@@ -144,6 +144,12 @@
 			</dependency>
 
 			<dependency>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-client</artifactId>
+				<version>${jerseyVersion}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>1.9</version>
@@ -151,14 +157,14 @@
 
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcprov-jdk16</artifactId>
-				<version>1.46</version>
+				<artifactId>bcprov-jdk15on</artifactId>
+				<version>1.53</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcmail-jdk16</artifactId>
-				<version>1.46</version>
+				<artifactId>bcpkix-jdk15on</artifactId>
+				<version>1.53</version>
 			</dependency>
 
 			<!-- <dependency> <groupId>org.glassfish.jersey.media</groupId> <artifactId>jersey-media-json-jackson</artifactId> 
@@ -281,7 +287,7 @@
 				<version>2.5.1</version>
 				<scope>test</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.glassfish.jersey.containers</groupId>
 				<artifactId>jersey-container-grizzly2-servlet</artifactId>

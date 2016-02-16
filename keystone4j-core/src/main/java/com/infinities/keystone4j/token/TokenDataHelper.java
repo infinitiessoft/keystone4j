@@ -71,7 +71,7 @@ public class TokenDataHelper {
 		if (tokenData.getCatalog() != null) {
 			return;
 		}
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
+		boolean enabled = Config.getOpt(Config.Type.trust, "enabled").asBoolean();
 
 		if (enabled && trust != null) {
 			userid = trust.getTrustorUserId();
@@ -89,7 +89,7 @@ public class TokenDataHelper {
 			return;
 		}
 
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
+		boolean enabled = Config.getOpt(Config.Type.trust, "enabled").asBoolean();
 
 		String tokenUserid;
 		String tokenProjectid;
@@ -173,7 +173,7 @@ public class TokenDataHelper {
 		}
 
 		User userRef = this.identityApi.getUser(userid);
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
+		boolean enabled = Config.getOpt(Config.Type.trust, "enabled").asBoolean();
 		if (enabled && trust != null && tokenData.getTrust() != null) {
 			User trustorUserRef = this.identityApi.getUser(trust.getTrustorUserId());
 			try {
@@ -241,7 +241,7 @@ public class TokenDataHelper {
 		// if x in token:
 		// token_data[x] = token[x]
 
-		if (Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean() && trust != null) {
+		if (Config.getOpt(Config.Type.trust, "enabled").asBoolean() && trust != null) {
 			if (!trust.getTrusteeUserId().equals(userid)) {
 				throw Exceptions.ForbiddenException.getInstance("User is not a trustee");
 			}

@@ -86,7 +86,7 @@ public class AuthContextMiddleware implements Middleware {
 		if (requestContext.getHeaders().containsKey(AUTH_TOKEN_HEADER)) {
 			tokenid = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER).replace("[null]", "").trim();
 		}
-		String adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText();
+		String adminToken = Config.getOpt(Config.Type.DEFAULT, "admin_token").asText();
 		logger.debug("adminToken: {}", adminToken);
 		logger.debug("userToken: {}", tokenid);
 		if (tokenid.equals(adminToken)) {

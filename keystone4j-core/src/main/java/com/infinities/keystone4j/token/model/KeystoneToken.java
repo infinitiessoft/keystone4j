@@ -72,8 +72,8 @@ public class KeystoneToken {
 			throw Exceptions.UnsupportedTokenVersionException.getInstance();
 		}
 		this.tokenid = tokenid;
-		this.shortid = Cms.Instance.hashToken(tokenid,
-				Cms.Algorithm.valueOf(Config.Instance.getOpt(Config.Type.token, "hash_algorithm").asText()));
+		this.shortid = Cms.hashToken(tokenid,
+				Cms.Algorithm.valueOf(Config.getOpt(Config.Type.token, "hash_algorithm").asText()));
 
 		if (this.isProjectScoped() && this.isDomainScoped()) {
 			throw Exceptions.UnexpectedException.getInstance("Found invalid token: scoped to both project and domain.");
@@ -142,7 +142,7 @@ public class KeystoneToken {
 			if (V3.equals(version)) {
 				return ((TokenData) tokenData).getUser().getDomain().getId();
 			} else if (tokenData.getUser() != null) {
-				return Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText();
+				return Config.getOpt(Config.Type.identity, "default_domain_id").asText();
 			}
 		} catch (Exception e) {
 
@@ -201,7 +201,7 @@ public class KeystoneToken {
 			if (V3.equals(version)) {
 				return ((TokenData) tokenData).getProject().getDomain().getId();
 			} else if (((Access) tokenData).getToken().getTenant() != null) {
-				return Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText();
+				return Config.getOpt(Config.Type.identity, "default_domain_id").asText();
 			}
 		} catch (Exception e) {
 
@@ -214,7 +214,7 @@ public class KeystoneToken {
 			if (V3.equals(version)) {
 				return ((TokenData) tokenData).getProject().getDomain().getId();
 			} else if (((Access) tokenData).getToken().getTenant() != null) {
-				return Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText();
+				return Config.getOpt(Config.Type.identity, "default_domain_id").asText();
 			}
 		} catch (Exception e) {
 

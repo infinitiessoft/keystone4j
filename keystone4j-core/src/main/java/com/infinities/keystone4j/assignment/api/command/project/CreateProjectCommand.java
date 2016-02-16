@@ -71,7 +71,7 @@ public class CreateProjectCommand extends AbstractAssignmentCommand implements N
 		if (parentsList == null) {
 			parentsList = this.getAssignmentApi().listProjectParents(projectid, null);
 		}
-		int maxDepth = Config.Instance.getOpt(Config.Type.DEFAULT, "max_project_tree_depth").asInteger();
+		int maxDepth = Config.getOpt(Config.Type.DEFAULT, "max_project_tree_depth").asInteger();
 		if (getHierarchyDepth(parentsList) > maxDepth) {
 			throw Exceptions.ForbiddenActionException.getInstance(String.format(
 					"max hierarchy depth reached for %s branch.", projectid));

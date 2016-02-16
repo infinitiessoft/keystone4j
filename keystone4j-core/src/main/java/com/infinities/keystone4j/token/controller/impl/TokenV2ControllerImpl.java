@@ -76,12 +76,12 @@ public class TokenV2ControllerImpl extends BaseController implements TokenContro
 
 	@Override
 	public Response getCaCert() {
-		return getCertificate(Config.Instance.getOpt(Config.Type.signing, "ca_certs").asText());
+		return getCertificate(Config.getOpt(Config.Type.signing, "ca_certs").asText());
 	}
 
 	@Override
 	public Response getSigningCert() {
-		return getCertificate(Config.Instance.getOpt(Config.Type.signing, "certfile").asText());
+		return getCertificate(Config.getOpt(Config.Type.signing, "certfile").asText());
 	}
 
 	@Override

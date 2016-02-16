@@ -105,7 +105,7 @@ public class V2TokenDataHelper {
 		if (metadataRef.getRoles() != null) {
 			access.getMetadata().setRoles(new ArrayList<String>(metadataRef.getRoles()));
 		}
-		if (Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean() && trustRef != null) {
+		if (Config.getOpt(Config.Type.trust, "enabled").asBoolean() && trustRef != null) {
 			Access.Trust trust = new Access.Trust();
 			trust.setTrusteeUserId(trustRef.getTrusteeUserId());
 			trust.setId(trustRef.getId());

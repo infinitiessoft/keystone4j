@@ -71,7 +71,7 @@
 //	@Test
 //	public void testWithAdminToken() {
 //		Response response = target("/").request()
-//				.header(Middleware.AUTH_TOKEN_HEADER, Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+//				.header(Middleware.AUTH_TOKEN_HEADER, Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 //				.get();
 //		assertEquals(300, response.getStatus());
 //	}

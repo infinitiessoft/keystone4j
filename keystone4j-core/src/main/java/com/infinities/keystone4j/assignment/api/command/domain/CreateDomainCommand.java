@@ -42,7 +42,7 @@ public class CreateDomainCommand extends AbstractAssignmentCommand implements No
 	@Override
 	public Domain execute() throws Exception {
 		if (!this.getIdentityApi().isMultipleDomainsSupported()
-				&& !domainid.equals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText())) {
+				&& !domainid.equals(Config.getOpt(Config.Type.identity, "default_domain_id").asText())) {
 			throw Exceptions.ForbiddenException.getInstance("Multiple domains are not supported");
 		}
 		Domain ret = this.getAssignmentDriver().createDomain(domainid, domain);

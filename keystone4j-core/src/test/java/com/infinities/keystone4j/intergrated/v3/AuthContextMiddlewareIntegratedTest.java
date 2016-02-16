@@ -48,7 +48,7 @@ public class AuthContextMiddlewareIntegratedTest extends AbstractIntegratedTest 
 	@Test
 	public void testWithAdminToken() {
 		Response response = target("/v3/users").request()
-				.header(Middleware.AUTH_TOKEN_HEADER, Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.header(Middleware.AUTH_TOKEN_HEADER, Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.get();
 		assertEquals(200, response.getStatus());
 	}

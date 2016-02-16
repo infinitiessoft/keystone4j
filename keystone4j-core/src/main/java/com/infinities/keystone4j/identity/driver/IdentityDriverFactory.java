@@ -32,7 +32,7 @@ public class IdentityDriverFactory implements Factory<IdentityDriver> {
 
 	@Override
 	public IdentityDriver provide() {
-		String driver = Config.Instance.getOpt(Config.Type.identity, "driver").asText();
+		String driver = Config.getOpt(Config.Type.identity, "driver").asText();
 		try {
 			Class<?> c = Class.forName(driver);
 			return (IdentityDriver) c.newInstance();

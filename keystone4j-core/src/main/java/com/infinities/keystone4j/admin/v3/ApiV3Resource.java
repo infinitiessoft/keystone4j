@@ -76,7 +76,7 @@ public class ApiV3Resource {
 	@Path("/OS-INHERIT")
 	// assignment
 	public Class<OSInheritResource> getOSInheritResource() {
-		if (Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean()) {
+		if (Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean()) {
 			return OSInheritResource.class;
 		} else {
 			throw Exceptions.NotFoundException.getInstance();

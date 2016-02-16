@@ -121,18 +121,18 @@
 //		assertEquals("admin", ret.getName());
 //		assertEquals("admin project", ret.getDescription());
 //		assertNotNull(ret.getDomain());
-//		assertEquals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
+//		assertEquals(Config.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
 //	}
 //
 //	@Test
 //	public void testGetProjectByName() {
-//		Project ret = driver.getProjectByName("admin", Config.Instance.getOpt(Config.Type.identity, "default_domain_id")
+//		Project ret = driver.getProjectByName("admin", Config.getOpt(Config.Type.identity, "default_domain_id")
 //				.asText());
 //		assertEquals("79ea2c65-4679-441f-a596-8aec16752a2f", ret.getId());
 //		assertEquals("admin", ret.getName());
 //		assertEquals("admin project", ret.getDescription());
 //		assertNotNull(ret.getDomain());
-//		assertEquals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
+//		assertEquals(Config.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
 //	}
 //
 //	@Test
@@ -153,14 +153,14 @@
 //
 //	@Test
 //	public void testListProjects() {
-//		List<Project> rets = driver.listProjects(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+//		List<Project> rets = driver.listProjects(Config.getOpt(Config.Type.identity, "default_domain_id").asText());
 //		assertEquals(2, rets.size());
 //		// Project ret = rets.get(0);
 //		// assertEquals("79ea2c65-4679-441f-a596-8aec16752a2f", ret.getId());
 //		// assertEquals("admin", ret.getName());
 //		// assertEquals("admin project", ret.getDescription());
 //		// assertNotNull(ret.getDomain());
-//		// assertEquals(Config.Instance.getOpt(Config.Type.identity,
+//		// assertEquals(Config.getOpt(Config.Type.identity,
 //		// "default_domain_id").asText(), ret.getDomain().getId());
 //	}
 //
@@ -173,7 +173,7 @@
 //		assertEquals("admin", ret.getName());
 //		assertEquals("admin project", ret.getDescription());
 //		assertNotNull(ret.getDomain());
-//		assertEquals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
+//		assertEquals(Config.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
 //	}
 //
 //	@Test(expected = WebApplicationException.class)
@@ -224,7 +224,7 @@
 //		input.setEnabled(false);
 //		input.setName("new name");
 //		Domain domain = new Domain();
-//		domain.setId(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+//		domain.setId(Config.getOpt(Config.Type.identity, "default_domain_id").asText());
 //		input.setDomain(domain);
 //		Project ret = driver.createProject(input);
 //		assertNotNull(ret.getId());
@@ -232,7 +232,7 @@
 //		assertEquals(input.getDescription(), ret.getDescription());
 //		assertEquals(input.getEnabled(), ret.getEnabled());
 //		assertNotNull(ret.getDomain());
-//		assertEquals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
+//		assertEquals(Config.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
 //	}
 //
 //	@Test
@@ -247,15 +247,15 @@
 //		assertEquals(input.getDescription(), ret.getDescription());
 //		assertEquals(input.getEnabled(), ret.getEnabled());
 //		assertNotNull(ret.getDomain());
-//		assertEquals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
+//		assertEquals(Config.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getDomain().getId());
 //	}
 //
 //	@Test
 //	public void testDeleteProject() {
-//		List<Project> ret = driver.listProjects(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+//		List<Project> ret = driver.listProjects(Config.getOpt(Config.Type.identity, "default_domain_id").asText());
 //		assertEquals(2, ret.size());
 //		driver.deleteProject("79ea2c65-4679-441f-a596-8aec16752a2f");
-//		ret = driver.listProjects(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+//		ret = driver.listProjects(Config.getOpt(Config.Type.identity, "default_domain_id").asText());
 //		assertEquals(1, ret.size());
 //	}
 //
@@ -277,7 +277,7 @@
 //		List<Domain> ret = driver.listDomains();
 //		assertEquals(2, ret.size());
 //		// Domain retDomain = ret.get(0);
-//		// assertEquals(Config.Instance.getOpt(Config.Type.identity,
+//		// assertEquals(Config.getOpt(Config.Type.identity,
 //		// "default_domain_id").asText(), retDomain.getId());
 //		// assertEquals("newdomain", retDomain.getName());
 //		// assertEquals("my domain", retDomain.getDescription());
@@ -285,8 +285,8 @@
 //
 //	@Test
 //	public void testGetDomain() {
-//		Domain ret = driver.getDomain(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
-//		assertEquals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getId());
+//		Domain ret = driver.getDomain(Config.getOpt(Config.Type.identity, "default_domain_id").asText());
+//		assertEquals(Config.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getId());
 //		assertEquals("newdomain", ret.getName());
 //		assertEquals("my domain", ret.getDescription());
 //	}
@@ -294,7 +294,7 @@
 //	@Test
 //	public void testGetDomainByName() {
 //		Domain ret = driver.getDomainByName("newdomain");
-//		assertEquals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getId());
+//		assertEquals(Config.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getId());
 //		assertEquals("newdomain", ret.getName());
 //		assertEquals("my domain", ret.getDescription());
 //	}
@@ -305,8 +305,8 @@
 //		input.setDescription("update desc");
 //		input.setEnabled(false);
 //		input.setName("update name");
-//		Domain ret = driver.updateDomain(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), input);
-//		assertEquals(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getId());
+//		Domain ret = driver.updateDomain(Config.getOpt(Config.Type.identity, "default_domain_id").asText(), input);
+//		assertEquals(Config.getOpt(Config.Type.identity, "default_domain_id").asText(), ret.getId());
 //		assertEquals(input.getName(), ret.getName());
 //		assertEquals(input.getDescription(), ret.getDescription());
 //		assertEquals(input.getEnabled(), ret.getEnabled());
@@ -316,7 +316,7 @@
 //	public void testDeleteDomain() {
 //		List<Domain> ret = driver.listDomains();
 //		assertEquals(2, ret.size());
-//		driver.deleteDomain(Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+//		driver.deleteDomain(Config.getOpt(Config.Type.identity, "default_domain_id").asText());
 //		ret = driver.listDomains();
 //		assertEquals(1, ret.size());
 //	}

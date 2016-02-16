@@ -45,14 +45,14 @@ public class EnforcerImpl implements Enforcer {
 	public EnforcerImpl(String policyFile, Map<String, BaseCheck> rules, String defaultRule, boolean useConf) {
 		this.defaultRule = defaultRule;
 		if (Strings.isNullOrEmpty(this.defaultRule)) {
-			this.defaultRule = Config.Instance.getOpt(Config.Type.DEFAULT, "policy_default_rule").asText();
+			this.defaultRule = Config.getOpt(Config.Type.DEFAULT, "policy_default_rule").asText();
 		}
 		this.rules = new Rules(rules, defaultRule);
 
 		this.policyPath = null;
 		this.policyFile = policyFile;
 		if (Strings.isNullOrEmpty(this.policyFile)) {
-			this.policyFile = Config.Instance.getOpt(Config.Type.DEFAULT, "policy_file").asText();
+			this.policyFile = Config.getOpt(Config.Type.DEFAULT, "policy_file").asText();
 		}
 		this.useConf = useConf;
 		logger.debug("defaultRule in enforcer: {}", defaultRule);
@@ -112,7 +112,7 @@ public class EnforcerImpl implements Enforcer {
 	}
 
 	private String getPolicyPath(String path) {
-		String policyFile = Config.Instance.findFile(path);
+		String policyFile = Config.findFile(path);
 
 		if (!Strings.isNullOrEmpty(policyFile)) {
 			return policyFile;

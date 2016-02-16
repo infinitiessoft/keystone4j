@@ -64,7 +64,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 
 
 	// private final String DEFAULT_DOMAIN_ID =
-	// Config.Instance.getOpt(Config.Type.identity,
+	// Config.getOpt(Config.Type.identity,
 	// "default_domain_id").asText();
 
 	public BaseProvider(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi, TrustApi trustApi) {
@@ -108,7 +108,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 			Map<String, Map<String, Map<String, String>>> catalogRef) {
 		Metadata metadataRef = tokenRef.getMetadata();
 		Trust trustRef = null;
-		if (Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean() && metadataRef != null
+		if (Config.getOpt(Config.Type.trust, "enabled").asBoolean() && metadataRef != null
 				&& !Strings.isNullOrEmpty(metadataRef.getTrustId())) {
 			trustRef = trustApi.getTrust(metadataRef.getTrustId(), false);
 		}
@@ -123,7 +123,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 	public TokenIdAndData issueV3Token(String userid, List<String> methodNames, Calendar expiresAt, String projectid,
 			String domainid, com.infinities.keystone4j.auth.controller.action.AbstractAuthAction.AuthContext authContext,
 			Trust trust, Metadata metadataRef, boolean includeCatalog, String parentAuditId) throws Exception {
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
+		boolean enabled = Config.getOpt(Config.Type.trust, "enabled").asBoolean();
 		if (enabled && trust == null && metadataRef != null && !Strings.isNullOrEmpty(metadataRef.getTrustId())) {
 			trust = trustApi.getTrust(metadataRef.getTrustId(), false);
 		}
@@ -178,7 +178,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 							.getCatalog(tokenRef.getUser().getId(), tokenRef.getTenant().getId(), metadataRef);
 				}
 				Trust trustRef = null;
-				if (Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean()
+				if (Config.getOpt(Config.Type.trust, "enabled").asBoolean()
 						&& !Strings.isNullOrEmpty(metadataRef.getTrustId())) {
 					trustRef = trustApi.getTrust(metadataRef.getTrustId(), false);
 				}
@@ -230,7 +230,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 		if (tokenRef.getTokenData() != null && TokenProviderApi.V3.equals(getTokenVersion(tokenRef.getTokenData()))) {
 			String msg = "Non-default domain is not supported";
 
-			if (!Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText()
+			if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText()
 					.equals(((TokenDataWrapper) tokenRef.getTokenData()).getToken().getUser().getDomain().getId())) {
 				throw Exceptions.UnauthorizedException.getInstance(msg);
 			}
@@ -243,27 +243,27 @@ public abstract class BaseProvider implements TokenProviderDriver {
 				Project project = ((TokenDataWrapper) tokenRef.getTokenData()).getToken().getProject();
 				String projectDomainId = project.getDomain().getId();
 
-				if (!Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText().equals(projectDomainId)) {
+				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText().equals(projectDomainId)) {
 					throw Exceptions.UnauthorizedException.getInstance(msg);
 				}
 			}
 
 			Metadata metadataRef = tokenRef.getMetadata();
-			if (Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean()
+			if (Config.getOpt(Config.Type.trust, "enabled").asBoolean()
 					&& !Strings.isNullOrEmpty(metadataRef.getTrustId())) {
 				Trust trustRef = trustApi.getTrust(metadataRef.getTrustId(), false);
 				User trusteeUserRef = identityApi.getUser(trustRef.getTrusteeUserId());
-				if (!Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText()
+				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText()
 						.equals(trusteeUserRef.getDomainId())) {
 					throw Exceptions.UnauthorizedException.getInstance(msg);
 				}
 				User trustorUserRef = identityApi.getUser(trustRef.getTrustorUserId());
-				if (!Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText()
+				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText()
 						.equals(trustorUserRef.getDomainId())) {
 					throw Exceptions.UnauthorizedException.getInstance(msg);
 				}
 				Project projectRef = assignmentApi.getProject(trustRef.getProjectId());
-				if (!Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText()
+				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText()
 						.equals(projectRef.getDomainId())) {
 					throw Exceptions.UnauthorizedException.getInstance(msg);
 				}
@@ -272,7 +272,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 	}
 
 	public static Calendar getDefaultExpireTime() {
-		int expireDelta = Config.Instance.getOpt(Config.Type.token, "expiration").asInteger();
+		int expireDelta = Config.getOpt(Config.Type.token, "expiration").asInteger();
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.SECOND, expireDelta);
 		return calendar;

@@ -133,7 +133,7 @@ public class TokenJpaDriver implements TokenDriver {
 
 	@Override
 	public List<String> listTokens(String userId, String tenantId, String trustId, String consumerId) {
-		if (!Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+		if (!Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 			return new ArrayList<String>();
 		}
 		if (!Strings.isNullOrEmpty(trustId)) {

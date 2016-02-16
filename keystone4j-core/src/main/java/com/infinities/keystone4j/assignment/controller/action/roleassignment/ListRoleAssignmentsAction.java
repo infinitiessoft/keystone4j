@@ -262,7 +262,7 @@ public class ListRoleAssignmentsAction extends AbstractRoleAssignmentAction impl
 	}
 
 	private boolean filterInherited(Assignment entry) {
-		if (entry.getInheritedToProjects() != null && !Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean()) {
+		if (entry.getInheritedToProjects() != null && !Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean()) {
 			return false;
 		}
 		return true;

@@ -1,21 +1,20 @@
 /*******************************************************************************
- * # Copyright 2015 InfinitiesSoft Solutions Inc.
- * #
- * # Licensed under the Apache License, Version 2.0 (the "License"); you may
- * # not use this file except in compliance with the License. You may obtain
- * # a copy of the License at
- * #
- * #      http://www.apache.org/licenses/LICENSE-2.0
- * #
- * # Unless required by applicable law or agreed to in writing, software
- * # distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * # License for the specific language governing permissions and limitations
- * # under the License.
+ * Copyright 2015 InfinitiesSoft Solutions Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
  *******************************************************************************/
 package com.infinities.keystone4j.utils;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +29,7 @@ import java.security.cert.CertPathBuilderException;
 import java.security.cert.CertStoreException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,10 +37,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.DataFormatException;
 
-import org.apache.commons.codec.DecoderException;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -49,6 +47,7 @@ import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -56,9 +55,12 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.util.Store;
 import org.bouncycastle.util.encoders.Base64;
+import org.bouncycastle.util.encoders.DecoderException;
+import org.bouncycastle.util.encoders.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
@@ -67,9 +69,9 @@ import com.google.common.io.BaseEncoding;
 import com.infinities.keystone4j.ssl.Base64Verifier;
 import com.infinities.keystone4j.ssl.CertificateVerificationException;
 import com.infinities.keystone4j.ssl.CertificateVerifier;
+import com.infinities.keystone4j.ssl.X509CertificateParser;
 
-public enum Cms {
-	Instance;
+public class Cms {
 
 	public enum Algorithm {
 		md5, sha1, sha256, sha512;
@@ -97,30 +99,32 @@ public enum Cms {
 	}
 
 	// certFile public_key & keyFile private_key
-	public String signToken(String text, String signingCertFileName, String signingKeyFile) throws CertificateException,
-			NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException, IOException, CMSException,
-			CertStoreException {
+	public static String signToken(String text, String signingCertFileName, String signingKeyFile)
+			throws CertificateException, NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException,
+			IOException, CMSException, CertStoreException, InvalidKeySpecException {
 		String output = cmsSignData(text, signingCertFileName, signingKeyFile, null);
-		return toToken(output);
-	}
-
-	private String toToken(String output) {
-		output = output.replace('/', '-');
-		output = output.replace(BEGIN_CMS, "");
-		output = output.replace(END_CMS, "");
-		output = output.replace("\n", "");
 		return output;
+		// return toToken(output);
 	}
 
-	public String signText(String text, String signingCertFileName, String signingKeyFile) throws CertificateException,
-			NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException, IOException, CMSException,
-			CertStoreException {
+	// private static String toToken(String output) {
+	// output = output.replace('/', '-');
+	// output = output.replace(BEGIN_CMS, "");
+	// output = output.replace(END_CMS, "");
+	// output = output.replace("\n", "");
+	// return output;
+	// }
+
+	public static String signText(String text, String signingCertFileName, String signingKeyFile)
+			throws CertificateException, NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException,
+			IOException, CMSException, CertStoreException, InvalidKeySpecException {
 		return cmsSignData(text, signingCertFileName, signingKeyFile, null);
 	}
 
-	private String cmsSignData(String data, String signingCertFileName, String signingKeyFile, String outform)
+	@SuppressWarnings("rawtypes")
+	private static String cmsSignData(String data, String signingCertFileName, String signingKeyFile, String outform)
 			throws CertificateException, IOException, NoSuchAlgorithmException, NoSuchProviderException, CMSException,
-			OperatorCreationException, CertStoreException {
+			OperatorCreationException, CertStoreException, InvalidKeySpecException {
 		if (Strings.isNullOrEmpty(outform)) {
 			outform = PKI_ASN1_FORM;
 		}
@@ -129,7 +133,6 @@ public enum Cms {
 		CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
 		logger.debug("signingCertFile: {}, caFile:{}", new Object[] { signingCertFileName, signingKeyFile });
 		X509Certificate signercert = generateCertificate(signingCertFileName);
-		// X509Certificate cacert = generateCertificate(caFileName);
 		PrivateKey key = generatePrivateKey(signingKeyFile);
 		ContentSigner sha1Signer = new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(key);
 		gen.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider(
@@ -138,17 +141,16 @@ public enum Cms {
 		certList.add(signercert);
 		Store certs = new JcaCertStore(certList);
 		gen.addCertificates(certs);
-
 		CMSProcessableByteArray b = new CMSProcessableByteArray(data.getBytes());
 		CMSSignedData signed = gen.generate(b, true);
-		String signedContent = new String(DERtoPEM(signed.getContentInfo().getDEREncoded(), "CMS"));
-		return signedContent;
+		return BaseEncoding.base64Url().encode(signed.toASN1Structure().getEncoded("DER"));
 	}
 
-	@SuppressWarnings("rawtypes")
-	public String verifySignature(byte[] sigbytes, String signingCertFileName, String caFileName) throws CMSException,
-			CertificateException, OperatorCreationException, NoSuchAlgorithmException, NoSuchProviderException,
-			CertPathBuilderException, InvalidAlgorithmParameterException, IOException, CertificateVerificationException {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static String verifySignature(byte[] sigbytes, String signingCertFileName, String caFileName)
+			throws CMSException, CertificateException, OperatorCreationException, NoSuchAlgorithmException,
+			NoSuchProviderException, CertPathBuilderException, InvalidAlgorithmParameterException, IOException,
+			CertificateVerificationException {
 		logger.debug("signingCertFile: {}, caFile:{}", new Object[] { signingCertFileName, caFileName });
 		Security.addProvider(new BouncyCastleProvider());
 		X509Certificate signercert = generateCertificate(signingCertFileName);
@@ -157,7 +159,7 @@ public enum Cms {
 		additionalCerts.add(cacert);
 
 		CertificateVerifier.verifyCertificate(signercert, additionalCerts, true); // .validateKeyChain(signercert,
-		// certs);
+																					// certs);
 		if (Base64Verifier.isBase64(sigbytes)) {
 			try {
 				sigbytes = Base64.decode(sigbytes);
@@ -167,17 +169,12 @@ public enum Cms {
 			}
 		}
 
-		// sigbytes = Base64.decode(sigbytes);
-
 		// --- Use Bouncy Castle provider to verify included-content CSM/PKCS#7
 		// signature ---
-		ASN1InputStream in = null;
 		try {
 			logger.debug("sigbytes size: {}", sigbytes.length);
-			in = new ASN1InputStream(new ByteArrayInputStream(sigbytes), Integer.MAX_VALUE);
-
-			CMSSignedData s = new CMSSignedData(ContentInfo.getInstance(in.readObject()));
-			Store store = s.getCertificates();
+			CMSSignedData s = new CMSSignedData(sigbytes);
+			Store<?> store = s.getCertificates();
 			SignerInformationStore signers = s.getSignerInfos();
 			Collection c = signers.getSigners();
 			Iterator it = c.iterator();
@@ -199,9 +196,8 @@ public enum Cms {
 					cert = (X509Certificate) certIt.next();
 				}
 
-				// if (signer.verify(new
-				// JcaSimpleSignerInfoVerifierBuilder().setProvider("BC").build(cert)))
-				// verified++;
+				if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider("BC").build(cert)))
+					verified++;
 			}
 
 			if (verified == 0) {
@@ -218,10 +214,6 @@ public enum Cms {
 		} catch (Exception ex) {
 			logger.error("Couldn't verify included-content CMS signature", ex);
 			throw new RuntimeException("Couldn't verify included-content CMS signature", ex);
-		} finally {
-			if (in != null) {
-				in.close();
-			}
 		}
 	}
 
@@ -274,7 +266,8 @@ public enum Cms {
 		}
 	}
 
-	private static PrivateKey generatePrivateKey(String signingKeyFile) throws CertificateException, IOException {
+	private static PrivateKey generatePrivateKey(String signingKeyFile) throws CertificateException, IOException,
+			InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException {
 		PrivateKey key = keyMap.get(signingKeyFile);
 		if (key != null) {
 			return key;
@@ -299,8 +292,8 @@ public enum Cms {
 		return userToken.startsWith(PKI_ASN1_PREFIX);
 	}
 
-	public String hashToken(String tokenid, Algorithm mode) throws UnsupportedEncodingException, NoSuchAlgorithmException,
-			DecoderException {
+	public static String hashToken(String tokenid, Algorithm mode) throws UnsupportedEncodingException,
+			NoSuchAlgorithmException, DecoderException {
 		if (mode == null) {
 			mode = Algorithm.md5;
 		}
@@ -335,7 +328,7 @@ public enum Cms {
 		return sb.toString();
 	}
 
-	public String tokenToCms(String signedText) {
+	public static String tokenToCms(String signedText) {
 		String copyOfText = signedText.replace('-', '/');
 		String formatted = "-----BEGIN CMS-----\n";
 		int lineLength = 64;
@@ -354,12 +347,74 @@ public enum Cms {
 		return formatted;
 	}
 
-	public String pkizSign(String text, String certfile, String keyfile) throws CertificateException,
+	public static String pkizSign(String text, String certfile, String keyfile) throws CertificateException,
 			NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException, CertStoreException, IOException,
-			CMSException {
+			CMSException, InvalidKeySpecException {
 		String signed = cmsSignData(text, certfile, keyfile, PKIZ_CMS_FORM);
 		byte[] compressed = CompressionUtils.compress(signed.getBytes());
 		String encoded = PKIZ_PREFIX + BaseEncoding.base64Url().encode(compressed);
 		return encoded;
 	}
+
+	public static String cmsVerify(String formatted, String signingCertFileName, String caFileName)
+			throws CertificateException, OperatorCreationException, NoSuchAlgorithmException, NoSuchProviderException,
+			CertPathBuilderException, InvalidAlgorithmParameterException, CMSException, IOException,
+			CertificateVerificationException {
+		return cmsVerify(formatted, signingCertFileName, caFileName, PKI_ASN1_FORM);
+	}
+
+	public static String cmsVerify(String formatted, String signingCertFileName, String caFileName, String inform)
+			throws CertificateException, OperatorCreationException, NoSuchAlgorithmException, NoSuchProviderException,
+			CertPathBuilderException, InvalidAlgorithmParameterException, CMSException, IOException,
+			CertificateVerificationException {
+		logger.debug("data verify: {}", formatted);
+		formatted = formatted.replace(BEGIN_CMS, "").replace(END_CMS, "").trim();
+		logger.debug("after formatted data: {}", formatted);
+		byte[] data = encodingForForm(formatted, inform);
+
+		return verifySignature(data, signingCertFileName, caFileName);
+	}
+
+	private static byte[] encodingForForm(String formatted, String inform) {
+		if (PKI_ASN1_FORM.equals(inform)) {
+			return formatted.getBytes(Charsets.UTF_8);
+		} else if (PKIZ_CMS_FORM.equals(inform)) {
+			return Hex.encode(formatted.getBytes());
+		}
+		return null;
+	}
+
+	public static String pkizUncompress(String signedText) throws DataFormatException {
+		String text = signedText.substring(PKIZ_PREFIX.length());
+		byte[] unencoded = BaseEncoding.base64Url().decode(text);
+		byte[] uncompressedByte = CompressionUtils.decompress(unencoded);
+		return new String(uncompressedByte);
+	}
+
+	public static String cmsHashToken(String tokenid, Algorithm mode) {
+		if (mode == null) {
+			mode = Algorithm.md5;
+		}
+
+		if (Strings.isNullOrEmpty(tokenid)) {
+			throw new NullPointerException("invalid tokenid");
+		}
+
+		if (isAsn1Token(tokenid) || isPkiz(tokenid)) {
+			HashFunction hf = Hashing.md5();
+			if (mode == Algorithm.sha1) {
+				hf = Hashing.sha1();
+			} else if (mode == Algorithm.sha256) {
+				hf = Hashing.sha256();
+			} else if (mode == Algorithm.sha512) {
+				hf = Hashing.sha512();
+			}
+			HashCode hc = hf.newHasher().putString(tokenid).hash();
+			return toHex(hc.asBytes());
+
+		} else {
+			return tokenid;
+		}
+	}
+
 }

@@ -104,7 +104,7 @@ public class RoleAssignmentDao extends AbstractDao<RoleAssignment> {
 		Root<RoleAssignment> root = cq.from(getEntityType());
 		Predicate predicate1 = cb.and(cb.equal(root.get("type"), AssignmentType.GROUP_PROJECT),
 				cb.isFalse(root.<Boolean> get("inherited")), cb.equal(root.get("targetId"), projectid));
-		if (Config.Instance.getOpt(Type.os_inherit, "enabled").asBoolean()) {
+		if (Config.getOpt(Type.os_inherit, "enabled").asBoolean()) {
 			Predicate predicate2 = cb.and(cb.equal(root.get("type"), AssignmentType.GROUP_DOMAIN),
 					cb.isTrue(root.<Boolean> get("inherited")), cb.equal(root.get("targetId"), projectDomainId));
 			predicate1 = cb.or(predicate1, predicate2);

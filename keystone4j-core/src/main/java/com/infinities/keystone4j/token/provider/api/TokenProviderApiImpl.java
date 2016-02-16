@@ -143,13 +143,12 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 	}
 
 	private BaseProvider getTokenProvider() {
-		if (Config.Instance.getOpt(Config.Type.signing, "token_format") != null
-				&& !Strings.isNullOrEmpty(Config.Instance.getOpt(Config.Type.signing, "token_format").asText())) {
+		if (Config.getOpt(Config.Type.signing, "token_format") != null
+				&& !Strings.isNullOrEmpty(Config.getOpt(Config.Type.signing, "token_format").asText())) {
 			logger.warn("[signing] token_format is deprecated. Please change to setting the [token] provider configuration value instead");
 			try {
 
-				BaseProvider mapped = FORMAT_TO_PROVIDER.get(Config.Instance.getOpt(Config.Type.signing, "token_format")
-						.asText());
+				BaseProvider mapped = FORMAT_TO_PROVIDER.get(Config.getOpt(Config.Type.signing, "token_format").asText());
 				return mapped;
 			} catch (Exception e) {
 				throw Exceptions.UnexpectedException
@@ -157,10 +156,10 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 			}
 		}
 
-		if (Config.Instance.getOpt(Config.Type.token, "provider") == null) {
+		if (Config.getOpt(Config.Type.token, "provider") == null) {
 			return UUID_PROVIDER;
 		} else {
-			String provider = Config.Instance.getOpt(Config.Type.token, "provider").asText();
+			String provider = Config.getOpt(Config.Type.token, "provider").asText();
 			logger.debug("provider: {}", provider);
 			String[] splits = provider.split("\\.");
 			String providerStr = splits[splits.length - 1];
@@ -173,8 +172,7 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 	@Override
 	public String getUniqueId(String tokenId) throws UnsupportedEncodingException, NoSuchAlgorithmException,
 			DecoderException {
-		return Cms.Instance.hashToken(tokenId,
-				Algorithm.valueOf(Config.Instance.getOpt(Config.Type.token, "hash_algorithm").asText()));
+		return Cms.hashToken(tokenId, Algorithm.valueOf(Config.getOpt(Config.Type.token, "hash_algorithm").asText()));
 	}
 
 	@Override
@@ -236,7 +234,7 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 
 		@Override
 		public void invoke(String service, String resourceType, Actions operation, Payload payload) throws Exception {
-			if (Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+			if (Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 				String trustId = (String) payload.getResourceInfo();
 				Trust trust = trustApi.getTrust(trustId, true);
 				getPersistence().deleteTokens(trust.getTrustorUserId(), null, trustId, null);
@@ -253,7 +251,7 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 
 		@Override
 		public void invoke(String service, String resourceType, Actions operation, Payload payload) throws Exception {
-			if (Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+			if (Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 				String userId = (String) payload.getResourceInfo();
 				getPersistence().deleteTokensForUser(userId, null);
 			}
@@ -265,7 +263,7 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 
 		@Override
 		public void invoke(String service, String resourceType, Actions operation, Payload payload) throws Exception {
-			if (Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+			if (Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 				String domainId = (String) payload.getResourceInfo();
 				getPersistence().deleteTokensForDomain(domainId);
 			}
@@ -277,7 +275,7 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 
 		@Override
 		public void invoke(String service, String resourceType, Actions operation, Payload payload) throws Exception {
-			if (Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+			if (Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 				String userId = ((com.infinities.keystone4j.assignment.api.command.AbstractAssignmentCommand.Payload) payload
 						.getResourceInfo()).getUserid();
 				String projectId = ((com.infinities.keystone4j.assignment.api.command.AbstractAssignmentCommand.Payload) payload
@@ -292,7 +290,7 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 
 		@Override
 		public void invoke(String service, String resourceType, Actions operation, Payload payload) throws Exception {
-			if (Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+			if (Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 				String projectId = (String) payload.getResourceInfo();
 				getPersistence().deleteTokensForUsers(assignmentApi.listUserIdsForProject(projectId), projectId);
 			}
@@ -304,7 +302,7 @@ public class TokenProviderApiImpl implements TokenProviderApi {
 
 		@Override
 		public void invoke(String service, String resourceType, Actions operation, Payload payload) throws Exception {
-			if (Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+			if (Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 				String userId = ((UserIdAndConsumerId) payload.getResourceInfo()).getUserId();
 				String consumerId = ((UserIdAndConsumerId) payload.getResourceInfo()).getConsumerId();
 				getPersistence().deleteTokens(userId, null, null, consumerId);

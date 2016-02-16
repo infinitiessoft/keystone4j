@@ -39,6 +39,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.io.BaseEncoding;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.intergrated.v3.AbstractIntegratedTest;
 import com.infinities.keystone4j.model.token.Auth;
@@ -92,14 +93,15 @@ public class TokenResourceTest extends AbstractIntegratedTest {
 			IOException, CertificateVerificationException {
 		Response response = target("/v2.0/tokens/revoked").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		SignedWrapper signedWrapper = response.readEntity(SignedWrapper.class);
 		String formatted = signedWrapper.getSigned().replace("-----BEGIN CMS-----", "").replace("-----END CMS-----", "")
 				.trim();
-		String result = Cms.Instance.verifySignature(formatted.getBytes(),
-				Config.Instance.getOpt(Config.Type.signing, "certfile").asText(),
-				Config.Instance.getOpt(Config.Type.signing, "ca_certs").asText());
+
+		String result = Cms.verifySignature(BaseEncoding.base64Url().decode(formatted),
+				Config.getOpt(Config.Type.signing, "certfile").asText(), Config.getOpt(Config.Type.signing, "ca_certs")
+						.asText());
 		System.err.println(result);
 	}
 
@@ -123,7 +125,7 @@ public class TokenResourceTest extends AbstractIntegratedTest {
 		response.close();
 		Response response2 = target("/v2.0/tokens/" + tokenid).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response2.getStatus());
 		ret = response2.readEntity(String.class);
 		System.err.println(ret);
@@ -151,8 +153,7 @@ public class TokenResourceTest extends AbstractIntegratedTest {
 		String tokenid = node.get("access").get("token").get("id").asText();
 		System.err.println(tokenid);
 		response = target("/v2.0/tokens/" + tokenid).register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
-				.head();
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
 		// response = target("/v2.0/tokens/" +
 		// tokenid).register(JacksonFeature.class).request()
 		// .post(Entity.entity(authWrapper, MediaType.APPLICATION_JSON_TYPE));
@@ -181,8 +182,7 @@ public class TokenResourceTest extends AbstractIntegratedTest {
 		String tokenid = node.get("access").get("token").get("id").asText();
 		System.err.println(tokenid);
 		response = target("/v2.0/tokens/" + tokenid).register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
-				.delete();
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		// response = target("/v2.0/tokens/" +
 		// tokenid).register(JacksonFeature.class).request()
 		// .post(Entity.entity(authWrapper, MediaType.APPLICATION_JSON_TYPE));
@@ -214,7 +214,7 @@ public class TokenResourceTest extends AbstractIntegratedTest {
 		System.err.println(tokenid);
 		response = target("/v2.0/tokens/" + tokenid + "/endpoints").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		ret = response.readEntity(String.class);
 		node = JsonUtils.convertToJsonNode(ret);

@@ -89,7 +89,7 @@ public class PolicyV3ResourceTest extends AbstractIntegratedTest {
 		assertEquals(policy.getProjectId(), policyJ.get("project_id").asText());
 
 		Response response = target("/v3/policies").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(201, response.getStatus());
 
@@ -107,7 +107,7 @@ public class PolicyV3ResourceTest extends AbstractIntegratedTest {
 	@Test
 	public void testListPolicies() throws JsonProcessingException, IOException {
 		Response response = target("/v3/policies").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		System.err.println(node.toString());
@@ -127,7 +127,7 @@ public class PolicyV3ResourceTest extends AbstractIntegratedTest {
 	public void testGetPolicy() throws JsonGenerationException, JsonMappingException, IOException {
 		Response response = target("/v3/policies").path(policy.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
@@ -172,7 +172,7 @@ public class PolicyV3ResourceTest extends AbstractIntegratedTest {
 	public void testDeletePolicy() {
 		Response response = target("/v3/policies").path(policy.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 }

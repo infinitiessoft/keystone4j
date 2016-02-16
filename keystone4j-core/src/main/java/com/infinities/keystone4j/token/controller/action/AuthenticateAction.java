@@ -64,7 +64,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 
 	private final static Logger logger = LoggerFactory.getLogger(AuthenticateAction.class);
 	private final Auth auth;
-	private final String DEFAULT_DOMAIN_ID = Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText();
+	private final String DEFAULT_DOMAIN_ID = Config.getOpt(Config.Type.identity, "default_domain_id").asText();
 
 
 	public AuthenticateAction(AssignmentApi assignmentApi, CatalogApi catalogApi, IdentityApi identityApi,
@@ -137,7 +137,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 
 		TokenIdAndDataV2 ret = tokenProviderApi.issueV2Token(authTokenData, rolesRef, catalogRef);
 
-		if (Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean() && !Strings.isNullOrEmpty(auth.getTrustId())) {
+		if (Config.getOpt(Config.Type.trust, "enabled").asBoolean() && !Strings.isNullOrEmpty(auth.getTrustId())) {
 			trustApi.consumeUse(auth.getTrustId());
 		}
 
@@ -199,7 +199,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 		User userRef = null;
 		String userid;
 		try {
-			userRef = identityApi.getUserByName(username, Config.Instance.getOpt(Config.Type.identity, "default_domain_id")
+			userRef = identityApi.getUserByName(username, Config.getOpt(Config.Type.identity, "default_domain_id")
 					.asText());
 			userid = userRef.getId();
 		} catch (Exception e) {
@@ -215,7 +215,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 		Calendar expiry = BaseProvider.getDefaultExpireTime();
 		Bind bind = null;
 
-		List<String> binds = Config.Instance.getOpt(Config.Type.token, "bind").asList();
+		List<String> binds = Config.getOpt(Config.Type.token, "bind").asList();
 		if (binds.contains("kerberos") && "negotiate".equals(environment.getAuthType().toLowerCase())) {
 			bind = new Bind();
 			bind.setBindType("kerberos");
@@ -235,7 +235,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 			throw Exceptions.ValidationException.getInstance(null, "password", "passwordCredentials");
 		}
 		String password = auth.getPasswordCredentials().getPassword();
-		int maxPasswordSize = Config.Instance.getOpt(Config.Type.identity, "max_password_length").asInteger();
+		int maxPasswordSize = Config.getOpt(Config.Type.identity, "max_password_length").asInteger();
 		if (password.length() > maxPasswordSize) {
 			throw Exceptions.ValidationSizeException.getInstance(null, "password", maxPasswordSize);
 		}
@@ -246,7 +246,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 		}
 
 		String userid = auth.getPasswordCredentials().getUserId();
-		int maxParamSize = Config.Instance.getOpt(Config.Type.DEFAULT, "max_param_size").asInteger();
+		int maxParamSize = Config.getOpt(Config.Type.DEFAULT, "max_param_size").asInteger();
 		if (!Strings.isNullOrEmpty(userid) && userid.length() > maxParamSize) {
 			throw Exceptions.ValidationSizeException.getInstance(null, "userId", maxParamSize);
 		}
@@ -259,7 +259,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 			}
 			try {
 				userRef = identityApi.getUserByName(username,
-						Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+						Config.getOpt(Config.Type.identity, "default_domain_id").asText());
 				userid = userRef.getId();
 			} catch (Exception e) {
 				throw Exceptions.UnauthorizedException.getInstance(e);
@@ -294,7 +294,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 		}
 
 		String oldToken = auth.getToken().getId();
-		int maxTokenSize = Config.Instance.getOpt(Config.Type.DEFAULT, "max_token_size").asInteger();
+		int maxTokenSize = Config.getOpt(Config.Type.DEFAULT, "max_token_size").asInteger();
 		if (oldToken.length() > maxTokenSize) {
 			throw Exceptions.ValidationSizeException.getInstance(null, "id", "token");
 		}
@@ -318,7 +318,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 		User currentUserRef = null;
 		Trust trustRef = null;
 
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
+		boolean enabled = Config.getOpt(Config.Type.trust, "enabled").asBoolean();
 		if (!enabled && !Strings.isNullOrEmpty(auth.getTrustId())) {
 			throw Exceptions.ForbiddenException.getInstance("Trusts are disabled.");
 		} else if (enabled && !Strings.isNullOrEmpty(auth.getTrustId())) {
@@ -416,7 +416,7 @@ public class AuthenticateAction extends AbstractTokenAction implements Protected
 
 	private String getProjectIdFromAuth(Auth auth) {
 		String tenantid = auth.getTenantId();
-		int maxParamSize = Config.Instance.getOpt(Config.Type.DEFAULT, "max_param_size").asInteger();
+		int maxParamSize = Config.getOpt(Config.Type.DEFAULT, "max_param_size").asInteger();
 		if (!Strings.isNullOrEmpty(tenantid) && tenantid.length() > maxParamSize) {
 			throw Exceptions.ValidationSizeException.getInstance(null, "tenantId", maxParamSize);
 		}

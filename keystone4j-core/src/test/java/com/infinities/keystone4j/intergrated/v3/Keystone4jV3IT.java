@@ -187,7 +187,7 @@ public class Keystone4jV3IT extends AbstractIntegratedTest {
 
 	private String getAdminToken() {
 		if (Strings.isNullOrEmpty(adminToken)) {
-			adminToken = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText();
+			adminToken = Config.getOpt(Config.Type.DEFAULT, "admin_token").asText();
 		}
 		return adminToken;
 	}

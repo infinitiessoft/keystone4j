@@ -304,7 +304,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 
 	@Override
 	public Integer getListLimit() {
-		return Config.Instance.getOpt(Config.Type.identity, "list_limit").asInteger();
+		return Config.getOpt(Config.Type.identity, "list_limit").asInteger();
 	}
 
 	@Override
@@ -320,7 +320,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 	@Override
 	public boolean isMultipleDomainsSupported() {
 		return this.isDomainAware()
-				|| Config.Instance.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean();
+				|| Config.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean();
 	}
 
 }

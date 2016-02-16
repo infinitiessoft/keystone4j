@@ -58,6 +58,7 @@ public class SslContextFactory {
 		}
 
 		FileInputStream fis = null;
+		Scanner scanner = null;
 		try {
 			if (ks == null) {
 				log.info("reading keystore");
@@ -65,17 +66,10 @@ public class SslContextFactory {
 				ks = KeyStore.getInstance("PKCS12");
 				ks.load(fis, keystorePassword.toCharArray());
 
-				Scanner scanner = null;
-				try {
-					scanner = new Scanner(new File(caUrl));
-					scanner.useDelimiter("\\Z");
-					String caPem = scanner.next();
-					chain = PemChainLoader.loadChain(caPem);
-				} finally {
-					if (scanner != null) {
-						scanner.close();
-					}
-				}
+				scanner = new Scanner(new File(caUrl));
+				scanner.useDelimiter("\\Z");
+				String caPem = scanner.next();
+				chain = PemChainLoader.loadChain(caPem);
 			}
 
 			// Set up key manager factory to use our key store
@@ -98,6 +92,9 @@ public class SslContextFactory {
 				}
 
 			}
+			if (scanner != null) {
+				scanner.close();
+			}
 		}
 
 		return serverContext;
@@ -105,6 +102,7 @@ public class SslContextFactory {
 
 	public static SSLContext getClientContext(String pem, String caUrl) throws SslPemException {
 		SSLContext clientContext = null;
+		Scanner scanner = null;
 
 		try {
 			log.debug("loading thumbslug to cdn entitlement certificate (pem encoded)");
@@ -117,17 +115,10 @@ public class SslContextFactory {
 			managers[0] = new PEMx509KeyManager();
 			managers[0].addPEM(certificate, privateKey);
 
-			Scanner scanner = null;
-			String caPem = null;
-			try {
-				scanner = new Scanner(new File(caUrl));
-				scanner.useDelimiter("\\Z");
-				caPem = scanner.next();
-			} finally {
-				if (scanner != null) {
-					scanner.close();
-				}
-			}
+			scanner = new Scanner(new File(caUrl));
+			scanner.useDelimiter("\\Z");
+			String caPem = scanner.next();
+
 			// Initialize the SSLContext to work with our key managers.
 			clientContext = SSLContext.getInstance(PROTOCOL);
 			clientContext.init(managers, ClientContextTrustManager.getTrustManagers(PemChainLoader.loadChain(caPem)), null);
@@ -135,6 +126,10 @@ public class SslContextFactory {
 		} catch (Exception e) {
 			log.error("Unable to load pem file!", e);
 			throw new SslPemException("Failed to initialize the client-side SSLContext", e);
+		} finally {
+			if (scanner != null) {
+				scanner.close();
+			}
 		}
 
 		return clientContext;

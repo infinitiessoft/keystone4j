@@ -242,7 +242,7 @@ public class IdentityApiImpl implements IdentityApi {
 			SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException {
 		if (!command.getDomainConfigs().isConfigured()
-				&& Config.Instance.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean()) {
+				&& Config.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean()) {
 			command.getDomainConfigs().setupDomainDrivers(command.getIdentityDriver(), command.getAssignmentApi());
 		}
 	}

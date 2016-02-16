@@ -59,7 +59,7 @@ public class AdminVersionApiResourceTest extends JerseyTest {
 		assertEquals(3, linksV2.size());
 		JsonNode linkV2_0 = linksV2.get(0);
 		assertEquals("self", linkV2_0.get("rel").asText());
-		String url = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_endpoint").asText();
+		String url = Config.getOpt(Config.Type.DEFAULT, "admin_endpoint").asText();
 		url = Config.replaceVarWithConf(url) + "v2.0/";
 		assertEquals(url, linkV2_0.get("href").asText());
 		JsonNode linkV2_1 = linksV2.get(1);
@@ -86,7 +86,7 @@ public class AdminVersionApiResourceTest extends JerseyTest {
 		assertEquals(1, links.size());
 		JsonNode link = links.get(0);
 		assertEquals("self", link.get("rel").asText());
-		url = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_endpoint").asText();
+		url = Config.getOpt(Config.Type.DEFAULT, "admin_endpoint").asText();
 		url = Config.replaceVarWithConf(url) + "v3/";
 		assertEquals(url, link.get("href").asText());
 		JsonNode medias = versionV3.get("media-types");

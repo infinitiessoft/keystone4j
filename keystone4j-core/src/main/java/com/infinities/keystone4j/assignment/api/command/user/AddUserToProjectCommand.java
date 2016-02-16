@@ -47,17 +47,17 @@ public class AddUserToProjectCommand extends AbstractAssignmentCommand implement
 	public User execute() {
 		try {
 			this.getAssignmentDriver().addRoleToUserAndProject(userid, projectid,
-					Config.Instance.getOpt(Config.Type.DEFAULT, "member_role_id").asText());
+					Config.getOpt(Config.Type.DEFAULT, "member_role_id").asText());
 		} catch (Exception e) {
 			logger.info("Creating the default role {} because it does not exist",
-					Config.Instance.getOpt(Config.Type.DEFAULT, "member_role_id").asText());
+					Config.getOpt(Config.Type.DEFAULT, "member_role_id").asText());
 			Role role = new Role();
-			role.setId(Config.Instance.getOpt(Config.Type.DEFAULT, "member_role_id").asText());
-			role.setName(Config.Instance.getOpt(Config.Type.DEFAULT, "member_role_name").asText());
-			this.getAssignmentDriver().createRole(Config.Instance.getOpt(Config.Type.DEFAULT, "member_role_id").asText(),
+			role.setId(Config.getOpt(Config.Type.DEFAULT, "member_role_id").asText());
+			role.setName(Config.getOpt(Config.Type.DEFAULT, "member_role_name").asText());
+			this.getAssignmentDriver().createRole(Config.getOpt(Config.Type.DEFAULT, "member_role_id").asText(),
 					role);
 			this.getAssignmentDriver().addRoleToUserAndProject(userid, projectid,
-					Config.Instance.getOpt(Config.Type.DEFAULT, "member_role_id").asText());
+					Config.getOpt(Config.Type.DEFAULT, "member_role_id").asText());
 		}
 		return null;
 	}

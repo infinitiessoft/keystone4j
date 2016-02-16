@@ -15,7 +15,7 @@
 			<groupId>com.infinities.keystone4j</groupId>
 			<artifactId>keystone4j-entity</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
@@ -24,6 +24,21 @@
 		<dependency>
 			<groupId>com.infinities.keystone4j</groupId>
 			<artifactId>keystone4j-commons</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
 		</dependency>
 
 		<dependency>
