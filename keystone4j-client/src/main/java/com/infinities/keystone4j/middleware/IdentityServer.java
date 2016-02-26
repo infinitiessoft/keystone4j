@@ -46,6 +46,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.infinities.keystone4j.middleware.exception.CertificateConfigException;
+import com.infinities.keystone4j.middleware.exception.InvalidUserTokenException;
+import com.infinities.keystone4j.middleware.exception.NetworkException;
 import com.infinities.keystone4j.middleware.model.Auth;
 import com.infinities.keystone4j.middleware.model.PasswordCredentials;
 import com.infinities.keystone4j.middleware.model.RevokedToken;

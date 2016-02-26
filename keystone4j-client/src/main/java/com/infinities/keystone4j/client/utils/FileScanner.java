@@ -13,7 +13,7 @@
  * # License for the specific language governing permissions and limitations
  * # under the License.
  *******************************************************************************/
-package com.infinities.keyston4j.client.utils;
+package com.infinities.keystone4j.client.utils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.infinities.keyston4j.client.Config;
-import com.infinities.keyston4j.client.Config.Type;
+import com.infinities.keystone4j.client.Config;
+import com.infinities.keystone4j.client.Config.Type;
 
 public class FileScanner {
 

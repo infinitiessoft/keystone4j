@@ -13,25 +13,25 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  *******************************************************************************/
-package com.infinities.keystone4j.middleware;
+package com.infinities.keystone4j.middleware.exception;
 
-public class ImageNotFoundException extends RuntimeException {
+public class NetworkException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
 
-	public ImageNotFoundException() {
+	public NetworkException() {
 	}
 
-	public ImageNotFoundException(String message) {
+	public NetworkException(String message) {
 		super(message);
 	}
 
-	public ImageNotFoundException(Throwable cause) {
+	public NetworkException(Throwable cause) {
 		super(cause);
 	}
 
-	public ImageNotFoundException(String message, Throwable cause) {
+	public NetworkException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

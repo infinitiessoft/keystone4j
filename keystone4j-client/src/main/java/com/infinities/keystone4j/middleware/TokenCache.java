@@ -30,6 +30,7 @@ import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
+import com.infinities.keystone4j.middleware.exception.InvalidUserTokenException;
 import com.infinities.keystone4j.middleware.model.TokenWrapper;
 import com.infinities.keystone4j.utils.Cms;
 

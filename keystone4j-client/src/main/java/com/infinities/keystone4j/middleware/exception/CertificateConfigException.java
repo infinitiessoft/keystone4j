@@ -13,25 +13,25 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  *******************************************************************************/
-package com.infinities.keystone4j.middleware;
+package com.infinities.keystone4j.middleware.exception;
 
-public class ImageNotAuthorizedException extends RuntimeException {
+public class CertificateConfigException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
 
-	public ImageNotAuthorizedException() {
+	public CertificateConfigException() {
 	}
 
-	public ImageNotAuthorizedException(String message) {
+	public CertificateConfigException(String message) {
 		super(message);
 	}
 
-	public ImageNotAuthorizedException(Throwable cause) {
+	public CertificateConfigException(Throwable cause) {
 		super(cause);
 	}
 
-	public ImageNotAuthorizedException(String message, Throwable cause) {
+	public CertificateConfigException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

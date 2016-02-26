@@ -13,25 +13,25 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  *******************************************************************************/
-package com.infinities.keystone4j.middleware;
+package com.infinities.keystone4j.middleware.exception;
 
-public class CertificateConfigException extends RuntimeException {
+
+public class InvalidUserTokenException  extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-
-	public CertificateConfigException() {
+	public InvalidUserTokenException() {
 	}
 
-	public CertificateConfigException(String message) {
+	public InvalidUserTokenException(String message) {
 		super(message);
 	}
 
-	public CertificateConfigException(Throwable cause) {
+	public InvalidUserTokenException(Throwable cause) {
 		super(cause);
 	}
 
-	public CertificateConfigException(String message, Throwable cause) {
+	public InvalidUserTokenException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

@@ -314,7 +314,6 @@
 		</pluginManagement>
 	</build>
 
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<javaCompilerVersion>1.7</javaCompilerVersion>
@@ -329,7 +328,7 @@
 		<!-- <module>keystone4j-core</module> <module>keystone4j-war</module> -->
 		<module>keystone4j-commons</module>
 		<module>keystone4j-entity</module>
-		<!-- <module>keystonr4j-client</module> -->
+		<module>keystone4j-client</module>
 		<module>keystone4j-core</module>
 		<module>keystone4j-web</module>
 	</modules>
