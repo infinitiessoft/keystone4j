@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.infinities</groupId>
 		<artifactId>keystone4j</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 	<groupId>com.infinities.keystone4j</groupId>
 	<artifactId>keystone4j-entity</artifactId>
@@ -46,4 +46,5 @@
 			<artifactId>keystone4j-commons</artifactId>
 		</dependency>
 	</dependencies>
+	<version>1.0.1</version>
 </project>
