@@ -22,11 +22,13 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.middleware.model.v3.AccessInfoV3;
 import com.infinities.keystone4j.middleware.model.v3.wrapper.TokenV3Wrapper;
 import com.infinities.keystone4j.middleware.model.wrapper.AccessWrapper;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AccessInfo {
 
 	public final static int STALE_TOKEN_DURATION = 30;

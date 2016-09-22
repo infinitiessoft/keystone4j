@@ -26,7 +26,11 @@ import com.google.common.base.Strings;
 
 public class ServiceCatalogV2 extends ServiceCatalog {
 
-	private AccessInfoV2 catalog;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final AccessInfoV2 catalog;
 
 
 	public ServiceCatalogV2(AccessInfo accessInfo, String regionName) {

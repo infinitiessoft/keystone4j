@@ -23,14 +23,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.Strings;
 import com.infinities.keystone4j.middleware.model.Access.User.Role;
 import com.infinities.keystone4j.middleware.model.wrapper.AccessWrapper;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccessInfoV2 extends AccessInfo {
 
 	private final static String version = "v2.0";
-	private Access access;
+	private final Access access;
 
 
 	public AccessInfoV2(Access access) {
@@ -191,19 +193,19 @@ public class AccessInfoV2 extends AccessInfo {
 		} catch (Exception e) {
 
 		}
-		
-		try{
+
+		try {
 			return access.getUser().getTenantId();
-		}catch(Exception e){
-			
+		} catch (Exception e) {
+
 		}
-		
-		try{
+
+		try {
 			return access.getUser().getTenantId();
-		}catch(Exception e){
-			
+		} catch (Exception e) {
+
 		}
-		
+
 		return null;
 	}
 

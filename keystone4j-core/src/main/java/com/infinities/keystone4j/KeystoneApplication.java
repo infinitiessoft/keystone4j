@@ -45,6 +45,8 @@ import com.infinities.keystone4j.catalog.controller.ServiceV3Controller;
 import com.infinities.keystone4j.catalog.controller.impl.EndpointV3ControllerFactory;
 import com.infinities.keystone4j.catalog.controller.impl.ServiceV3ControllerFactory;
 import com.infinities.keystone4j.catalog.driver.CatalogDriverFactory;
+import com.infinities.keystone4j.cert.controller.SimpleCertV3Controller;
+import com.infinities.keystone4j.cert.controller.impl.SimpleCertV3ControllerFactory;
 import com.infinities.keystone4j.common.api.VersionApi;
 import com.infinities.keystone4j.common.api.VersionApiFactory;
 import com.infinities.keystone4j.contrib.revoke.RevokeApi;
@@ -57,6 +59,8 @@ import com.infinities.keystone4j.credential.api.CredentialApiFactory;
 import com.infinities.keystone4j.credential.controller.CredentialV3Controller;
 import com.infinities.keystone4j.credential.controller.impl.CredentialV3ControllerFactory;
 import com.infinities.keystone4j.credential.driver.CredentialDriverFactory;
+import com.infinities.keystone4j.extension.ExtensionApi;
+import com.infinities.keystone4j.extension.ExtensionApiFactory;
 import com.infinities.keystone4j.filter.AdminTokenAuthMiddleware;
 import com.infinities.keystone4j.filter.AuthContextMiddleware;
 import com.infinities.keystone4j.filter.TokenAuthMiddleware;
@@ -116,6 +120,8 @@ public class KeystoneApplication extends ResourceConfig {
 				bindFactory(ProjectV3ControllerFactory.class).to(ProjectV3Controller.class);
 				bindFactory(RoleAssignmentV3ControllerFactory.class).to(RoleAssignmentV3Controller.class);
 				bindFactory(ServiceV3ControllerFactory.class).to(ServiceV3Controller.class);
+				bindFactory(SimpleCertV3ControllerFactory.class).to(SimpleCertV3Controller.class);
+				bindFactory(ExtensionApiFactory.class).to(ExtensionApi.class);
 
 				// // assignment
 				bindFactory(AssignmentApiFactory.class).to(AssignmentApi.class);

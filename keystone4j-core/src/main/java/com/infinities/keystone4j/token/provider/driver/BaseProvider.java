@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.infinities.keystone4j.token.provider.driver;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -105,7 +106,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 
 	@Override
 	public TokenIdAndDataV2 issueV2Token(AuthTokenData tokenRef, List<Role> rolesRef,
-			Map<String, Map<String, Map<String, String>>> catalogRef) {
+			Map<String, Map<String, Map<String, String>>> catalogRef) throws UnsupportedEncodingException {
 		Metadata metadataRef = tokenRef.getMetadata();
 		Trust trustRef = null;
 		if (Config.getOpt(Config.Type.trust, "enabled").asBoolean() && metadataRef != null
@@ -249,22 +250,18 @@ public abstract class BaseProvider implements TokenProviderDriver {
 			}
 
 			Metadata metadataRef = tokenRef.getMetadata();
-			if (Config.getOpt(Config.Type.trust, "enabled").asBoolean()
-					&& !Strings.isNullOrEmpty(metadataRef.getTrustId())) {
+			if (Config.getOpt(Config.Type.trust, "enabled").asBoolean() && !Strings.isNullOrEmpty(metadataRef.getTrustId())) {
 				Trust trustRef = trustApi.getTrust(metadataRef.getTrustId(), false);
 				User trusteeUserRef = identityApi.getUser(trustRef.getTrusteeUserId());
-				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText()
-						.equals(trusteeUserRef.getDomainId())) {
+				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText().equals(trusteeUserRef.getDomainId())) {
 					throw Exceptions.UnauthorizedException.getInstance(msg);
 				}
 				User trustorUserRef = identityApi.getUser(trustRef.getTrustorUserId());
-				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText()
-						.equals(trustorUserRef.getDomainId())) {
+				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText().equals(trustorUserRef.getDomainId())) {
 					throw Exceptions.UnauthorizedException.getInstance(msg);
 				}
 				Project projectRef = assignmentApi.getProject(trustRef.getProjectId());
-				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText()
-						.equals(projectRef.getDomainId())) {
+				if (!Config.getOpt(Config.Type.identity, "default_domain_id").asText().equals(projectRef.getDomainId())) {
 					throw Exceptions.UnauthorizedException.getInstance(msg);
 				}
 			}
@@ -278,7 +275,7 @@ public abstract class BaseProvider implements TokenProviderDriver {
 		return calendar;
 	}
 
-	public static List<String> auditInfo(String parentAuditId) {
+	public static List<String> auditInfo(String parentAuditId) throws UnsupportedEncodingException {
 		List<String> rets = new ArrayList<String>();
 		String auditId = BaseEncoding.base64Url().encode(UUID.randomUUID().toString().getBytes());
 		auditId = auditId.substring(0, auditId.length() - 2);

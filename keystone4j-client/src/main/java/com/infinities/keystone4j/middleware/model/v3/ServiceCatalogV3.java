@@ -29,8 +29,12 @@ import com.infinities.keystone4j.middleware.model.TokenMetadata;
 
 public class ServiceCatalogV3 extends ServiceCatalog {
 
-	private String authToken;
-	private AccessInfoV3 catalog;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final String authToken;
+	private final AccessInfoV3 catalog;
 
 
 	public ServiceCatalogV3(String token, AccessInfo accessInfo, String regionName) {
@@ -130,7 +134,7 @@ public class ServiceCatalogV3 extends ServiceCatalog {
 			} catch (Exception e) {
 				continue;
 			}
-			
+
 			String sn;
 			if (!Strings.isNullOrEmpty(serviceName)) {
 				sn = service.getName();

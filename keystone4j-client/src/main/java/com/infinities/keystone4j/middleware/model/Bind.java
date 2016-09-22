@@ -17,9 +17,11 @@ package com.infinities.keystone4j.middleware.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinities.keystone4j.middleware.model.bind.Kerberos;
 import com.infinities.keystone4j.middleware.model.bind.X509;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Bind implements Serializable {
 
 	/**

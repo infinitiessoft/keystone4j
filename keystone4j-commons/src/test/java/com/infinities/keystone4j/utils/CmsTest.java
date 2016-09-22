@@ -23,16 +23,20 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertPathBuilderException;
+import java.security.cert.CertStoreException;
 import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.zip.DataFormatException;
 
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.util.encoders.Base64;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -155,10 +159,10 @@ public class CmsTest {
 	}
 
 	@Test
-	public void testPkizUncompress() throws DataFormatException {
+	public void testPkizUncompress() throws DataFormatException, UnsupportedEncodingException {
 		String tokenid = "12345678910";
 		byte[] compress = CompressionUtils.compress(tokenid.getBytes());
-		String encoded = "PKIZ" + BaseEncoding.base64Url().encode(compress);
+		String encoded = "PKIZ" + new String(Base64.encode(compress), "UTF-8");
 		// String pkiz = "PKIZ" + new String(compress);
 		String ret = Cms.pkizUncompress(encoded);
 		assertEquals(tokenid, ret);
@@ -189,6 +193,27 @@ public class CmsTest {
 		assertTrue(Cms.cmsHashToken(tokenid, Algorithm.sha512).matches("[a-fA-F0-9]{128}"));
 		assertEquals(tokenid2, Cms.cmsHashToken(tokenid2, Algorithm.sha512));
 		assertTrue(Cms.cmsHashToken(tokenid, Algorithm.sha512).matches("[a-fA-F0-9]{128}"));
+	}
+
+	@Test
+	public void testVerify() throws CertificateException, NoSuchAlgorithmException, NoSuchProviderException,
+			OperatorCreationException, CertStoreException, InvalidKeySpecException, IOException, CMSException,
+			CertPathBuilderException, InvalidAlgorithmParameterException, CertificateVerificationException {
+		String certfile = "conf" + File.separator + "ssl" + File.separator + "certs" + File.separator + "signing_cert.pem";
+		String keyfile = "conf" + File.separator + "ssl" + File.separator + "private" + File.separator + "signing_key.pem";
+		String data = "test";
+		String signedText = Cms.signText(data, certfile, keyfile);
+		System.err.println("signed:" + signedText);
+		String inform = Cms.PKI_ASN1_FORM;
+		String signingCertFileName = "conf" + File.separator + "signing_cert.pem";
+		String signingCaFileName = "conf" + File.separator + "cacert.pem";
+
+		String result = Cms.cmsVerify(signedText, signingCertFileName, signingCaFileName, inform);
+
+		String formatted = signedText.replace("-----BEGIN CMS-----", "").replace("-----END CMS-----", "").trim();
+
+		result = Cms.verifySignature(BaseEncoding.base64Url().decode(formatted), signingCertFileName, signingCaFileName);
+		System.err.println(result);
 	}
 
 

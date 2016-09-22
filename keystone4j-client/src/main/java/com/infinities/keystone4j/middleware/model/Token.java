@@ -20,9 +20,11 @@ import java.util.Calendar;
 
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinities.keystone4j.middleware.model.adapter.ExpireDateAdapter;
 import com.infinities.keystone4j.middleware.model.adapter.IssueDateAdapter;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Token implements Serializable {
 
 	/**

@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.infinities.keystone4j.token;
 
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -272,7 +273,7 @@ public class TokenDataHelper {
 
 	// auditInfo=null
 	@SuppressWarnings("unchecked")
-	private void populateAuditInfo(TokenData tokenData, Object auditInfo) {
+	private void populateAuditInfo(TokenData tokenData, Object auditInfo) throws UnsupportedEncodingException {
 		if (auditInfo == null || auditInfo instanceof String) {
 			tokenData.setAuditIds(BaseProvider.auditInfo(auditInfo == null ? null : (String) auditInfo));
 		} else if (auditInfo instanceof List) {

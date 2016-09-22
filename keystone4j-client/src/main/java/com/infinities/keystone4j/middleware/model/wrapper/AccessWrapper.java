@@ -20,10 +20,12 @@ import java.util.Calendar;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.infinities.keystone4j.middleware.model.Access;
 import com.infinities.keystone4j.middleware.model.Bind;
 import com.infinities.keystone4j.middleware.model.TokenWrapper;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccessWrapper implements Serializable, TokenWrapper {
 
 	/**

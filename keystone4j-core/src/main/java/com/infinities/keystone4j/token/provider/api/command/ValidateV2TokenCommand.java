@@ -43,11 +43,11 @@ public class ValidateV2TokenCommand extends AbstractTokenProviderCommand impleme
 	@Override
 	public TokenV2DataWrapper execute() throws Exception {
 		String uniqueId = getUniqueId(tokenid);
+		logger.debug("validate token uniqueid: {}", tokenid);
 		Token tokenRef = this.getPersistence().getToken(uniqueId);
 		TokenV2DataWrapper token = validateV2Token(tokenRef);
 		checkRevocationV2(token);
 		tokenBelongsTo(token, belongsTo);
-		logger.debug("validate token uniqueid: {}", tokenid);
 		isValidToken(token);
 		return token;
 	}

@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.container.ContainerRequestContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +65,7 @@ public class TokenCache {
 		assertValidMemcacheProtectionConfig();
 	}
 
-	public void initialize(ContainerRequestContext env) {
+	public void initialize() {
 		if (initialized) {
 			return;
 		}

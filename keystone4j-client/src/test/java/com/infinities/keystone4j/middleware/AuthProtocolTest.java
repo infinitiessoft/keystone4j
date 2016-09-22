@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.security.Principal;
 import java.util.Date;
 
 import javax.ws.rs.client.Client;
@@ -31,6 +32,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -46,7 +48,7 @@ import org.junit.Test;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.infinities.keystone4j.client.Config;
-import com.infinities.keystone4j.middleware.AuthProtocol.TokenEditor;
+import com.infinities.keystone4j.middleware.AuthProtocolBase.TokenEditor;
 import com.infinities.keystone4j.middleware.model.RevokedToken;
 import com.infinities.keystone4j.middleware.model.TokenWrapper;
 import com.infinities.keystone4j.middleware.model.wrapper.AccessWrapper;
@@ -64,6 +66,8 @@ public class AuthProtocolTest {
 	};
 	private AuthProtocol auth;
 	private ContainerRequestContext requestContext;
+	private SecurityContext securityContext;
+	private Principal userPrincipal;
 	private MultivaluedMap<String, String> headers;
 	private String tokenid;
 	private Client client;
@@ -85,12 +89,27 @@ public class AuthProtocolTest {
 		target = context.mock(WebTarget.class);
 		builder = context.mock(Builder.class);
 		response = context.mock(Response.class);
+		securityContext = context.mock(SecurityContext.class);
+		userPrincipal = context.mock(Principal.class);
 
 		context.checking(new Expectations() {
 
 			{
 				allowing(requestContext).getHeaders();
 				will(returnValue(headers));
+
+				allowing(requestContext).getSecurityContext();
+				will(returnValue(securityContext));
+
+				allowing(securityContext).getAuthenticationScheme();
+				will(returnValue("BASIC_AUTH"));
+
+				allowing(securityContext).getUserPrincipal();
+				will(returnValue(userPrincipal));
+
+				allowing(userPrincipal).getName();
+				will(returnValue("demo"));
+
 			}
 		});
 		client = context.mock(Client.class);

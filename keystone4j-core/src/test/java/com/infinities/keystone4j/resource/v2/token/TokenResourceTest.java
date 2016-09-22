@@ -79,10 +79,11 @@ public class TokenResourceTest extends AbstractIntegratedTest {
 		String ret = response.readEntity(String.class);
 		TokenV2DataWrapper wrapper = JsonUtils.readJson(ret, new TypeReference<TokenV2DataWrapper>() {
 		});
-		System.err.println(ret);
+		// System.err.println(ret);
 		String tokenid = wrapper.getAccess().getToken().getId();
+		System.err.println(tokenid);
 		// validate
-		response = target("v2.0/tokens/" + tokenid).register(JacksonFeature.class).register(ObjectMapperResolver.class)
+		response = target("/v2.0/tokens/" + tokenid).register(JacksonFeature.class).register(ObjectMapperResolver.class)
 				.request().header("X-Auth-Token", tokenid).get();
 		assertEquals(200, response.getStatus());
 	}

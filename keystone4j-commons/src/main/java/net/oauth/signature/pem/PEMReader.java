@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.google.common.io.BaseEncoding;
+import org.bouncycastle.util.encoders.Base64;
 
 /**
  * This class convert PEM into byte array. The begin marker is saved and it can
@@ -49,10 +49,10 @@ public class PEMReader {
 
 	private static final String BEGIN_MARKER = "-----BEGIN ";
 
-	private InputStream stream;
+	private final InputStream stream;
 	private byte[] derBytes;
 	private String beginMarker;
-	private StringBuffer buffer;
+	private final StringBuffer buffer;
 
 
 	public PEMReader(InputStream inStream) throws IOException {
@@ -121,7 +121,7 @@ public class PEMReader {
 		while ((line = reader.readLine()) != null) {
 			if (line.indexOf(endMarker) != -1) {
 				buffer.append(line + "\n");
-				return BaseEncoding.base64().decode(buf.toString());
+				return Base64.decode(buf.toString().replace('-', '+').replace('_', '/'));
 			}
 			buffer.append(line + "\n");
 			buf.append(line.trim());

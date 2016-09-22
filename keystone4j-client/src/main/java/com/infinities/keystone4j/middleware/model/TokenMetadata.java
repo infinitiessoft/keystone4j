@@ -15,12 +15,17 @@
  *******************************************************************************/
 package com.infinities.keystone4j.middleware.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class TokenMetadata {
+public class TokenMetadata implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String id;
 	private Calendar expires;
 	@XmlElement(name = "user_id")

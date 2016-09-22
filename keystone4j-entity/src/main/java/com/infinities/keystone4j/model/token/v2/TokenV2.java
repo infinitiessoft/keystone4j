@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.infinities.keystone4j.model.assignment.Project;
@@ -44,8 +45,9 @@ public class TokenV2 implements Serializable {
 
 	private Bind bind;
 
+	@XmlTransient
 	private List<String> auditIds;
-
+	@XmlTransient
 	private Trust trust;
 
 
@@ -89,18 +91,22 @@ public class TokenV2 implements Serializable {
 		this.bind = bind;
 	}
 
+	@XmlTransient
 	public List<String> getAuditIds() {
 		return auditIds;
 	}
 
+	@XmlTransient
 	public void setAuditIds(List<String> auditIds) {
 		this.auditIds = auditIds;
 	}
 
+	@XmlTransient
 	public Trust getTrust() {
 		return trust;
 	}
 
+	@XmlTransient
 	public void setTrust(Trust trust) {
 		this.trust = trust;
 	}

@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.infinities.keystone4j.middleware.model.v3;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,10 +27,14 @@ import com.infinities.keystone4j.middleware.model.ServiceCatalog;
 import com.infinities.keystone4j.middleware.model.TokenWrapper;
 import com.infinities.keystone4j.middleware.model.v3.wrapper.TokenV3Wrapper;
 
-public class AccessInfoV3 extends AccessInfo {
+public class AccessInfoV3 extends AccessInfo implements Serializable {
 
-	private com.infinities.keystone4j.middleware.model.v3.Token token;
-	private String authToken;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final com.infinities.keystone4j.middleware.model.v3.Token token;
+	private final String authToken;
 	private final static String version = "v3";
 
 

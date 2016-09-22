@@ -15,15 +15,20 @@
  *******************************************************************************/
 package com.infinities.keystone4j.middleware.model;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
 import com.infinities.keystone4j.middleware.model.v3.ServiceCatalogV3;
 
-public abstract class ServiceCatalog {
+public abstract class ServiceCatalog implements Serializable {
 
-	private String regionName;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final String regionName;
 
 
 	protected ServiceCatalog(String regionName) {
@@ -40,8 +45,9 @@ public abstract class ServiceCatalog {
 	// endpointType);
 
 	public abstract String normalizeEndpointType(String endpointType);
-	
-	public abstract List<URL> getURLs(String serviceType, String endpointType, String regionName, String serviceName) throws MalformedURLException;
+
+	public abstract List<URL> getURLs(String serviceType, String endpointType, String regionName, String serviceName)
+			throws MalformedURLException;
 
 	public static ServiceCatalog build(AccessInfo accessInfo, String token, String regionName) {
 		if (ServiceCatalogV3.isValid(accessInfo)) {

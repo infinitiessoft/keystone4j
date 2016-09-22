@@ -225,7 +225,7 @@ public class IdentityServer {
 
 		if ("v3.0".equals(authVersion)) {
 			if ("signing".equals(certType)) {
-				certType = "certificated";
+				certType = "certificates";
 			}
 			path = "/v3/OS-SIMPLE-CERT/" + certType;
 		} else {
@@ -470,6 +470,10 @@ public class IdentityServer {
 				return true;
 			}
 		};
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 }

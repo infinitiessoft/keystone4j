@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.infinities.keystone4j.token;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ import com.infinities.keystone4j.token.provider.driver.BaseProvider;
 public class V2TokenDataHelper {
 
 	public TokenV2DataWrapper formatToken(IToken tokenRef, List<Role> rolesRef,
-			Map<String, Map<String, Map<String, String>>> catalogRef, Trust trustRef) {
+			Map<String, Map<String, Map<String, String>>> catalogRef, Trust trustRef) throws UnsupportedEncodingException {
 		List<String> auditInfo = null;
 		User userRef = tokenRef.getUser();
 		Metadata metadataRef = tokenRef.getMetadata();

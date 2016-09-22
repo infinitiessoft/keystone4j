@@ -50,7 +50,12 @@ public class Token implements Serializable {
 
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static final class Domain {
+	public static final class Domain implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		private String id;
 
@@ -80,7 +85,12 @@ public class Token implements Serializable {
 
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static final class Project {
+	public static final class Project implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		private Domain domain;
 
@@ -120,10 +130,21 @@ public class Token implements Serializable {
 
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static final class User {
+	public static final class User implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 
 		@JsonIgnoreProperties(ignoreUnknown = true)
-		public static final class Domain {
+		public static final class Domain implements Serializable {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			private String id;
 
@@ -187,7 +208,12 @@ public class Token implements Serializable {
 
 
 	@JsonIgnoreProperties(ignoreUnknown = true)
-	public static final class Role {
+	public static final class Role implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		private String id;
 
@@ -216,9 +242,22 @@ public class Token implements Serializable {
 	private List<Role> roles;
 
 
-	public static final class Service {
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public static final class Service implements Serializable {
 
-		public static final class Endpoint {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+
+		@JsonIgnoreProperties(ignoreUnknown = true)
+		public static final class Endpoint implements Serializable {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			private String id;
 
@@ -329,7 +368,12 @@ public class Token implements Serializable {
 
 	}
 
-	public static final class Trust {
+	public static final class Trust implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		private String id;
 
@@ -366,7 +410,12 @@ public class Token implements Serializable {
 
 	}
 
-	public static final class Oauth {
+	public static final class Oauth implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		@XmlElement(name = "access_token_id")
 		private String accessTokenId;

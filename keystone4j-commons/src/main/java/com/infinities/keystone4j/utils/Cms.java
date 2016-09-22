@@ -55,7 +55,6 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.util.Store;
 import org.bouncycastle.util.encoders.Base64;
-import org.bouncycastle.util.encoders.DecoderException;
 import org.bouncycastle.util.encoders.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,6 +143,10 @@ public class Cms {
 		CMSProcessableByteArray b = new CMSProcessableByteArray(data.getBytes());
 		CMSSignedData signed = gen.generate(b, true);
 		return BaseEncoding.base64Url().encode(signed.toASN1Structure().getEncoded("DER"));
+
+		// return new
+		// String(Base64.encode(signed.toASN1Structure().getEncoded("DER")),
+		// "UTF-8");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -162,7 +165,12 @@ public class Cms {
 																					// certs);
 		if (Base64Verifier.isBase64(sigbytes)) {
 			try {
-				sigbytes = Base64.decode(sigbytes);
+				String s = new String(sigbytes, "UTF-8");
+				s = s.replace('-', '+'); // 62nd char of encoding
+				s = s.replace('_', '/'); // 63rd char of encoding
+				sigbytes = Base64.decode(s);
+				// sigbytes = BaseEncoding.base64Url().decode(new
+				// String(sigbytes, "UTF-8"));
 				logger.debug("Signature file is BASE64 encoded");
 			} catch (Exception ioe) {
 				logger.warn("Problem decoding from b64", ioe);
@@ -174,7 +182,7 @@ public class Cms {
 		try {
 			logger.debug("sigbytes size: {}", sigbytes.length);
 			CMSSignedData s = new CMSSignedData(sigbytes);
-			Store<?> store = s.getCertificates();
+			Store store = s.getCertificates();
 			SignerInformationStore signers = s.getSignerInfos();
 			Collection c = signers.getSigners();
 			Iterator it = c.iterator();
@@ -221,7 +229,7 @@ public class Cms {
 		ByteArrayOutputStream pemStream = new ByteArrayOutputStream();
 		PrintWriter writer = new PrintWriter(pemStream);
 
-		byte[] stringBytes = BaseEncoding.base64().encode(bytes).getBytes();
+		byte[] stringBytes = Base64.encode(bytes);
 
 		String encoded = new String(stringBytes);
 
@@ -293,7 +301,7 @@ public class Cms {
 	}
 
 	public static String hashToken(String tokenid, Algorithm mode) throws UnsupportedEncodingException,
-			NoSuchAlgorithmException, DecoderException {
+			NoSuchAlgorithmException {
 		if (mode == null) {
 			mode = Algorithm.md5;
 		}
@@ -329,6 +337,7 @@ public class Cms {
 	}
 
 	public static String tokenToCms(String signedText) {
+		logger.debug("token: {}", signedText);
 		String copyOfText = signedText.replace('-', '/');
 		String formatted = "-----BEGIN CMS-----\n";
 		int lineLength = 64;
@@ -343,7 +352,7 @@ public class Cms {
 			formatted += "\n";
 		}
 		formatted += "-----END CMS-----\n";
-
+		logger.debug("Cms: {}", formatted);
 		return formatted;
 	}
 
@@ -386,7 +395,9 @@ public class Cms {
 
 	public static String pkizUncompress(String signedText) throws DataFormatException {
 		String text = signedText.substring(PKIZ_PREFIX.length());
-		byte[] unencoded = BaseEncoding.base64Url().decode(text);
+		text = text.replace('-', '+'); // 62nd char of encoding
+		text = text.replace('_', '/'); // 63rd char of encoding
+		byte[] unencoded = Base64.decode(text);
 		byte[] uncompressedByte = CompressionUtils.decompress(unencoded);
 		return new String(uncompressedByte);
 	}
