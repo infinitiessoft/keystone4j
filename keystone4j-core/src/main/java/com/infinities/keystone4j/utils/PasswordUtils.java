@@ -77,7 +77,7 @@ public class PasswordUtils {
 
 	public static String hashPassword(String password) {
 		if (Strings.isNullOrEmpty(password)) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("invalid passeord");
 		}
 		String passwordUtf8 = verifyLengthAndtruncPassword(password);
 

@@ -57,8 +57,8 @@ public class CmsTest {
 		logger.debug("text size:{}", t.length());
 		String output = Cms.signToken(t, certFile, keyFile);
 		logger.debug("byte size: {}, sign: {}", new Object[] { output.getBytes().length, output });
-
-		String input = Cms.verifySignature(output.getBytes(), certFile, caFile);
+		String formatted = Cms.tokenToCms(output);
+		String input = Cms.cmsVerify(formatted, certFile, caFile);
 		logger.debug("decrypt: {}", input);
 		assertEquals(t, input);
 	}
@@ -69,12 +69,12 @@ public class CmsTest {
 		logger.debug("text size:{}", t.length());
 		String output = Cms.signToken(t, certFile, keyFile);
 		logger.debug("byte size: {}, sign: {}", new Object[] { output.getBytes().length, output });
-
-		String input = Cms.verifySignature(output.getBytes(), certFile, caFile);
+		String formatted = Cms.tokenToCms(output);
+		String input = Cms.cmsVerify(formatted, certFile, caFile);
 		logger.debug("decrypt: {}", input);
 		assertEquals(t, input);
 
-		Cms.cmsVerify(output, certFile, caFile, Cms.PKI_ASN1_FORM);
+		Cms.cmsVerify(formatted, certFile, caFile, Cms.PKI_ASN1_FORM);
 	}
 
 	@Test

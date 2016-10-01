@@ -200,6 +200,8 @@ public class TokenDataHelper {
 		filteredUser.setId(userRef.getId());
 		filteredUser.setName(userRef.getName());
 		filteredUser.setDomain(getFilteredDomain(userRef.getDomainId()));
+		filteredUser.setIp(userRef.getIp());
+		filteredUser.setPort(userRef.getPort());
 		tokenData.setUser(filteredUser);
 	}
 

@@ -39,7 +39,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.io.BaseEncoding;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.intergrated.v3.AbstractIntegratedTest;
 import com.infinities.keystone4j.model.token.Auth;
@@ -100,9 +99,8 @@ public class TokenResourceTest extends AbstractIntegratedTest {
 		String formatted = signedWrapper.getSigned().replace("-----BEGIN CMS-----", "").replace("-----END CMS-----", "")
 				.trim();
 
-		String result = Cms.verifySignature(BaseEncoding.base64Url().decode(formatted),
-				Config.getOpt(Config.Type.signing, "certfile").asText(), Config.getOpt(Config.Type.signing, "ca_certs")
-						.asText());
+		String result = Cms.cmsVerify(formatted, Config.getOpt(Config.Type.signing, "certfile").asText(),
+				Config.getOpt(Config.Type.signing, "ca_certs").asText());
 		System.err.println(result);
 	}
 
