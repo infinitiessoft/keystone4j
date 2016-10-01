@@ -33,7 +33,7 @@ import com.infinities.keystone4j.model.assignment.Role;
 import com.infinities.keystone4j.model.common.CollectionLinks;
 
 @Entity
-@Table(name = "TRUST", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "TRUST")
 public class Trust extends BaseEntity implements java.io.Serializable {
 
 	/**
@@ -101,7 +101,6 @@ public class Trust extends BaseEntity implements java.io.Serializable {
 		this.expiresAt = expiresAt;
 	}
 
-	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;

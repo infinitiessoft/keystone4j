@@ -37,7 +37,7 @@ import com.infinities.keystone4j.model.identity.User;
 import com.infinities.keystone4j.model.token.wrapper.ITokenDataWrapper;
 
 @Entity
-@Table(name = "TOKEN", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "TOKEN")
 public class Token implements java.io.Serializable, IToken, AuthData {
 
 	/**
@@ -96,7 +96,6 @@ public class Token implements java.io.Serializable, IToken, AuthData {
 		this.expires = expires;
 	}
 
-	@Lob
 	@Column(name = "EXTRA", nullable = true)
 	public String getExtra() {
 		return extra;

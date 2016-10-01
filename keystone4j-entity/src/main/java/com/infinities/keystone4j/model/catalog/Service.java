@@ -34,7 +34,7 @@ import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
-@Table(name = "SERVICE", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "SERVICE")
 public class Service extends BaseEntity implements java.io.Serializable {
 
 	/**
@@ -78,7 +78,6 @@ public class Service extends BaseEntity implements java.io.Serializable {
 	}
 
 	@XmlTransient
-	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;

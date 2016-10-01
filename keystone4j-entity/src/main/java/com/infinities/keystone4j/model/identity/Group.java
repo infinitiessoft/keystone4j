@@ -40,8 +40,7 @@ import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
-@Table(name = "GROUP", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
-		"DOMAINID", "NAME" }) })
+@Table(name = "GROUPS", uniqueConstraints = { @UniqueConstraint(columnNames = { "DOMAINID", "NAME" }) })
 public class Group extends BaseEntity implements java.io.Serializable, DomainAwared {
 
 	/**
@@ -110,7 +109,6 @@ public class Group extends BaseEntity implements java.io.Serializable, DomainAwa
 		}
 	}
 
-	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;

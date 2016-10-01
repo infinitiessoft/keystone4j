@@ -27,7 +27,7 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 
 @Entity
-@Table(name = "REVOCATION_EVENT", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "REVOCATION_EVENT")
 public class RevocationEvent implements java.io.Serializable {
 
 	/**

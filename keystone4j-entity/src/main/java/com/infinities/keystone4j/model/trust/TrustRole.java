@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlElement;
 import com.infinities.keystone4j.model.BaseEntity;
 
 @Entity
-@Table(name = "TRUST_ROLE", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "TRUST_ROLE")
 public class TrustRole extends BaseEntity implements java.io.Serializable {
 
 	/**

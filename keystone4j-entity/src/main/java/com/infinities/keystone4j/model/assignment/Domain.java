@@ -22,7 +22,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -35,7 +34,7 @@ import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
-@Table(name = "DOMAIN", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = { "NAME" }) })
+@Table(name = "DOMAIN", uniqueConstraints = { @UniqueConstraint(columnNames = { "NAME" }) })
 public class Domain extends BaseEntity implements java.io.Serializable {
 
 	/**
@@ -85,7 +84,6 @@ public class Domain extends BaseEntity implements java.io.Serializable {
 	}
 
 	@XmlTransient
-	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;

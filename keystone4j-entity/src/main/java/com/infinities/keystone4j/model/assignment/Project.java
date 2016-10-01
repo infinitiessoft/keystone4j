@@ -44,8 +44,7 @@ import com.infinities.keystone4j.model.utils.Views;
 
 @JsonInclude(Include.NON_NULL)
 @Entity
-@Table(name = "PROJECT", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
-		"DOMAINID", "NAME" }) })
+@Table(name = "PROJECT", uniqueConstraints = { @UniqueConstraint(columnNames = { "DOMAINID", "NAME" }) })
 public class Project extends BaseEntity implements java.io.Serializable, DomainAwared {
 
 	/**
@@ -128,7 +127,6 @@ public class Project extends BaseEntity implements java.io.Serializable, DomainA
 	}
 
 	@XmlTransient
-	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;

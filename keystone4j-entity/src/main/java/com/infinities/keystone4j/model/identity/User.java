@@ -41,8 +41,7 @@ import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
-@Table(name = "USER", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
-		"DOMAINID", "NAME" }) })
+@Table(name = "USERS", uniqueConstraints = { @UniqueConstraint(columnNames = { "DOMAINID", "NAME" }) })
 public class User extends BaseEntity implements java.io.Serializable, DomainAwared, IUser {
 
 	/**
@@ -83,6 +82,16 @@ public class User extends BaseEntity implements java.io.Serializable, DomainAwar
 
 	private String tenantId;
 	private String username;
+
+	private String firstName;
+	private String lastName;
+	private boolean firstNameUpdated = false;
+	private boolean lastNameUpdated = false;
+	private String ip;
+	private Integer port;
+
+	private boolean ipUpdated = false;
+	private boolean portUpdated = false;
 
 
 	// private Set<Assignment> assignments = new HashSet<Assignment>(0);
@@ -170,7 +179,6 @@ public class User extends BaseEntity implements java.io.Serializable, DomainAwar
 	}
 
 	@XmlTransient
-	@Lob
 	@Column(name = "EXTRA")
 	@JsonView(Views.All.class)
 	public String getExtra() {
@@ -403,6 +411,88 @@ public class User extends BaseEntity implements java.io.Serializable, DomainAwar
 		return "User [name=" + name + ", domain=" + domain + ", password=" + password + ", enabled=" + enabled + ", extra="
 				+ extra + ", defaultProject=" + defaultProject + ", userGroupMemberships=" + userGroupMemberships
 				+ ", tenantId=" + tenantId + ", username=" + username + "]";
+	}
+
+	@Column(name = "FIRSTNAME", length = 50, nullable = true)
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstNameUpdated = true;
+		this.firstName = firstName;
+	}
+
+	@Column(name = "LASTNAME", length = 50, nullable = true)
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastNameUpdated = true;
+		this.lastName = lastName;
+	}
+
+	@XmlTransient
+	@Transient
+	public boolean isFirstNameUpdated() {
+		return firstNameUpdated;
+	}
+
+	public void setFirstNameUpdated(boolean firstNameUpdated) {
+		this.firstNameUpdated = firstNameUpdated;
+	}
+
+	@XmlTransient
+	@Transient
+	public boolean isLastNameUpdated() {
+		return lastNameUpdated;
+	}
+
+	public void setLastNameUpdated(boolean lastNameUpdated) {
+		this.lastNameUpdated = lastNameUpdated;
+	}
+
+	@Column(name = "ip", length = 50, nullable = true)
+	@JsonView(Views.Basic.class)
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ipUpdated = true;
+		this.ip = ip;
+	}
+
+	@Column(name = "port", nullable = true)
+	@JsonView(Views.Basic.class)
+	public Integer getPort() {
+		return port;
+	}
+
+	public void setPort(Integer port) {
+		this.portUpdated = true;
+		this.port = port;
+	}
+
+	@XmlTransient
+	@Transient
+	public boolean isIpUpdated() {
+		return ipUpdated;
+	}
+
+	public void setIpUpdated(boolean ipUpdated) {
+		this.ipUpdated = ipUpdated;
+	}
+
+	@XmlTransient
+	@Transient
+	public boolean isPortUpdated() {
+		return portUpdated;
+	}
+
+	public void setPortUpdated(boolean portUpdated) {
+		this.portUpdated = portUpdated;
 	}
 
 	// @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =

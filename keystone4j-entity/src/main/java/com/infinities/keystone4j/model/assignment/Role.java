@@ -35,7 +35,7 @@ import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
-@Table(name = "ROLE", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = { "NAME" }) })
+@Table(name = "ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = { "NAME" }) })
 public class Role extends BaseEntity implements java.io.Serializable {
 
 	/**
@@ -76,7 +76,6 @@ public class Role extends BaseEntity implements java.io.Serializable {
 	}
 
 	@XmlTransient
-	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;

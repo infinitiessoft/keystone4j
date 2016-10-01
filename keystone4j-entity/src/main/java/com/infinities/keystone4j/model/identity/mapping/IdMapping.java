@@ -26,8 +26,7 @@ import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
-@Table(name = "IDMAPPING", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
-		"DOMAINID", "LOCALID", "ENTITYTYPE" }) })
+@Table(name = "IDMAPPING", uniqueConstraints = { @UniqueConstraint(columnNames = { "DOMAINID", "LOCALID", "ENTITYTYPE" }) })
 public class IdMapping implements java.io.Serializable {
 
 	/**
