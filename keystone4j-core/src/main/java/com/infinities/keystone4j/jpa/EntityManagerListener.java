@@ -15,6 +15,11 @@
  *******************************************************************************/
 package com.infinities.keystone4j.jpa;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.annotation.WebListener;
@@ -23,11 +28,16 @@ import org.eclipse.jetty.util.component.LifeCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
+import com.infinities.keystone4j.KeystoneApplication;
+
 @WebListener
 public class EntityManagerListener implements LifeCycle.Listener {
 
 	private static EntityManagerFactory emf;
 	private final static Logger logger = LoggerFactory.getLogger(EntityManagerListener.class);
+	private static final String PERSISTENCE_UNIT_NAME = JpaProperties.PERSISTENCE_UNIT_NAME;
+	private static final String JPA_PROPERTIES_FILE = JpaProperties.JPA_PROPERTIES_FILE;
 
 
 	// @Override
@@ -70,7 +80,6 @@ public class EntityManagerListener implements LifeCycle.Listener {
 
 	@Override
 	public void lifeCycleStarting(LifeCycle event) {
-		// TODO Auto-generated method stub
 		logger.debug("Application  was starting.");
 
 	}
@@ -99,7 +108,29 @@ public class EntityManagerListener implements LifeCycle.Listener {
 	}
 
 	public static void setupEntityManagerFactory() {
-		emf = Persistence.createEntityManagerFactory("com.infinities.keystone4j.jpa");
+		String configFileLocation = KeystoneApplication.CONF_DIR + JPA_PROPERTIES_FILE;
+		Properties prop = new Properties();
+		if (!Strings.isNullOrEmpty(JPA_PROPERTIES_FILE)) {
+			try {
+				logger.debug("Load ConfigFile: {}", configFileLocation);
+				prop.load(new FileInputStream(configFileLocation));
+			} catch (FileNotFoundException e) {
+				logger.warn("File " + configFileLocation + " not found", e);
+			} catch (IOException e) {
+				logger.warn("Loading File " + configFileLocation + " fail", e);
+			}
+		}
+
+		if (prop.isEmpty()) {
+			logger.debug("Properites is empty, Create EntityManagerFactory {}", PERSISTENCE_UNIT_NAME);
+			emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+		} else {
+			for (Object key : prop.keySet()) {
+				logger.debug("jpa property key: {}, value: {}", new Object[] { key, prop.get(key) });
+			}
+			logger.debug("Properites is found, Create EntityManagerFactory {}", PERSISTENCE_UNIT_NAME);
+			emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, prop);
+		}
 	}
 
 	public static void shutdownEntityManagerFactory() {
