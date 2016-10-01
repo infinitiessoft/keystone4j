@@ -163,6 +163,18 @@ public class IdentityJpaDriver implements IdentityDriver {
 			user = PasswordUtils.hashUserPassword(user);
 			oldUser.setPassword(user.getPassword());
 		}
+		if (user.isFirstNameUpdated()) {
+			oldUser.setFirstName(user.getFirstName());
+		}
+		if (user.isLastNameUpdated()) {
+			oldUser.setLastName(user.getLastName());
+		}
+		if (user.isPortUpdated()) {
+			oldUser.setPort(user.getPort());
+		}
+		if (user.isIpUpdated()) {
+			oldUser.setIp(user.getIp());
+		}
 
 		return filterUser(userDao.merge(oldUser));
 	}
@@ -319,8 +331,7 @@ public class IdentityJpaDriver implements IdentityDriver {
 
 	@Override
 	public boolean isMultipleDomainsSupported() {
-		return this.isDomainAware()
-				|| Config.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean();
+		return this.isDomainAware() || Config.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean();
 	}
 
 }

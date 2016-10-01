@@ -250,7 +250,6 @@ public abstract class AbstractDao<T> implements GenericDao<T> {
 			return query;
 		}
 
-		hints.getFilters().remove(filter);
 		Predicate oldPredicate = query.getRestriction();
 		if (oldPredicate != null) {
 			query.where(oldPredicate, predicate);
@@ -312,7 +311,6 @@ public abstract class AbstractDao<T> implements GenericDao<T> {
 			cumulativeFilterDict.put(key, filter.getValue());
 		}
 
-		hints.getFilters().remove(filter);
 		return cumulativeFilterDict;
 	}
 
