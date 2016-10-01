@@ -161,6 +161,7 @@ public class KeystoneApplication extends ResourceConfig {
 			}
 
 		});
+		this.register(GenericExceptionMapper.class);
 		this.register(CORSResponseFilter.class);
 		this.register(EntityManagerInterceptor.class);
 		this.register(AuthContextMiddleware.class);
