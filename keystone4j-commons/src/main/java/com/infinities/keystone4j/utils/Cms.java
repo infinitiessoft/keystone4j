@@ -67,7 +67,6 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.BaseEncoding;
 import com.infinities.keystone4j.ssl.Base64Verifier;
 import com.infinities.keystone4j.ssl.CertificateVerificationException;
-import com.infinities.keystone4j.ssl.CertificateVerifier;
 import com.infinities.keystone4j.ssl.X509CertificateParser;
 
 public class Cms {
@@ -102,17 +101,17 @@ public class Cms {
 			throws CertificateException, NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException,
 			IOException, CMSException, CertStoreException, InvalidKeySpecException {
 		String output = cmsSignData(text, signingCertFileName, signingKeyFile, null);
-		return output;
-		// return toToken(output);
+		// return output;
+		return cmsToToken(output);
 	}
 
-	// private static String toToken(String output) {
-	// output = output.replace('/', '-');
-	// output = output.replace(BEGIN_CMS, "");
-	// output = output.replace(END_CMS, "");
-	// output = output.replace("\n", "");
-	// return output;
-	// }
+	private static String cmsToToken(String output) {
+		output = output.replace('/', '-');
+		output = output.replace(BEGIN_CMS, "");
+		output = output.replace(END_CMS, "");
+		output = output.replace("\n", "");
+		return output;
+	}
 
 	public static String signText(String text, String signingCertFileName, String signingKeyFile)
 			throws CertificateException, NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException,
@@ -142,15 +141,14 @@ public class Cms {
 		gen.addCertificates(certs);
 		CMSProcessableByteArray b = new CMSProcessableByteArray(data.getBytes());
 		CMSSignedData signed = gen.generate(b, true);
-		return BaseEncoding.base64Url().encode(signed.toASN1Structure().getEncoded("DER"));
+		// return
+		// BaseEncoding.base64Url().encode(signed.toASN1Structure().getEncoded("DER"));
 
-		// return new
-		// String(Base64.encode(signed.toASN1Structure().getEncoded("DER")),
-		// "UTF-8");
+		return new String(Base64.encode(signed.toASN1Structure().getEncoded("DER")), "UTF-8");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static String verifySignature(byte[] sigbytes, String signingCertFileName, String caFileName)
+	private static String verifySignature(byte[] sigbytes, String signingCertFileName, String caFileName)
 			throws CMSException, CertificateException, OperatorCreationException, NoSuchAlgorithmException,
 			NoSuchProviderException, CertPathBuilderException, InvalidAlgorithmParameterException, IOException,
 			CertificateVerificationException {
@@ -161,13 +159,14 @@ public class Cms {
 		Set<X509Certificate> additionalCerts = new HashSet<X509Certificate>();
 		additionalCerts.add(cacert);
 
-		CertificateVerifier.verifyCertificate(signercert, additionalCerts, true); // .validateKeyChain(signercert,
-																					// certs);
+		// CertificateVerifier.verifyCertificate(signercert, additionalCerts,
+		// false); // .validateKeyChain(signercert,
+		// certs);
 		if (Base64Verifier.isBase64(sigbytes)) {
 			try {
 				String s = new String(sigbytes, "UTF-8");
-				s = s.replace('-', '+'); // 62nd char of encoding
-				s = s.replace('_', '/'); // 63rd char of encoding
+				// s = s.replace('-', '+'); // 62nd char of encoding
+				// s = s.replace('_', '/'); // 63rd char of encoding
 				sigbytes = Base64.decode(s);
 				// sigbytes = BaseEncoding.base64Url().decode(new
 				// String(sigbytes, "UTF-8"));

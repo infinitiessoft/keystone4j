@@ -42,7 +42,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.BaseEncoding;
 import com.google.common.io.Resources;
 import com.infinities.keystone4j.ssl.CertificateVerificationException;
 import com.infinities.keystone4j.utils.Cms.Algorithm;
@@ -212,7 +211,7 @@ public class CmsTest {
 
 		String formatted = signedText.replace("-----BEGIN CMS-----", "").replace("-----END CMS-----", "").trim();
 
-		result = Cms.verifySignature(BaseEncoding.base64Url().decode(formatted), signingCertFileName, signingCaFileName);
+		result = Cms.cmsVerify(formatted, signingCertFileName, signingCaFileName);
 		System.err.println(result);
 	}
 

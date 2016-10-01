@@ -18,6 +18,9 @@ package com.infinities.keystone4j.middleware;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -253,12 +256,15 @@ public abstract class AuthProtocolBase {
 					}
 				}
 			} else if (Cms.isPkiz(userToken)) {
+				logger.debug("pkiz token");
 				verified = verifyPkizToken(userToken, tokenids);
 				data = loads(verified);
 			} else if (Cms.isAsn1Token(userToken)) {
+				logger.debug("asn1 token");
 				verified = verifySignedToken(userToken, tokenids);
 				data = loads(verified);
 			} else {
+				logger.debug("unknown token");
 				data = identityServer.verifyToken(userToken, retry);
 			}
 
@@ -299,7 +305,8 @@ public abstract class AuthProtocolBase {
 		}
 	}
 
-	private String verifySignedToken(String signedText, List<String> tokenids) throws IOException, SslPemException {
+	private String verifySignedToken(String signedText, List<String> tokenids) throws IOException, SslPemException,
+			KeyStoreException, NoSuchAlgorithmException, CertificateException {
 		if (isSignedTokenRevoked(tokenids)) {
 			throw new InvalidUserTokenException("Token has been revoked");
 		}
@@ -308,7 +315,8 @@ public abstract class AuthProtocolBase {
 		return verified;
 	}
 
-	private String verifyPkizToken(String signedText, List<String> tokenids) throws IOException, SslPemException {
+	private String verifyPkizToken(String signedText, List<String> tokenids) throws IOException, SslPemException,
+			KeyStoreException, NoSuchAlgorithmException, CertificateException {
 		if (isSignedTokenRevoked(tokenids)) {
 			throw new InvalidUserTokenException("Token has been revoked");
 		}
@@ -321,7 +329,8 @@ public abstract class AuthProtocolBase {
 		}
 	}
 
-	private boolean isSignedTokenRevoked(List<String> tokenids) throws IOException, SslPemException {
+	private boolean isSignedTokenRevoked(List<String> tokenids) throws IOException, SslPemException, KeyStoreException,
+			NoSuchAlgorithmException, CertificateException {
 		logger.debug("tokenids size: {}", tokenids.size());
 		for (String tokenid : tokenids) {
 			logger.debug("tokenid: {}", tokenid);
@@ -418,7 +427,8 @@ public abstract class AuthProtocolBase {
 		return timestamp;
 	}
 
-	private boolean isTokenIdInRevokedList(String tid) throws IOException, SslPemException {
+	private boolean isTokenIdInRevokedList(String tid) throws IOException, SslPemException, KeyStoreException,
+			NoSuchAlgorithmException, CertificateException {
 		RevokedWrapper revocationList = getTokenRevocationList();
 		Set<Token> revokedTokens = revocationList.getRevoked();
 		if (revokedTokens == null || revokedTokens.isEmpty()) {
@@ -436,13 +446,14 @@ public abstract class AuthProtocolBase {
 		return isContained;
 	}
 
-	private RevokedWrapper getTokenRevocationList() throws IOException, SslPemException {
+	private RevokedWrapper getTokenRevocationList() throws IOException, SslPemException, KeyStoreException,
+			NoSuchAlgorithmException, CertificateException {
 		Calendar timeout = getTokenRevocationListFetchedTime();
+		logger.debug("timeout: {}, now: {}, revocationTimeout: {}", new Object[] { timeout.getTime(),
+				Calendar.getInstance().getTime(), tokenRevocationListCacheTimeout });
 		timeout.add(Calendar.SECOND, tokenRevocationListCacheTimeout);
 		// long timeout = getTokenRevocationListFetchedTime() +
 		// tokenRevocationListCacheTimeout;
-		logger.debug("timeout: {}, now: {}, revocationTimeout: {}", new Object[] { timeout.getTime(),
-				Calendar.getInstance().getTime(), tokenRevocationListCacheTimeout });
 		boolean listIsCurrent = timeout.after(Calendar.getInstance());
 		if (listIsCurrent) {
 			if (tokenRevocationListProp == null) {
@@ -471,7 +482,8 @@ public abstract class AuthProtocolBase {
 
 	}
 
-	private String fetchRevocationList() throws SslPemException {
+	private String fetchRevocationList() throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		String revocationListData = identityServer.fetchRevocationList(true);
 		return cmsVerify(revocationListData);
 	}
@@ -484,6 +496,7 @@ public abstract class AuthProtocolBase {
 		try {
 			return verify(data, inform);
 		} catch (Exception e) {
+			logger.warn("verify failed", e);
 			try {
 				fetchSigningCert();
 				fetchCaCert();
@@ -509,11 +522,13 @@ public abstract class AuthProtocolBase {
 		}
 	}
 
-	private void fetchCaCert() throws SslPemException {
+	private void fetchCaCert() throws SslPemException, KeyStoreException, NoSuchAlgorithmException, CertificateException,
+			IOException {
 		atomicWriteToSigningDir(this.signingCaFileName, identityServer.fetchCaCert());
 	}
 
-	private void fetchSigningCert() throws SslPemException {
+	private void fetchSigningCert() throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		atomicWriteToSigningDir(this.signingCertFileName, identityServer.fetchSigningCert());
 	}
 

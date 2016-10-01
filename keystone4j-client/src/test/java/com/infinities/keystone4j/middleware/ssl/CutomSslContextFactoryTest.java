@@ -16,6 +16,11 @@
 
 package com.infinities.keystone4j.middleware.ssl;
 
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+
 import org.candlepin.thumbslug.ssl.SslPemException;
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +44,8 @@ public class CutomSslContextFactoryTest {
 	}
 
 	@Test
-	public void testGetClientContextStringString() throws SslPemException {
+	public void testGetClientContextStringString() throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		CutomSslContextFactory.getClientContext(cert, key);
 	}
 

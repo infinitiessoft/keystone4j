@@ -16,10 +16,19 @@
 package com.infinities.keystone4j.ssl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import net.oauth.signature.pem.PEMReader;
@@ -44,9 +53,29 @@ public class CutomSslContextFactory {
 		// for checkstyle
 	}
 
-	public static SSLContext getClientContext(String certUrl, String keyUrl) throws SslPemException {
+	public static SSLContext getClientContext(String certUrl, String keyUrl) throws SslPemException, KeyStoreException,
+			NoSuchAlgorithmException, CertificateException, IOException {
 		logger.debug("loading thumbslug to cdn entitlement certificate (pem encoded)");
-		TrustManager[] trustManagers = new TrustManager[] { NO_OP_TRUST_MANAGER };
+		// TrustManager[] trustManagers = new TrustManager[] {
+		// NO_OP_TRUST_MANAGER };
+		X509Certificate cert;
+		KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+		trustStore.load(null);
+
+		InputStream inputStream = new FileInputStream(new File(certUrl));
+		try {
+			CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+			cert = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+		} finally {
+			inputStream.close();
+		}
+		String alias = cert.getSubjectX500Principal().getName();
+		trustStore.setCertificateEntry(alias, cert);
+
+		TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
+		tmf.init(trustStore);
+		TrustManager[] trustManagers = tmf.getTrustManagers();
+
 		return getClientContext(certUrl, keyUrl, trustManagers);
 	}
 

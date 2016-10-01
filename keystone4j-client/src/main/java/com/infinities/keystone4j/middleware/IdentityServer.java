@@ -21,6 +21,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -133,7 +136,8 @@ public class IdentityServer {
 		return authUri;
 	}
 
-	public AccessWrapper verifyToken(String userToken, boolean retry) throws SslPemException {
+	public AccessWrapper verifyToken(String userToken, boolean retry) throws SslPemException, KeyStoreException,
+			NoSuchAlgorithmException, CertificateException, IOException {
 
 		if (Strings.isNullOrEmpty(authVersion)) {
 			authVersion = chooseApiVersion();
@@ -182,7 +186,8 @@ public class IdentityServer {
 
 	}
 
-	public String fetchRevocationList(boolean retry) throws SslPemException {
+	public String fetchRevocationList(boolean retry) throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("X-Auth-Token", getAdminToken());
 		Response response = jsonRequest("GET", "/v2.0/tokens/revoked", headers);
@@ -208,15 +213,18 @@ public class IdentityServer {
 		return revokedToken.getSigned();
 	}
 
-	public String fetchSigningCert() throws SslPemException {
+	public String fetchSigningCert() throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		return fetchCertFile("signing");
 	}
 
-	public String fetchCaCert() throws SslPemException {
+	public String fetchCaCert() throws SslPemException, KeyStoreException, NoSuchAlgorithmException, CertificateException,
+			IOException {
 		return fetchCertFile("ca");
 	}
 
-	private String fetchCertFile(String certType) throws SslPemException {
+	private String fetchCertFile(String certType) throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		if (Strings.isNullOrEmpty(authVersion)) {
 			authVersion = chooseApiVersion();
 		}
@@ -259,7 +267,8 @@ public class IdentityServer {
 		}
 	}
 
-	private String getAdminToken() throws SslPemException {
+	private String getAdminToken() throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		if (adminTokenExpiry != null) {
 			if (willExpireSoon(adminTokenExpiry)) {
 				adminToken = null;
@@ -282,7 +291,8 @@ public class IdentityServer {
 		return soon.after(expiry);
 	}
 
-	private Entry<String, Calendar> requestAdminToken() throws SslPemException {
+	private Entry<String, Calendar> requestAdminToken() throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		PasswordCredentials credentials = new PasswordCredentials();
 		credentials.setUsername(adminUser);
 		credentials.setPassword(adminPassword);
@@ -314,7 +324,8 @@ public class IdentityServer {
 		}
 	}
 
-	private String chooseApiVersion() throws SslPemException {
+	private String chooseApiVersion() throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		String versionToUse = null;
 		if (!Strings.isNullOrEmpty(reqAuthVersion)) {
 			versionToUse = reqAuthVersion;
@@ -342,7 +353,8 @@ public class IdentityServer {
 		return versionToUse;
 	}
 
-	private Set<String> getSupportedVersions() throws SslPemException {
+	private Set<String> getSupportedVersions() throws SslPemException, KeyStoreException, NoSuchAlgorithmException,
+			CertificateException, IOException {
 		Set<String> versions = new HashSet<String>();
 		Response response = jsonRequest(HttpMethod.GET, "/", null);
 		if (response.getStatus() == 501) {
@@ -366,12 +378,13 @@ public class IdentityServer {
 		return versions;
 	}
 
-	private Response jsonRequest(String method, String path, Map<String, String> headers) throws SslPemException {
+	private Response jsonRequest(String method, String path, Map<String, String> headers) throws SslPemException,
+			KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
 		return jsonRequest(method, path, null, headers);
 	}
 
 	private Response jsonRequest(String method, String path, Object body, Map<String, String> headers)
-			throws SslPemException {
+			throws SslPemException, KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
 		Map<String, String> kwargs = new HashMap<String, String>();
 		if (headers != null && !headers.isEmpty()) {
 			kwargs.putAll(headers);
@@ -393,7 +406,8 @@ public class IdentityServer {
 		}
 	}
 
-	private Response httpRequest(String method, String path, Object body) throws SslPemException {
+	private Response httpRequest(String method, String path, Object body) throws SslPemException, KeyStoreException,
+			NoSuchAlgorithmException, CertificateException, IOException {
 		Client client = getClient();
 		Builder builder = client.target(identityUri).path(path.replaceAll("/+$", "")).request();
 		if (body != null) {
@@ -428,7 +442,8 @@ public class IdentityServer {
 		}
 	}
 
-	private Client getClient() throws SslPemException {
+	private Client getClient() throws SslPemException, KeyStoreException, NoSuchAlgorithmException, CertificateException,
+			IOException {
 		if (client != null) {
 			return client;
 		}
