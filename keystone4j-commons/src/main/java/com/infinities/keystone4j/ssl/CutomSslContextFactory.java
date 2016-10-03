@@ -33,15 +33,10 @@ import javax.net.ssl.X509TrustManager;
 
 import net.oauth.signature.pem.PEMReader;
 
-import org.candlepin.thumbslug.ssl.ClientContextTrustManager;
 import org.candlepin.thumbslug.ssl.PEMx509KeyManager;
-import org.candlepin.thumbslug.ssl.PemChainLoader;
 import org.candlepin.thumbslug.ssl.SslPemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 
 public class CutomSslContextFactory {
 
@@ -82,10 +77,28 @@ public class CutomSslContextFactory {
 	public static SSLContext getClientContext(String certUrl, String keyUrl, String caUrl) throws SslPemException {
 		try {
 			logger.debug("loading thumbslug to cdn entitlement certificate (pem encoded)");
-			String caPem = Files.asCharSource(new File(caUrl), Charsets.UTF_8).read();
+			// String caPem = Files.asCharSource(new File(caUrl),
+			// Charsets.UTF_8).read();
+			X509Certificate cert;
+			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+			trustStore.load(null);
+
+			InputStream inputStream = new FileInputStream(new File(caUrl));
+			try {
+				CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+				cert = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+			} finally {
+				inputStream.close();
+			}
+			String alias = cert.getSubjectX500Principal().getName();
+			trustStore.setCertificateEntry(alias, cert);
+
+			TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509");
+			tmf.init(trustStore);
+			TrustManager[] trustManagers = tmf.getTrustManagers();
+
 			// Initialize the SSLContext to work with our key managers.
-			return getClientContext(certUrl, keyUrl,
-					ClientContextTrustManager.getTrustManagers(PemChainLoader.loadChain(caPem)));
+			return getClientContext(certUrl, keyUrl, trustManagers);
 		} catch (Exception e) {
 			logger.error("Unable to load pem file!", e);
 			throw new SslPemException("Failed to initialize the client-side SSLContext", e);

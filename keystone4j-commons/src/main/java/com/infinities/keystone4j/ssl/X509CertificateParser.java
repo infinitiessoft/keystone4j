@@ -30,6 +30,7 @@ import java.security.interfaces.RSAPrivateKey;
 
 import net.oauth.signature.pem.PEMReader;
 
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
@@ -99,7 +100,11 @@ public class X509CertificateParser {
 				JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
 				KeyPair keypair = converter.getKeyPair((PEMKeyPair) obj);
 				return keypair.getPrivate();
+			} else if (obj instanceof PrivateKeyInfo) {
+				JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
+				return converter.getPrivateKey(PrivateKeyInfo.getInstance(obj));
 			} else {
+
 				logger.debug("obj class:{}", obj.getClass());
 				throw new RuntimeException("invalid key format");
 			}
