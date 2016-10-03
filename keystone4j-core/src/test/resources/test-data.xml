@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 	<DOMAIN id="default" optlock="1" name="Default" enabled="true"
-		desc="Owns users and tenants (i.e. projects) available on Identity API v2." />
+		description="Owns users and tenants (i.e. projects) available on Identity API v2." />
 	<PROJECT id="88e550a135bb4e6da68e79e5b7c4b2f2" optlock="1"
-		name="admin" enabled="true" desc="description" domainid="default" />
+		name="admin" enabled="true" description="description" domainid="default" />
 	<SERVICE id="3f813b99431e46c0af877393f6ad91d7" optlock="1"
-		name="keystone" type="identity" desc="Openstack Identity Service"
+		name="keystone" type="identity" description="Openstack Identity Service"
 		enabled="true" />
-	<REGION id="RegionOne" optlock="1" name="RegionOne" desc="RegionOne" />
+	<REGION id="RegionOne" optlock="1" name="RegionOne" description="RegionOne" />
 	<ENDPOINT id="9775f17cbc814f8d8097a524680bb33c" optlock="1"
-		name="keystone_endpoint" desc="keystone endpoint" interface="admin"
+		name="keystone_endpoint" description="keystone endpoint" interface="admin"
 		url="http://localhost:35357/v3.0/" serviceid="3f813b99431e46c0af877393f6ad91d7"
 		regionid="RegionOne" enabled="true" />
 	<ROLE id="9fe2ff9ee4384b1894a90878d3e92bab" optlock="1" name="admin"
-		desc="Default role for project membership" />
+		description="Default role for project membership" />
 	<ROLE id="d903936e7bbd4183b8cd35816d2cf88b" optlock="1" name="demo"
-		desc="" />
-	<USER id="e7912c2225e84ac5905d8cf0b5040a6d" enabled="true"
+		description="" />
+	<USERS id="e7912c2225e84ac5905d8cf0b5040a6d" enabled="true"
 		password="8c4e22bac237346cd9db42727899547aa4af7239f8baa0b748c7acf41510f4714235c62089d0bec6af6ebb60ad617a60334dc58125230023af46297af909276e"
-		optlock="1" name="admin" desc="admin user" domainid="default"
+		optlock="1" name="admin" description="admin user" domainid="default"
 		defaultprojectid="88e550a135bb4e6da68e79e5b7c4b2f2" />
 	<IDMAPPING publicid="29beb2f1567642eb810b042b6719ea88"
 		entitytype="USER" localid="e7912c2225e84ac5905d8cf0b5040a6d" domainid="default" />
@@ -26,14 +26,14 @@
 		optlock="1" actorid="e7912c2225e84ac5905d8cf0b5040a6d" targetid="88e550a135bb4e6da68e79e5b7c4b2f2"
 		roleid="9fe2ff9ee4384b1894a90878d3e92bab" type="USER_PROJECT"
 		inherited="false" />
-	<USER id="e7912c2225e84ac5905d8cf0b5040a6f" enabled="true"
+	<USERS id="e7912c2225e84ac5905d8cf0b5040a6f" enabled="true"
 		password="8c4e22bac237346cd9db42727899547aa4af7239f8baa0b748c7acf41510f4714235c62089d0bec6af6ebb60ad617a60334dc58125230023af46297af909276e"
-		optlock="1" name="demo" desc="demo user" domainid="default"
+		optlock="1" name="demo" description="demo user" domainid="default"
 		defaultprojectid="88e550a135bb4e6da68e79e5b7c4b2f2" />
 	<IDMAPPING publicid="29beb2f1567642eb810b042b6719ea89"
 		entitytype="USER" localid="e7912c2225e84ac5905d8cf0b5040a6f" domainid="default" />
-	<GROUP id="88e550a135bb4e6da68e79e5b7c4b2f3" optlock="1" name="demo"
-		desc="description" domainid="default" />
+	<GROUPS id="88e550a135bb4e6da68e79e5b7c4b2f3" optlock="1" name="demo"
+		description="description" domainid="default" />
 	<USER_GROUP_MEMBERSHIP id="87e550a135bb4e6da68e79e5b7c4b2f3"
 		optlock="1" userid="e7912c2225e84ac5905d8cf0b5040a6f" groupid="88e550a135bb4e6da68e79e5b7c4b2f3" />
 	<ROLE_ASSIGNMENT id="9fe2ff9ee4384b1894a90878d3e92ba2"

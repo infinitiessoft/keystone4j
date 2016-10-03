@@ -12,7 +12,6 @@
 	<name>keystone4j-core</name>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.infinities.keystone4j</groupId>
 			<artifactId>keystone4j-entity</artifactId>
@@ -77,6 +76,11 @@
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
 
 		<dependency>
@@ -305,7 +309,7 @@
 							</generatorConfigurations>
 							<jvmSettings>
 								<initialMemorySize>256M</initialMemorySize>
-								<maxMemorySize>512M</maxMemorySize>
+								<maxMemorySize>1024M</maxMemorySize>
 								<systemProperties>
 									<systemProperty>java.security.policy=conf/policy.all</systemProperty>
 									<systemProperty>com.sun.management.jmxremote</systemProperty>
@@ -351,6 +355,23 @@
 						</configuration>
 						<goals>
 							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>src/main/resources/assembly/3.1.0.xml</descriptor>
+					<finalName>keystone4j${project.parent.version}-${maven.build.timestamp}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>

@@ -44,7 +44,6 @@
 				<artifactId>keystone4j-commons</artifactId>
 				<version>1.0.1</version>
 			</dependency>
-
 			<!-- <dependency> <groupId>com.infinities.keystone4j</groupId> <artifactId>keystone4j-client</artifactId> 
 				<version>${project.version}</version> </dependency> -->
 
@@ -233,9 +232,15 @@
 			</dependency>
 
 			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>9.1-901-1.jdbc4</version>
+			</dependency>
+
+			<dependency>
 				<groupId>org.hsqldb</groupId>
 				<artifactId>hsqldb</artifactId>
-				<version>2.2.9</version>
+				<version>2.3.2</version>
 			</dependency>
 
 			<!-- JUnit and JMock for unit testing -->
@@ -294,6 +299,10 @@
 				<version>${jerseyVersion}</version>
 				<scope>test</scope>
 			</dependency>
+
+			<!-- <dependency> <groupId>com.googlecode.json-simple</groupId> <artifactId>json-simple</artifactId> 
+				<version>1.1.1</version> </dependency> -->
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -310,8 +319,35 @@
 						<encoding>${project.build.sourceEncoding}</encoding>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.0.0</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 
 	<properties>
