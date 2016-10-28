@@ -318,7 +318,7 @@ public class Cms {
 			} else if (mode == Algorithm.sha512) {
 				hf = Hashing.sha512();
 			}
-			HashCode hc = hf.newHasher().putString(tokenid).hash();
+			HashCode hc = hf.newHasher().putString(tokenid, Charsets.UTF_16LE).hash();
 			return toHex(hc.asBytes());
 
 		} else {
@@ -419,12 +419,11 @@ public class Cms {
 			} else if (mode == Algorithm.sha512) {
 				hf = Hashing.sha512();
 			}
-			HashCode hc = hf.newHasher().putString(tokenid).hash();
+			HashCode hc = hf.newHasher().putString(tokenid, Charsets.UTF_16LE).hash();
 			return toHex(hc.asBytes());
 
 		} else {
 			return tokenid;
 		}
 	}
-
 }
