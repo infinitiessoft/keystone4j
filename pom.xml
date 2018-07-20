@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.infinities</groupId>
 	<artifactId>keystone4j</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<packaging>pom</packaging>
 	<name>keystone4j</name>
 	<description>java version of openstack keystone component</description>
@@ -24,25 +24,25 @@
 			<dependency>
 				<groupId>com.infinities.keystone4j</groupId>
 				<artifactId>keystone4j-core</artifactId>
-				<version>1.0.1</version>
+				<version>1.0.2</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.infinities.keystone4j</groupId>
 				<artifactId>keystone4j-war</artifactId>
-				<version>1.0.1</version>
+				<version>1.0.2</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.infinities.keystone4j</groupId>
 				<artifactId>keystone4j-entity</artifactId>
-				<version>1.0.1</version>
+				<version>1.0.2</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.infinities.keystone4j</groupId>
 				<artifactId>keystone4j-commons</artifactId>
-				<version>1.0.1</version>
+				<version>1.0.2</version>
 			</dependency>
 			<!-- <dependency> <groupId>com.infinities.keystone4j</groupId> <artifactId>keystone4j-client</artifactId> 
 				<version>${project.version}</version> </dependency> -->
