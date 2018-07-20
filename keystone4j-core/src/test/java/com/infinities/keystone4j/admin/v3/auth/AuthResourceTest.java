@@ -27,12 +27,14 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.infinities.keystone4j.JettyTestContainerFactory;
 import com.infinities.keystone4j.common.Config;
 import com.infinities.keystone4j.model.assignment.Domain;
 import com.infinities.keystone4j.model.assignment.Project;
@@ -125,14 +127,13 @@ public class AuthResourceTest extends JerseyTest {
 		// check
 		response = target("/v3").path("auth").path("tokens").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.header("X-Subject-Token", tokenid).head();
 		assertEquals(200, response.getStatus());
 
 		// validate
 		response = target("/v3/auth/tokens").register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
-				.header("X-Subject-Token", tokenid).get();
+				.header("X-Auth-Token", tokenid).header("X-Subject-Token", tokenid).get();
 		assertEquals(200, response.getStatus());
 		assertEquals(tokenid, response.getHeaderString("X-Subject-Token"));
 
@@ -150,13 +151,13 @@ public class AuthResourceTest extends JerseyTest {
 
 		// revoke
 		response = target("/v3/auth/tokens").register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.header("X-Subject-Token", tokenid).delete();
 		assertEquals(204, response.getStatus());
 
 		response = target("/v3").path("auth").path("tokens").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.header("X-Subject-Token", tokenid).head();
 		assertEquals(404, response.getStatus());
 	}
@@ -456,7 +457,7 @@ public class AuthResourceTest extends JerseyTest {
 		final String subjectToken = "subject-token";
 		Response response = target("/v3").path("auth").path("tokens").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.header("X-Subject-Token", subjectToken).head();
 		assertEquals(404, response.getStatus());
 	}
@@ -465,7 +466,7 @@ public class AuthResourceTest extends JerseyTest {
 	public void testRevokeToken() {
 		final String subjectToken = "subject-token";
 		Response response = target("/v3/auth/tokens").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.header("X-Subject-Token", subjectToken).delete();
 		assertEquals(404, response.getStatus());
 	}
@@ -473,7 +474,7 @@ public class AuthResourceTest extends JerseyTest {
 	@Test
 	public void testValidateToken() throws JsonProcessingException, IOException {
 		Response response = target("/v3/auth/tokens").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.header("X-Subject-Token", "subjectToken").get();
 		assertEquals(404, response.getStatus());
 	}
@@ -482,5 +483,10 @@ public class AuthResourceTest extends JerseyTest {
 	public void testGetRevocationList() {
 		// TODO no example in openstack api.
 		// fail("Not yet implemented");
+	}
+
+	@Override
+	protected TestContainerFactory getTestContainerFactory() {
+		return new JettyTestContainerFactory();
 	}
 }

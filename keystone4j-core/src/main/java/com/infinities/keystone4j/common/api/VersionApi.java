@@ -64,7 +64,7 @@ public class VersionApi {
 		String url = Wsgi.getBaseUrl(context, this.endpointUrlType);
 
 		// String portKey = MessageFormat.format(PORT_POSTFIX, type);
-		// String port = Config.Instance.getOpt(Config.Type.DEFAULT,
+		// String port = Config.getOpt(Config.Type.DEFAULT,
 		// portKey).asText();
 		// url = MessageFormat.format(url, port);
 

@@ -55,7 +55,7 @@ public class ApiV3ResourceTest extends JerseyTest {
 		assertEquals(1, links.size());
 		JsonNode link = links.get(0);
 		assertEquals("self", link.get("rel").asText());
-		String url = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_endpoint").asText();
+		String url = Config.getOpt(Config.Type.DEFAULT, "admin_endpoint").asText();
 		url = Config.replaceVarWithConf(url) + "v3/";
 		assertEquals(url, link.get("href").asText());
 		JsonNode medias = versionV3.get("media-types");

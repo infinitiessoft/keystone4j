@@ -76,7 +76,7 @@ public class DomainConfigs {
 		}
 
 		DomainConfig domainConfig = new DomainConfig();
-		Config.Instance.configure(domainConfig.getCfg());
+		Config.configure(domainConfig.getCfg());
 		domainConfig.setDriver(loadDriver(domainConfig, assignmentApi));
 		assertNoMoreThanOneSqlDriver(domainConfig, fileList);
 		configs.put(domainRef.getId(), domainConfig);
@@ -88,7 +88,7 @@ public class DomainConfigs {
 		this.setConfigured(true);
 		this.driver = standardDriver;
 
-		String confDir = Config.Instance.getOpt(Config.Type.identity, "domain_config_dir").asText();
+		String confDir = Config.getOpt(Config.Type.identity, "domain_config_dir").asText();
 		File configDir = new File(confDir);
 		if (!configDir.exists() || !configDir.isDirectory()) {
 			logger.warn("Unable to locate domain config directory: %s", confDir);

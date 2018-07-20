@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.infinities.keystone4j.model.BaseEntity;
 
 @Entity
-@Table(name = "ROLE_ASSIGNMENT", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
-		"TYPE", "ACTORID", "TARGETID", "ROLEID" }) })
+@Table(name = "ROLE_ASSIGNMENT", uniqueConstraints = { @UniqueConstraint(columnNames = { "TYPE", "ACTORID", "TARGETID",
+		"ROLEID" }) })
 public class RoleAssignment extends BaseEntity implements java.io.Serializable {
 
 	/**

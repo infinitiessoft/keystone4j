@@ -37,7 +37,7 @@ public class TokenDriverFactory implements Factory<TokenDriver> {
 
 	@Override
 	public TokenDriver provide() {
-		String driver = Config.Instance.getOpt(Config.Type.token, "driver").asText();
+		String driver = Config.getOpt(Config.Type.token, "driver").asText();
 		try {
 			Class<?> c = Class.forName(driver);
 			return (TokenDriver) c.newInstance();

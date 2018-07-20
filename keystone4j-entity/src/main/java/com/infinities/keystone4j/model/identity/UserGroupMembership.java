@@ -25,8 +25,7 @@ import javax.persistence.UniqueConstraint;
 import com.infinities.keystone4j.model.BaseEntity;
 
 @Entity
-@Table(name = "USER_GROUP_MEMBERSHIP", schema = "PUBLIC", catalog = "PUBLIC", uniqueConstraints = { @UniqueConstraint(columnNames = {
-		"USERID", "GROUPID" }) })
+@Table(name = "USER_GROUP_MEMBERSHIP", uniqueConstraints = { @UniqueConstraint(columnNames = { "USERID", "GROUPID" }) })
 public class UserGroupMembership extends BaseEntity implements java.io.Serializable {
 
 	/**

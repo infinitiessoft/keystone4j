@@ -32,7 +32,7 @@
 //
 //	@Override
 //	public EndpointFilterDriver provide() {
-//		String driver = Config.Instance.getOpt(Config.Type.endpoint_filter, "driver").asText();
+//		String driver = Config.getOpt(Config.Type.endpoint_filter, "driver").asText();
 //		try {
 //			Class<?> c = Class.forName(driver);
 //			return (EndpointFilterDriver) c.newInstance();

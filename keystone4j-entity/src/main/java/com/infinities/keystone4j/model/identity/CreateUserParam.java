@@ -83,6 +83,24 @@ public class CreateUserParam implements java.io.Serializable {
 		this.user.setDescription(description);
 	}
 
+	@XmlElement(name = "firstname")
+	public String getFirstName() {
+		return user.getFirstName();
+	}
+
+	public void setFirstName(String firstName) {
+		user.setFirstName(firstName);
+	}
+
+	@XmlElement(name = "lastname")
+	public String getLastName() {
+		return user.getLastName();
+	}
+
+	public void setLastName(String lastName) {
+		user.setLastName(lastName);
+	}
+
 	@XmlTransient
 	public User getUser() {
 		return user;

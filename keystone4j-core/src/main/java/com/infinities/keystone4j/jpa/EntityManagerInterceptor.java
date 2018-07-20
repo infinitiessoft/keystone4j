@@ -49,6 +49,7 @@ public class EntityManagerInterceptor implements ContainerRequestFilter, Contain
 
 	@Override
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+		System.out.println("==========================================================request leave");
 		if (!EntityManagerHelper.getLock()) {
 			try {
 				EntityManagerHelper.commit();

@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlElement;
 import com.infinities.keystone4j.model.common.Link;
 
 @Entity
-@Table(name = "TOKEN_METADATA", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "TOKEN_METADATA")
 public class Metadata implements java.io.Serializable {
 
 	/**

@@ -32,7 +32,7 @@ public class TrustDriverFactory implements Factory<TrustDriver> {
 
 	@Override
 	public TrustDriver provide() {
-		String driver = Config.Instance.getOpt(Config.Type.trust, "driver").asText();
+		String driver = Config.getOpt(Config.Type.trust, "driver").asText();
 		try {
 			Class<?> c = Class.forName(driver);
 			return (TrustDriver) c.newInstance();

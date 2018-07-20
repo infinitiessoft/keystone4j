@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.infinities.keystone4j.admin.v3;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -32,6 +33,7 @@ public class SimpleCertResource {
 	private final SimpleCertV3Controller simpleCertV3Controller;
 
 
+	@Inject
 	public SimpleCertResource(SimpleCertV3Controller simpleCertV3Controller) {
 		this.simpleCertV3Controller = simpleCertV3Controller;
 	}

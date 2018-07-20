@@ -67,8 +67,8 @@ public class RevokeJpaDriver implements RevokeDriver {
 	}
 
 	private Calendar getRevokedBeforeCutoffTime() {
-		int expiration = Config.Instance.getOpt(Config.Type.token, "expiration").asInteger();
-		int buffer = Config.Instance.getOpt(Config.Type.revoke, "expiration_buffer").asInteger();
+		int expiration = Config.getOpt(Config.Type.token, "expiration").asInteger();
+		int buffer = Config.getOpt(Config.Type.revoke, "expiration_buffer").asInteger();
 		int expireDelta = expiration + buffer;
 		Calendar oldest = Calendar.getInstance();
 		oldest.add(Calendar.SECOND, expireDelta);

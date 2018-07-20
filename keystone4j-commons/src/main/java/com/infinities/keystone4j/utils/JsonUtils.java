@@ -90,6 +90,14 @@ public class JsonUtils {
 		return objectMapper.readValue(fromValue, toValueType);
 	}
 
+	public static <T> T readJson(String fromValue, Class<T> toValueType) throws IOException {
+		return objectMapper.readValue(fromValue, toValueType);
+	}
+
+	public static <T> T readJson(File file, Class<T> toValueType) throws IOException {
+		return objectMapper.readValue(file, toValueType);
+	}
+
 	public static JsonNode convertToJsonNode(String text) throws JsonProcessingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonFactory factory = mapper.getFactory(); // since 2.1 use
@@ -108,6 +116,10 @@ public class JsonUtils {
 	public static <T> T convertValue(Object fromValue, Class<T> toValueType) throws JsonParseException,
 			JsonMappingException, IOException {
 		return objectMapper.convertValue(fromValue, toValueType);
+	}
+
+	public static String toString(Object fromValue) throws IOException {
+		return objectMapper.writeValueAsString(fromValue);
 	}
 
 }

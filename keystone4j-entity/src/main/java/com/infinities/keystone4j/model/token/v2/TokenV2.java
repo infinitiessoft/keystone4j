@@ -20,9 +20,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.infinities.keystone4j.model.assignment.Project;
 import com.infinities.keystone4j.model.token.Bind;
+import com.infinities.keystone4j.model.utils.jackson.adapter.ExpireDateAdapter;
+import com.infinities.keystone4j.model.utils.jackson.adapter.IssueDateAdapter;
 
 public class TokenV2 implements Serializable {
 
@@ -32,17 +36,18 @@ public class TokenV2 implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String id;
-
+	@XmlJavaTypeAdapter(IssueDateAdapter.class)
 	private Calendar issued_at;
-
+	@XmlJavaTypeAdapter(ExpireDateAdapter.class)
 	private Calendar expires;
 
 	private Project tenant;
 
 	private Bind bind;
 
+	@XmlTransient
 	private List<String> auditIds;
-
+	@XmlTransient
 	private Trust trust;
 
 
@@ -86,18 +91,22 @@ public class TokenV2 implements Serializable {
 		this.bind = bind;
 	}
 
+	@XmlTransient
 	public List<String> getAuditIds() {
 		return auditIds;
 	}
 
+	@XmlTransient
 	public void setAuditIds(List<String> auditIds) {
 		this.auditIds = auditIds;
 	}
 
+	@XmlTransient
 	public Trust getTrust() {
 		return trust;
 	}
 
+	@XmlTransient
 	public void setTrust(Trust trust) {
 		this.trust = trust;
 	}

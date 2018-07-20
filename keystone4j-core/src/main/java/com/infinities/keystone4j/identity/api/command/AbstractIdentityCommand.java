@@ -97,7 +97,7 @@ public abstract class AbstractIdentityCommand {
 		}
 		logger.debug("ID Mapping - Domain ID: {}, Default Driver: {}, Domains: {}, UUIDs: {}, Compatible IDs: {}",
 				new Object[] { domainId, driver == this.getIdentityDriver(), driver.isDomainAware(), driver.generateUuids(),
-						Config.Instance.getOpt(Config.Type.identity, "backward_compatible_ids").asBoolean() });
+						Config.getOpt(Config.Type.identity, "backward_compatible_ids").asBoolean() });
 		List<T> refs = new ArrayList<T>();
 
 		for (T r : ref) {
@@ -115,7 +115,7 @@ public abstract class AbstractIdentityCommand {
 
 		logger.debug("ID Mapping - Domain ID: {}, Default Driver: {}, Domains: {}, UUIDs: {}, Compatible IDs: {}",
 				new Object[] { domainId, driver == this.getIdentityDriver(), driver.isDomainAware(), driver.generateUuids(),
-						Config.Instance.getOpt(Config.Type.identity, "backward_compatible_ids").asBoolean() });
+						Config.getOpt(Config.Type.identity, "backward_compatible_ids").asBoolean() });
 
 		return setDomainIdAndMappingForSingleRef(ref, domainId, driver, entityType);
 
@@ -154,21 +154,21 @@ public abstract class AbstractIdentityCommand {
 		boolean isNotDefaultDriver = !driver.equals(this.getIdentityDriver());
 
 		return isNotDefaultDriver
-				|| (!driver.generateUuids() && !Config.Instance.getOpt(Config.Type.identity, "backward_compatible_ids")
+				|| (!driver.generateUuids() && !Config.getOpt(Config.Type.identity, "backward_compatible_ids")
 						.asBoolean());
 	}
 
 	private void insertDomainIdIfNeeded(DomainAwared ref, IdentityDriver driver, String domainId) {
 		if (!driver.isDomainAware()) {
 			if (Strings.isNullOrEmpty(domainId)) {
-				domainId = Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText();
+				domainId = Config.getOpt(Config.Type.identity, "default_domain_id").asText();
 			}
 			ref.setDomainId(domainId);
 		}
 	}
 
 	protected DomainIdDriverAndEntityId getDomainDriverAndEntityId(String publicId) throws Exception {
-		if (Config.Instance.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean()) {
+		if (Config.getOpt(Config.Type.identity, "domain_specific_drivers_enabled").asBoolean()) {
 			IdMapping localIdRef = this.getIdMappingApi().getIdMapping(publicId);
 			if (localIdRef != null) {
 				DomainIdDriverAndEntityId ret = new DomainIdDriverAndEntityId();
@@ -187,14 +187,14 @@ public abstract class AbstractIdentityCommand {
 				return ret;
 			} else {
 				DomainIdDriverAndEntityId ret = new DomainIdDriverAndEntityId();
-				ret.setDomainId(Config.Instance.getOpt(Config.Type.DEFAULT, "default_domain_id").asText());
+				ret.setDomainId(Config.getOpt(Config.Type.DEFAULT, "default_domain_id").asText());
 				ret.setDriver(driver);
 				ret.setLocalId(publicId);
 				return ret;
 			}
 		}
 
-		if (!Config.Instance.getOpt(Config.Type.identity_mapping, "backward_compatible_ids").asBoolean()) {
+		if (!Config.getOpt(Config.Type.identity_mapping, "backward_compatible_ids").asBoolean()) {
 			IdMapping localIdRef = this.getIdMappingApi().getIdMapping(publicId);
 			if (localIdRef != null) {
 				DomainIdDriverAndEntityId ret = new DomainIdDriverAndEntityId();
@@ -206,7 +206,7 @@ public abstract class AbstractIdentityCommand {
 		}
 
 		DomainIdDriverAndEntityId ret = new DomainIdDriverAndEntityId();
-		ret.setDomainId(Config.Instance.getOpt(Config.Type.DEFAULT, "default_domain_id").asText());
+		ret.setDomainId(Config.getOpt(Config.Type.DEFAULT, "default_domain_id").asText());
 		ret.setDriver(driver);
 		ret.setLocalId(publicId);
 		return ret;
@@ -224,7 +224,7 @@ public abstract class AbstractIdentityCommand {
 		}
 
 		if (!driver.isDomainAware() && driver.equals(this.getIdentityDriver())
-				&& !Config.Instance.getOpt(Config.Type.DEFAULT, "default_domain_id").asText().equals(domainId)
+				&& !Config.getOpt(Config.Type.DEFAULT, "default_domain_id").asText().equals(domainId)
 				&& !Strings.isNullOrEmpty(domainId)) {
 			logger.warn(
 					"Found multiple domains being mapped to a driver that does not support that (e.g. LDAP; - Domain ID: {}, Default Driver: {}",

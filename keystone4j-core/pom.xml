@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.infinities</groupId>
 		<artifactId>keystone4j</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.2</version>
 	</parent>
 	<groupId>com.infinities.keystone4j</groupId>
 	<artifactId>keystone4j-core</artifactId>
@@ -12,7 +12,6 @@
 	<name>keystone4j-core</name>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.infinities.keystone4j</groupId>
 			<artifactId>keystone4j-entity</artifactId>
@@ -80,13 +79,18 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk16</artifactId>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcmail-jdk16</artifactId>
+			<artifactId>bcprov-jdk15on</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
 		</dependency>
 
 		<dependency>
@@ -152,6 +156,11 @@
 		<dependency>
 			<groupId>org.glassfish.jersey.test-framework.providers</groupId>
 			<artifactId>jersey-test-framework-provider-jetty</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-grizzly2-servlet</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -300,7 +309,7 @@
 							</generatorConfigurations>
 							<jvmSettings>
 								<initialMemorySize>256M</initialMemorySize>
-								<maxMemorySize>512M</maxMemorySize>
+								<maxMemorySize>1024M</maxMemorySize>
 								<systemProperties>
 									<systemProperty>java.security.policy=conf/policy.all</systemProperty>
 									<systemProperty>com.sun.management.jmxremote</systemProperty>
@@ -350,6 +359,23 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptor>src/main/resources/assembly/3.1.0.xml</descriptor>
+					<finalName>keystone4j${project.parent.version}-${maven.build.timestamp}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -362,4 +388,5 @@
 
 		</plugins>
 	</build>
+	<version>1.0.2</version>
 </project>

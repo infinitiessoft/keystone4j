@@ -55,7 +55,7 @@ public class ApiV2ResourceTest extends JerseyTest {
 		assertEquals(3, linksV2.size());
 		JsonNode linkV2_0 = linksV2.get(0);
 		assertEquals("self", linkV2_0.get("rel").asText());
-		String url = Config.Instance.getOpt(Config.Type.DEFAULT, "admin_endpoint").asText();
+		String url = Config.getOpt(Config.Type.DEFAULT, "admin_endpoint").asText();
 		url = Config.replaceVarWithConf(url) + "v2.0/";
 		assertEquals(url, linkV2_0.get("href").asText());
 		JsonNode linkV2_1 = linksV2.get(1);

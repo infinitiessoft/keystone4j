@@ -38,7 +38,7 @@ import com.infinities.keystone4j.utils.JsonUtils;
 
 @JsonInclude(Include.NON_NULL)
 @Entity
-@Table(name = "POLICY", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "POLICY")
 public class Policy extends BaseEntity implements java.io.Serializable {
 
 	/**
@@ -72,7 +72,6 @@ public class Policy extends BaseEntity implements java.io.Serializable {
 		blobUpdated = true;
 	}
 
-	@Lob
 	@XmlTransient
 	@Column(name = "BLOB", nullable = false)
 	public String getBlobStr() throws JsonGenerationException, JsonMappingException, IOException {
@@ -95,7 +94,6 @@ public class Policy extends BaseEntity implements java.io.Serializable {
 		typeUpdated = true;
 	}
 
-	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;

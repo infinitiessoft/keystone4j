@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.infinities.keystone4j.token;
 
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -71,7 +72,7 @@ public class TokenDataHelper {
 		if (tokenData.getCatalog() != null) {
 			return;
 		}
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
+		boolean enabled = Config.getOpt(Config.Type.trust, "enabled").asBoolean();
 
 		if (enabled && trust != null) {
 			userid = trust.getTrustorUserId();
@@ -89,7 +90,7 @@ public class TokenDataHelper {
 			return;
 		}
 
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
+		boolean enabled = Config.getOpt(Config.Type.trust, "enabled").asBoolean();
 
 		String tokenUserid;
 		String tokenProjectid;
@@ -173,7 +174,7 @@ public class TokenDataHelper {
 		}
 
 		User userRef = this.identityApi.getUser(userid);
-		boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
+		boolean enabled = Config.getOpt(Config.Type.trust, "enabled").asBoolean();
 		if (enabled && trust != null && tokenData.getTrust() != null) {
 			User trustorUserRef = this.identityApi.getUser(trust.getTrustorUserId());
 			try {
@@ -199,6 +200,8 @@ public class TokenDataHelper {
 		filteredUser.setId(userRef.getId());
 		filteredUser.setName(userRef.getName());
 		filteredUser.setDomain(getFilteredDomain(userRef.getDomainId()));
+		filteredUser.setIp(userRef.getIp());
+		filteredUser.setPort(userRef.getPort());
 		tokenData.setUser(filteredUser);
 	}
 
@@ -241,7 +244,7 @@ public class TokenDataHelper {
 		// if x in token:
 		// token_data[x] = token[x]
 
-		if (Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean() && trust != null) {
+		if (Config.getOpt(Config.Type.trust, "enabled").asBoolean() && trust != null) {
 			if (!trust.getTrusteeUserId().equals(userid)) {
 				throw Exceptions.ForbiddenException.getInstance("User is not a trustee");
 			}
@@ -272,7 +275,7 @@ public class TokenDataHelper {
 
 	// auditInfo=null
 	@SuppressWarnings("unchecked")
-	private void populateAuditInfo(TokenData tokenData, Object auditInfo) {
+	private void populateAuditInfo(TokenData tokenData, Object auditInfo) throws UnsupportedEncodingException {
 		if (auditInfo == null || auditInfo instanceof String) {
 			tokenData.setAuditIds(BaseProvider.auditInfo(auditInfo == null ? null : (String) auditInfo));
 		} else if (auditInfo instanceof List) {

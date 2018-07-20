@@ -44,7 +44,7 @@ public class GetRevocationListAction extends AbstractAuthAction implements Prote
 
 	@Override
 	public SignedWrapper execute(ContainerRequestContext request) throws Exception {
-		if (!Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+		if (!Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 			throw Exceptions.Gone.getInstance();
 		}
 
@@ -54,11 +54,11 @@ public class GetRevocationListAction extends AbstractAuthAction implements Prote
 		String jsonData = null;
 		String signedText = null;
 		try {
-			String certfile = Config.Instance.getOpt(Config.Type.signing, "certfile").asText();
-			String keyfile = Config.Instance.getOpt(Config.Type.signing, "keyfile").asText();
+			String certfile = Config.getOpt(Config.Type.signing, "certfile").asText();
+			String keyfile = Config.getOpt(Config.Type.signing, "keyfile").asText();
 
 			jsonData = JsonUtils.toJson(revoked);
-			signedText = Cms.Instance.signText(jsonData, certfile, keyfile);
+			signedText = Cms.signText(jsonData, certfile, keyfile);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

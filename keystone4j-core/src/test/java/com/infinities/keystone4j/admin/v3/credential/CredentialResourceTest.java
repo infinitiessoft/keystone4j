@@ -135,7 +135,7 @@ public class CredentialResourceTest extends AbstractIntegratedTest {
 		System.err.println(JsonUtils.toJsonWithoutPrettyPrint(wrapper));
 
 		Response response = target("/v3/credentials").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(201, response.getStatus());
 		String ret = response.readEntity(String.class);
@@ -155,7 +155,7 @@ public class CredentialResourceTest extends AbstractIntegratedTest {
 		String blobStr = JsonUtils.toJsonWithoutPrettyPrint(blob);
 		System.err.println("blob: " + blobStr);
 		Response response = target("/v3/credentials").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		JsonNode node = JsonUtils.convertToJsonNode(ret);
@@ -177,7 +177,7 @@ public class CredentialResourceTest extends AbstractIntegratedTest {
 		String blobStr = JsonUtils.toJsonWithoutPrettyPrint(blob);
 		Response response = target("/v3/credentials/" + credential.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		System.err.println(ret);
@@ -212,7 +212,7 @@ public class CredentialResourceTest extends AbstractIntegratedTest {
 	public void testDeleteCredential() {
 		Response response = target("/v3/credentials/" + credential.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 }

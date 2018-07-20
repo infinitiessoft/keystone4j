@@ -125,7 +125,7 @@ public class AuthInfo extends AbstractControllerAction {
 			scopeData.setDomainid(domain.getId());
 			this.setScope(scopeData);
 		} else if (auth.getScope().getTrust() != null) {
-			boolean enabled = Config.Instance.getOpt(Config.Type.trust, "enabled").asBoolean();
+			boolean enabled = Config.getOpt(Config.Type.trust, "enabled").asBoolean();
 			if (!enabled) {
 				throw new ForbiddenException("Trusts are disabled.");
 			}

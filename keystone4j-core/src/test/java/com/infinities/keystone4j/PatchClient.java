@@ -59,7 +59,7 @@ public class PatchClient {
 		try {
 			HttpPatch request = new HttpPatch(url);
 			request.addHeader("accept", "application/json");
-			request.addHeader("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText());
+			request.addHeader("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText());
 			request.setEntity(requestEntity);
 			ResponseHandler<JsonNode> rh = new ResponseHandler<JsonNode>() {
 

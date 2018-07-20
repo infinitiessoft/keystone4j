@@ -126,7 +126,7 @@ public class UserV3ResourceTest extends AbstractIntegratedTest {
 		assertEquals(user.getDefaultProjectId(), userJ.get("default_project_id").asText());
 		assertEquals(user.getPassword(), userJ.get("password").asText());
 		Response response = target("/v3/users").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(201, response.getStatus());
 
@@ -149,7 +149,7 @@ public class UserV3ResourceTest extends AbstractIntegratedTest {
 		users.add(user);
 
 		Response response = target("/v3/users").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		System.err.println(node.toString());
@@ -171,7 +171,7 @@ public class UserV3ResourceTest extends AbstractIntegratedTest {
 	public void testGetUser() throws JsonGenerationException, JsonMappingException, IOException {
 		Response response = target("/v3/users").path(user.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
@@ -217,7 +217,7 @@ public class UserV3ResourceTest extends AbstractIntegratedTest {
 	public void testDeleteUser() {
 		Response response = target("/v3/users").path(user.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 
@@ -235,7 +235,7 @@ public class UserV3ResourceTest extends AbstractIntegratedTest {
 		assertEquals(param.getOriginalPassword(), userJ.get("original_password").asText());
 		Response response = target("/v3/users").path(user.getId()).path("password").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(204, response.getStatus());
 	}
@@ -247,7 +247,7 @@ public class UserV3ResourceTest extends AbstractIntegratedTest {
 
 		Response response = target("/v3/users").path("e7912c2225e84ac5905d8cf0b5040a6f").path("groups")
 				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		System.err.println(ret);
@@ -267,7 +267,7 @@ public class UserV3ResourceTest extends AbstractIntegratedTest {
 
 		Response response = target("/v3/users").path(user.getId()).path("projects").register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		JsonNode node = JsonUtils.convertToJsonNode(response.readEntity(String.class));
 		System.err.println(node.toString());

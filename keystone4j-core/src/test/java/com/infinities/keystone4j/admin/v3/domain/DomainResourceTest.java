@@ -109,7 +109,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 		assertEquals(domain.getDescription(), domainJ.get("description").asText());
 
 		Response response = target("/v3/domains").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(201, response.getStatus());
 		String ret = response.readEntity(String.class);
@@ -127,7 +127,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 		domains.add(domain);
 
 		Response response = target("/v3/domains").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		System.err.println(ret);
@@ -144,7 +144,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 	public void testGetDomain() throws JsonProcessingException, IOException {
 		Response response = target("/v3").path("domains").path(domain.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		System.err.println(ret);
@@ -185,7 +185,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 		assertEquals(domain.getDescription(), domainJ.get("description").asText());
 
 		Response response = target("/v3/domains").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(201, response.getStatus());
 		String ret = response.readEntity(String.class);
@@ -195,7 +195,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 		String domainid = domainJ.get("id").asText();
 		response = target("/v3").path("domains").path(domainid).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 
@@ -205,7 +205,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 		roles.add(role1);
 		Response response = target("/v3/domains").path(domain.getId()).path("users").path(user.getId()).path("roles")
 				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		System.err.println(ret);
@@ -221,7 +221,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 
 		Response response = target("/v3/domains").path(domain.getId()).path("groups").path(group.getId()).path("roles")
 				.register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		System.err.println(ret);
@@ -234,7 +234,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 	public void testCreateGrantByUser() {
 		Response response = target("/v3/domains").path(domain.getId()).path("users").path(user.getId()).path("roles")
 				.path(role2.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.put(Entity.json(""));
 		assertEquals(204, response.getStatus());
 	}
@@ -243,7 +243,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 	public void testCreateGrantByGroup() {
 		Response response = target("/v3/domains").path(domain.getId()).path("groups").path(group.getId()).path("roles")
 				.path(role2.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.put(Entity.json(""));
 		assertEquals(204, response.getStatus());
 	}
@@ -252,7 +252,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 	public void testCheckGrantByUser() {
 		Response response = target("/v3/domains").path(domain.getId()).path("users").path(user.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
 		assertEquals(204, response.getStatus());
 	}
 
@@ -260,7 +260,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 	public void testCheckGrantByGroup() {
 		Response response = target("/v3/domains").path(domain.getId()).path("groups").path(group.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).head();
 		assertEquals(204, response.getStatus());
 	}
 
@@ -268,7 +268,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 	public void testRevokeGrantByUser() {
 		Response response = target("/v3/domains").path(domain.getId()).path("users").path(user.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 
@@ -276,7 +276,7 @@ public class DomainResourceTest extends AbstractIntegratedTest {
 	public void testRevokeGrantByGroup() {
 		Response response = target("/v3/domains").path(domain.getId()).path("groups").path(group.getId()).path("roles")
 				.path(role1.getId()).register(JacksonFeature.class).register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 

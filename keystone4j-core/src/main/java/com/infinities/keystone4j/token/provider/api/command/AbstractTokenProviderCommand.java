@@ -114,7 +114,7 @@ public abstract class AbstractTokenProviderCommand {
 
 		if (revokeApi != null) {
 			TokenValues tokenValues = Model.buildTokenValuesV2(tokenData,
-					Config.Instance.getOpt(Config.Type.identity, "default_domain_id").asText());
+					Config.getOpt(Config.Type.identity, "default_domain_id").asText());
 			revokeApi.checkToken(tokenValues);
 		}
 	}

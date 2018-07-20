@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
 import com.infinities.keystone4j.KeystoneContext;
@@ -82,7 +83,7 @@ public class CreateCredentialAction extends AbstractCredentialAction implements 
 			}
 
 			// logger.debug("blob id before hashing: {}", blob.getId());
-			ref.setId(Cms.toHex(Hashing.sha256().hashString(blob.getAccess()).asBytes()));
+			ref.setId(Cms.toHex(Hashing.sha256().hashString(blob.getAccess(), Charsets.UTF_16LE).asBytes()));
 			// logger.debug("blob id after hashing: {}", blob.getId());
 			if (!Strings.isNullOrEmpty(trustId)) {
 				blob.setTrustId(trustId);

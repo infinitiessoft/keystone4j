@@ -32,7 +32,7 @@ import com.infinities.keystone4j.model.BaseEntity;
 import com.infinities.keystone4j.model.utils.Views;
 
 @Entity
-@Table(name = "ENDPOINT", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "ENDPOINT")
 public class Endpoint extends BaseEntity implements java.io.Serializable {
 
 	/**
@@ -170,7 +170,6 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 		}
 	}
 
-	@Lob
 	@Column(name = "URL", nullable = false)
 	public String getUrl() {
 		return url;
@@ -182,7 +181,6 @@ public class Endpoint extends BaseEntity implements java.io.Serializable {
 	}
 
 	@XmlTransient
-	@Lob
 	@Column(name = "EXTRA")
 	public String getExtra() {
 		return extra;

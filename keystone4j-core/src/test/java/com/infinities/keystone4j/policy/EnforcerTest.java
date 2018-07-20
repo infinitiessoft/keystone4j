@@ -43,7 +43,7 @@
 //
 //	@Test
 //	public void testEnforcer() throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
-//		String policyPath = Config.Instance.getOpt(Config.Type.DEFAULT, POLICY_FILE).asText();
+//		String policyPath = Config.getOpt(Config.Type.DEFAULT, POLICY_FILE).asText();
 //		new EnforcerImpl(policyPath);
 //	}
 //

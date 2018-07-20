@@ -37,8 +37,7 @@ import com.infinities.keystone4j.option.StringOption;
 import com.infinities.keystone4j.utils.FileScanner;
 import com.infinities.keystone4j.utils.KeystoneUtils;
 
-public enum Config {
-	Instance;
+public class Config {
 
 	public enum Type {
 		assignment, auth, cache, catalog, credential, database, ec2, endpoint_filter, federation, identity, kvs, ldap, memcache, pam, paste_deploy, policy, signing, ssl, stats, sql, token, oauth1, os_inherit, DEFAULT, trust, identity_mapping, revoke;
@@ -47,11 +46,12 @@ public enum Config {
 
 	// private final String[] DEFAULT_AUTH_METHODS = { "external", "password",
 	// "token" };
-	private final String[] DEFAULT_AUTH_METHODS = { "password", "token" };
-	private final Logger logger = LoggerFactory.getLogger(Config.class);
+	private final static String[] DEFAULT_AUTH_METHODS = { "password", "token" };
+	private final static Logger logger = LoggerFactory.getLogger(Config.class);
 	private URL DEFAULT_CONFIG_FILENAME;
 	private final Table<Type, String, Option> FILE_OPTIONS = HashBasedTable.create();
-	private final Pattern pattern = Pattern.compile("%\\((.*?)\\)", Pattern.DOTALL);
+	private final static Pattern pattern = Pattern.compile("%\\((.*?)\\)", Pattern.DOTALL);
+	private static Config instance = new Config();
 
 
 	private Config() {
@@ -354,8 +354,8 @@ public enum Config {
 		}
 	}
 
-	public Option getOpt(Type type, String attr) {
-		Option option = FILE_OPTIONS.get(type, attr);
+	public static Option getOpt(Type type, String attr) {
+		Option option = instance.FILE_OPTIONS.get(type, attr);
 		if (option instanceof StringOption) {
 			Option newOption = Options.newStrOpt(option.getName(), option.getValue());
 			Matcher matcher = pattern.matcher(option.asText());
@@ -363,7 +363,7 @@ public enum Config {
 				String match = matcher.group(1);
 
 				logger.debug("sub-option pattern match: {}", match);
-				Option suboption = FILE_OPTIONS.get(type, match);
+				Option suboption = instance.FILE_OPTIONS.get(type, match);
 				if (suboption != null) {
 					String newValue = matcher.replaceFirst(suboption.getValue());
 					newOption.setValue(newValue);
@@ -386,7 +386,7 @@ public enum Config {
 				String match = matcher.group(1);
 				int start = matcher.start(1);
 				int end = matcher.end(1);
-				String value = Config.Instance.getOpt(Config.Type.DEFAULT, match).asText();
+				String value = Config.getOpt(Config.Type.DEFAULT, match).asText();
 				replace.replace(start, end, value);
 				nextRound = true;
 			}
@@ -394,7 +394,7 @@ public enum Config {
 		return replace.toString();
 	}
 
-	public String findFile(String name) {
+	public static String findFile(String name) {
 		String path = name;
 		File f = new File(path);
 		if (f.exists()) {
@@ -404,15 +404,15 @@ public enum Config {
 		}
 	}
 
-	public void configure(Table<Type, String, Option> conf) {
-		for (Cell<Type, String, Option> cell : FILE_OPTIONS.cellSet()) {
+	public static void configure(Table<Type, String, Option> conf) {
+		for (Cell<Type, String, Option> cell : instance.FILE_OPTIONS.cellSet()) {
 			conf.put(cell.getRowKey(), cell.getColumnKey(), cell.getValue().clone());
 		}
 	}
 
-	public Table<Type, String, Option> getTable() {
+	public static Table<Type, String, Option> getTable() {
 		Table<Type, String, Option> table = HashBasedTable.create();
-		table.putAll(FILE_OPTIONS);
+		table.putAll(instance.FILE_OPTIONS);
 		return table;
 	}
 }

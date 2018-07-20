@@ -43,7 +43,7 @@ public class BaseEntity implements Serializable {
 	private MemberLinks links = new MemberLinks();
 
 
-	@Column(name = "DESC", length = 150)
+	@Column(name = "DESCRIPTION", length = 150)
 	@JsonView(Views.Advance.class)
 	public String getDescription() {
 		return description;

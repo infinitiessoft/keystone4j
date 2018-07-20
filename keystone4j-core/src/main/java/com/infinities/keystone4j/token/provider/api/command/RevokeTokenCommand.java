@@ -85,7 +85,7 @@ public class RevokeTokenCommand extends AbstractTokenProviderCommand implements 
 
 		}
 
-		if (Config.Instance.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
+		if (Config.getOpt(Config.Type.token, "revoke_by_id").asBoolean()) {
 			this.getPersistence().deleteToken(tokenid);
 		}
 		return null;

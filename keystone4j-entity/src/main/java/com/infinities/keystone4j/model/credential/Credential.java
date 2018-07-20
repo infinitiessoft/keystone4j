@@ -29,7 +29,7 @@ import com.infinities.keystone4j.model.BaseEntity;
 
 @JsonInclude(Include.NON_NULL)
 @Entity
-@Table(name = "CREDENTIAL", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "CREDENTIAL")
 public class Credential extends BaseEntity implements java.io.Serializable {
 
 	/**
@@ -74,7 +74,7 @@ public class Credential extends BaseEntity implements java.io.Serializable {
 
 	// @OneToOne(optional = false, cascade = CascadeType.REMOVE)
 	// @JoinColumn(name = "BLOBID", nullable = false)
-	@Column(name = "BLOB", length = 512)
+	@Column(name = "BLOB")
 	public String getBlob() {
 		return blob;
 	}
@@ -94,7 +94,6 @@ public class Credential extends BaseEntity implements java.io.Serializable {
 		typeUpdated = true;
 	}
 
-	@Lob
 	@Column(name = "EXTRA", nullable = true)
 	public String getExtra() {
 		return extra;

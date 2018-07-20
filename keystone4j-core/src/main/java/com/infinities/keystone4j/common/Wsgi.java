@@ -40,7 +40,7 @@ public class Wsgi {
 	}
 
 	public static void validateTokenBind(KeystoneContext context, KeystoneToken token) {
-		String bindMode = Config.Instance.getOpt(Config.Type.token, "enforce_token_bind").asText();
+		String bindMode = Config.getOpt(Config.Type.token, "enforce_token_bind").asText();
 
 		if (bindMode.equals("disabled")) {
 			return;
@@ -90,7 +90,7 @@ public class Wsgi {
 	}
 
 	public static String getBaseUrl(ContainerRequestContext context, String endpointType) {
-		String url = Config.Instance.getOpt(Config.Type.DEFAULT, String.format("%s_endpoint", endpointType)).asText();
+		String url = Config.getOpt(Config.Type.DEFAULT, String.format("%s_endpoint", endpointType)).asText();
 
 		if (Strings.isNullOrEmpty(url)) {
 			url = context.getUriInfo().getBaseUri().toString();

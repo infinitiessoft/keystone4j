@@ -122,7 +122,7 @@ public class PolicyJpaDriver implements PolicyDriver {
 	private void init() throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
 		synchronized (POLICY_PATH) {
 			if (Strings.isNullOrEmpty(POLICY_PATH)) {
-				POLICY_PATH = Config.Instance.getOpt(Config.Type.DEFAULT, POLICY_FILE).asText();
+				POLICY_PATH = Config.getOpt(Config.Type.DEFAULT, POLICY_FILE).asText();
 			}
 			if (enforcer == null) {
 				enforcer = new EnforcerImpl(POLICY_PATH, null, null, true);
@@ -134,7 +134,7 @@ public class PolicyJpaDriver implements PolicyDriver {
 	public Integer getListLimit() {
 		int limit = -1;
 		try {
-			limit = Config.Instance.getOpt(Config.Type.policy, "list_limit").asInteger();
+			limit = Config.getOpt(Config.Type.policy, "list_limit").asInteger();
 		} catch (Exception e) {
 
 		}
@@ -142,7 +142,7 @@ public class PolicyJpaDriver implements PolicyDriver {
 			return limit;
 		}
 		try {
-			limit = Config.Instance.getOpt(Config.Type.DEFAULT, "list_limit").asInteger();
+			limit = Config.getOpt(Config.Type.DEFAULT, "list_limit").asInteger();
 		} catch (Exception e) {
 
 		}

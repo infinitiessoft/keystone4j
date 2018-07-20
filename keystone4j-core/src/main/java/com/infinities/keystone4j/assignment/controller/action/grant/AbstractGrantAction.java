@@ -50,7 +50,7 @@ public abstract class AbstractGrantAction extends AbstractRoleAction {
 		if (!path.startsWith("/")) {
 			path = "/" + path;
 		}
-		return (Config.Instance.getOpt(Config.Type.os_inherit, "enabled").asBoolean() && path.startsWith("/OS-INHERIT") && path
+		return (Config.getOpt(Config.Type.os_inherit, "enabled").asBoolean() && path.startsWith("/OS-INHERIT") && path
 				.endsWith("/inherited_to_projects"));
 	}
 

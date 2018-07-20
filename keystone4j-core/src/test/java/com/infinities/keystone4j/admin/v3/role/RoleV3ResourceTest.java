@@ -99,7 +99,7 @@ public class RoleV3ResourceTest extends AbstractIntegratedTest {
 
 		role1 = new Role();
 		role1.setId("9fe2ff9ee4384b1894a90878d3e92bab");
-		role1.setName("_member_");
+		role1.setName("admin");
 		role1.setDescription("Default role for project membership");
 
 		role2 = new Role();
@@ -128,7 +128,7 @@ public class RoleV3ResourceTest extends AbstractIntegratedTest {
 		assertEquals(role.getName(), roleJ.get("name").asText());
 		assertEquals(role.getDescription(), roleJ.get("description").asText());
 		Response response = target("/v3/roles").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText())
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText())
 				.post(Entity.entity(wrapper, MediaType.APPLICATION_JSON_TYPE));
 		assertEquals(201, response.getStatus());
 		String ret = response.readEntity(String.class);
@@ -143,7 +143,7 @@ public class RoleV3ResourceTest extends AbstractIntegratedTest {
 	@Test
 	public void testListRoles() throws JsonProcessingException, IOException {
 		Response response = target("/v3/roles").register(JacksonFeature.class).register(ObjectMapperResolver.class)
-				.request().header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.request().header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 		String ret = response.readEntity(String.class);
 		System.err.println(ret);
@@ -160,7 +160,7 @@ public class RoleV3ResourceTest extends AbstractIntegratedTest {
 	public void testGetRole() throws JsonProcessingException, IOException {
 		Response response = target("/v3/roles").path(role1.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).get();
 		assertEquals(200, response.getStatus());
 
 		String ret = response.readEntity(String.class);
@@ -190,7 +190,7 @@ public class RoleV3ResourceTest extends AbstractIntegratedTest {
 	public void testDeleteRole() {
 		Response response = target("/v3/roles").path(role1.getId()).register(JacksonFeature.class)
 				.register(ObjectMapperResolver.class).request()
-				.header("X-Auth-Token", Config.Instance.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
+				.header("X-Auth-Token", Config.getOpt(Config.Type.DEFAULT, "admin_token").asText()).delete();
 		assertEquals(204, response.getStatus());
 	}
 

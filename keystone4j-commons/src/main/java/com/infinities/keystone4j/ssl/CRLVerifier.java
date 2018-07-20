@@ -1,17 +1,17 @@
 /*******************************************************************************
- * # Copyright 2015 InfinitiesSoft Solutions Inc.
- * #
- * # Licensed under the Apache License, Version 2.0 (the "License"); you may
- * # not use this file except in compliance with the License. You may obtain
- * # a copy of the License at
- * #
- * #      http://www.apache.org/licenses/LICENSE-2.0
- * #
- * # Unless required by applicable law or agreed to in writing, software
- * # distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * # License for the specific language governing permissions and limitations
- * # under the License.
+ * Copyright 2015 InfinitiesSoft Solutions Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
  *******************************************************************************/
 package com.infinities.keystone4j.ssl;
 
@@ -39,15 +39,15 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERIA5String;
-import org.bouncycastle.asn1.DERObject;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.X509Extension;
 
 public final class CRLVerifier {
 
@@ -147,7 +147,7 @@ public final class CRLVerifier {
 	 */
 	public static List<String> getCrlDistributionPoints(X509Certificate cert) throws CertificateParsingException,
 			IOException {
-		byte[] crldpExt = cert.getExtensionValue(X509Extension.cRLDistributionPoints.getId());
+		byte[] crldpExt = cert.getExtensionValue(Extension.cRLDistributionPoints.getId());
 		if (crldpExt == null) {
 			return new ArrayList<String>();
 		}
@@ -155,11 +155,11 @@ public final class CRLVerifier {
 		ASN1InputStream oAsnInStream2 = null;
 		try {
 			oAsnInStream = new ASN1InputStream(new ByteArrayInputStream(crldpExt));
-			DERObject derObjCrlDP = oAsnInStream.readObject();
+			ASN1Primitive derObjCrlDP = oAsnInStream.readObject();
 			DEROctetString dosCrlDP = (DEROctetString) derObjCrlDP;
 			byte[] crldpExtOctets = dosCrlDP.getOctets();
 			oAsnInStream2 = new ASN1InputStream(new ByteArrayInputStream(crldpExtOctets));
-			DERObject derObj2 = oAsnInStream2.readObject();
+			ASN1Primitive derObj2 = oAsnInStream2.readObject();
 			CRLDistPoint distPoint = CRLDistPoint.getInstance(derObj2);
 			List<String> crlUrls = new ArrayList<String>();
 			for (DistributionPoint dp : distPoint.getDistributionPoints()) {
